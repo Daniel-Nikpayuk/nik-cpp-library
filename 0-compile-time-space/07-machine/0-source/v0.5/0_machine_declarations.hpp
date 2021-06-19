@@ -209,7 +209,7 @@ private:
 public:
 
 	template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, auto... Xs>
-	static constexpr auto machine_start
+	static constexpr auto start
 	(
 		void(*H0)(auto_pack<Ws...>*) = U_opt_pack_Vs<>,
 		void(*H1)(auto_pack<Xs...>*) = U_opt_pack_Vs<>

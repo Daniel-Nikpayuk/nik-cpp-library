@@ -28,15 +28,15 @@
 private:
 
 	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_list_at(void(*)(ListName<Vs...>*))
+	static constexpr auto f_at(void(*)(ListName<Vs...>*))
 	{
-		return pack_module::template pack_at<d, pos, Vs...>;
+		return pack_module::template at<d, pos, Vs...>;
 	}
 
 public:
 
 	template<typename List, depth_type pos, depth_type depth = 500>
-	static constexpr auto list_at = f_list_at<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto at = f_at<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -45,15 +45,15 @@ public:
 private:
 
 	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_list_left(void(*)(ListName<Vs...>*))
+	static constexpr auto f_left(void(*)(ListName<Vs...>*))
 	{
-		return pack_module::template pack_left<d, pos, Vs...>;
+		return pack_module::template left<d, pos, Vs...>;
 	}
 
 public:
 
 	template<typename List, depth_type pos, depth_type depth = 500>
-	static constexpr auto list_left = f_list_left<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto left = f_left<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -62,15 +62,15 @@ public:
 private:
 
 	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_list_right(void(*)(ListName<Vs...>*))
+	static constexpr auto f_right(void(*)(ListName<Vs...>*))
 	{
-		return pack_module::template pack_right<d, pos, Vs...>;
+		return pack_module::template right<d, pos, Vs...>;
 	}
 
 public:
 
 	template<typename List, depth_type pos, depth_type depth = 500>
-	static constexpr auto list_right = f_list_right<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto right = f_right<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

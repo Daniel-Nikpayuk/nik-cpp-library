@@ -201,12 +201,11 @@ private:
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(7);
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(8);
 
-#ifndef _GCC_IMPLEMENTATION_
-#define _GCC_IMPLEMENTATION_
+#ifdef GCC_IMPLEMENTATION
 
 //	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(9); // clang: bracket nesting level defaults to a maximum of 256
 
-#endif // _GCC_IMPLEMENTATION_
+#endif // GCC_IMPLEMENTATION
 
 	template<index_type... filler>
 	struct machine<MN::fold_s_block__op_at_h0_first, _nine, filler...>
@@ -243,6 +242,12 @@ private:
 /***********************************************************************************************************************/
 
 // passers (stack to heap):
+
+/***********************************************************************************************************************/
+
+// move stack block, insert at heap zero front (2^N):
+
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(0);
 
 /***********************************************************************************************************************/
 

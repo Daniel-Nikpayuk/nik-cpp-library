@@ -90,7 +90,7 @@ private:
 		constexpr auto i	= _one;
 		constexpr auto j	= _zero;
 
-		return machine_start
+		return start
 		<
 			register_machine, colist_contr<>, d, i, j,
 			cond_val, func_val, def_val, length, is_zero, dec, Vs...

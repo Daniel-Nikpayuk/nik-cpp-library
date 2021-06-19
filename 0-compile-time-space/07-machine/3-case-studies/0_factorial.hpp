@@ -20,43 +20,8 @@
 // factorial:
 
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-	template<typename T, typename U> constexpr bool equal(T a1, U a2)			{ return (a1 == a2); }
-	template<typename T, typename U> constexpr bool not_equal(T a1, U a2)			{ return (a1 != a2); }
-	template<typename T, typename U> constexpr bool less_than(T a1, U a2)			{ return (a1 < a2); }
-	template<typename T, typename U> constexpr bool less_than_or_equal(T a1, U a2)		{ return (a1 <= a2); }
-	template<typename T, typename U> constexpr bool greater_than(T a1, U a2)		{ return (a1 > a2); }
-	template<typename T, typename U> constexpr bool greater_than_or_equal(T a1, U a2)	{ return (a1 >= a2); }
-
-	template<typename T, auto V> constexpr bool is_value(T a)				{ return (a == V); }
-	template<typename T, auto V> constexpr bool not_value(T a)				{ return (a != V); }
-	template<typename T, auto V> constexpr bool is_less_than(T a)				{ return (a < V); }
-	template<typename T, auto V> constexpr bool is_less_than_or_equal(T a)			{ return (a <= V); }
-	template<typename T, auto V> constexpr bool is_greater_than(T a)			{ return (a > V); }
-	template<typename T, auto V> constexpr bool is_greater_than_or_equal(T a)		{ return (a >= V); }
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// arithmetic operators:
-
-/***********************************************************************************************************************/
-
-	template<typename T, typename U> constexpr T add(T a1, U a2)			{ return a1 + a2; }
-	template<typename T, typename U> constexpr T subtract(T a1, U a2)		{ return a1 - a2; }
-	template<typename T, typename U> constexpr T multiply(T a1, U a2)		{ return a1 * a2; }
-	template<typename T, typename U> constexpr T divide(T a1, U a2)			{ return a1 / a2; }
-	template<typename T, typename U> constexpr T modulo(T a1, U a2)			{ return a1 % a2; }
-
-	template<typename T, auto V> constexpr T add_by(T a)				{ return a + V; }
-	template<typename T, auto V> constexpr T subtract_by(T a)			{ return a - V; }
-	template<typename T, auto V> constexpr T multiply_by(T a)			{ return a * V; }
-	template<typename T, auto V> constexpr T divide_by(T a)				{ return a / V; }
-	template<typename T, auto V> constexpr T modulo_by(T a)				{ return a % V; }
+	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, name)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -103,7 +68,7 @@
 		constexpr index_type i		= _zero;
 		constexpr index_type j		= _zero;
 
-		return machine_start
+		return start
 		<
 			near_linear_machine, pair_fact_contr<>, d, i, j,
 			n, p, eq_op, sub_op, mult_op, c_0, c_1
@@ -230,7 +195,7 @@
 		constexpr index_type i		= _one;
 		constexpr index_type j		= _zero;
 
-		return machine_start
+		return start
 		<
 			register_machine, fact_contr<>, d, i, j,
 			val, n, eq_op, sub_op, mult_op, c_1, cont
@@ -335,7 +300,7 @@
 		constexpr index_type i		= _one;
 		constexpr index_type j		= _zero;
 
-		return machine_start
+		return start
 		<
 			register_machine, fact1_contr<>, d, i, j,
 			p, n, eq_op, sub_op, mult_op, c_0, c_1

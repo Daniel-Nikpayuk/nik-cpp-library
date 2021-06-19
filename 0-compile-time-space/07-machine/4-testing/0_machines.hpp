@@ -112,7 +112,7 @@ namespace testing_space
 		constexpr auto i = zero;
 		constexpr auto j = zero;
 
-		return machine_start<PD, c, d, i, j, Vs...>();
+		return start<PD, c, d, i, j, Vs...>();
 	}
 
 	template<auto d, auto pos, auto op, auto arg, auto... Vs>
@@ -143,7 +143,7 @@ namespace testing_space
 		constexpr auto i = zero;
 		constexpr auto j = zero;
 
-		return machine_start<PD, c, d, i, j, Vs...>();
+		return start<PD, c, d, i, j, Vs...>();
 	}
 
 	template<auto d, auto pos, auto op, auto arg1, auto arg2, auto... Vs>
@@ -184,7 +184,7 @@ namespace testing_space
 		constexpr auto i = zero;
 		constexpr auto j = zero;
 
-		return machine_start<DD, c, d, i, j, Vs...>();
+		return start<DD, c, d, i, j, Vs...>();
 	}
 
 	template<auto d, auto pos, auto op, auto arg1, auto arg2, auto... Vs>

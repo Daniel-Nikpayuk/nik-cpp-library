@@ -131,14 +131,6 @@ private:
 		static constexpr auto ni	= _zero;
 		static constexpr auto nj	= _zero;
 
-		template<depth_type pos>
-		static constexpr auto go_to_contr = controller_module::template p_controller
-		<
-			controller_module::template copy_s_pos__insert_at_h0_front<pos>,
-
-			controller_module::template call<MN::go_to__next_at_h0_front, _zero>
-		>;
-
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
@@ -146,7 +138,7 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
 		{
-			constexpr auto nc = go_to_contr<n::pos(c, i, j)>; // single call(s)
+			constexpr auto nc = controller_module::template go_to_contr<n::pos(c, i, j)>; // single call(s)
 			constexpr auto un = U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)(U_opt_pack_Vs<un, c, Ws...>, H1, Hs...);
@@ -190,15 +182,6 @@ private:
 		static constexpr auto ni	= _zero;
 		static constexpr auto nj	= _zero;
 
-		template<depth_type pos, depth_type obj, pa_type cont = controller_module::template pass<>>
-		static constexpr auto restore_contr = controller_module::template p_controller
-		<
-			controller_module::template move_s_pos__insert_at_h0_front<obj>,
-			controller_module::template move_h0_all__replace_at_s_pos<pos>,
-
-			cont
-		>;
-
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
@@ -207,7 +190,8 @@ private:
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
 			constexpr auto un = U_type_T<n>;
-			constexpr auto nc = restore_contr<n::pos(c, i, j), n::reg_size(c, i, j)>; // single call(s)
+			constexpr auto nc = controller_module::template // single call(s)
+						restore_contr<n::pos(c, i, j), n::reg_size(c, i, j)>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
 		}

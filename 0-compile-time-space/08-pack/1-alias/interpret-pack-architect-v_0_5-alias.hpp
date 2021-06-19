@@ -27,15 +27,15 @@
 
 /***********************************************************************************************************************/
 
-// pack at:
+// at:
 
 	template<auto d, auto n, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_at)		= NIK_MODULE::template pack_at<d, n, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, at)		= NIK_MODULE::template at<d, n, Vs...>;
 
-// pack right:
+// right:
 
 	template<auto d, auto n, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_right)	= NIK_MODULE::template pack_right<d, n, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, right)	= NIK_MODULE::template right<d, n, Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -45,30 +45,30 @@
 
 /***********************************************************************************************************************/
 
-// pack erase:
+// erase:
 
 	template<auto d, auto pos, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_erase)	= NIK_MODULE::template pack_erase<d, pos, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, erase)	= NIK_MODULE::template erase<d, pos, Vs...>;
 
-// pack insert:
-
-	template<auto d, auto pos, auto obj, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_insert)	= NIK_MODULE::template pack_insert<d, pos, obj, Vs...>;
-
-// pack replace:
+// insert:
 
 	template<auto d, auto pos, auto obj, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_replace)	= NIK_MODULE::template pack_replace<d, pos, obj, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, insert)	= NIK_MODULE::template insert<d, pos, obj, Vs...>;
 
-// pack left:
+// replace:
+
+	template<auto d, auto pos, auto obj, auto... Vs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, replace)	= NIK_MODULE::template replace<d, pos, obj, Vs...>;
+
+// left:
 
 	template<auto d, auto n, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_left)		= NIK_MODULE::template pack_left<d, n, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, left)		= NIK_MODULE::template left<d, n, Vs...>;
 
-// pack roll:
+// roll:
 
 	template<auto d, auto uact, auto V0, auto... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, pack_roll)		= NIK_MODULE::template pack_roll<d, uact, V0, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, roll)		= NIK_MODULE::template roll<d, uact, V0, Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -19,6 +19,10 @@
 
 // fibonacci:
 
+	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, name)
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -102,9 +106,9 @@
 		using n_type = decltype(n);
 
 		constexpr n_type val		= _one;
-		constexpr auto lt_op		= less_than<n_type>;
-		constexpr auto add_op		= add<n_type>;
-		constexpr auto sub_op		= subtract<n_type>;
+		constexpr auto lt_op		= less_than<n_type, n_type>;
+		constexpr auto add_op		= add<n_type, n_type>;
+		constexpr auto sub_op		= subtract<n_type, n_type>;
 		constexpr n_type c_1		= _one;
 		constexpr n_type c_2		= _two;
 		constexpr index_type cont	= _five;
@@ -112,9 +116,9 @@
 		constexpr index_type i		= _one;
 		constexpr index_type j		= _zero;
 
-		return machine_start
+		return start
 		<
-			RD, fib_contr<>, d, i, j,
+			register_machine, fib_contr<>, d, i, j,
 			val, n, lt_op, add_op, sub_op, c_1, c_2, cont
 		>();
 	}

@@ -58,9 +58,9 @@
 // start:
 
 	template<typename n, auto c, auto d, auto i, auto j, auto... Vs>
-	static constexpr auto machine_start()
+	static constexpr auto start()
 	{
-		return NIK_MODULE::template machine_start<n, c, d, i, j, Vs...>();
+		return NIK_MODULE::template start<n, c, d, i, j, Vs...>();
 	}
 
 /***********************************************************************************************************************/

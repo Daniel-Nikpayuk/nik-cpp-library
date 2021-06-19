@@ -254,7 +254,7 @@ public:
 		template<auto depth, auto pos, typename OutType, typename... InTypes>
 		static constexpr auto f_result(OutType(*f)(InTypes...))
 		{
-			return pack_module::pack_at<depth, pos, functor_module::template U_type_T<InTypes>...>;
+			return pack_module::at<depth, pos, functor_module::template U_type_T<InTypes>...>;
 		}
 
 		template<auto depth, auto pos, auto f>
@@ -305,7 +305,7 @@ public:
 		template<auto depth, auto pos, typename OutType, typename... InTypes>
 		static constexpr auto f_result(OutType(*f)(InTypes...))
 		{
-			return pack_module::pack_left<depth, pos, functor_module::template U_type_T<InTypes>...>;
+			return pack_module::left<depth, pos, functor_module::template U_type_T<InTypes>...>;
 		}
 
 		template<auto depth, auto pos, auto f>
@@ -329,7 +329,7 @@ public:
 		template<auto depth, auto pos, typename OutType, typename... InTypes>
 		static constexpr auto f_result(OutType(*f)(InTypes...))
 		{
-			return pack_module::pack_right<depth, pos, functor_module::template U_type_T<InTypes>...>;
+			return pack_module::right<depth, pos, functor_module::template U_type_T<InTypes>...>;
 		}
 
 		template<auto depth, auto pos, auto f>

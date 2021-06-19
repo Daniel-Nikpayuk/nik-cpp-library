@@ -32,19 +32,19 @@
 private:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto f_pack_at()
+	static constexpr auto f_at()
 	{
 		constexpr auto c = controller_module::template drop_s_block__contr<machine_name::first>;
 		constexpr auto j = machine_module::block_max_index2(n);
 		constexpr auto i = n + j;
 
-		return machine_module::template machine_start<block_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<block_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto pack_at = f_pack_at<d, n, Vs...>();
+	static constexpr auto at = f_at<d, n, Vs...>();
 
 /***********************************************************************************************************************/
 
@@ -53,19 +53,19 @@ public:
 private:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto f_pack_right()
+	static constexpr auto f_right()
 	{
 		constexpr auto c = controller_module::template drop_s_block__contr<machine_name::pack>;
 		constexpr auto j = machine_module::block_max_index2(n);
 		constexpr auto i = n + j;
 
-		return machine_module::template machine_start<block_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<block_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto pack_right = f_pack_right<d, n, Vs...>();
+	static constexpr auto right = f_right<d, n, Vs...>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -80,7 +80,7 @@ public:
 private:
 
 	template<auto d, auto pos, auto... Vs>
-	static constexpr auto f_pack_erase()
+	static constexpr auto f_erase()
 	{
 		constexpr auto c	= controller_module::template erase_contr
 					<
@@ -89,13 +89,13 @@ private:
 		constexpr auto i	= _zero;
 		constexpr auto j	= _zero;
 
-		return machine_module::template machine_start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto pos, auto... Vs>
-	static constexpr auto pack_erase = f_pack_erase<d, pos, Vs...>();
+	static constexpr auto erase = f_erase<d, pos, Vs...>();
 
 /***********************************************************************************************************************/
 
@@ -104,7 +104,7 @@ public:
 private:
 
 	template<auto d, auto pos, auto obj, auto... Vs>
-	static constexpr auto f_pack_insert()
+	static constexpr auto f_insert()
 	{
 		constexpr auto c	= controller_module::template insert_contr
 					<
@@ -113,13 +113,13 @@ private:
 		constexpr auto i	= _zero;
 		constexpr auto j	= _zero;
 
-		return machine_module::template machine_start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto pos, auto obj, auto... Vs>
-	static constexpr auto pack_insert = f_pack_insert<d, pos, obj, Vs...>();
+	static constexpr auto insert = f_insert<d, pos, obj, Vs...>();
 
 /***********************************************************************************************************************/
 
@@ -128,7 +128,7 @@ public:
 private:
 
 	template<auto d, auto pos, auto obj, auto... Vs>
-	static constexpr auto f_pack_replace()
+	static constexpr auto f_replace()
 	{
 		constexpr auto c	= controller_module::template replace_contr
 					<
@@ -137,13 +137,13 @@ private:
 		constexpr auto i	= _zero;
 		constexpr auto j	= _zero;
 
-		return machine_module::template machine_start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto pos, auto obj, auto... Vs>
-	static constexpr auto pack_replace = f_pack_replace<d, pos, obj, Vs...>();
+	static constexpr auto replace = f_replace<d, pos, obj, Vs...>();
 
 /***********************************************************************************************************************/
 
@@ -152,7 +152,7 @@ public:
 private:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto f_pack_left()
+	static constexpr auto f_left()
 	{
 		constexpr auto c	= controller_module::template left_contr
 					<
@@ -161,13 +161,13 @@ private:
 		constexpr auto j	= _zero;
 		constexpr auto i	= _zero;
 
-		return machine_module::template machine_start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
 	}
 
 public:
 
 	template<auto d, auto n, auto... Vs>
-	static constexpr auto pack_left = f_pack_left<d, n, Vs...>();
+	static constexpr auto left = f_left<d, n, Vs...>();
 
 /***********************************************************************************************************************/
 
@@ -176,7 +176,7 @@ public:
 private:
 
 	template<auto d, auto uact, auto V0, auto... Vs>
-	static constexpr auto f_pack_roll()
+	static constexpr auto f_roll()
 	{
 		constexpr auto length = sizeof...(Vs);
 
@@ -191,7 +191,7 @@ private:
 			constexpr auto j	= _zero;
 
 			return machine_module::template
-				machine_start<permutatic_machine, c, d, i, j, V0, Vs...>
+				start<permutatic_machine, c, d, i, j, V0, Vs...>
 					(machine_module::template U_opt_pack_Vs<length, uact>);
 		}
 	}
@@ -199,7 +199,7 @@ private:
 public:
 
 	template<auto d, auto uact, auto V0, auto... Vs>
-	static constexpr auto pack_roll = f_pack_roll<d, uact, V0, Vs...>();
+	static constexpr auto roll = f_roll<d, uact, V0, Vs...>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

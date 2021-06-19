@@ -26,21 +26,21 @@
 // at:
 
 	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, list_at)		= NIK_MODULE::template list_at<List, pos, depth>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, at)		= NIK_MODULE::template at<List, pos, depth>;
 
 /***********************************************************************************************************************/
 
 // left:
 
 	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, list_left)		= NIK_MODULE::template list_left<List, pos, depth>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, left)		= NIK_MODULE::template left<List, pos, depth>;
 
 /***********************************************************************************************************************/
 
 // right:
 
 	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, list_right)	= NIK_MODULE::template list_right<List, pos, depth>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, right)	= NIK_MODULE::template right<List, pos, depth>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
