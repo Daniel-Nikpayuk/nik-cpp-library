@@ -1,0 +1,18 @@
+#!/bin/bash
+
+TO="$1"
+
+mawk_prog='
+{
+	gsub("NIK_PREFIX _0_0_1_", "NIK_PREFIX nik_'"$TO"'_");
+	gsub("NIK_PREFIX nik_0_0_1_", "NIK_PREFIX nik_'"$TO"'_");
+
+	print $0;
+}'
+
+ls *.hpp |
+while read file
+do
+	cat "$file" | mawk "$mawk_prog" > tmp && mv tmp "$file"
+done
+
