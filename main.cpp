@@ -25,31 +25,59 @@
 
 /***********************************************************************************************************************/
 
-//#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, reference, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, array, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, controller, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
-//#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
+// compile time space:
 
-//#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
-//#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
-//#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
+//	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, reference, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, array, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, controller, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
+  
+//	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
+//	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
+//	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
+
+// run time space:
+
+//	#include nik_import(., compile, composition, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, endoposition, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, iterator, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, near_linear, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, typed_assembly, architect, v_0_5, gcc, dynamic, name)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 	using utype = unsigned long long;
 
+/*
+	struct s_int
+	{
+		int x;
+
+		s_int(int _x) : x(_x) { }
+	};
+
+	constexpr int & get_x(s_int & s) { return s.x; }
+
+	constexpr auto func	= do_compose<multiply_by<int, 2>, add_by<int, 1>>;
+	constexpr auto asgn	= assign<get_x, func, get_x>;
+*/
+
 	int main(int argc, char *argv[])
 	{
-	//	printf("%d\n", id<int>(5));
+	//	s_int s(5);
+	//	asgn(s);
+
+	//	printf("%d\n", get_x(s));
 
 	//	printf("%d\n", at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);

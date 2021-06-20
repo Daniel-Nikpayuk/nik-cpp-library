@@ -1,0 +1,17 @@
+#!/bin/bash
+
+TO="$1"
+
+mawk_prog='
+{
+	gsub("interpret, constant", "compile, '"$TO"'");
+
+	print $0;
+}'
+
+ls *.hpp |
+while read file
+do
+	cat "$file" | mawk "$mawk_prog" > tmp && mv tmp "$file"
+done
+

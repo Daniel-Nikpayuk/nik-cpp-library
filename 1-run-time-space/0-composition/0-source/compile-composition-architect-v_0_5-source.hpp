@@ -17,31 +17,19 @@
 **
 ************************************************************************************************************************/
 
-#ifndef _1_FUNCTION_TYPE_HPP
-#define _1_FUNCTION_TYPE_HPP
+// composition source:
 
-// function type:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-namespace function_space
-{
-	#include"../../0-register-machine/using_namespace_meta_programming.hpp"
-	#include"../../0-register-machine/using_namespace_machine_space.hpp"
+public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// kernel:
-
 /***********************************************************************************************************************/
 
 // keywords:
 
-	constexpr void _id_()	{ }
+/***********************************************************************************************************************/
+
+	static constexpr void _id_()	{ }
 
 	struct S_is_id_keyword
 	{
@@ -51,25 +39,16 @@ namespace function_space
 		static constexpr bool result = V_is_equal_UxU(U_pack_Vs<f>, U_id_);
 	};
 
-	constexpr auto U_is_id_keyword = U_type_T<S_is_id_keyword>;
+	static constexpr auto U_is_id_keyword = U_type_T<S_is_id_keyword>;
 
 	template<auto f>
-	constexpr bool is_id_keyword = S_is_id_keyword::template result<f>;
+	static constexpr bool is_id_keyword = S_is_id_keyword::template result<f>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // composition:
-
-/***********************************************************************************************************************/
-
-//	opt - optimizer
-
-//	  n - nullary
-//	  u - unary
-//	  b - binary
-//	  p - variadic
 
 /***********************************************************************************************************************/
 
@@ -90,10 +69,10 @@ namespace function_space
 		static constexpr auto result = S_pattern_match<decltype(f), decltype(g)>::template result<f, g>;
 	};
 
-	constexpr auto U_safe_compose = U_type_T<S_safe_compose>;
+	static constexpr auto U_safe_compose = U_type_T<S_safe_compose>;
 
 	template<auto f, auto g>
-	constexpr auto safe_compose = S_safe_compose::template result<f, g>;
+	static constexpr auto safe_compose = S_safe_compose::template result<f, g>;
 
 /***********************************************************************************************************************/
 
@@ -105,10 +84,10 @@ namespace function_space
 		static constexpr auto result = S_safe_compose::template result<g, f>;
 	};
 
-	constexpr auto U_safe_do_compose = U_type_T<S_safe_do_compose>;
+	static constexpr auto U_safe_do_compose = U_type_T<S_safe_do_compose>;
 
 	template<auto f, auto g>
-	constexpr auto safe_do_compose = S_safe_compose::template result<g, f>;
+	static constexpr auto safe_do_compose = S_safe_compose::template result<g, f>;
 
 /***********************************************************************************************************************/
 
@@ -120,10 +99,10 @@ namespace function_space
 		static constexpr out_type<f> result(in_type<g> x) { return f(g(x)); }
 	};
 
-	constexpr auto U_compose = U_type_T<S_compose>;
+	static constexpr auto U_compose = U_type_T<S_compose>;
 
 	template<auto f, auto g>
-	constexpr auto compose = S_compose::template result<f, g>;
+	static constexpr auto compose = S_compose::template result<f, g>;
 
 /***********************************************************************************************************************/
 
@@ -135,17 +114,17 @@ namespace function_space
 		static constexpr out_type<g> result(in_type<f> x) { return g(f(x)); }
 	};
 
-	constexpr auto U_do_compose = U_type_T<S_do_compose>;
+	static constexpr auto U_do_compose = U_type_T<S_do_compose>;
 
 	template<auto f, auto g>
-	constexpr auto do_compose = S_do_compose::template result<f, g>;
+	static constexpr auto do_compose = S_do_compose::template result<f, g>;
 
 /***********************************************************************************************************************/
 
 // do chain compose:
 
 	template<auto f0, auto... fs>
-	constexpr auto do_chain_compose = machine_space::f_pack_roll<500, U_do_compose, f0, fs...>();
+	static constexpr auto do_chain_compose = pack_module::template roll<500, U_do_compose, f0, fs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -170,10 +149,10 @@ namespace function_space
 		static constexpr auto result = f_result<f, g>();
 	};
 
-	constexpr auto U_opt_compose = U_type_T<S_opt_compose>;
+	static constexpr auto U_opt_compose = U_type_T<S_opt_compose>;
 
 	template<auto f, auto g>
-	constexpr auto opt_compose = S_opt_compose::template f_result<f, g>();
+	static constexpr auto opt_compose = S_opt_compose::template f_result<f, g>();
 
 /***********************************************************************************************************************/
 
@@ -185,17 +164,17 @@ namespace function_space
 		static constexpr auto result = S_opt_compose::template f_result<g, f>();
 	};
 
-	constexpr auto U_opt_do_compose = U_type_T<S_opt_do_compose>;
+	static constexpr auto U_opt_do_compose = U_type_T<S_opt_do_compose>;
 
 	template<auto f, auto g>	// S_opt_compose, not S_opt_do_compose
-	constexpr auto opt_do_compose = S_opt_compose::template f_result<g, f>();
+	static constexpr auto opt_do_compose = S_opt_compose::template f_result<g, f>();
 
 /***********************************************************************************************************************/
 
 // opt do chain compose:
 
 	template<auto f0, auto... fs>
-	constexpr auto opt_do_chain_compose = machine_space::f_pack_roll<500, U_opt_do_compose, f0, fs...>();
+	static constexpr auto opt_do_chain_compose = pack_module::template roll<500, U_opt_do_compose, f0, fs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -234,10 +213,10 @@ namespace function_space
 		>::template result<f, g>;
 	};
 
-	constexpr auto U_subcompose = U_type_T<S_subcompose>;
+	static constexpr auto U_subcompose = U_type_T<S_subcompose>;
 
-	template<auto f, auto g, depth_type pos>
-	constexpr auto subcompose = S_subcompose::template result<f, g, pos>;
+	template<auto f, auto g, auto pos>
+	static constexpr auto subcompose = S_subcompose::template result<f, g, pos>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -249,7 +228,7 @@ namespace function_space
 // test:
 
 	template<auto op, auto l0, auto... ls>
-	constexpr bool test(in_type<l0> x)
+	static constexpr bool test(in_type<l0> x)
 	{
 		return op(l0(x), ls(x)...);
 	}
@@ -259,7 +238,7 @@ namespace function_space
 // assign:
 
 	template<auto r, auto op, auto... ls>
-	constexpr in_type<r> assign(in_type<r> x)
+	static constexpr in_type<r> assign(in_type<r> x)
 	{
 		r(x) = op(ls(x)...);
 
@@ -269,8 +248,4 @@ namespace function_space
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-}
-
-#endif
 

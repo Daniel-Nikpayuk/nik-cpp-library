@@ -16,9 +16,12 @@ although they are equivalent to each other in potential, they can vary greatly i
 It is for this reason a hybrid approach (though leaning toward *constexpr* style) was largely favored.
 
 2) A run time space, which is currently under construction. It can be considered to have two parts:
+
 First is a near linear function space, which provides higher order functions that allows the user to build
 1-cycle list operators (loops) at compile time. Such loops are achieved through continuation passing
 *monadic composition*, and require tail call optimization (-O2 compiler optimization) to be performant.
+
+This design is translated from a theory of [Function Induction](https://github.com/Daniel-Nikpayuk/LaTeX/blob/main/Mathematics/Essays/Function%20Induction/Version-Two/induction.pdf).
 
 The second part is a typed assembly function space. Like the near linear space it provides higher order
 functions, but this time they are intended to build typed assembly code. Notably, each such function

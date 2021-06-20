@@ -17,27 +17,21 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NEAR_LINEAR_FUNCTION_SPACE_INCLUDE_SOURCE_HPP
-#define NEAR_LINEAR_FUNCTION_SPACE_INCLUDE_SOURCE_HPP
+#define NIK_MODULE nik_module(interpret, constant, architect, v_0_5, gcc)
+#define NIK_POLICY constexpr
+#define NIK_PREFIX
 
-#include"../0-register-machine/include_source.hpp"
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-#include"0-source/0_list_type.hpp"
-#include"0-source/1_function_type.hpp"
-#include"0-source/2_continuation_type.hpp"
+#include"interpret-constant-architect-v_0_5-alias.hpp"
 
-#include"0-source/3_list_operators.hpp"
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-//	This implementation is translated from the following theory:
-//
-//		https://github.com/Daniel-Nikpayuk/Mathematics/blob/main/Essays/List%20Induction/Version-One/induction.pdf
-
-//#include"0-source/3_signature_models.hpp"
-//#include"0-source/4_iterator_traits.hpp"
-//#include"0-source/5_one_cycle_signature.hpp"
-//#include"0-source/6_one_cycle_specification.hpp"
-//#include"0-source/7_list_operators_1.hpp"
-//#include"0-source/8_list_operators_2.hpp"
-
-#endif
+#undef NIK_PREFIX
+#undef NIK_POLICY
+#undef NIK_MODULE
 

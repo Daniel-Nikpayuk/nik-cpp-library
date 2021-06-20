@@ -17,30 +17,15 @@
 **
 ************************************************************************************************************************/
 
-#ifndef _2_CONTINUATION_TYPE_HPP
-#define _2_CONTINUATION_TYPE_HPP
-
-// continuation type:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-namespace continuation_space
-{
-	#include"../../0-register-machine/using_namespace_meta_programming.hpp"
-	#include"../../0-register-machine/using_namespace_machine_space.hpp"
-
-	using function_space::_id_;
-
-	using function_space::is_id_keyword;
-	using function_space::compose;
+// endoposition source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // lift:
+
+public:
 
 	template<auto> struct S_lift;
 
@@ -62,7 +47,7 @@ namespace continuation_space
 	};
 
 	template<auto f>
-	constexpr auto lift = U_type_T<S_lift<f>>;
+	static constexpr auto lift = U_type_T<S_lift<f>>;
 
 /***********************************************************************************************************************/
 
@@ -76,10 +61,10 @@ namespace continuation_space
 		static constexpr bool result = V_is_equal_UxU(U_pack_Vs<uf>, U_lift_id_);
 	};
 
-	constexpr auto U_is_lifted_id_keyword = U_type_T<S_is_lifted_id_keyword>;
+	static constexpr auto U_is_lifted_id_keyword = U_type_T<S_is_lifted_id_keyword>;
 
 	template<auto uf>
-	constexpr bool is_lifted_id_keyword = S_is_lifted_id_keyword::template result<uf>;
+	static constexpr bool is_lifted_id_keyword = S_is_lifted_id_keyword::template result<uf>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -90,17 +75,19 @@ namespace continuation_space
 
 // f specializations:
 
+private:
+
 	// * *:
 
 		template<auto pred, auto ante, auto conse, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_stem_pred_ante_conse_cont(InTypes... args)
+		static constexpr OutType f_stem_pred_ante_conse_cont(InTypes... args)
 		{
 			if (pred(args...))	return ante(args...);
 			else			return cont(conse(args...));
 		}
 
 		template<auto pred, auto ante, auto conse, typename OutType, typename... InTypes>
-		constexpr OutType f_stem_pred_ante_conse_id(InTypes... args)
+		static constexpr OutType f_stem_pred_ante_conse_id(InTypes... args)
 		{
 			if (pred(args...))	return ante(args...);
 			else			return conse(args...);
@@ -109,14 +96,14 @@ namespace continuation_space
 	// * id:
 
 		template<auto pred, auto ante, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_stem_pred_ante_id_cont(InTypes... args)
+		static constexpr OutType f_stem_pred_ante_id_cont(InTypes... args)
 		{
 			if (pred(args...))	return ante(args...);
 			else			return cont(args...);
 		}
 
 		template<auto pred, auto ante, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_stem_pred_ante_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_stem_pred_ante_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return ante(arg, args...);
 			else			return arg;
@@ -125,14 +112,14 @@ namespace continuation_space
 	// id *:
 
 		template<auto pred, auto conse, auto cont, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_stem_pred_id_conse_cont(InType arg, InTypes... args)
+		static constexpr OutType f_stem_pred_id_conse_cont(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg;
 			else			return cont(conse(arg, args...));
 		}
 
 		template<auto pred, auto conse, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_stem_pred_id_conse_id(InType arg, InTypes... args)
+		static constexpr OutType f_stem_pred_id_conse_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg;
 			else			return conse(arg, args...);
@@ -141,14 +128,14 @@ namespace continuation_space
 	// id id:
 
 		template<auto pred, auto cont, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_stem_pred_id_id_cont(InType arg, InTypes... args)
+		static constexpr OutType f_stem_pred_id_id_cont(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg;
 			else			return cont(arg, args...);
 		}
 
 		template<auto pred, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_stem_pred_id_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_stem_pred_id_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg; // pred might have side effects,
 			else			return arg; // so the policy is to leave as is.
@@ -157,6 +144,8 @@ namespace continuation_space
 /***********************************************************************************************************************/
 
 // specializations:
+
+public:
 
 	// * *:
 
@@ -311,7 +300,7 @@ namespace continuation_space
 // dispatch:
 
 	template<auto pred, auto ante, auto conse>
-	constexpr auto stem = U_type_T<S_stem<pred, ante, conse>>;
+	static constexpr auto stem = U_type_T<S_stem<pred, ante, conse>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -322,17 +311,19 @@ namespace continuation_space
 
 // f specializations:
 
+private:
+
 	// * *:
 
 		template<auto pred, auto ante, auto conse, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_costem_pred_ante_conse_cont(InTypes... args)
+		static constexpr OutType f_costem_pred_ante_conse_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(ante(args...));
 			else			return conse(args...);
 		}
 
 		template<auto pred, auto ante, auto conse, typename OutType, typename... InTypes>
-		constexpr OutType f_costem_pred_ante_conse_id(InTypes... args)
+		static constexpr OutType f_costem_pred_ante_conse_id(InTypes... args)
 		{
 			if (pred(args...))	return ante(args...);
 			else			return conse(args...);
@@ -341,14 +332,14 @@ namespace continuation_space
 	// * id:
 
 		template<auto pred, auto ante, auto cont, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_costem_pred_ante_id_cont(InType arg, InTypes... args)
+		static constexpr OutType f_costem_pred_ante_id_cont(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return cont(ante(arg, args...));
 			else			return arg;
 		}
 
 		template<auto pred, auto ante, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_costem_pred_ante_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_costem_pred_ante_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return ante(arg, args...);
 			else			return arg;
@@ -357,14 +348,14 @@ namespace continuation_space
 	// id *:
 
 		template<auto pred, auto conse, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_costem_pred_id_conse_cont(InTypes... args)
+		static constexpr OutType f_costem_pred_id_conse_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(args...);
 			else			return conse(args...);
 		}
 
 		template<auto pred, auto conse, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_costem_pred_id_conse_id(InType arg, InTypes... args)
+		static constexpr OutType f_costem_pred_id_conse_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg;
 			else			return conse(arg, args...);
@@ -373,14 +364,14 @@ namespace continuation_space
 	// id id:
 
 		template<auto pred, auto cont, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_costem_pred_id_id_cont(InType arg, InTypes... args)
+		static constexpr OutType f_costem_pred_id_id_cont(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return cont(arg, args...);
 			else			return arg;
 		}
 
 		template<auto pred, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_costem_pred_id_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_costem_pred_id_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg; // pred might have side effects,
 			else			return arg; // so the policy is to leave as is.
@@ -389,6 +380,8 @@ namespace continuation_space
 /***********************************************************************************************************************/
 
 // specializations:
+
+public:
 
 	// * *:
 
@@ -543,7 +536,7 @@ namespace continuation_space
 // dispatch:
 
 	template<auto pred, auto ante, auto conse>
-	constexpr auto costem = U_type_T<S_costem<pred, ante, conse>>;
+	static constexpr auto costem = U_type_T<S_costem<pred, ante, conse>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -554,17 +547,19 @@ namespace continuation_space
 
 // f specializations:
 
+private:
+
 	// * *:
 
 		template<auto pred, auto ante, auto conse, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_distem_pred_ante_conse_cont(InTypes... args)
+		static constexpr OutType f_distem_pred_ante_conse_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(ante(args...));
 			else			return cont(conse(args...));
 		}
 
 		template<auto pred, auto ante, auto conse, typename OutType, typename... InTypes>
-		constexpr OutType f_distem_pred_ante_conse_id(InTypes... args)
+		static constexpr OutType f_distem_pred_ante_conse_id(InTypes... args)
 		{
 			if (pred(args...))	return ante(args...);
 			else			return conse(args...);
@@ -573,14 +568,14 @@ namespace continuation_space
 	// * id:
 
 		template<auto pred, auto ante, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_distem_pred_ante_id_cont(InTypes... args)
+		static constexpr OutType f_distem_pred_ante_id_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(ante(args...));
 			else			return cont(args...);
 		}
 
 		template<auto pred, auto ante, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_distem_pred_ante_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_distem_pred_ante_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return ante(arg, args...);
 			else			return arg;
@@ -589,14 +584,14 @@ namespace continuation_space
 	// id *:
 
 		template<auto pred, auto conse, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_distem_pred_id_conse_cont(InTypes... args)
+		static constexpr OutType f_distem_pred_id_conse_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(args...);
 			else			return cont(conse(args...));
 		}
 
 		template<auto pred, auto conse, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_distem_pred_id_conse_id(InType arg, InTypes... args)
+		static constexpr OutType f_distem_pred_id_conse_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg;
 			else			return conse(arg, args...);
@@ -605,14 +600,14 @@ namespace continuation_space
 	// id id:
 
 		template<auto pred, auto cont, typename OutType, typename... InTypes>
-		constexpr OutType f_distem_pred_id_id_cont(InTypes... args)
+		static constexpr OutType f_distem_pred_id_id_cont(InTypes... args)
 		{
 			if (pred(args...))	return cont(args...); // pred might have side effects,
 			else			return cont(args...); // so the policy is to leave as is.
 		}
 
 		template<auto pred, typename OutType, typename InType, typename... InTypes>
-		constexpr OutType f_distem_pred_id_id_id(InType arg, InTypes... args)
+		static constexpr OutType f_distem_pred_id_id_id(InType arg, InTypes... args)
 		{
 			if (pred(arg, args...))	return arg; // pred might have side effects,
 			else			return arg; // so the policy is to leave as is.
@@ -621,6 +616,8 @@ namespace continuation_space
 /***********************************************************************************************************************/
 
 // specializations:
+
+public:
 
 	// * *:
 
@@ -775,12 +772,14 @@ namespace continuation_space
 // dispatch:
 
 	template<auto pred, auto ante, auto conse>
-	constexpr auto distem = U_type_T<S_distem<pred, ante, conse>>;
+	static constexpr auto distem = U_type_T<S_distem<pred, ante, conse>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // endobind:
+
+private:
 
 	template<typename, typename, typename, typename, typename, typename> struct S_endobind;
 
@@ -818,6 +817,8 @@ namespace continuation_space
 
 // endopose:
 
+public:
+
 	struct S_endopose
 	{
 		template<typename S1, typename S2>
@@ -834,24 +835,24 @@ namespace continuation_space
 		static constexpr auto result = let_result<T_type_U<uf>, T_type_U<ug>>;
 	};
 
-	constexpr auto U_endopose = U_type_T<S_endopose>;
+	static constexpr auto U_endopose = U_type_T<S_endopose>;
 
 	template<auto uf, auto ug>
-	constexpr auto endopose = S_endopose::template result<uf, ug>;
+	static constexpr auto endopose = S_endopose::template result<uf, ug>;
 
 /***********************************************************************************************************************/
 
 // chain lift:
 
 	template<auto f0, auto... fs>
-	constexpr auto chain_lift = machine_space::f_pack_roll<500, U_endopose, lift<f0>, lift<fs>...>();
+	static constexpr auto chain_lift = pack_module::template roll<500, U_endopose, lift<f0>, lift<fs>...>;
 
 /***********************************************************************************************************************/
 
 // chain endopose:
 
 	template<auto c0, auto... cs>
-	constexpr auto chain_endopose = machine_space::f_pack_roll<500, U_endopose, c0, cs...>();
+	static constexpr auto chain_endopose = pack_module::template roll<500, U_endopose, c0, cs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -876,31 +877,31 @@ namespace continuation_space
 		static constexpr auto result = f_result<uf, ug>();
 	};
 
-	constexpr auto U_opt_endopose = U_type_T<S_opt_endopose>;
+	static constexpr auto U_opt_endopose = U_type_T<S_opt_endopose>;
 
 	template<auto uf, auto ug>
-	constexpr auto opt_endopose = S_opt_endopose::template f_result<uf, ug>();
+	static constexpr auto opt_endopose = S_opt_endopose::template f_result<uf, ug>();
 
 /***********************************************************************************************************************/
 
 // opt chain lift:
 
 	template<auto f0, auto... fs>
-	constexpr auto opt_chain_lift = machine_space::f_pack_roll<500, U_opt_endopose, lift<f0>, lift<fs>...>();
+	static constexpr auto opt_chain_lift = pack_module::template roll<500, U_opt_endopose, lift<f0>, lift<fs>...>;
 
 /***********************************************************************************************************************/
 
 // opt chain endopose:
 
 	template<auto c0, auto... cs>
-	constexpr auto opt_chain_endopose = machine_space::f_pack_roll<500, U_opt_endopose, c0, cs...>();
+	static constexpr auto opt_chain_endopose = pack_module::template roll<500, U_opt_endopose, c0, cs...>;
 
 /***********************************************************************************************************************/
 
 // close cycle:
 
 	template<auto expr, typename T>
-	constexpr T & close_cycle(T & s)
+	static constexpr T & close_cycle(T & s)
 	{
 		return T_type_U<expr>::template result
 		<
@@ -911,8 +912,4 @@ namespace continuation_space
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-}
-
-#endif
 

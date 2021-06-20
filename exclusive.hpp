@@ -62,17 +62,17 @@ namespace nik
 
 	enum struct Module : global_size_type
 	{
+	// interpret:
+
 		functor,
 		constant,
 
 		boolean,
 
-		pair,
 		pointer,
 		reference,
 		array,
 
-		near_linear,
 		controller,
 		machine,
 		pack,
@@ -81,6 +81,15 @@ namespace nik
 		function,
 		continuation,
 		colist,
+
+	// compile:
+
+		composition,
+		endoposition,
+		signature,
+		iterator,
+		near_linear,
+		typed_assembly,
 
 		dimension // filler
 	};
@@ -192,6 +201,7 @@ namespace nik
 
 /***********************************************************************************************************************/
 
+
 	#define nik_functor()												\
 															\
 		00-functor
@@ -251,6 +261,31 @@ namespace nik
 
 
 /***********************************************************************************************************************/
+
+
+	#define nik_composition()											\
+															\
+		0-composition
+
+	#define nik_endoposition()											\
+															\
+		1-endoposition
+
+	#define nik_signature()												\
+															\
+		2-signature
+
+	#define nik_iterator()												\
+															\
+		3-iterator
+
+	#define nik_near_linear()											\
+															\
+		4-near-linear
+
+	#define nik_typed_assembly()											\
+															\
+		5-typed-assembly
 
 
 /***********************************************************************************************************************/
