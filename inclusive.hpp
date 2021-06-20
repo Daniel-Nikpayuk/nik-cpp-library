@@ -48,11 +48,12 @@
 // run time space:
 
 //#include nik_source(., compile, composition, architect, v_0_5, gcc)			// redundant inclusion
-#include nik_source(., compile, endoposition, architect, v_0_5, gcc)			// redundant inclusion
-//#include nik_source(., compile, signature, architect, v_0_5, gcc)			// redundant inclusion
-//#include nik_source(., compile, iterator, architect, v_0_5, gcc)			// redundant inclusion
+//#include nik_source(., compile, endoposition, architect, v_0_5, gcc)			// redundant inclusion
+#include nik_source(., compile, signature, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., compile, near_linear, architect, v_0_5, gcc)			// redundant inclusion
-//#include nik_source(., compile, typed_assembly, architect, v_0_5, gcc)
+//#include nik_source(., compile, one_cycle, architect, v_0_5, gcc)			// redundant inclusion
+//#include nik_source(., compile, typed_stack, architect, v_0_5, gcc)			// redundant inclusion
+//#include nik_source(., compile, typed_machine, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -17,41 +17,37 @@
 **
 ************************************************************************************************************************/
 
-// pointer source:
+#ifndef NIK_COMPILE_NEAR_LINEAR_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_COMPILE_NEAR_LINEAR_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// predicates:
+// dependencies:
 
-private:
-
-	template<typename T>
-	static constexpr bool V_is_pointer_U(void(*)(T))	// Unsafe to use directly,
-		{ return false; }
-
-	template<typename T>
-	static constexpr bool V_is_pointer_U(void(*)(T*))	// Use the following instead:
-		{ return true; }
-
-public:
-
-	template<typename T>
-	static constexpr bool V_is_pointer_T = V_is_pointer_U(functor_module::template U_type_T<T>);
+	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// reflection:
+// module:
 
-	// not yet implemented.
+namespace nik
+{
+	nik_begin_module(compile, near_linear, architect, v_0_5, clang)
 
-	//	template<typename T>
-	//	using deref_type = decltype(**(T*)nullptr);
+		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
+
+		#include"compile-near_linear-architect-v_0_5-source.hpp"
+
+	nik_end_module(compile, near_linear, architect, v_0_5, clang)
+}
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+#endif
 

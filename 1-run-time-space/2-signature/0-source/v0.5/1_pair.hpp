@@ -17,41 +17,51 @@
 **
 ************************************************************************************************************************/
 
-// pointer source:
+// pair:
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+//	filters (accessors):
 
-// predicates:
-
-private:
-
-	template<typename T>
-	static constexpr bool V_is_pointer_U(void(*)(T))	// Unsafe to use directly,
-		{ return false; }
-
-	template<typename T>
-	static constexpr bool V_is_pointer_U(void(*)(T*))	// Use the following instead:
-		{ return true; }
+//		i(...) - identity
+//		d(...) - dereference
 
 public:
 
-	template<typename T>
-	static constexpr bool V_is_pointer_T = V_is_pointer_U(functor_module::template U_type_T<T>);
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// reflection:
-
-	// not yet implemented.
-
-	//	template<typename T>
-	//	using deref_type = decltype(**(T*)nullptr);
+// pair:
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+
+	template<typename CarType, typename CdrType>
+	struct pair_signature
+	{
+		CarType car;
+		CdrType cdr;
+
+		pair_signature() { }
+	};
+
+	//
+
+	template<typename Pair>
+	constexpr auto & pair_car(Pair & arg)		{ return arg.car; }
+
+	template<typename Pair>
+	constexpr auto & pair_cdr(Pair & arg)		{ return arg.cdr; }
+
+	//
+
+	template<typename Pair, auto Car, auto Cdr>
+	struct pair_specification
+	{
+		using sign_type				= Pair;
+
+		static constexpr auto sign_return	= Car;
+		static constexpr auto sign_facade	= set<Cdr, Pair, T_reference_type_T<f_out_type<Cdr>>>;
+
+		static constexpr auto car		= Car;
+		static constexpr auto cdr		= Cdr;
+	};
 

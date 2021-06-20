@@ -49,9 +49,10 @@
 //	#include nik_import(., compile, composition, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, endoposition, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., compile, iterator, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, near_linear, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., compile, typed_assembly, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, one_cycle, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

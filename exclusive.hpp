@@ -87,9 +87,10 @@ namespace nik
 		composition,
 		endoposition,
 		signature,
-		iterator,
 		near_linear,
-		typed_assembly,
+		one_cycle,
+		typed_stack,
+		typed_machine,
 
 		dimension // filler
 	};
@@ -275,17 +276,21 @@ namespace nik
 															\
 		2-signature
 
-	#define nik_iterator()												\
-															\
-		3-iterator
-
 	#define nik_near_linear()											\
 															\
-		4-near-linear
+		3-near-linear
 
-	#define nik_typed_assembly()											\
+	#define nik_one_cycle()												\
 															\
-		5-typed-assembly
+		4-one-cycle
+
+	#define nik_typed_stack()											\
+															\
+		5-typed-stack
+
+	#define nik_typed_machine()											\
+															\
+		6-typed-machine
 
 
 /***********************************************************************************************************************/
