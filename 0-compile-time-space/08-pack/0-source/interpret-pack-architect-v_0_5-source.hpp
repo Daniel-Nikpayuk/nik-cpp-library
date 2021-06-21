@@ -192,7 +192,7 @@ private:
 
 			return machine_module::template
 				start<permutatic_machine, c, d, i, j, V0, Vs...>
-					(machine_module::template U_opt_pack_Vs<length, uact>);
+					(functor_module::template U_pack_Vs<length, uact>);
 		}
 	}
 

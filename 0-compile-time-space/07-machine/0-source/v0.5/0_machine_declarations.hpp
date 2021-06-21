@@ -93,11 +93,8 @@ private:
 
 // aliases:
 
-	// optimized because we know
-	// auto_pack<Vs...> is not void nor a reference.
-
-	template<auto... Vs>
-	static constexpr auto U_opt_pack_Vs =
+	template<auto... Vs>				// optimized because we know auto_pack<Vs...>
+	static constexpr auto U_opt_pack_Vs =		// is not void nor a reference.
 		nik_module(interpret, functor, architect, v_0_5, gcc)::template type_map<auto_pack<Vs...>*>;
 
 /***********************************************************************************************************************/

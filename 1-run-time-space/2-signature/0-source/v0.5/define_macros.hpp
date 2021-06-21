@@ -37,7 +37,7 @@
 			InType,												\
 			EndType												\
 															\
-		>(one_cycle												\
+		>(one_cycle_signature											\
 		<													\
 			_object < OutType >,										\
 			_object < InType  >,										\

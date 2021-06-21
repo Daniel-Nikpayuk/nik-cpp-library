@@ -58,7 +58,7 @@
 // start:
 
 	template<typename n, auto c, auto d, auto i, auto j, auto... Vs>
-	static constexpr auto start()
+	inline static constexpr auto start()
 	{
 		return NIK_MODULE::template start<n, c, d, i, j, Vs...>();
 	}

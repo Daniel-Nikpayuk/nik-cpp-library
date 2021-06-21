@@ -17,48 +17,65 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_GCC_HPP
+// one cycle map:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// dependencies:
+// spec:
 
-	#include nik_source(../../.., compile, endoposition, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, signature, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, near_linear, architect, v_0_5, gcc)
+private:
+
+	template
+	<
+		typename DOutType, typename IOutType,
+		typename InType, typename EndType,
+
+		auto function,
+
+		auto dout		= dout<DOutType, InType, EndType>	,
+		auto iout		= iout<DOutType, InType, EndType>	,
+		auto in			= din<DOutType, InType, EndType>	,
+		auto end		= dend<DOutType, InType, EndType>	,
+
+		auto is_equal		= equal<InType, EndType>		,
+		auto halt		= _id_					,
+		auto out_increment	= add_by<DOutType, 1>			,
+		auto in_increment	= add_by<InType, 1>
+	>
+	static constexpr auto U_map = chain_endopose
+	<
+		stem
+		<
+			test   < is_equal , in            , end  >,
+
+			halt,
+			assign < iout     , function      , in   >
+		>,
+
+		chain_lift
+		<
+			assign < dout     , out_increment , dout >,
+			assign < in       , in_increment  , in   >
+		>
+	>;
+
+public:
+
+	template<auto f, typename OutType, typename InType, typename EndType>
+	static constexpr OutType make_range(OutType out, InType in, EndType end)
+	{
+		using IOutType	= decltype(*out);
+		using signature	= one_cycle<OutType, InType, EndType>;
+		auto s		= signature(out, in, end);
+		auto result	= dout<OutType, InType, EndType>;
+		auto map	= close_cycle<U_map<OutType, IOutType, InType, EndType, f>, signature>;
+
+		return result(map(s));
+	}
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-// module:
-
-namespace nik
-{
-	nik_begin_module(compile, one_cycle, architect, v_0_5, gcc)
-
-		#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, composition, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, endoposition, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, name)
-
-	//	#include"v0.5/0_repeat.hpp"
-		#include"v0.5/1_map.hpp"
-	//	#include"v0.5/2_fold.hpp"
-	//	#include"v0.5/3_find.hpp"
-	//	#include"v0.5/4_zip.hpp"
-	//	#include"v0.5/5_fasten.hpp"
-	//	#include"v0.5/6_glide.hpp"
-
-	nik_end_module(compile, one_cycle, architect, v_0_5, gcc)
-}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-#endif
 

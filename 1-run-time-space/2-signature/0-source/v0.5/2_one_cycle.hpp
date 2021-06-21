@@ -24,7 +24,9 @@
 //		i(...) - identity
 //		d(...) - dereference
 
-public:
+	// temporary:
+
+	template<typename> struct _object	{ };
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -32,7 +34,74 @@ public:
 
 // signature:
 
-	template<typename...> class one_cycle;
+private:
+
+	template<typename...> class one_cycle_signature;
+
+public:
+
+	template<typename... Ts>
+	using one_cycle = one_cycle_signature<_object<Ts>...>;
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+	// out:
+
+		template<typename... Ts>
+		static constexpr auto & dout(one_cycle_signature<_object<Ts>...> & s)		{ return s.out; }
+
+		template<typename... Ts>
+		static constexpr auto & iout(one_cycle_signature<_object<Ts>...> & s)		{ return *s.out; }
+
+	// in:
+
+		template<typename... Ts>
+		static constexpr auto & din(one_cycle_signature<_object<Ts>...> & s)		{ return s.in; }
+
+		template<typename... Ts>
+		static constexpr auto & iin(one_cycle_signature<_object<Ts>...> & s)		{ return *s.in; }
+
+	// car in:
+
+		template<typename... Ts>
+		static constexpr auto & dcar_in(one_cycle_signature<_object<Ts>...> & s)	{ return s.car_in; }
+
+		template<typename... Ts>
+		static constexpr auto & icar_in(one_cycle_signature<_object<Ts>...> & s)	{ return *s.car_in; }
+
+	// cdr in:
+
+		template<typename... Ts>
+		static constexpr auto & dcdr_in(one_cycle_signature<_object<Ts>...> & s)	{ return s.cdr_in; }
+
+		template<typename... Ts>
+		static constexpr auto & icdr_in(one_cycle_signature<_object<Ts>...> & s)	{ return *s.cdr_in; }
+
+	// end:
+
+		template<typename... Ts>
+		static constexpr auto & dend(one_cycle_signature<_object<Ts>...> & s)		{ return s.end; }
+
+		template<typename... Ts>
+		static constexpr auto & iend(one_cycle_signature<_object<Ts>...> & s)		{ return *s.end; }
+
+	// aux:
+
+		template<typename... Ts>
+		static constexpr auto & daux(one_cycle_signature<_object<Ts>...> & s)		{ return s.aux; }
+
+		template<typename... Ts>
+		static constexpr auto & iaux(one_cycle_signature<_object<Ts>...> & s)		{ return *s.aux; }
+
+	// msg:
+
+		template<typename... Ts>
+		static constexpr auto & dmsg(one_cycle_signature<_object<Ts>...> & s)		{ return s.msg; }
+
+		template<typename... Ts>
+		static constexpr auto & imsg(one_cycle_signature<_object<Ts>...> & s)		{ return *s.msg; }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -42,39 +111,9 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename> struct _object	{ };
-
-/***********************************************************************************************************************/
-
-// accessors:
-
-/*
-	template<typename OutT, typename InT, typename EndT>
-	OutT & dout(one_cycle<OutT, InT, EndT> & s)			{ return s.out; }
-
-	template<typename OutT, typename InT, typename EndT>
-	auto & iout(one_cycle<OutT, InT, EndT> & s)			{ return *s.out; }
-
-	template<typename OutT, typename InT, typename EndT>
-	InT & din(one_cycle<OutT, InT, EndT> & s)			{ return s.in; }
-
-	template<typename OutT, typename InT, typename EndT>
-	auto & iin(one_cycle<OutT, InT, EndT> & s)			{ return *s.in; }
-
-	template<typename OutT, typename InT, typename EndT>
-	EndT & dend(one_cycle<OutT, InT, EndT> & s)			{ return s.end; }
-
-	template<typename OutT, typename InT, typename EndT>
-	auto & iend(one_cycle<OutT, InT, EndT> & s)			{ return *s.end; }
-*/
-
-	template<typename OutType, typename InType, typename EndType>
-	OutType & dout(one_cycle<_object<OutType>, _object<InType>, _object<EndType>> & s)
-		{ return s.out; }
-
-/***********************************************************************************************************************/
-
 // specialization:
+
+private:
 
 	template
 	<
@@ -82,7 +121,7 @@ public:
 		typename InType,
 		typename EndType
 	>
-	class one_cycle
+	class one_cycle_signature
 	<
 		_object < OutType >,
 		_object < InType  >,
@@ -95,18 +134,22 @@ public:
 
 		public:
 
-			constexpr one_cycle(const OutType & _o, const InType & _i, const EndType & _e) :
+			constexpr one_cycle_signature
+			(
+				const OutType & _o,
+				const InType  & _i,
+				const EndType & _e
 
-				out(_o), in(_i), end(_e) { }
+			) : out(_o), in(_i), end(_e) { }
 
 		// friendship:
 
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(OutType, dout);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iout);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(InType, din);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iin);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(EndType, dend);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iend);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, dout);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iout);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, din);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iin);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, dend);
+			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, iend);
 	};
 
 /***********************************************************************************************************************/

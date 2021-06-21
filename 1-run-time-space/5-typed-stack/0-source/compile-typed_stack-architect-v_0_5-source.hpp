@@ -17,9 +17,65 @@
 **
 ************************************************************************************************************************/
 
-// one cycle source:
+// constant source:
 
 public:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// keywords:
+
+	static constexpr void _na_()			{ }	// (not an auto)
+
+	struct _nt_					{ };	// (not a typename)
+
+	template<auto...>
+	using _NA_					= _nt_;	// (not an auto template)
+
+	template<typename...>
+	using _NT_					= _nt_;	// (not a typename template)
+
+	template<template<auto...> class...>
+	using _NC_					= _nt_;	// (not a typename template)
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// numeric:
+
+	// [0-10]:
+
+	using index_type = unsigned char;
+
+	static constexpr index_type _zero	=   0;
+	static constexpr index_type _one	=   1;
+	static constexpr index_type _two	=   2;
+	static constexpr index_type _three	=   3;
+	static constexpr index_type _four	=   4;
+	static constexpr index_type _five	=   5;
+	static constexpr index_type _six	=   6;
+	static constexpr index_type _seven	=   7;
+	static constexpr index_type _eight	=   8;
+	static constexpr index_type _nine	=   9;
+	static constexpr index_type _ten	=  10;
+
+	// [2^0-2^9]:
+
+	using depth_type = unsigned short;
+
+	static constexpr depth_type _2_0	=   1;
+	static constexpr depth_type _2_1	=   2;
+	static constexpr depth_type _2_2	=   4;
+	static constexpr depth_type _2_3	=   8;
+	static constexpr depth_type _2_4	=  16;
+	static constexpr depth_type _2_5	=  32;
+	static constexpr depth_type _2_6	=  64;
+	static constexpr depth_type _2_7	= 128;
+	static constexpr depth_type _2_8	= 256;
+	static constexpr depth_type _2_9	= 512;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -45,64 +101,6 @@ public:
 
 	static constexpr auto U_unsigned_long_long	= functor_module::template U_type_T<unsigned long long>;
 	static constexpr auto U_signed_long_long	= functor_module::template U_type_T<signed long long>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// map:
-
-	template
-	<
-		typename DOutT, typename IOutT,
-		typename InT, typename EndT,
-
-		auto function,
-
-		auto dout		= one_cycle_dout<DOutT, InT, EndT>	,
-		auto iout		= one_cycle_iout<DOutT, InT, EndT>	,
-		auto in			= one_cycle_din<DOutT, InT, EndT>	,
-		auto end		= one_cycle_dend<DOutT, InT, EndT>	,
-
-		auto is_equal		= equal<InT, EndT>			,
-		auto halt		= _id_					,
-		auto out_increment	= add_by<DOutT, 1>			,
-		auto in_increment	= add_by<InT, 1>
-	>
-	constexpr auto U_map = chain_endopose
-	<
-		stem
-		<
-			test   < is_equal , in            , end  >,
-
-			halt,
-			assign < iout     , function      , in   >
-		>,
-
-		chain_lift
-		<
-			assign < dout     , out_increment , dout >,
-			assign < in       , in_increment  , in   >
-		>
-	>;
-
-	template<auto f, typename OutT, typename InT, typename EndT>
-	OutT make_range(OutT out, InT in, EndT end)
-	{
-		using IOutT	= decltype(*out);
-		auto s		= one_cycle_signature(out, in, end);
-
-		return one_cycle_dout(close_cycle<U_map<OutT, IOutT, InT, EndT, f>>(s));
-	}
-
-/*
-		char arr[5];
-		arr[4] = '\0';
-
-		make_range<add_by<char, 1>>(arr, '0', '4'); // prints: "1234"
-
-		printf("%s\n", arr);
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

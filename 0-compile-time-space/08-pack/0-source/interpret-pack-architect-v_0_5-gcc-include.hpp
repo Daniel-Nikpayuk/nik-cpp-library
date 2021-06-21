@@ -40,6 +40,8 @@ namespace nik
 
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 
+		using functor_module		= nik_module(interpret, functor, architect, v_0_5, gcc);
+
 		using controller_module		= nik_module(interpret, controller, architect, v_0_5, gcc);
 		using machine_name		= typename controller_module::MN;
 

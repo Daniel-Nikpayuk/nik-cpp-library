@@ -17,84 +17,78 @@
 **
 ************************************************************************************************************************/
 
-// constant alias:
+// signature alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// keywords:
+// one cycle:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, _na_)			= NIK_MODULE::_na_;
+/***********************************************************************************************************************/
 
-	using nik_name(NIK_PREFIX, _nt_)				= typename NIK_MODULE::_nt_;
-
-	template<auto... Vs>
-	using nik_name(NIK_PREFIX, _NA_)				= typename NIK_MODULE::template _NA_<Vs...>;
+// signature:
 
 	template<typename... Ts>
-	using nik_name(NIK_PREFIX, _NT_)				= typename NIK_MODULE::template _NT_<Ts...>;
+	using nik_name(NIK_PREFIX, one_cycle)			= typename NIK_MODULE::template one_cycle<Ts...>;
 
-	template<template<auto...> class... Cs>
-	using nik_name(NIK_PREFIX, _NC_)				= typename NIK_MODULE::template _NC_<Cs...>;
+// accessors:
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+	// out:
 
-// numeric:
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dout)		= NIK_MODULE::template dout<Ts...>;
 
-	using index_type						= typename NIK_MODULE::index_type;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, iout)		= NIK_MODULE::template iout<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, _zero)			= NIK_MODULE::_zero;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _one)			= NIK_MODULE::_one;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _two)			= NIK_MODULE::_two;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _three)			= NIK_MODULE::_three;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _four)			= NIK_MODULE::_four;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _five)			= NIK_MODULE::_five;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _six)			= NIK_MODULE::_six;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _seven)			= NIK_MODULE::_seven;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _eight)			= NIK_MODULE::_eight;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _nine)			= NIK_MODULE::_nine;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _ten)			= NIK_MODULE::_ten;
+	// in:
 
-	using depth_type						= typename NIK_MODULE::depth_type;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, din)		= NIK_MODULE::template din<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_0)			= NIK_MODULE::_2_0;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_1)			= NIK_MODULE::_2_1;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_2)			= NIK_MODULE::_2_2;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_3)			= NIK_MODULE::_2_3;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_4)			= NIK_MODULE::_2_4;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_5)			= NIK_MODULE::_2_5;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_6)			= NIK_MODULE::_2_6;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_7)			= NIK_MODULE::_2_7;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_8)			= NIK_MODULE::_2_8;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_9)			= NIK_MODULE::_2_9;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, iin)		= NIK_MODULE::template iin<Ts...>;
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+	// car in:
 
-// builtin types:
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dcar_in)		= NIK_MODULE::template dcar_in<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_void)			= NIK_MODULE::U_void;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_char)			= NIK_MODULE::U_char;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_char_ptr)		= NIK_MODULE::U_char_ptr;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, icar_in)		= NIK_MODULE::template icar_in<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_unsigned_char)		= NIK_MODULE::U_unsigned_char;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_char)		= NIK_MODULE::U_signed_char;
+	// cdr in:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_unsigned_short)		= NIK_MODULE::U_unsigned_short;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_short)		= NIK_MODULE::U_signed_short;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dcdr_in)		= NIK_MODULE::template dcdr_in<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_unsigned_int)		= NIK_MODULE::U_unsigned_int;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_int)		= NIK_MODULE::U_signed_int;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, icdr_in)		= NIK_MODULE::template icdr_in<Ts...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_unsigned_long)		= NIK_MODULE::U_unsigned_long;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_long)		= NIK_MODULE::U_signed_long;
+	// end:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_unsigned_long_long)	= NIK_MODULE::U_unsigned_long_long;
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_long_long)	= NIK_MODULE::U_signed_long_long;
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dend)		= NIK_MODULE::template dend<Ts...>;
+
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, iend)		= NIK_MODULE::template iend<Ts...>;
+
+	// aux:
+
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, daux)		= NIK_MODULE::template daux<Ts...>;
+
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, iaux)		= NIK_MODULE::template iaux<Ts...>;
+
+	// msg:
+
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dmsg)		= NIK_MODULE::template dmsg<Ts...>;
+
+	template<typename... Ts>
+	NIK_POLICY auto nik_name(NIK_PREFIX, imsg)		= NIK_MODULE::template imsg<Ts...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

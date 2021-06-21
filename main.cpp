@@ -37,7 +37,7 @@
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
   
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
@@ -50,7 +50,7 @@
 //	#include nik_import(., compile, endoposition, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, near_linear, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., compile, one_cycle, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., compile, one_cycle, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
@@ -59,26 +59,16 @@
 
 	using utype = unsigned long long;
 
-/*
-	struct s_int
-	{
-		int x;
-
-		s_int(int _x) : x(_x) { }
-	};
-
-	constexpr int & get_x(s_int & s) { return s.x; }
-
-	constexpr auto func	= do_compose<multiply_by<int, 2>, add_by<int, 1>>;
-	constexpr auto asgn	= assign<get_x, func, get_x>;
-*/
+	using one_cycle_module = nik_module(compile, one_cycle, architect, v_0_5, gcc);
 
 	int main(int argc, char *argv[])
 	{
-	//	s_int s(5);
-	//	asgn(s);
+		char arr[5];
+		arr[4] = '\0';
 
-	//	printf("%d\n", get_x(s));
+		make_range<add_by<char, 1>>(arr, '0', '4'); // prints: "1234"
+
+		printf("%s\n", arr);
 
 	//	printf("%d\n", at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);

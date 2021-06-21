@@ -33,10 +33,8 @@ public:
 
 	struct S_is_id_keyword
 	{
-		static constexpr auto U_id_ = U_pack_Vs<_id_>;
-
 		template<auto f>
-		static constexpr bool result = V_is_equal_UxU(U_pack_Vs<f>, U_id_);
+		static constexpr bool result = V_equal_VxV<f, _id_>;
 	};
 
 	static constexpr auto U_is_id_keyword = U_type_T<S_is_id_keyword>;

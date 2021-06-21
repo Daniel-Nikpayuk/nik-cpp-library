@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
+	// none. #include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,9 +38,7 @@ namespace nik
 {
 	nik_begin_module(compile, near_linear, architect, v_0_5, gcc)
 
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
-
-		#include"compile-near_linear-architect-v_0_5-source.hpp"
+	//	#include"compile-near_linear-architect-v_0_5-source.hpp"
 
 	nik_end_module(compile, near_linear, architect, v_0_5, gcc)
 }

@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-#define NIK_MODULE nik_module(interpret, constant, architect, v_0_5, gcc)
+#define NIK_MODULE nik_module(compile, one_cycle, architect, v_0_5, gcc)
 #define NIK_POLICY constexpr
 #define NIK_PREFIX
 

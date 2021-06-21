@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_GCC_HPP
+#ifndef NIK_COMPILE_TYPED_MACHINE_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_COMPILE_TYPED_MACHINE_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,9 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., compile, endoposition, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, signature, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, near_linear, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,22 +36,13 @@
 
 namespace nik
 {
-	nik_begin_module(compile, one_cycle, architect, v_0_5, gcc)
+	nik_begin_module(compile, typed_machine, architect, v_0_5, clang)
 
-		#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, composition, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, endoposition, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, name)
+		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
 
-	//	#include"v0.5/0_repeat.hpp"
-		#include"v0.5/1_map.hpp"
-	//	#include"v0.5/2_fold.hpp"
-	//	#include"v0.5/3_find.hpp"
-	//	#include"v0.5/4_zip.hpp"
-	//	#include"v0.5/5_fasten.hpp"
-	//	#include"v0.5/6_glide.hpp"
+		#include"compile-typed_machine-architect-v_0_5-source.hpp"
 
-	nik_end_module(compile, one_cycle, architect, v_0_5, gcc)
+	nik_end_module(compile, typed_machine, architect, v_0_5, clang)
 }
 
 /***********************************************************************************************************************/
