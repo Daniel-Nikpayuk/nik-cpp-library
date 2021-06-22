@@ -84,8 +84,8 @@ namespace nik
 
 	// compile:
 
-		composition,
-		endoposition,
+		compose,
+		endopose,
 		signature,
 		near_linear,
 		one_cycle,
@@ -264,13 +264,13 @@ namespace nik
 /***********************************************************************************************************************/
 
 
-	#define nik_composition()											\
+	#define nik_compose()												\
 															\
-		0-composition
+		0-compose
 
-	#define nik_endoposition()											\
+	#define nik_endopose()												\
 															\
-		1-endoposition
+		1-endopose
 
 	#define nik_signature()												\
 															\

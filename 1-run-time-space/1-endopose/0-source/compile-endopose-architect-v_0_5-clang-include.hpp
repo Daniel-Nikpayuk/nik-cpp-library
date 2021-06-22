@@ -17,25 +17,40 @@
 **
 ************************************************************************************************************************/
 
-#define NIK_MODULE nik_module(compile, near_linear, architect, v_0_5, clang)
-#define NIK_POLICY static constexpr
-#define NIK_PREFIX nik_constant_
-
-#define NIK_COMPOSE nik_module(compile, compose, architect, v_0_5, clang)
+#ifndef NIK_COMPILE_ENDOPOSE_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_COMPILE_ENDOPOSE_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-#include"compile-near_linear-architect-v_0_5-alias.hpp"
+// dependencies:
+
+	#include nik_source(../../.., compile, compose, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-#undef NIK_COMPOSE
+// module:
 
-#undef NIK_PREFIX
-#undef NIK_POLICY
-#undef NIK_MODULE
+namespace nik
+{
+	nik_begin_module(compile, endopose, architect, v_0_5, clang)
+
+		#include nik_import(../../.., interpret, functor, architect, v_0_5, clang, static, name)
+		#include nik_import(../../.., compile, compose, architect, v_0_5, clang, static, name)
+
+		using pack_module = nik_module(interpret, pack, architect, v_0_5, clang);
+
+		#include"compile-endopose-architect-v_0_5-source.hpp"
+
+	nik_end_module(compile, endopose, architect, v_0_5, clang)
+}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+#endif
 

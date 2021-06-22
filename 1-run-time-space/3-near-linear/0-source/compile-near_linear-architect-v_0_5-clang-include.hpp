@@ -38,7 +38,11 @@ namespace nik
 {
 	nik_begin_module(compile, near_linear, architect, v_0_5, clang)
 
+		#include nik_import(../../.., interpret, functor, architect, v_0_5, clang, static, name)
+
 		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
+		using boolean_module = nik_module(interpret, boolean, architect, v_0_5, clang);
+		using function_module = nik_module(interpret, function, architect, v_0_5, clang);
 
 		#include"compile-near_linear-architect-v_0_5-source.hpp"
 
