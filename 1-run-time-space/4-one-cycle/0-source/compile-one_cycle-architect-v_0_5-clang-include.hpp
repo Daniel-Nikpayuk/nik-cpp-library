@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, signature, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,7 +38,9 @@ namespace nik
 {
 	nik_begin_module(compile, one_cycle, architect, v_0_5, clang)
 
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
+		#include nik_import(../../.., compile, compose, architect, v_0_5, clang, static, name)
+		#include nik_import(../../.., compile, near_linear, architect, v_0_5, clang, static, name)
+	//	#include nik_import(../../.., compile, signature, architect, v_0_5, clang, static, name)
 
 		#include"compile-one_cycle-architect-v_0_5-source.hpp"
 

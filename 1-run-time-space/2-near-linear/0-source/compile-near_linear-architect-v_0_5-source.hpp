@@ -170,9 +170,12 @@ public:
 	// before:
 
 		template<bool predicate, auto next_f>
-		static constexpr auto boolean_before_loop = boolean_module::template V_if_then_else_VxV
+		static constexpr auto boolean_before_loop = lift
 		<
-			predicate, next_f, _id_
+			boolean_module::template V_if_then_else_VxV
+			<
+				predicate, next_f, _id_
+			>
 		>;
 
 		template<Interval i, auto next_f>
@@ -184,9 +187,12 @@ public:
 	// after:
 
 		template<bool predicate, auto act_combine_f>
-		static constexpr auto boolean_after_loop = boolean_module::template V_if_then_else_VxV
+		static constexpr auto boolean_after_loop = lift
 		<
-			predicate, act_combine_f, _id_
+			boolean_module::template V_if_then_else_VxV
+			<
+				predicate, act_combine_f, _id_
+			>
 		>;
 
 		template<Interval i, auto act_combine_f>
@@ -738,6 +744,49 @@ public:
 									<
 										Break::after_next
 									>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// loop:
+
+/***********************************************************************************************************************/
+
+// precycle:
+
+	template<auto... cs>
+	static constexpr auto precycle = opt_chain_endopose<cs...>;
+
+/***********************************************************************************************************************/
+
+// cycle:
+
+private:
+	
+	template<auto... cs>
+	static constexpr auto f_cycle()
+	{
+		constexpr auto endo = opt_chain_endopose<cs...>;
+
+		return close_cycle
+		<
+			endo,
+			function_module::template out_type<endo>
+		>;
+	}
+
+public:
+
+	template<auto... cs>
+	static constexpr auto cycle = f_cycle<cs...>();
+
+/***********************************************************************************************************************/
+
+// postcycle:
+
+	template<auto... cs>
+	static constexpr auto postcycle = opt_chain_endopose<cs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

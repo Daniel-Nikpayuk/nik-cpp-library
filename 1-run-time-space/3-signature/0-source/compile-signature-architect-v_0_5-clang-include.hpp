@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
+#ifndef NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	// #include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
+	#include nik_source(../../.., compile, near_linear, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -36,19 +36,19 @@
 
 namespace nik
 {
-	nik_begin_module(compile, signature, architect, v_0_5, gcc)
+	nik_begin_module(compile, signature, architect, v_0_5, clang)
 
-	//	using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
+		#include nik_import(../../.., compile, near_linear, architect, v_0_5, clang, static, name)
 
 		#include"v0.5/define_macros.hpp"
 
-	//	#include"v0.5/0_abstract.hpp"
-	//	#include"v0.5/1_pair.hpp"
+		#include"v0.5/0_abstract.hpp"
+		#include"v0.5/1_pair.hpp"
 		#include"v0.5/2_one_cycle.hpp"
 
 		#include"v0.5/undef_macros.hpp"
 
-	nik_end_module(compile, signature, architect, v_0_5, gcc)
+	nik_end_module(compile, signature, architect, v_0_5, clang)
 }
 
 /***********************************************************************************************************************/

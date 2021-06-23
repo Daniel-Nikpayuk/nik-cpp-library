@@ -26,9 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., compile, endopose, architect, v_0_5, gcc)
 	#include nik_source(../../.., compile, signature, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, near_linear, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -40,10 +38,9 @@ namespace nik
 {
 	nik_begin_module(compile, one_cycle, architect, v_0_5, gcc)
 
-		#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, endopose, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., compile, near_linear, architect, v_0_5, gcc, static, name)
+	//	#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, name)
 
 	//	#include"v0.5/0_repeat.hpp"
 		#include"v0.5/1_map.hpp"
