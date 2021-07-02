@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., compile, near_linear, architect, v_0_5, gcc)
+	// none.
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -37,8 +37,6 @@
 namespace nik
 {
 	nik_begin_module(compile, signature, architect, v_0_5, gcc)
-
-		#include nik_import(../../.., compile, near_linear, architect, v_0_5, gcc, static, name)
 
 		#include"v0.5/define_macros.hpp"
 

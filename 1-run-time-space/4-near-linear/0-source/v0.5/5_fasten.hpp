@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle glide (bifold):
+// one cycle fasten:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -27,55 +27,52 @@
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> glide(out_type_<Spec> o, car_in_type_<Spec> i1, cdr_in_type_<Spec> i2, end_type_<Spec> e2)
-	{
-		constexpr auto glide_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
+//	template<typename Spec>
+//	static constexpr auto one_cycle_fasten = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < is_bidir_last_<Spec>       , end_prev_<Spec>     >,
+//			boolean_before_loop < out_is_left_open_<Spec>    , out_next_<Spec>     >,
+//			boolean_before_loop < car_in_is_left_open_<Spec> , car_in_next_<Spec>  >,
+//			boolean_before_loop < cdr_in_is_left_open_<Spec> , cdr_in_next_<Spec>  >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>        , loop_break_<Spec>   >,
+//			before_act          < act_func_<Spec>                               >,
+//			before_combine      < combine_func_<Spec>                           >,
+//			before_next         < out_next_<Spec>                               >,
+//			before_next         < car_in_next_<Spec>                            >,
+//			before_next         < cdr_in_next_<Spec>                            >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < ival_meet_<Spec>        , act_func_<Spec>     >,
+//			boolean_after_loop  < ival_meet_<Spec>        , combine_func_<Spec> >,
+//			boolean_after_loop  < out_ival_meet_<Spec>    , out_next_<Spec>     >,
+//			boolean_after_loop  < car_in_ival_meet_<Spec> , car_in_next_<Spec>  >,
+//			boolean_after_loop  < cdr_in_ival_meet_<Spec> , cdr_in_next_<Spec>  >,
+//			boolean_after_loop  < is_bidir_last_<Spec>    , end_next_<Spec>     >
+//		>
+//	>;
 
-				boolean_before_loop	< is_bi_last_<Spec>		, end_prev_<Spec>	>,
-				interval_before_loop	< car_in_ival_<Spec>		, car_in_next_<Spec>	>,
-				interval_before_loop	< cdr_in_ival_<Spec>		, cdr_in_next_<Spec>	>
+	// fasten:
 
-			>, cycle
-			<
-				signature_<Spec>,
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
 
-				stem_before_value	< loop_pred_<Spec>		, _id_			>,
-				before_act		< act_func_<Spec>					>,
-				before_combine		< combine_func_<Spec>					>,
-				before_next		< car_in_next_<Spec>					>,
-				before_next		< cdr_in_next_<Spec>					>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				boolean_after_loop	< ival_meet_<Spec>		, act_func_<Spec>	>,
-				boolean_after_loop	< ival_meet_<Spec>		, combine_func_<Spec>	>,
-				boolean_after_loop	< car_in_ival_meet_<Spec>	, car_in_next_<Spec>	>,
-				boolean_after_loop	< cdr_in_ival_meet_<Spec>	, cdr_in_next_<Spec>	>,
-				boolean_after_loop	< is_bi_last_<Spec>		, end_next_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(o, i1, i2, e2);
-
-		return return_cons_<Spec>(glide_f(s));
-	}
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct glide_specification;
+	template<typename, typename, typename, typename, typename> struct fasten_specification;
 
 	template
 	<
-		typename OutType, typename OutAttr,
+		typename OutType, typename OutAttr, typename OutIval, typename OutCdr,
 		typename CarInType, typename CarInAttr, typename CarInIval,
 			typename CarInCar, typename CarInCdr,
 		typename CdrInType, typename CdrInAttr, typename CdrInIval,
@@ -84,9 +81,9 @@ private:
 
 		typename ActFunction, typename CombineFunction
 	>
-	struct glide_specification
+	struct fasten_specification
 	<
-		_out		< OutType   , OutAttr									>,
+		_out		< OutType   , OutAttr   , OutIval   , OutCdr						>,
 		_car_in		< CarInType , CarInAttr , CarInIval , CarInCar  , CarInCdr				>,
 		_cdr_in		< CdrInType , CdrInAttr , CdrInIval , CdrInAxis , CdrInCar , CdrInCdr , CdrInPeek	>,
 		_end		< EndType   , EndAttr   , EndCdr    , EndRCdr						>,
@@ -101,6 +98,10 @@ private:
 
 		using out_obj				= out_object		< out_type , out_attr		>;
 		using dout_obj				= obj_to_direct		< out_obj			>;
+		using cdout_obj				= obj_to_immutable	< dout_obj			>;
+
+		static constexpr Interval out_ival	= OutIval::value;
+		static constexpr auto out_cdr		= iterate<OutCdr::value, out_type>;
 
 	// car in:
 
@@ -178,13 +179,17 @@ private:
 
 		static constexpr auto act_function	= one_cycle_biassign
 							<
-								aux_obj, act_f, car_in_car, ccar_in_obj,
+								out_obj, act_f, car_in_car, ccar_in_obj,
 										cdr_in_car, ccdr_in_obj, signature
 							>;
 		static constexpr auto combine_function	= one_cycle_biassign
 							<
 								out_obj, combine_f, _id_, out_obj,
 											_id_, aux_obj, signature
+							>;
+		static constexpr auto out_next		= one_cycle_assign
+							<
+								dout_obj, out_cdr, cdout_obj, signature
 							>;
 		static constexpr auto car_in_next	= one_cycle_assign
 							<
@@ -210,7 +215,9 @@ private:
 	//	3. If there exists any right endpoint, which is closed, then act/combine.
 	//	4. If (3), then for each right endpoint, when open, iterate.
 
-		static constexpr bool ival_meet		= or_right_closed	< car_in_ival		, cdr_in_ival		>;
+		static constexpr bool in_ival_meet	= or_right_closed	< car_in_ival		, cdr_in_ival		>;
+		static constexpr bool ival_meet		= right_closed_or	< out_ival		, in_ival_meet		>;
+		static constexpr bool out_ival_meet	= right_open_and	< out_ival		, ival_meet		>;
 		static constexpr bool car_in_ival_meet	= right_open_and	< car_in_ival		, ival_meet		>;
 		static constexpr bool cdr_in_ival_meet	= right_open_and	< cdr_in_ival		, ival_meet		>;
 
@@ -235,8 +242,11 @@ private:
 	template
 	<
 		typename Type,
-		auto glide_function,
 		auto zip_function,
+		auto carry_function,
+
+		auto OutIval		= Interval::closing,
+		auto OutDir		= Direction::forward,
 
 		auto CarInIval		= Interval::closing,
 		auto CarInDir		= Direction::forward,
@@ -246,12 +256,14 @@ private:
 		auto CdrInRDir		= Direction::backward,
 		auto CdrInAxis		= Axis::bidirectional
 	>
-	using glide_spec		= glide_specification
+	using fasten_spec		= zip_specification
 	<
 		_out
 		<
-			_type		< Type		>,
-			_attr		< rw_constant	>
+			_type		< Type*			>,
+			_attr		< rw_iterator		>,
+			_ival		< OutIval		>,
+			_next		< OutDir		>
 		>,
 
 		_car_in
@@ -285,7 +297,7 @@ private:
 		_function
 		<
 			_act_f		< zip_function		>,
-			_combine_f	< glide_function 	>
+			_combine_f	< carry_function	>
 		>
 	>;
 */

@@ -27,44 +27,36 @@
 
 private:
 
-	template<typename Spec>
-	static constexpr auto one_cycle_map = opt_do_chain_compose
-	<
-		precycle
-		<
-			boolean_before_loop  < is_bi_last_<Spec>    , end_prev_<Spec>   >,
-			interval_before_loop < out_ival_<Spec>      , out_next_<Spec>   >,
-			interval_before_loop < in_ival_<Spec>       , in_next_<Spec>    >
+//	template<typename Spec>
+//	static constexpr auto one_cycle_map = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < is_bidir_last_<Spec>    , end_prev_<Spec>   >,
+//			boolean_before_loop < out_is_left_open_<Spec> , out_next_<Spec>   >,
+//			boolean_before_loop < in_is_left_open_<Spec>  , in_next_<Spec>    >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>     , loop_break_<Spec> >,
+//			before_act          < act_func_<Spec>                          >,
+//			before_next         < out_next_<Spec>                          >,
+//			before_next         < in_next_<Spec>                           >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < ival_meet_<Spec>     , act_func_<Spec>   >,
+//			boolean_after_loop  < out_ival_meet_<Spec> , out_next_<Spec>   >,
+//			boolean_after_loop  < in_ival_meet_<Spec>  , in_next_<Spec>    >,
+//			boolean_after_loop  < is_bidir_last_<Spec> , end_next_<Spec>   >
+//		>
+//	>;
 
-		>, cycle
-		<
-			stem_before_value    < loop_pred_<Spec>	    , loop_break_<Spec> >,
-			before_act           < act_func_<Spec>                          >,
-			before_next          < out_next_<Spec>                          >,
-			before_next          < in_next_<Spec>                           >
+	// map:
 
-		>, postcycle
-		<
-			boolean_after_loop   < ival_meet_<Spec>     , act_func_<Spec>   >,
-			boolean_after_loop   < out_ival_meet_<Spec> , out_next_<Spec>   >,
-			boolean_after_loop   < in_ival_meet_<Spec>  , in_next_<Spec>    >,
-			boolean_after_loop   < is_bi_last_<Spec>    , end_next_<Spec>   >
-		>
-	>;
-
-/***********************************************************************************************************************/
-
-// generic:
-
-public:
-
-	template<typename Spec>
-	static constexpr return_type_<Spec> map(out_type_<Spec> o, in_type_<Spec> i, end_type_<Spec> e)
-	{
-		auto s = signature_<Spec>(o, i, e);
-
-		return return_value_<Spec>(one_cycle_map<Spec>(s));
-	}
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
 
 /***********************************************************************************************************************/
 

@@ -27,39 +27,25 @@
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> fold(out_type_<Spec> o, in_type_<Spec> i, end_type_<Spec> e)
-	{
-		constexpr auto fold_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
+//	template<typename Spec>
+//	static constexpr auto one_cycle_fold = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < in_is_left_open_<Spec>    , in_next_<Spec>      >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>          , loop_break_<Spec>   >,
+//			before_combine      < combine_func_<Spec>                             >,
+//			before_next         < in_next_<Spec>                                  >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < in_is_right_closed_<Spec> , combine_func_<Spec> >
+//		>
+//	>;
 
-				interval_before_loop	< in_ival_<Spec>	, in_next_<Spec>	>
-
-			>, cycle
-			<
-				signature_<Spec>,
-
-				stem_before_value	< loop_pred_<Spec>	, _id_			>,
-				before_combine		< combine_func_<Spec>				>,
-				before_next		< in_next_<Spec>				>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				interval_after_loop	< in_ival_<Spec>	, combine_func_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(o, i, e);
-
-		return return_cons_<Spec>(fold_f(s));
-	}
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 	template<typename, typename, typename, typename> struct fold_specification;

@@ -23,6 +23,40 @@
 
 public:
 
+	// map:
+
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
+
+	// find all:
+
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
+
+	// zip:
+
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
+
+	// fasten:
+
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
+
+	// glide:
+
+		//        ival meet: (car in is right closed) or (cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (car in is right closed) ?
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -744,49 +778,6 @@ public:
 									<
 										Break::after_next
 									>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// loop:
-
-/***********************************************************************************************************************/
-
-// precycle:
-
-	template<auto... cs>
-	static constexpr auto precycle = opt_chain_endopose<cs...>;
-
-/***********************************************************************************************************************/
-
-// cycle:
-
-private:
-	
-	template<auto... cs>
-	static constexpr auto f_cycle()
-	{
-		constexpr auto endo = opt_chain_endopose<cs...>;
-
-		return close_cycle
-		<
-			endo,
-			function_module::template out_type<endo>
-		>;
-	}
-
-public:
-
-	template<auto... cs>
-	static constexpr auto cycle = f_cycle<cs...>();
-
-/***********************************************************************************************************************/
-
-// postcycle:
-
-	template<auto... cs>
-	static constexpr auto postcycle = opt_chain_endopose<cs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

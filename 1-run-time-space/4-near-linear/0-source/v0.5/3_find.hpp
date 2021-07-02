@@ -31,40 +31,26 @@
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> find_first(in_type_<Spec> i, in_type_<Spec> e)
-	{
-		constexpr auto find_first_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
+//	template<typename Spec>
+//	static constexpr auto one_cycle_find_first = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < in_is_left_open_<Spec>    , in_next_<Spec>    >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>          , loop_break_<Spec> >,
+//			stem_before_act     < act_pred_<Spec>           , act_break_<Spec>  >,
+//			before_next         < in_next_<Spec>                                >
+//	
+//		>, postcycle
+//		<
+//			costem_after_loop   < post_pred_<Spec>          , loop_break_<Spec> >,
+//			boolean_after_loop  < in_is_right_closed_<Spec> , post_func_<Spec>  >
+//		>
+//	>;
 
-				interval_before_loop	< in_ival_<Spec>	, in_next_<Spec>	>
-
-			>, cycle
-			<
-				signature_<Spec>,
-
-				stem_before_value	< loop_pred_<Spec>	, loop_break_<Spec>	>,
-				stem_before_act		< act_pred_<Spec>	, act_break_<Spec>	>,
-				before_next		< in_next_<Spec>				>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				costem_after_loop	< post_pred_<Spec>	, _id_			>,
-				interval_after_loop	< in_ival_<Spec>	, post_func_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(e, i, e);
-
-		return return_cons_<Spec>(find_first_f(s));
-	}
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 	template<typename, typename, typename, typename, typename> struct find_first_specification;
@@ -316,48 +302,38 @@ private:
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> find_all(out_type_<Spec> o, in_type_<Spec> i, end_type_<Spec> e)
-	{
-		constexpr auto find_all_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
+//	template<typename Spec>
+//	static constexpr auto one_cycle_find_all = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < is_bidir_last_<Spec>    , end_prev_<Spec>   >,
+//			boolean_before_loop < out_is_left_open_<Spec> , out_next_<Spec>   >,
+//			boolean_before_loop < in_is_left_open_<Spec>  , in_next_<Spec>    >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>     , loop_break_<Spec> >,
+//			before_value        < value_pred_<Spec>                        >,
+//			distem_before_act   < act_pred_<Spec>      , act_func_<Spec>   >,
+//			distem_before_next  < act_pred_<Spec>      , out_next_<Spec>   >,
+//			before_next         < in_next_<Spec>                           >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < ival_meet_<Spec>     , post_func_<Spec>  >,
+//			boolean_after_loop  < out_ival_meet_<Spec> , out_next_<Spec>   >,
+//			boolean_after_loop  < in_ival_meet_<Spec>  , in_next_<Spec>    >,
+//			boolean_after_loop  < is_bidir_last_<Spec> , end_next_<Spec>   >
+//		>
+//	>;
 
-				boolean_before_loop	< is_bi_last_<Spec>	, end_prev_<Spec>	>,
+	// find all:
 
-				interval_before_loop	< out_ival_<Spec>	, out_next_<Spec>	>,
-				interval_before_loop	< in_ival_<Spec>	, in_next_<Spec>	>
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
 
-			>, cycle
-			<
-				signature_<Spec>,
-
-				stem_before_value	< loop_pred_<Spec>	, _id_			>,
-				before_value		< value_pred_<Spec>				>,
-				distem_before_act	< act_pred_<Spec>	, act_func_<Spec>	>,
-				distem_before_next	< act_pred_<Spec>	, out_next_<Spec>	>,
-				before_next		< in_next_<Spec>				>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				boolean_after_loop	< ival_meet_<Spec>	, post_func_<Spec>	>,
-				boolean_after_loop	< out_ival_meet_<Spec>	, out_next_<Spec>	>,
-				boolean_after_loop	< in_ival_meet_<Spec>	, in_next_<Spec>	>,
-
-				boolean_after_loop	< is_bi_last_<Spec>	, end_next_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(o, i, e, false);
-
-		return return_cons_<Spec>(find_all_f(s));
-	}
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 /*

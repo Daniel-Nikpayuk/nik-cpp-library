@@ -27,37 +27,24 @@
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> repeat(out_type_<Spec> b, end_type_<Spec> e, in_type_<Spec> c)
-	{
-		constexpr auto repeat_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
-
-				interval_before_loop	< out_ival_<Spec>	, out_next_<Spec>	>
-
-			>, cycle
-			<
-				signature_<Spec>,
-
-				stem_before_value	< loop_pred_<Spec>	, _id_			>,
-				before_act		< act_func_<Spec>				>,
-				before_next		< out_next_<Spec>				>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				interval_after_loop	< out_ival_<Spec>	, act_func_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(b, c, e);
-
-		return return_cons_<Spec>(repeat_f(s));
-	}
+//	template<typename Spec>
+//	static constexpr auto one_cycle_repeat = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < out_is_left_open_<Spec>    , out_next_<Spec>   >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>           , loop_break_<Spec> >,
+//			before_act          < act_func_<Spec>                                >,
+//			before_next         < out_next_<Spec>                                >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < out_is_right_closed_<Spec> , act_func_<Spec>   >
+//		>
+//	>;
 
 /***********************************************************************************************************************/
 

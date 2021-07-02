@@ -17,21 +17,42 @@
 **
 ************************************************************************************************************************/
 
-// one cycle alias:
+#ifndef NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_COMPILE_ONE_CYCLE_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// map:
+// dependencies:
 
-	template<auto f, typename OutType, typename InType, typename EndType>
-	inline NIK_POLICY OutType nik_name(NIK_PREFIX, make_range)(OutType out, InType in, EndType end)
-	{
-		return NIK_MODULE::make_range<f>(out, in, end);
-	}
+	#include nik_source(../../.., interpret, boolean, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, endopose, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// module:
+
+namespace nik
+{
+	nik_begin_module(compile, one_cycle, architect, v_0_5, clang)
+
+		#include nik_import(../../.., compile, compose, architect, v_0_5, clang, static, name)
+		#include nik_import(../../.., compile, endopose, architect, v_0_5, clang, static, name)
+
+		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
+		using function_module = nik_module(interpret, function, architect, v_0_5, clang);
+
+		#include"compile-one_cycle-architect-v_0_5-source.hpp"
+
+	nik_end_module(compile, one_cycle, architect, v_0_5, clang)
+}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+#endif
 

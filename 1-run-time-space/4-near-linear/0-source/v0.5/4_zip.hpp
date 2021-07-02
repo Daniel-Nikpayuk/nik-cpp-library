@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle fasten:
+// one cycle zip (bimap):
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -27,54 +27,46 @@
 
 private:
 
-	template<typename Spec>
-	return_type_<Spec> fasten(out_type_<Spec> o, car_in_type_<Spec> i1, cdr_in_type_<Spec> i2, end_type_<Spec> e2)
-	{
-		constexpr auto fasten_f = cycle_inductor
-		<
-			precycle
-			<
-				signature_<Spec>,
+//	template<typename Spec>
+//	static constexpr auto one_cycle_zip = opt_do_chain_compose
+//	<
+//		precycle
+//		<
+//			boolean_before_loop < is_bidir_last_<Spec>       , end_prev_<Spec>    >,
+//			boolean_before_loop < out_is_left_open_<Spec>    , out_next_<Spec>    >,
+//			boolean_before_loop < car_in_is_left_open_<Spec> , car_in_next_<Spec> >,
+//			boolean_before_loop < cdr_in_is_left_open_<Spec> , cdr_in_next_<Spec> >
+//	
+//		>, cycle
+//		<
+//			stem_before_value   < loop_pred_<Spec>        , loop_break_<Spec>  >,
+//			before_act          < act_func_<Spec>                              >,
+//			before_next         < out_next_<Spec>                              >,
+//			before_next         < car_in_next_<Spec>                           >,
+//			before_next         < cdr_in_next_<Spec>                           >
+//	
+//		>, postcycle
+//		<
+//			boolean_after_loop  < ival_meet_<Spec>        , act_func_<Spec>    >,
+//			boolean_after_loop  < out_ival_meet_<Spec>    , out_next_<Spec>    >,
+//			boolean_after_loop  < car_in_ival_meet_<Spec> , car_in_next_<Spec> >,
+//			boolean_after_loop  < cdr_in_ival_meet_<Spec> , cdr_in_next_<Spec> >,
+//			boolean_after_loop  < is_bidir_last_<Spec>    , end_next_<Spec>    >
+//		>
+//	>;
 
-				boolean_before_loop	< is_bi_last_<Spec>		, end_prev_<Spec>	>,
-				interval_before_loop	< out_ival_<Spec>		, out_next_<Spec>	>,
-				interval_before_loop	< car_in_ival_<Spec>		, car_in_next_<Spec>	>,
-				interval_before_loop	< cdr_in_ival_<Spec>		, cdr_in_next_<Spec>	>
+	// zip:
 
-			>, cycle
-			<
-				signature_<Spec>,
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
 
-				stem_before_value	< loop_pred_<Spec>		, _id_			>,
-				before_act		< act_func_<Spec>					>,
-				before_combine		< combine_func_<Spec>					>,
-				before_next		< out_next_<Spec>					>,
-				before_next		< car_in_next_<Spec>					>,
-				before_next		< cdr_in_next_<Spec>					>
-
-			>, postcycle
-			<
-				signature_<Spec>,
-
-				boolean_after_loop	< ival_meet_<Spec>		, act_func_<Spec>	>,
-				boolean_after_loop	< ival_meet_<Spec>		, combine_func_<Spec>	>,
-				boolean_after_loop	< out_ival_meet_<Spec>		, out_next_<Spec>	>,
-				boolean_after_loop	< car_in_ival_meet_<Spec>	, car_in_next_<Spec>	>,
-				boolean_after_loop	< cdr_in_ival_meet_<Spec>	, cdr_in_next_<Spec>	>,
-				boolean_after_loop	< is_bi_last_<Spec>		, end_next_<Spec>	>
-			>
-		>;
-
-		signature_<Spec> s(o, i1, i2, e2);
-
-		return return_cons_<Spec>(fasten_f(s));
-	}
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct fasten_specification;
+	template<typename, typename, typename, typename, typename> struct zip_specification;
 
 	template
 	<
@@ -85,16 +77,16 @@ private:
 			typename CdrInAxis, typename CdrInCar, typename CdrInCdr, typename CdrInPeek,
 		typename EndType, typename EndAttr, typename EndCdr, typename EndRCdr,
 
-		typename ActFunction, typename CombineFunction
+		typename ActFunction
 	>
-	struct fasten_specification
+	struct zip_specification
 	<
 		_out		< OutType   , OutAttr   , OutIval   , OutCdr						>,
 		_car_in		< CarInType , CarInAttr , CarInIval , CarInCar  , CarInCdr				>,
 		_cdr_in		< CdrInType , CdrInAttr , CdrInIval , CdrInAxis , CdrInCar , CdrInCdr , CdrInPeek	>,
 		_end		< EndType   , EndAttr   , EndCdr    , EndRCdr						>,
 
-		_function	< ActFunction , CombineFunction								>
+		_function	< ActFunction										>
 	>
 	{
 	// out:
@@ -151,13 +143,6 @@ private:
 		static constexpr auto end_cdr		= iterate<EndCdr::value, end_type>;
 		static constexpr auto end_rcdr		= iterate<EndRCdr::value, end_type>;
 
-	// aux:
-
-		using aux_type				= f_cdr_in_type<CombineFunction::value>;
-		using aux_attr				= stationary_attr<Mutability::variable>;
-
-		using aux_obj				= aux_object		< aux_type	, aux_attr	>;
-
 	// signature:
 
 		using signature				= one_cycle_signature
@@ -165,8 +150,7 @@ private:
 								out_object	< obj_type<out_obj>		>,
 								car_in_object	< obj_type<car_in_obj>		>,
 								cdr_in_object	< obj_type<cdr_in_obj>		>,
-								end_object	< obj_type<end_obj>		>,
-								aux_object	< obj_type<aux_obj>		>
+								end_object	< obj_type<end_obj>		>
 							>;
 
 	// return:
@@ -179,7 +163,6 @@ private:
 	// function:
 
 		static constexpr auto act_f		= ActFunction::value;
-		static constexpr auto combine_f		= CombineFunction::value;
 
 	// atomic filters:
 
@@ -187,11 +170,6 @@ private:
 							<
 								out_obj, act_f, car_in_car, ccar_in_obj,
 										cdr_in_car, ccdr_in_obj, signature
-							>;
-		static constexpr auto combine_function	= one_cycle_biassign
-							<
-								out_obj, combine_f, _id_, out_obj,
-											_id_, aux_obj, signature
 							>;
 		static constexpr auto out_next		= one_cycle_assign
 							<
@@ -249,7 +227,6 @@ private:
 	<
 		typename Type,
 		auto zip_function,
-		auto carry_function,
 
 		auto OutIval		= Interval::closing,
 		auto OutDir		= Direction::forward,
@@ -262,48 +239,47 @@ private:
 		auto CdrInRDir		= Direction::backward,
 		auto CdrInAxis		= Axis::bidirectional
 	>
-	using fasten_spec		= zip_specification
+	using zip_spec			= zip_specification
 	<
 		_out
 		<
-			_type		< Type*			>,
-			_attr		< rw_iterator		>,
-			_ival		< OutIval		>,
-			_next		< OutDir		>
+			_type		< Type*		>,
+			_attr		< rw_iterator	>,
+			_ival		< OutIval	>,
+			_next		< OutDir	>
 		>,
 
 		_car_in
 		<
-			_type		< Type*			>,
-			_attr		< rw_iterator		>,
-			_ival		< CarInIval		>,
-			_value		< _id_			>,
-			_next		< CarInDir		>
+			_type		< Type*		>,
+			_attr		< rw_iterator	>,
+			_ival		< CarInIval	>,
+			_value		< _id_		>,
+			_next		< CarInDir	>
 		>,
 
 		_cdr_in
 		<
-			_type		< Type*			>,
-			_attr		< rw_iterator		>,
-			_ival		< CdrInIval		>,
-			_axis		< CdrInAxis		>,
-			_value		< _id_			>,
-			_next		< CdrInDir		>,
-			_peek		< CdrInDir		>
+			_type		< Type*		>,
+			_attr		< rw_iterator	>,
+			_ival		< CdrInIval	>,
+			_axis		< CdrInAxis	>,
+			_value		< _id_		>,
+			_next		< CdrInDir	>,
+			_peek		< CdrInDir	>
 		>,
 
 		_end
 		<
-			_type		< Type*			>,
-			_attr		< rw_iterator		>,
-			_next		< CdrInDir		>,
-			_prev		< CdrInRDir		>
+			_type		< Type*		>,
+			_attr		< rw_iterator	>,
+			_next		< CdrInDir	>,
+			_prev		< CdrInRDir	>
 		>,
 
 		_function
 		<
-			_act_f		< zip_function		>,
-			_combine_f	< carry_function	>
+			_act_f		< zip_function	>
 		>
 	>;
 */
