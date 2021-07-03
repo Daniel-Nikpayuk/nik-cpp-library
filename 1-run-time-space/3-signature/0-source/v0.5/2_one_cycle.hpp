@@ -19,27 +19,17 @@
 
 // one cycle:
 
-//	filters (accessors):
-
-//		i(...) - identity
-//		d(...) - dereference
-
-	// temporary:
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // objects:
 
-public:
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // members:
 
-/***********************************************************************************************************************/
+public:
 
 	enum struct OneCycleMember
 	{
@@ -63,60 +53,16 @@ public:
 	template<OneCycleMember m> static constexpr bool V_is_msg		= (m == OneCycleMember::msg);
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// attribute specifications:
+// kinds:
 
-/***********************************************************************************************************************/
-
-	template
-	<
-		OneCycleMember Member,
-		Interval Ival
-	>
-	struct _one_cycle_object_attributes
-	{
-		static constexpr OneCycleMember member	= Member;
-		static constexpr Interval interval	= Ival;
-	};
-
-	//
-
-	template<Interval ival>
-	using _out_obj_attr			= _one_cycle_object_attributes<OneCycleMember::out, ival>;
-
-	template<Interval ival>
-	using _in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::in, ival>;
-
-	template<Interval ival>
-	using _car_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::car_in, ival>;
-
-	template<Interval ival>
-	using _cdr_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::cdr_in, ival>;
-
-	template<Interval ival>
-	using _end_obj_attr			= _one_cycle_object_attributes<OneCycleMember::end, ival>;
-
-	template<Interval ival>
-	using _aux_obj_attr			= _one_cycle_object_attributes<OneCycleMember::aux, ival>;
-
-	template<Interval ival>
-	using _msg_obj_attr			= _one_cycle_object_attributes<OneCycleMember::msg, ival>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// object specifications:
-
-/***********************************************************************************************************************/
-
-	template<typename Type, Interval ival> using _out_object	= _object < Type , _out_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _in_object		= _object < Type , _in_obj_attr<ival>     >;
-	template<typename Type, Interval ival> using _car_in_object	= _object < Type , _car_in_obj_attr<ival> >;
-	template<typename Type, Interval ival> using _cdr_in_object	= _object < Type , _cdr_in_obj_attr<ival> >;
-	template<typename Type, Interval ival> using _end_object	= _object < Type , _end_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _aux_object	= _object < Type , _aux_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _msg_object	= _object < Type , _msg_obj_attr<ival>    >;
+	template<typename T> using _out_object			= _object < OneCycleMember::out    , T >;
+	template<typename T> using _in_object			= _object < OneCycleMember::in     , T >;
+	template<typename T> using _car_in_object		= _object < OneCycleMember::car_in , T >;
+	template<typename T> using _cdr_in_object		= _object < OneCycleMember::cdr_in , T >;
+	template<typename T> using _end_object			= _object < OneCycleMember::end    , T >;
+	template<typename T> using _aux_object			= _object < OneCycleMember::aux    , T >;
+	template<typename T> using _msg_object			= _object < OneCycleMember::msg    , T >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -128,142 +74,31 @@ private:
 
 	template<typename...> class one_cycle_signature;
 
-public:
-
-	template<typename... Ts>
-	using one_cycle = one_cycle_signature<_object<Ts>...>;
-
-/***********************************************************************************************************************/
-
-// accessors:
-
-	// out:
-
-		template<typename... Ts>
-		static constexpr auto & out_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.out; }
-
-		template<typename... Ts>
-		static constexpr auto & out_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.out; }
-
-	// in:
-
-		template<typename... Ts>
-		static constexpr auto & in_ref(one_cycle_signature<_object<Ts>...> & s)
-				{ return s.in; }
-
-		template<typename... Ts>
-		static constexpr auto & in_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.in; }
-
-	// car in:
-
-		template<typename... Ts>
-		static constexpr auto & car_in_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.car_in; }
-
-		template<typename... Ts>
-		static constexpr auto & car_in_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.car_in; }
-
-	// cdr in:
-
-		template<typename... Ts>
-		static constexpr auto & cdr_in_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.cdr_in; }
-
-		template<typename... Ts>
-		static constexpr auto & cdr_in_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.cdr_in; }
-
-	// end:
-
-		template<typename... Ts>
-		static constexpr auto & end_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.end; }
-
-		template<typename... Ts>
-		static constexpr auto & end_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.end; }
-
-	// aux:
-
-		template<typename... Ts>
-		static constexpr auto & aux_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.aux; }
-
-		template<typename... Ts>
-		static constexpr auto & aux_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.aux; }
-
-	// msg:
-
-		template<typename... Ts>
-		static constexpr auto & msg_ref(one_cycle_signature<_object<Ts>...> & s)
-			{ return s.msg; }
-
-		template<typename... Ts>
-		static constexpr auto & msg_deref(one_cycle_signature<_object<Ts>...> & s)
-			{ return *s.msg; }
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// specialization:
-
-/***********************************************************************************************************************/
-
-// out, in, end:
-
-/*
-private:
-
-	template
-	<
-		typename OutType,
-		typename InType,
-		typename EndType
-	>
-	class one_cycle_signature
-	<
-		_object < OutType , Interval::closing >,
-		_object < InType  , Interval::closing >,
-		_object < EndType , Interval::closing >
-	>
-	{
-		OutType out;
-		InType  in;
-		EndType end;
-
-		public:
-
-			constexpr one_cycle_signature
-			(
-				const OutType & _o,
-				const InType  & _i,
-				const EndType & _e
-
-			) : out(_o), in(_i), end(_e) { }
-
-		// friendship:
-
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_deref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-	};
-*/
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // out, end:
 
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// end:
+
+		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+/***********************************************************************************************************************/
+
+// specialization:
+
 private:
 
 	template
@@ -273,8 +108,8 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_end_object < EndType , Interval::closing >
+		_out_object < OutType >,
+		_end_object < EndType >
 	>
 	{
 		OutType out;
@@ -291,15 +126,41 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
+			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(end_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, in, end:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// in:
+
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -311,9 +172,9 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_in_object  < InType  , Interval::closing >,
-		_end_object < EndType , Interval::closing >
+		_object < OneCycleMember::out , OutType >,
+		_object < OneCycleMember::in  , InType  >,
+		_object < OneCycleMember::end , EndType >
 	>
 	{
 		OutType out;
@@ -332,17 +193,50 @@ private:
 
 		// friendship:
 
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_deref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-			friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(in_ref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(in_deref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(end_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+//here:
 
 // out, car in, cdr in, end:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// car in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(car_in_deref, s)		{ return *s.car_in; }
+
+	// cdr in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)		{ return *s.cdr_in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -355,10 +249,10 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object    < OutType   , Interval::closing >,
-		_car_in_object < CarInType , Interval::closing >,
-		_cdr_in_object < CdrInType , Interval::closing >,
-		_end_object    < EndType   , Interval::closing >
+		_out_object    < OutType   >,
+		_car_in_object < CarInType >,
+		_cdr_in_object < CdrInType >,
+		_end_object    < EndType   >
 	>
 	{
 		OutType out;
@@ -379,20 +273,45 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(car_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(car_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(cdr_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(cdr_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(end_deref);
 	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // out, end, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)			{ return s.out; }
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// end:
+
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)			{ return s.end; }
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)			{ return s.msg; }
+		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -404,9 +323,9 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_msg_object < MsgType , Interval::closing >
+		_out_object < OutType >,
+		_end_object < EndType >,
+		_msg_object < MsgType >
 	>
 	{
 		OutType out;
@@ -432,17 +351,48 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, in, end, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// in:
+
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
+		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -455,10 +405,10 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_in_object  < InType  , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_msg_object < MsgType , Interval::closing >
+		_out_object < OutType >,
+		_in_object  < InType  >,
+		_end_object < EndType >,
+		_msg_object < MsgType >
 	>
 	{
 		OutType out;
@@ -487,19 +437,55 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(in_ref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(in_deref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, car in, cdr in, end, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// car in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+
+	// cdr in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -513,11 +499,11 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object    < OutType   , Interval::closing >,
-		_car_in_object < CarInType , Interval::closing >,
-		_cdr_in_object < CdrInType , Interval::closing >,
-		_end_object    < EndType   , Interval::closing >,
-		_msg_object    < MsgType   , Interval::closing >
+		_out_object    < OutType   >,
+		_car_in_object < CarInType >,
+		_cdr_in_object < CdrInType >,
+		_end_object    < EndType   >,
+		_msg_object    < MsgType   >
 	>
 	{
 		OutType out;
@@ -549,22 +535,47 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(car_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(car_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(cdr_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(cdr_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // out, end, aux:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)			{ return s.out; }
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// end:
+
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)			{ return s.end; }
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)			{ return s.aux; }
+		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -576,9 +587,9 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_aux_object < AuxType , Interval::closing >
+		_out_object < OutType >,
+		_end_object < EndType >,
+		_aux_object < AuxType >
 	>
 	{
 		OutType out;
@@ -604,17 +615,48 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, in, end, aux:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// in:
+
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
+		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -627,10 +669,10 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_in_object  < InType  , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_aux_object < AuxType , Interval::closing >
+		_out_object < OutType >,
+		_in_object  < InType  >,
+		_end_object < EndType >,
+		_aux_object < AuxType >
 	>
 	{
 		OutType out;
@@ -659,19 +701,55 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(in_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(in_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, car in, cdr in, end, aux:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// car in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+
+	// cdr in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -685,11 +763,11 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object    < OutType   , Interval::closing >,
-		_car_in_object < CarInType , Interval::closing >,
-		_cdr_in_object < CdrInType , Interval::closing >,
-		_end_object    < EndType   , Interval::closing >,
-		_aux_object    < AuxType   , Interval::closing >
+		_out_object    < OutType   >,
+		_car_in_object < CarInType >,
+		_cdr_in_object < CdrInType >,
+		_end_object    < EndType   >,
+		_aux_object    < AuxType   >
 	>
 	{
 		OutType out;
@@ -721,22 +799,52 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(car_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(car_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(cdr_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(cdr_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
 	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // out, end, aux, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// end:
+
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
+		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -749,10 +857,10 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_aux_object < AuxType , Interval::closing >,
-		_msg_object < MsgType , Interval::closing >
+		_out_object < OutType >,
+		_end_object < EndType >,
+		_aux_object < AuxType >,
+		_msg_object < MsgType >
 	>
 	{
 		OutType out;
@@ -796,19 +904,55 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, in, end, aux, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+
+	// in:
+
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
+		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -822,11 +966,11 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object < OutType , Interval::closing >,
-		_in_object  < InType  , Interval::closing >,
-		_end_object < EndType , Interval::closing >,
-		_aux_object < AuxType , Interval::closing >,
-		_msg_object < MsgType , Interval::closing >
+		_out_object < OutType >,
+		_in_object  < InType  >,
+		_end_object < EndType >,
+		_aux_object < AuxType >,
+		_msg_object < MsgType >
 	>
 	{
 		OutType out;
@@ -875,21 +1019,62 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(in_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(in_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // out, car in, cdr in, end, aux, msg:
+
+/***********************************************************************************************************************/
+
+// accessors:
+
+public:
+
+	// out:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)	{ return s.out; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)	{ return *s.out; }
+
+	// car in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(car_in_ref, s)	{ return s.car_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+
+	// cdr in:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)	{ return s.cdr_in; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+
+	// end:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)	{ return s.end; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)	{ return *s.end; }
+
+	// aux:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)	{ return s.aux; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)	{ return *s.aux; }
+
+	// msg:
+
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)	{ return s.msg; }
+		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)	{ return *s.msg; }
+
+/***********************************************************************************************************************/
+
+// specialization:
 
 private:
 
@@ -904,12 +1089,12 @@ private:
 	>
 	class one_cycle_signature
 	<
-		_out_object    < OutType   , Interval::closing >,
-		_car_in_object < CarInType , Interval::closing >,
-		_cdr_in_object < CdrInType , Interval::closing >,
-		_end_object    < EndType   , Interval::closing >,
-		_aux_object    < AuxType   , Interval::closing >,
-		_msg_object    < MsgType   , Interval::closing >
+		_out_object    < OutType   >,
+		_car_in_object < CarInType >,
+		_cdr_in_object < CdrInType >,
+		_end_object    < EndType   >,
+		_aux_object    < AuxType   >,
+		_msg_object    < MsgType   >
 	>
 	{
 		OutType out;
@@ -963,19 +1148,27 @@ private:
 
 		// friendship:
 
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, out_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, car_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, cdr_in_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, end_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, aux_deref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_ref);
-		//	friend NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(auto, msg_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(car_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(car_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(cdr_in_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(cdr_in_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
+			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
 	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+public:
+
+	template<typename... Ts>
+	using one_cycle = one_cycle_signature<Ts...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

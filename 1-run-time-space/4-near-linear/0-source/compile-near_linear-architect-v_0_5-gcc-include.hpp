@@ -26,8 +26,8 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, boolean, architect, v_0_5, gcc)
-	#include nik_source(../../.., compile, endopose, architect, v_0_5, gcc)
+	#include nik_source(../../.., compile, one_cycle, architect, v_0_5, gcc)
+	#include nik_source(../../.., compile, signature, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -39,14 +39,17 @@ namespace nik
 {
 	nik_begin_module(compile, near_linear, architect, v_0_5, gcc)
 
-		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., compile, endopose, architect, v_0_5, gcc, static, name)
+	//	#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
+	//	#include nik_import(../../.., compile, endopose, architect, v_0_5, gcc, static, name)
 
-		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
-		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, gcc);
-		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
-
-		#include"compile-near_linear-architect-v_0_5-source.hpp"
+		#include"v0.5/0_generic.hpp"
+	//	#include"v0.5/1_repeat.hpp"
+		#include"v0.5/2_map.hpp"
+	//	#include"v0.5/3_fold.hpp"
+	//	#include"v0.5/4_find.hpp"
+	//	#include"v0.5/5_zip.hpp"
+	//	#include"v0.5/6_fasten.hpp"
+	//	#include"v0.5/7_glide.hpp"
 
 	nik_end_module(compile, near_linear, architect, v_0_5, gcc)
 }

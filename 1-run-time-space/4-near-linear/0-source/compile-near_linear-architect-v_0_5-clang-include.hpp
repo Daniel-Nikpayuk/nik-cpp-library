@@ -26,8 +26,8 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, boolean, architect, v_0_5, clang)
-	#include nik_source(../../.., compile, endopose, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, one_cycle, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, signature, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -46,7 +46,14 @@ namespace nik
 		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
 		using function_module	= nik_module(interpret, function, architect, v_0_5, clang);
 
-		#include"compile-near_linear-architect-v_0_5-source.hpp"
+		#include"v0.5/0_generic.hpp"
+		#include"v0.5/1_repeat.hpp"
+		#include"v0.5/2_map.hpp"
+		#include"v0.5/3_fold.hpp"
+		#include"v0.5/4_find.hpp"
+		#include"v0.5/5_zip.hpp"
+		#include"v0.5/6_fasten.hpp"
+		#include"v0.5/7_glide.hpp"
 
 	nik_end_module(compile, near_linear, architect, v_0_5, clang)
 }

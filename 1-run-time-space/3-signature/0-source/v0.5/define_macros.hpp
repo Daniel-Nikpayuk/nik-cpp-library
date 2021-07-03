@@ -27,22 +27,531 @@
 
 /***********************************************************************************************************************/
 
+// out, end:
+
+	#define NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(_name_, _arg_)							\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename EndType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(_name_)								\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			EndType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
 // out, in, end:
 
-	#define NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(_type_, _name_)						\
+	#define NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
 															\
-		_type_ & module::_name_											\
+		template												\
+		<													\
+			typename OutType,										\
+			typename InType,										\
+			typename EndType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(_name_)								\
+															\
+		friend auto & module::_name_										\
 		<													\
 			OutType,											\
 			InType,												\
 			EndType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, car in, cdr in, end:
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(_name_, _arg_)					\
 															\
-		>(one_cycle_signature											\
+		template												\
 		<													\
-			_object < OutType >,										\
-			_object < InType  >,										\
-			_object < EndType >										\
-		> &)
+			typename OutType,										\
+			typename CarInType,										\
+			typename CdrInType,										\
+			typename EndType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >								\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(_name_)						\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			CarInType,											\
+			CdrInType,											\
+			EndType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >								\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, end, msg:
+
+	#define NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename EndType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_msg_object < MsgType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			EndType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_msg_object < MsgType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, in, end, msg:
+
+	#define NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename InType,										\
+			typename EndType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_msg_object < MsgType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			InType,												\
+			EndType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_msg_object < MsgType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, car in, cdr in, end, msg:
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)					\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename CarInType,										\
+			typename CdrInType,										\
+			typename EndType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_msg_object    < MsgType   >								\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(_name_)						\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			CarInType,											\
+			CdrInType,											\
+			EndType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_msg_object    < MsgType   >								\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, end, aux:
+
+	#define NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename EndType,										\
+			typename AuxType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			EndType,											\
+			AuxType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, in, end, aux:
+
+	#define NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename InType,										\
+			typename EndType,										\
+			typename AuxType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			InType,												\
+			EndType,											\
+			AuxType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, car in, cdr in, end, aux:
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(_name_, _arg_)					\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename CarInType,										\
+			typename CdrInType,										\
+			typename EndType,										\
+			typename AuxType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_aux_object    < AuxType   >								\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(_name_)						\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			CarInType,											\
+			CdrInType,											\
+			EndType,											\
+			AuxType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_aux_object    < AuxType   >								\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, end, aux, msg:
+
+	#define NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)						\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename EndType,										\
+			typename AuxType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >,								\
+				_msg_object < MsgType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			EndType,											\
+			AuxType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >,								\
+				_msg_object < MsgType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, in, end, aux, msg:
+
+	#define NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)					\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename InType,										\
+			typename EndType,										\
+			typename AuxType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >,								\
+				_msg_object < MsgType >									\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(_name_)							\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			InType,												\
+			EndType,											\
+			AuxType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object < OutType >,								\
+				_in_object  < InType  >,								\
+				_end_object < EndType >,								\
+				_aux_object < AuxType >,								\
+				_msg_object < MsgType >									\
+			> &												\
+		)
+
+/***********************************************************************************************************************/
+
+// out, car in, cdr in, end, aux, msg:
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(_name_, _arg_)				\
+															\
+		template												\
+		<													\
+			typename OutType,										\
+			typename CarInType,										\
+			typename CdrInType,										\
+			typename EndType,										\
+			typename AuxType,										\
+			typename MsgType										\
+		>													\
+		static constexpr auto & _name_										\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_aux_object    < AuxType   >,								\
+				_msg_object    < MsgType   >								\
+															\
+			> & _arg_											\
+		)
+
+	#define NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(_name_)					\
+															\
+		friend auto & module::_name_										\
+		<													\
+			OutType,											\
+			CarInType,											\
+			CdrInType,											\
+			EndType,											\
+			AuxType,											\
+			MsgType												\
+		>													\
+		(													\
+			one_cycle_signature										\
+			<												\
+				_out_object    < OutType   >,								\
+				_car_in_object < CarInType >,								\
+				_cdr_in_object < CdrInType >,								\
+				_end_object    < EndType   >,								\
+				_aux_object    < AuxType   >,								\
+				_msg_object    < MsgType   >								\
+			> &												\
+		)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

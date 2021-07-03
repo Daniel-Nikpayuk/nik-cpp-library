@@ -49,7 +49,7 @@
 //	#include nik_import(., compile, compose, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, endopose, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, one_cycle, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, near_linear, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
@@ -61,6 +61,17 @@
 
 	int main(int argc, char *argv[])
 	{
+		using sign_type = one_cycle
+		<
+			_out_object < int >,
+			_in_object  < int >,
+			_end_object < int >
+		>;
+
+		auto x = sign_type(5, 3, -7);
+
+		printf("%d\n", out_ref(x));
+
 	//	char arr[5];
 	//	arr[4] = '\0';
 
