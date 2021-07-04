@@ -39,7 +39,7 @@ namespace nik
 {
 	nik_begin_module(compile, near_linear, architect, v_0_5, gcc)
 
-	//	#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
 	//	#include nik_import(../../.., compile, endopose, architect, v_0_5, gcc, static, name)
 
 		using function_module = nik_module(interpret, function, architect, v_0_5, clang);

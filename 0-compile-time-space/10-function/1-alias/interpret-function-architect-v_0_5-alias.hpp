@@ -128,6 +128,14 @@
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, negation)			= NIK_MODULE::negation;
 
+// dereference operators:
+
+	template<typename T>
+	NIK_POLICY auto nik_name(NIK_PREFIX, dereference)		= NIK_MODULE::template dereference<T>;
+
+	template<typename T>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdereference)		= NIK_MODULE::template cdereference<T>;
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

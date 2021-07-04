@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle:
+// one cycle source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -87,13 +87,13 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_END_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_END_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_END_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_END_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -126,10 +126,10 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_END_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DEFINE_OUT_END_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_END_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_END_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_END_ONE_CYCLE_FRIEND( end , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -145,18 +145,18 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// in:
 
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( in , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_IN_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -193,12 +193,12 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(in_ref);
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(in_deref);
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_IN_END_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( in  , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( in  , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND( end , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -216,23 +216,23 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// car in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(car_in_deref, s)		{ return *s.car_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( car_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( car_in , IMMUTABLE );
 
 	// cdr in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)		{ return *s.cdr_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( cdr_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( cdr_in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -273,14 +273,14 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(car_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(car_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(cdr_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(cdr_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND(end_deref);
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( out    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( out    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( car_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( car_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( cdr_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( cdr_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( end    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND( end    , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -296,18 +296,18 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)			{ return s.out; }
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)			{ return s.end; }
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)			{ return s.msg; }
-		NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -351,12 +351,12 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( msg , VARIABLE  );
+			NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND( msg , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -372,23 +372,23 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// in:
 
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( in , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
-		NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -437,14 +437,14 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(in_ref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(in_deref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( in  , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( in  , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( msg , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND( msg , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -460,28 +460,28 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// car in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( car_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( car_in , IMMUTABLE );
 
 	// cdr in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( cdr_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( cdr_in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -535,16 +535,16 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(car_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(car_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(cdr_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(cdr_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( out    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( out    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( car_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( car_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( cdr_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( cdr_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( end    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( end    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( msg    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND( msg    , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -560,18 +560,18 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)			{ return s.out; }
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)			{ return s.end; }
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)			{ return s.aux; }
-		NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -615,12 +615,12 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( aux , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND( aux , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -636,23 +636,23 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// in:
 
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( in , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
-		NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -701,14 +701,14 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(in_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(in_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( in  , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( in  , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( aux , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND( aux , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -724,28 +724,28 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// car in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(car_in_ref, s)		{ return s.car_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( car_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( car_in , IMMUTABLE );
 
 	// cdr in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)		{ return s.cdr_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( cdr_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( cdr_in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -799,16 +799,16 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(car_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(car_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(cdr_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(cdr_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND(aux_deref);
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( out    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( out    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( car_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( car_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( cdr_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( cdr_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( end    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( end    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( aux    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND( aux    , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -824,23 +824,23 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
-		NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -904,14 +904,14 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( aux , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( aux , IMMUTABLE );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( msg , VARIABLE  );
+			NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND( msg , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -927,28 +927,28 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)		{ return s.out; }
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)		{ return *s.out; }
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// in:
 
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(in_ref, s)		{ return s.in; }
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(in_deref, s)		{ return *s.in; }
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( in , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)		{ return s.end; }
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)		{ return *s.end; }
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)		{ return s.aux; }
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)		{ return *s.aux; }
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)		{ return s.msg; }
-		NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)		{ return *s.msg; }
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -1019,16 +1019,16 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(in_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(in_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( out , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( out , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( in  , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( in  , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( end , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( end , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( aux , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( aux , IMMUTABLE );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( msg , VARIABLE  );
+			NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( msg , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/
@@ -1044,33 +1044,33 @@ public:
 
 	// out:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_ref, s)	{ return s.out; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(out_deref, s)	{ return *s.out; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( out , IMMUTABLE );
 
 	// car in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(car_in_ref, s)	{ return s.car_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(car_in_deref, s)	{ return *s.car_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( car_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( car_in , IMMUTABLE );
 
 	// cdr in:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(cdr_in_ref, s)	{ return s.cdr_in; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(cdr_in_deref, s)	{ return *s.cdr_in; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( cdr_in , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( cdr_in , IMMUTABLE );
 
 	// end:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_ref, s)	{ return s.end; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(end_deref, s)	{ return *s.end; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( end , IMMUTABLE );
 
 	// aux:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_ref, s)	{ return s.aux; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(aux_deref, s)	{ return *s.aux; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( aux , IMMUTABLE );
 
 	// msg:
 
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_ref, s)	{ return s.msg; }
-		NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR(msg_deref, s)	{ return *s.msg; }
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , VARIABLE  );
+		NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR( msg , IMMUTABLE );
 
 /***********************************************************************************************************************/
 
@@ -1148,18 +1148,18 @@ private:
 
 		// friendship:
 
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(out_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(car_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(car_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(cdr_in_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(cdr_in_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(end_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(aux_deref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_ref);
-			NIK_DECLARE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND(msg_deref);
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( out    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( out    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( car_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( car_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( cdr_in , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( cdr_in , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( end    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( end    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( aux    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( aux    , IMMUTABLE );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( msg    , VARIABLE  );
+			NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND( msg    , IMMUTABLE );
 	};
 
 /***********************************************************************************************************************/

@@ -55,36 +55,36 @@ public:
 /***********************************************************************************************************************/
 
 	template<typename T, typename U>
-	static constexpr T add(T a1, U a2)				{ return a1 + a2; }
+	static constexpr T add(T v1, U v2)				{ return v1 + v2; }
 
 	template<typename T, typename U>
-	static constexpr T subtract(T a1, U a2)				{ return a1 - a2; }
+	static constexpr T subtract(T v1, U v2)				{ return v1 - v2; }
 
 	template<typename T, typename U>
-	static constexpr T multiply(T a1, U a2)				{ return a1 * a2; }
+	static constexpr T multiply(T v1, U v2)				{ return v1 * v2; }
 
 	template<typename T, typename U>
-	static constexpr T divide(T a1, U a2)				{ return a1 / a2; }
+	static constexpr T divide(T v1, U v2)				{ return v1 / v2; }
 
 	template<typename T, typename U>
-	static constexpr T modulo(T a1, U a2)				{ return a1 % a2; }
+	static constexpr T modulo(T v1, U v2)				{ return v1 % v2; }
 
 	//
 
 	template<typename T, auto V>
-	static constexpr T add_by(T a)					{ return a + V; }
+	static constexpr T add_by(T v)					{ return v + V; }
 
 	template<typename T, auto V>
-	static constexpr T subtract_by(T a)				{ return a - V; }
+	static constexpr T subtract_by(T v)				{ return v - V; }
 
 	template<typename T, auto V>
-	static constexpr T multiply_by(T a)				{ return a * V; }
+	static constexpr T multiply_by(T v)				{ return v * V; }
 
 	template<typename T, auto V>
-	static constexpr T divide_by(T a)				{ return a / V; }
+	static constexpr T divide_by(T v)				{ return v / V; }
 
 	template<typename T, auto V>
-	static constexpr T modulo_by(T a)				{ return a % V; }
+	static constexpr T modulo_by(T v)				{ return v % V; }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -94,10 +94,10 @@ public:
 /***********************************************************************************************************************/
 
 	template<typename T, typename U>
-	static constexpr T max(T a1, U a2)				{ return a1 > a2 ? a1 : a2; }
+	static constexpr T max(T v1, U v2)				{ return v1 > v2 ? v1 : v2; }
 
 	template<typename T, typename U>
-	static constexpr T min(T a1, U a2)				{ return a1 < a2 ? a1 : a2; }
+	static constexpr T min(T v1, U v2)				{ return v1 < v2 ? v1 : v2; }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -107,42 +107,42 @@ public:
 /***********************************************************************************************************************/
 
 	template<typename T, typename U>
-	static constexpr bool equal(T a1, U a2)				{ return (a1 == a2); }
+	static constexpr bool equal(T v1, U v2)				{ return (v1 == v2); }
 
 	template<typename T, typename U>
-	static constexpr bool not_equal(T a1, U a2)			{ return (a1 != a2); }
+	static constexpr bool not_equal(T v1, U v2)			{ return (v1 != v2); }
 
 	template<typename T, typename U>
-	static constexpr bool less_than(T a1, U a2)			{ return (a1 < a2); }
+	static constexpr bool less_than(T v1, U v2)			{ return (v1 < v2); }
 
 	template<typename T, typename U>
-	static constexpr bool less_than_or_equal(T a1, U a2)		{ return (a1 <= a2); }
+	static constexpr bool less_than_or_equal(T v1, U v2)		{ return (v1 <= v2); }
 
 	template<typename T, typename U>
-	static constexpr bool greater_than(T a1, U a2)			{ return (a1 > a2); }
+	static constexpr bool greater_than(T v1, U v2)			{ return (v1 > v2); }
 
 	template<typename T, typename U>
-	static constexpr bool greater_than_or_equal(T a1, U a2)		{ return (a1 >= a2); }
+	static constexpr bool greater_than_or_equal(T v1, U v2)		{ return (v1 >= v2); }
 
 	//
 
 	template<typename T, auto V>
-	static constexpr bool is_value(T a)				{ return (a == V); }
+	static constexpr bool is_value(T v)				{ return (v == V); }
 
 	template<typename T, auto V>
-	static constexpr bool not_value(T a)				{ return (a != V); }
+	static constexpr bool not_value(T v)				{ return (v != V); }
 
 	template<typename T, auto V>
-	static constexpr bool is_less_than(T a)				{ return (a < V); }
+	static constexpr bool is_less_than(T v)				{ return (v < V); }
 
 	template<typename T, auto V>
-	static constexpr bool is_less_than_or_equal(T a)		{ return (a <= V); }
+	static constexpr bool is_less_than_or_equal(T v)		{ return (v <= V); }
 
 	template<typename T, auto V>
-	static constexpr bool is_greater_than(T a)			{ return (a > V); }
+	static constexpr bool is_greater_than(T v)			{ return (v > V); }
 
 	template<typename T, auto V>
-	static constexpr bool is_greater_than_or_equal(T a)		{ return (a >= V); }
+	static constexpr bool is_greater_than_or_equal(T v)		{ return (v >= V); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -157,6 +157,19 @@ public:
 	static constexpr bool equivalence(bool b1, bool b2)		{ return (b1 || !b2) && (!b1 || b2); }
 
 	static constexpr bool negation(bool b)				{ return !b; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// dereference operators:
+
+/***********************************************************************************************************************/
+
+	template<typename T>
+	static constexpr auto & dereference(T & v)			{ return *v; }
+
+	template<typename T>
+	static constexpr const auto & cdereference(const T & v)		{ return *v; }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

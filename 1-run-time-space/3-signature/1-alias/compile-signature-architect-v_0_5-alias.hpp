@@ -91,8 +91,8 @@
 		{ return NIK_MODULE::out_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, out_deref)(Signature & s)
-		{ return NIK_MODULE::out_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, out_cref)(const Signature & s)
+		{ return NIK_MODULE::out_cref(s); }
 
 	// in:
 
@@ -101,8 +101,8 @@
 		{ return NIK_MODULE::in_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, in_deref)(Signature & s)
-		{ return NIK_MODULE::in_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, in_cref)(const Signature & s)
+		{ return NIK_MODULE::in_cref(s); }
 
 	// car in:
 
@@ -111,8 +111,8 @@
 		{ return NIK_MODULE::car_in_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, car_in_deref)(Signature & s)
-		{ return NIK_MODULE::car_in_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, car_in_cref)(const Signature & s)
+		{ return NIK_MODULE::car_in_cref(s); }
 
 	// cdr in:
 
@@ -121,8 +121,8 @@
 		{ return NIK_MODULE::cdr_in_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, cdr_in_deref)(Signature & s)
-		{ return NIK_MODULE::cdr_in_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, cdr_in_cref)(const Signature & s)
+		{ return NIK_MODULE::cdr_in_cref(s); }
 
 	// end:
 
@@ -131,8 +131,8 @@
 		{ return NIK_MODULE::end_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, end_deref)(Signature & s)
-		{ return NIK_MODULE::end_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, end_cref)(const Signature & s)
+		{ return NIK_MODULE::end_cref(s); }
 
 	// aux:
 
@@ -141,8 +141,8 @@
 		{ return NIK_MODULE::aux_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, aux_deref)(Signature & s)
-		{ return NIK_MODULE::aux_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, aux_cref)(const Signature & s)
+		{ return NIK_MODULE::aux_cref(s); }
 
 	// msg:
 
@@ -151,8 +151,8 @@
 		{ return NIK_MODULE::msg_ref(s); }
 
 	template<typename Signature>
-	inline NIK_POLICY auto & nik_name(NIK_PREFIX, msg_deref)(Signature & s)
-		{ return NIK_MODULE::msg_deref(s); }
+	inline NIK_POLICY const auto & nik_name(NIK_PREFIX, msg_cref)(const Signature & s)
+		{ return NIK_MODULE::msg_cref(s); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

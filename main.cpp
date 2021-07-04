@@ -37,7 +37,7 @@
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
   
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
@@ -46,7 +46,7 @@
 
 // run time space:
 
-//	#include nik_import(., compile, compose, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., compile, compose, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, endopose, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, one_cycle, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(., compile, signature, architect, v_0_5, gcc, dynamic, name)
@@ -63,14 +63,20 @@
 	{
 		using sign_type = one_cycle
 		<
-			_out_object < int >,
-			_in_object  < int >,
-			_end_object < int >
+			_out_object < int* >,
+			_in_object  < int  >,
+			_end_object < int  >
 		>;
 
-		auto x = sign_type(5, 3, -7);
+		constexpr auto out = do_compose<out_ref<sign_type>, dereference<int*>>;
 
-		printf("%d\n", out_ref(x));
+		int arr[] = { 5 };
+
+		auto x = sign_type(arr, 3, -7);
+
+		out(x) = 12;
+
+		printf("%d\n", out(x));
 
 	//	char arr[5];
 	//	arr[4] = '\0';

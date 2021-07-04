@@ -608,3 +608,25 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+	template<typename T>	struct _type		{ using type = T; };
+	template<typename T>	struct _attr		{ using type = T; };
+	template<Interval V>	struct _ival		{ static constexpr auto value = V; };
+	template<Axis V>	struct _axis		{ static constexpr auto value = V; };
+	template<auto V>	struct _value		{ static constexpr auto value = V; };
+	template<auto V>	struct _next		{ static constexpr auto value = V; };
+	template<auto V>	struct _prev		{ static constexpr auto value = V; };
+	template<auto V>	struct _peek		{ static constexpr auto value = V; };
+	template<auto V>	struct _act_f		{ static constexpr auto value = V; };
+	template<auto V>	struct _combine_f	{ static constexpr auto value = V; };
+
+/***********************************************************************************************************************/
+
+	template<typename...> struct _out	{ };
+	template<typename...> struct _in	{ };
+	template<typename...> struct _end	{ };
+	template<typename...> struct _function	{ };
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+

@@ -31,12 +31,12 @@ public:
 
 	template
 	<
-		typename OutType, typename OutAttr, typename OutIval, typename OutNext,
-		typename InType, typename InAttr, typename InIval,
-			typename InAxis, typename InVal, typename InNext, typename InPeek,
-		typename EndType, typename EndAttr, typename EndNext, typename EndPrev,
+		typename OutType , typename OutAttr , typename OutIval , typename OutNext ,
+		typename InType  , typename InAttr  , typename InIval  , typename InAxis  ,
+		                   typename InVal   , typename InNext  , typename InPeek  ,
+		typename EndType , typename EndAttr , typename EndNext , typename EndPrev ,
 
-		typename ActFunction
+		typename ActFunc
 	>
 	class map_specification
 	<
@@ -44,7 +44,7 @@ public:
 		_in       < InType  , InAttr  , InIval  , InAxis  , InVal , InNext , InPeek >,
 		_end      < EndType , EndAttr , EndNext , EndPrev                           >,
 
-		_function < ActFunction                                                     >
+		_function < ActFunc                                                         >
 	>
 	{
 		public:
@@ -52,79 +52,104 @@ public:
 			using out_type					= typename OutType::type;
 			using in_type					= typename InType::type;
 			using end_type					= typename EndType::type;
-
 			using return_type				= out_type;
-			static constexpr auto return_value		= out_ref; // ?
-
-		private:
-
-				// "deref" is dependent on the input (it might not even deref)
-
-			static constexpr auto out_ref			= 
-			static constexpr auto out_imm_ref		= 
-			static constexpr auto out_deref			= 
-			static constexpr auto out_inc			= 
-			static constexpr bool out_is_left_open		= 
-			static constexpr bool out_is_right_open		= 
-			static constexpr bool out_is_right_closed	= 
-
-			static constexpr auto in_ref			= 
-			static constexpr auto in_imm_ref		= 
-			static constexpr auto in_imm_deref		= 
-			static constexpr auto in_inc			= 
-			static constexpr bool in_is_left_open		= 
-			static constexpr bool in_is_right_open		= 
-			static constexpr bool in_is_right_closed	= 
-
-			static constexpr auto end_ref			= 
-			static constexpr auto end_imm_ref		= 
-			static constexpr auto end_inc			= 
-			static constexpr auto end_dec			= 
-
-			static constexpr bool is_bidirectional_last	= 
-			static constexpr auto is_equal			= function_module::template equal<>;
-			static constexpr auto act_f			= ActFunction::value;
-
-		public:
 
 			using signature					= one_cycle
 									<
-										out_object < obj_type<out_obj> >,
-										in_object  < obj_type<in_obj>  >,
-										end_object < obj_type<end_obj> >
+										_out_object < out_type >,
+										_in_object  < in_type  >,
+										_end_object < end_type >
 									>;
 
-			// map:
+		private:
 
-				//     ival meet: (out is right closed) or (in is right closed) ?
-				// out ival meet: (out is right open) and (in is right closed) ?
-				//  in ival meet: (in is right open) and (out is right closed) ?
+			using out_attr					= typename OutAttr::type;
+			using in_attr					= typename InAttr::type;
+			using end_attr					= typename EndAttr::type;
 
-			static constexpr auto out_next			= assign<out_ref, out_inc, out_imm_ref>;
-			static constexpr bool is_out_next_before	= out_is_left_open;
-			static constexpr bool is_out_next_after		= out_is_right_open && in_is_right_closed;
+				// "deref" is dependent on the input (it might not even deref)
 
-			static constexpr auto in_next			= assign<in_ref, in_inc, in_imm_ref>;
-			static constexpr bool is_in_next_before		= in_is_left_open;
-			static constexpr bool is_in_next_after		= in_is_right_open && out_is_right_closed;
+			static constexpr auto _out_ref			= out_ref<signature>;
+			static constexpr auto _out_imm_ref		= 
+			static constexpr auto _out_deref		= 
+			static constexpr auto _out_inc			= 
+			static constexpr bool _out_is_left_open		= 
+			static constexpr bool _out_is_right_open	= 
+			static constexpr bool _out_is_right_closed	= 
 
-			static constexpr auto end_next			= assign<end_ref, end_inc, end_imm_ref>;
-			static constexpr bool is_end_next_after		= is_bidirectional_last;
+			static constexpr auto _in_ref			= 
+			static constexpr auto _in_imm_ref		= 
+			static constexpr auto _in_imm_deref		= 
+			static constexpr auto _in_inc			= 
+			static constexpr bool _in_is_left_open		= 
+			static constexpr bool _in_is_right_open		= 
+			static constexpr bool _in_is_right_closed	= 
 
-			static constexpr auto end_prevous		= assign<end_ref, end_dec, end_imm_ref>;
-			static constexpr bool is_end_previous_before	= is_bidirectional_last;
+			static constexpr auto _end_ref			= 
+			static constexpr auto _end_imm_ref		= 
+			static constexpr auto _end_inc			= 
+			static constexpr auto _end_dec			= 
 
-			static constexpr auto loop_predicate		= test<is_equal, in_imm_ref, end_imm_ref>;
+			static constexpr bool _is_bidirectional		= 
+			static constexpr bool _is_last			= 
+			static constexpr auto _is_equal			= function_module::template equal<>;
+			static constexpr auto _act_f			= ActFunc::value;
+
+		public:
+
+			static constexpr auto out_next			= assign
+									<
+										_out_ref, _out_inc, _out_imm_ref
+									>;
+			static constexpr bool is_out_next_before	= _out_is_left_open;
+			static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
+
+			//
+
+			static constexpr auto in_next			= assign
+									<
+										_in_ref, _in_inc, _in_imm_ref
+									>;
+			static constexpr bool is_in_next_before		= _in_is_left_open;
+			static constexpr bool is_in_next_after		= _in_is_right_open && _out_is_right_closed;
+
+			//
+
+			static constexpr auto end_next			= assign
+									<
+										_end_ref, _end_inc, _end_imm_ref
+									>;
+			static constexpr bool is_end_next_after		= _is_bidirectional && _is_last;
+
+			static constexpr auto end_prevous		= assign
+									<
+										_end_ref, _end_dec, _end_imm_ref
+									>;
+			static constexpr bool is_end_previous_before	= _is_bidirectional && _is_last;
+
+			//
+
+			static constexpr auto loop_predicate		= test
+									<
+										_is_equal, _in_imm_ref, _end_imm_ref
+									>;
 			static constexpr auto loop_break		= _id_;
 
-			static constexpr auto act_function		= assign<out_deref, act_f, in_imm_deref>;
-			static constexpr bool is_act_function_after	= out_is_right_closed || in_is_right_closed;
+			//
+
+			static constexpr auto act_function		= assign
+									<
+										_out_deref, _act_f, _in_imm_deref
+									>;
+			static constexpr bool is_act_function_after	= _out_is_right_closed || _in_is_right_closed;
+
+			//
+
+			static constexpr auto return_value		= _out_ref;
 	};
 
 /*
 	// out:
-
-	//	using out_attr				= typename OutAttr::type;
 
 	//	using out_obj				= out_object		< out_type , out_attr		>;
 	//	using out_ref_obj			= obj_to_direct		< out_obj			>;
@@ -134,8 +159,6 @@ public:
 	//	static constexpr auto out_cdr		= iterate<OutCdr::value, out_type>;
 
 	// in:
-
-	//	using in_attr				= typename InAttr::type;
 
 	//	using in_obj				= in_object		< in_type	, in_attr	>;
 	//	using din_obj				= obj_to_direct		< in_obj			>;
@@ -149,8 +172,6 @@ public:
 	//	static constexpr auto in_peek		= iterate<InPeek::value, in_type>;
 
 	// end:
-
-	//	using end_attr				= typename EndAttr::type;
 
 	//	using end_obj				= end_object		< end_type	, end_attr	>;
 	//	using dend_obj				= obj_to_direct		< end_obj			>;
