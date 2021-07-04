@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle glide (bifold):
+// glide (bifold) source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -63,7 +63,7 @@ private:
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct glide_specification;
+	template<typename, typename, typename, typename, typename> class glide_specification;
 
 	template
 	<
@@ -76,7 +76,7 @@ private:
 
 		typename ActFunction, typename CombineFunction
 	>
-	struct glide_specification
+	class glide_specification
 	<
 		_out		< OutType   , OutAttr									>,
 		_car_in		< CarInType , CarInAttr , CarInIval , CarInCar  , CarInCdr				>,

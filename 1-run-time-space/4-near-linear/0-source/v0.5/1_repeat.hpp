@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle repeat:
+// repeat source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -53,7 +53,7 @@ private:
 		typename OutObjSpec, typename EndObjSpec, typename InObjSpec, typename ReturnObjSpec,
 		typename LoopPredSpec, typename ActFuncSpec, typename OutNextSpec
 	>
-	struct repeat_specification
+	class repeat_specification
 	{
 		// out_type_<Spec>:
 

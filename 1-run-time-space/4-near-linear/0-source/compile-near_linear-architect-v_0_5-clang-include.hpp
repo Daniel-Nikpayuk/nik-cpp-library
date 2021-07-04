@@ -46,7 +46,7 @@ namespace nik
 		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
 		using function_module	= nik_module(interpret, function, architect, v_0_5, clang);
 
-		#include"v0.5/0_generic.hpp"
+		#include"v0.5/0_filter.hpp"
 		#include"v0.5/1_repeat.hpp"
 		#include"v0.5/2_map.hpp"
 		#include"v0.5/3_fold.hpp"

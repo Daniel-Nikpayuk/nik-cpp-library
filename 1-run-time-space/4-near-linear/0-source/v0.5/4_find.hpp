@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle find:
+// find source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -53,7 +53,7 @@ private:
 
 /***********************************************************************************************************************/
 
-	template<typename, typename, typename, typename, typename> struct find_first_specification;
+	template<typename, typename, typename, typename, typename> class find_first_specification;
 
 /*
 	template
@@ -65,7 +65,7 @@ private:
 
 		typename ActPredicate
 	>
-	struct find_first_specification
+	class find_first_specification
 	<
 		_out		< OutType , OutAttr				>,
 		_in		< InType  , InAttr  , InIval  , InCar , InCdr	>,
@@ -337,7 +337,7 @@ private:
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct find_all_specification;
+	template<typename, typename, typename, typename, typename> class find_all_specification;
 
 	template
 	<
@@ -349,7 +349,7 @@ private:
 
 		typename ValuePredicate
 	>
-	struct find_all_specification
+	class find_all_specification
 	<
 		_out		< OutType , OutAttr , OutIval , OutCdr					>,
 		_in		< InType  , InAttr  , InIval  , InAxis  , InCar , InCdr , InPeek	>,

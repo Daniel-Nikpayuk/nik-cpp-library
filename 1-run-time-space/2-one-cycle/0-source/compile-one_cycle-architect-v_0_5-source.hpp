@@ -329,6 +329,141 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// message specs:
+
+/***********************************************************************************************************************/
+
+// break:
+
+	enum struct Break
+	{
+		before_value,
+		after_value,
+
+		before_act1,
+		before_act2,
+		before_act,
+		after_act,
+
+		before_combine1,
+		before_combine2,
+		before_combine,
+		after_combine,
+
+		before_next,
+		after_next,
+
+		dimension // filler
+	};
+
+/***********************************************************************************************************************/
+
+// predicates:
+
+	// value:
+
+		static constexpr auto is_before_value		= function_module::template is_value
+								<
+									Break, Break::before_value
+								>;
+
+		static constexpr auto is_after_value		= function_module::template is_value
+								<
+									Break, Break::after_value
+								>;
+
+	// act:
+
+		static constexpr auto is_before_act		= function_module::template is_value
+								<
+									Break, Break::before_act
+								>;
+
+		static constexpr auto is_after_act		= function_module::template is_value
+								<
+									Break, Break::after_act
+								>;
+
+	// combine:
+
+		static constexpr auto is_before_combine		= function_module::template is_value
+								<
+									Break, Break::before_combine
+								>;
+
+		static constexpr auto is_after_combine		= function_module::template is_value
+								<
+									Break, Break::after_combine
+								>;
+
+	// next:
+
+		static constexpr auto is_before_next		= function_module::template is_value
+								<
+									Break, Break::before_next
+								>;
+
+		static constexpr auto is_after_next		= function_module::template is_value
+								<
+									Break, Break::after_next
+								>;
+
+/***********************************************************************************************************************/
+
+// constants:
+
+	// value:
+
+		static constexpr auto br_before_value		= function_module::template constant
+								<
+									Break::before_value
+								>;
+
+		static constexpr auto br_after_value		= function_module::template constant
+								<
+									Break::after_value
+								>;
+
+	// act:
+
+		static constexpr auto br_before_act		= function_module::template constant
+								<
+									Break::before_act
+								>;
+
+		static constexpr auto br_after_act		= function_module::template constant
+								<
+									Break::after_act
+								>;
+
+	// combine:
+
+		static constexpr auto br_before_combine		= function_module::template constant
+								<
+									Break::before_combine
+								>;
+
+		static constexpr auto br_after_combine		= function_module::template constant
+								<
+									Break::after_combine
+								>;
+
+	// next:
+
+		static constexpr auto br_before_next		= function_module::template constant
+								<
+									Break::before_next
+								>;
+
+		static constexpr auto br_after_next		= function_module::template constant
+								<
+									Break::after_next
+								>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // repeat:
 
 /***********************************************************************************************************************/

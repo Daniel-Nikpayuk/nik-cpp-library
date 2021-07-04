@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle zip (bimap):
+// zip (bimap) source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -66,7 +66,7 @@ private:
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct zip_specification;
+	template<typename, typename, typename, typename, typename> class zip_specification;
 
 	template
 	<
@@ -79,7 +79,7 @@ private:
 
 		typename ActFunction
 	>
-	struct zip_specification
+	class zip_specification
 	<
 		_out		< OutType   , OutAttr   , OutIval   , OutCdr						>,
 		_car_in		< CarInType , CarInAttr , CarInIval , CarInCar  , CarInCdr				>,

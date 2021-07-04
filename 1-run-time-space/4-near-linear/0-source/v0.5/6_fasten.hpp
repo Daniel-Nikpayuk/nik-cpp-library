@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle fasten:
+// fasten source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -68,7 +68,7 @@ private:
 /***********************************************************************************************************************/
 
 /*
-	template<typename, typename, typename, typename, typename> struct fasten_specification;
+	template<typename, typename, typename, typename, typename> class fasten_specification;
 
 	template
 	<
@@ -81,7 +81,7 @@ private:
 
 		typename ActFunction, typename CombineFunction
 	>
-	struct fasten_specification
+	class fasten_specification
 	<
 		_out		< OutType   , OutAttr   , OutIval   , OutCdr						>,
 		_car_in		< CarInType , CarInAttr , CarInIval , CarInCar  , CarInCdr				>,

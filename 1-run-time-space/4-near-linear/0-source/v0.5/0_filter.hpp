@@ -17,6 +17,170 @@
 **
 ************************************************************************************************************************/
 
+// filter source:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// signature arguments:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// keywords:
+
+/***********************************************************************************************************************/
+
+	enum struct Mutability
+	{
+		immutable,
+		variable,
+
+		dimension // filler
+	};
+
+	enum struct Denotation
+	{
+		reference,
+		dereference,
+
+		dimension // filler
+	};
+
+/***********************************************************************************************************************/
+
+	template<Mutability m>
+	static constexpr bool V_is_immutable			= (m == Mutability::immutable);
+
+	template<Mutability m>
+	static constexpr bool V_is_variable			= (m == Mutability::variable);
+
+	//
+
+	template<Denotation d>
+	static constexpr bool V_is_reference			= (d == Denotation::reference);
+
+	template<Denotation d>
+	static constexpr bool V_is_dereference			= (d == Denotation::dereference);
+
+/***********************************************************************************************************************/
+
+	template<Mutability m, Denotation d>
+	static constexpr bool V_is_immutable_reference		= (V_is_immutable<m> && V_is_reference<d>);
+
+	template<Mutability m, Denotation d>
+	static constexpr bool V_is_immutable_dereference	= (V_is_immutable<m> && V_is_dereference<d>);
+
+	template<Mutability m, Denotation d>
+	static constexpr bool V_is_variable_reference		= (V_is_variable<m> && V_is_reference<d>);
+
+	template<Mutability m, Denotation d>
+	static constexpr bool V_is_variable_dereference		= (V_is_variable<m> && V_is_dereference<d>);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// attribute specifications:
+
+/***********************************************************************************************************************/
+
+	template
+	<
+		Mutability Mutate,
+		Denotation Denote,
+		auto...
+	>
+	struct _argument_attributes
+	{
+		static constexpr Mutability mutate		= Mutate;
+		static constexpr Denotation denote		= Denote;
+	};
+
+	//
+
+	using imm_ref_arg_attr		= _argument_attributes < Mutability::immutable , Denotation::reference   >;
+	using imm_deref_arg_attr	= _argument_attributes < Mutability::immutable , Denotation::dereference >;
+	using var_ref_arg_attr		= _argument_attributes < Mutability::variable  , Denotation::reference   >;
+	using var_deref_arg_attr	= _argument_attributes < Mutability::variable  , Denotation::dereference >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// argument specifications:
+
+/***********************************************************************************************************************/
+
+	template<typename = void, typename = void> struct _argument		{ };
+
+	//
+
+	template<typename Type = void> using imm_ref_arg		= _argument < Type , imm_ref_arg_attr   >;
+	template<typename Type = void> using imm_deref_arg		= _argument < Type , imm_deref_arg_attr >;
+	template<typename Type = void> using var_ref_arg		= _argument < Type , var_ref_arg_attr   >;
+	template<typename Type = void> using var_deref_arg		= _argument < Type , var_deref_arg_attr >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// attribute specifications:
+
+/***********************************************************************************************************************/
+
+	template
+	<
+		OneCycleMember Member,
+		Interval Ival
+	>
+	struct _one_cycle_object_attributes
+	{
+		static constexpr OneCycleMember member	= Member;
+		static constexpr Interval interval	= Ival;
+	};
+
+	//
+
+	template<Interval ival>
+	using _out_obj_attr			= _one_cycle_object_attributes<OneCycleMember::out, ival>;
+
+	template<Interval ival>
+	using _in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::in, ival>;
+
+	template<Interval ival>
+	using _car_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::car_in, ival>;
+
+	template<Interval ival>
+	using _cdr_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::cdr_in, ival>;
+
+	template<Interval ival>
+	using _end_obj_attr			= _one_cycle_object_attributes<OneCycleMember::end, ival>;
+
+	template<Interval ival>
+	using _aux_obj_attr			= _one_cycle_object_attributes<OneCycleMember::aux, ival>;
+
+	template<Interval ival>
+	using _msg_obj_attr			= _one_cycle_object_attributes<OneCycleMember::msg, ival>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// object specifications:
+
+/***********************************************************************************************************************/
+
+	template<typename Type, Interval ival> using _out_object	= _object < Type , _out_obj_attr<ival>    >;
+	template<typename Type, Interval ival> using _in_object		= _object < Type , _in_obj_attr<ival>     >;
+	template<typename Type, Interval ival> using _car_in_object	= _object < Type , _car_in_obj_attr<ival> >;
+	template<typename Type, Interval ival> using _cdr_in_object	= _object < Type , _cdr_in_obj_attr<ival> >;
+	template<typename Type, Interval ival> using _end_object	= _object < Type , _end_obj_attr<ival>    >;
+	template<typename Type, Interval ival> using _aux_object	= _object < Type , _aux_obj_attr<ival>    >;
+	template<typename Type, Interval ival> using _msg_object	= _object < Type , _msg_obj_attr<ival>    >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // near linear source:
 
 	// This component provides tools to refine the engine down to near linear functions.
@@ -286,216 +450,6 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// list inductor specs:
-
-/***********************************************************************************************************************/
-
-// root:
-
-	template<auto N = _id_>	static constexpr auto before_loop		= lift<N>;
-
-	//
-
-	template<auto N = _id_>	static constexpr auto before_value		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_value		= lift<N>;
-
-	template<auto N = _id_>	static constexpr auto before_act		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_act			= lift<N>;
-
-	template<auto N = _id_>	static constexpr auto before_combine		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_combine		= lift<N>;
-
-	template<auto N = _id_>	static constexpr auto before_next		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_next		= lift<N>;
-
-	//
-
-	template<auto N = _id_>	static constexpr auto after_loop		= lift<N>;
-
-/***********************************************************************************************************************/
-
-// stem:
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_loop		= stem<P, B, N>;
-
-	//
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_value		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_value		= stem<P, B, N>;
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_act		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_act		= stem<P, B, N>;
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_combine	= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_combine	= stem<P, B, N>;
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_next		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_next		= stem<P, B, N>;
-
-	//
-
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_loop		= stem<P, B, N>;
-
-/***********************************************************************************************************************/
-
-// costem:
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_loop	= costem<P, N, B>;
-
-	//
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_value	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_value	= costem<P, N, B>;
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_act		= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_act		= costem<P, N, B>;
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_combine	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_combine	= costem<P, N, B>;
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_next	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_next		= costem<P, N, B>;
-
-	//
-
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_loop		= costem<P, N, B>;
-
-/***********************************************************************************************************************/
-
-// distem:
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_loop	= distem<P, N1, N2>;
-
-	//
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_value	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_value	= distem<P, N1, N2>;
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_act	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_act	= distem<P, N1, N2>;
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_combine	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_combine	= distem<P, N1, N2>;
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_next	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_next	= distem<P, N1, N2>;
-
-	//
-
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_loop	= distem<P, N1, N2>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// list operator specs:
-
-/***********************************************************************************************************************/
-
-// out:
-
-	template<typename Spec> using out_type_					= typename Spec::out_type;
-
-	template<typename Spec> static constexpr auto out_ival_			= Spec::out_ival;
-	template<typename Spec> static constexpr auto out_ival_meet_		= Spec::out_ival_meet;
-	template<typename Spec> static constexpr auto out_next_			= Spec::out_next;
-
-/***********************************************************************************************************************/
-
-// in:
-
-	template<typename Spec> using in_type_					= typename Spec::in_type;
-
-	template<typename Spec> static constexpr auto in_ival_			= Spec::in_ival;
-	template<typename Spec> static constexpr auto in_ival_meet_		= Spec::in_ival_meet;
-	template<typename Spec> static constexpr auto in_next_			= Spec::in_next;
-
-/***********************************************************************************************************************/
-
-// car in:
-
-	template<typename Spec> using car_in_type_				= typename Spec::car_in_type;
-
-	template<typename Spec> static constexpr auto car_in_ival_		= Spec::car_in_ival;
-	template<typename Spec> static constexpr auto car_in_ival_meet_		= Spec::car_in_ival_meet;
-	template<typename Spec> static constexpr auto car_in_next_		= Spec::car_in_next;
-
-/***********************************************************************************************************************/
-
-// cdr in:
-
-	template<typename Spec> using cdr_in_type_				= typename Spec::cdr_in_type;
-
-	template<typename Spec> static constexpr auto cdr_in_ival_		= Spec::cdr_in_ival;
-	template<typename Spec> static constexpr auto cdr_in_ival_meet_		= Spec::cdr_in_ival_meet;
-	template<typename Spec> static constexpr auto cdr_in_next_		= Spec::cdr_in_next;
-
-/***********************************************************************************************************************/
-
-// end:
-
-	template<typename Spec> using end_type_					= typename Spec::end_type;
-
-	template<typename Spec> static constexpr auto end_next_			= Spec::end_next;
-	template<typename Spec> static constexpr auto end_prev_			= Spec::end_previous;
-
-/***********************************************************************************************************************/
-
-// aux:
-
-//	template<typename Spec> using aux_type_					= typename Spec::aux_type;
-
-/***********************************************************************************************************************/
-
-// msg:
-
-//	template<typename Spec> using msg_type_					= typename Spec::msg_type;
-
-/***********************************************************************************************************************/
-
-// signature:
-
-	template<typename Spec> using signature_				= typename Spec::signature;
-
-/***********************************************************************************************************************/
-
-// return:
-
-	template<typename Spec> using return_type_				= typename Spec::return_type;
-
-	template<typename Spec> static constexpr auto return_value_		= Spec::return_value;
-
-/***********************************************************************************************************************/
-
-// predicate:
-
-	template<typename Spec> static constexpr bool ival_meet_		= Spec::ival_meet;
-	template<typename Spec> static constexpr bool is_bi_last_		= Spec::is_bi_last;
-
-/***********************************************************************************************************************/
-
-// function:
-
-	template<typename Spec> static constexpr auto loop_pred_		= Spec::loop_predicate;
-	template<typename Spec> static constexpr auto loop_break_		= Spec::loop_break;
-
-	template<typename Spec> static constexpr auto value_pred_		= Spec::value_predicate;
-//	template<typename Spec> static constexpr auto value_break_		= Spec::value_break;
-//	template<typename Spec> static constexpr auto value_func_		= Spec::value_function;
-
-	template<typename Spec> static constexpr auto act_pred_			= Spec::act_predicate;
-	template<typename Spec> static constexpr auto act_break_		= Spec::act_break;
-	template<typename Spec> static constexpr auto act_func_			= Spec::act_function;
-
-	template<typename Spec> static constexpr auto combine_func_		= Spec::combine_function;
-
-	template<typename Spec> static constexpr auto post_pred_		= Spec::post_predicate;
-	template<typename Spec> static constexpr auto post_func_		= Spec::post_function;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // subspecifications:
 
 /***********************************************************************************************************************/
@@ -649,135 +603,6 @@ public:
 		>;
 	};
 */
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// break (messages):
-
-/***********************************************************************************************************************/
-
-	enum struct Break
-	{
-		before_value,
-		after_value,
-
-		before_act1,
-		before_act2,
-		before_act,
-		after_act,
-
-		before_combine1,
-		before_combine2,
-		before_combine,
-		after_combine,
-
-		before_next,
-		after_next,
-
-		dimension // filler
-	};
-
-	// predicates:
-
-		// value:
-
-			static constexpr auto is_before_value		= function_module::template is_value
-									<
-										Break, Break::before_value
-									>;
-
-			static constexpr auto is_after_value		= function_module::template is_value
-									<
-										Break, Break::after_value
-									>;
-
-		// act:
-
-			static constexpr auto is_before_act		= function_module::template is_value
-									<
-										Break, Break::before_act
-									>;
-
-			static constexpr auto is_after_act		= function_module::template is_value
-									<
-										Break, Break::after_act
-									>;
-
-		// combine:
-
-			static constexpr auto is_before_combine		= function_module::template is_value
-									<
-										Break, Break::before_combine
-									>;
-
-			static constexpr auto is_after_combine		= function_module::template is_value
-									<
-										Break, Break::after_combine
-									>;
-
-		// next:
-
-			static constexpr auto is_before_next		= function_module::template is_value
-									<
-										Break, Break::before_next
-									>;
-
-			static constexpr auto is_after_next		= function_module::template is_value
-									<
-										Break, Break::after_next
-									>;
-
-	// constants:
-
-		// value:
-
-			static constexpr auto br_before_value		= function_module::template constant
-									<
-										Break::before_value
-									>;
-
-			static constexpr auto br_after_value		= function_module::template constant
-									<
-										Break::after_value
-									>;
-
-		// act:
-
-			static constexpr auto br_before_act		= function_module::template constant
-									<
-										Break::before_act
-									>;
-
-			static constexpr auto br_after_act		= function_module::template constant
-									<
-										Break::after_act
-									>;
-
-		// combine:
-
-			static constexpr auto br_before_combine		= function_module::template constant
-									<
-										Break::before_combine
-									>;
-
-			static constexpr auto br_after_combine		= function_module::template constant
-									<
-										Break::after_combine
-									>;
-
-		// next:
-
-			static constexpr auto br_before_next		= function_module::template constant
-									<
-										Break::before_next
-									>;
-
-			static constexpr auto br_after_next		= function_module::template constant
-									<
-										Break::after_next
-									>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

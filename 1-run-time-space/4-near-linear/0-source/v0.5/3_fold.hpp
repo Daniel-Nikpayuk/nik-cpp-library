@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// one cycle fold:
+// fold source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -48,7 +48,7 @@ private:
 
 /***********************************************************************************************************************/
 
-	template<typename, typename, typename, typename> struct fold_specification;
+	template<typename, typename, typename, typename> class fold_specification;
 
 /*
 	template
@@ -59,7 +59,7 @@ private:
 
 		typename ActFunction, typename CombineFunction
 	>
-	struct fold_specification
+	class fold_specification
 	<
 		_out		< OutType , OutAttr 				>,
 		_in		< InType  , InAttr  , InIval , InCar , InCdr	>,
