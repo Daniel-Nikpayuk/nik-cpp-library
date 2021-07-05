@@ -86,8 +86,8 @@ namespace nik
 
 		compose,
 		endopose,
-		one_cycle,
 		signature,
+		one_cycle,
 		near_linear,
 		typed_stack,
 		typed_machine,
@@ -272,13 +272,13 @@ namespace nik
 															\
 		1-endopose
 
-	#define nik_one_cycle()												\
-															\
-		2-one-cycle
-
 	#define nik_signature()												\
 															\
-		3-signature
+		2-signature
+
+	#define nik_one_cycle()												\
+															\
+		3-one-cycle
 
 	#define nik_near_linear()											\
 															\

@@ -17,59 +17,35 @@
 **
 ************************************************************************************************************************/
 
-// undef macros source:
+#ifndef NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// one cycle accessors:
+// dependencies:
 
-/***********************************************************************************************************************/
-
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_IN_END_AUX_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_END_AUX_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_AUX_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_IN_END_AUX_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_END_AUX_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_IN_END_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_END_MSG_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_CAR_IN_CDR_IN_END_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_IN_END_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_IN_END_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_DEFINE_OUT_END_ONE_CYCLE_FRIEND
-	#undef NIK_DEFINE_OUT_END_ONE_CYCLE_ACCESSOR
-
-	#undef NIK_MEMBER_IMMUTABLE
-	#undef NIK_MEMBER_VARIABLE
-
-	#undef NIK_IMMUTABLE
-	#undef NIK_VARIABLE
+	// none.
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// module:
+
+namespace nik
+{
+	nik_begin_module(compile, signature, architect, v_0_5, gcc)
+
+		#include"compile-signature-architect-v_0_5-source.hpp"
+
+	nik_end_module(compile, signature, architect, v_0_5, gcc)
+}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+#endif
 

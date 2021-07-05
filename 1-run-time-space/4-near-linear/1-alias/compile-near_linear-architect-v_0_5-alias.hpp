@@ -23,9 +23,61 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// interval:
+// objects:
 
 /***********************************************************************************************************************/
+
+// members:
+
+	using nik_name(NIK_PREFIX, OneCycleMember)			= typename NIK_MODULE::OneCycleMember;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_out)			= NIK_MODULE::template V_is_out<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_in)			= NIK_MODULE::template V_is_in<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_car_in)		= NIK_MODULE::template V_is_car_in<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_cdr_in)		= NIK_MODULE::template V_is_cdr_in<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_end)			= NIK_MODULE::template V_is_end<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_aux)			= NIK_MODULE::template V_is_aux<m>;
+
+	template<auto m>
+	NIK_POLICY auto nik_name(NIK_PREFIX, V_is_msg)			= NIK_MODULE::template V_is_msg<m>;
+
+// kinds:
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _out_object)			= typename NIK_MODULE::template _out_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _in_object)			= typename NIK_MODULE::template _in_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _car_in_object)		= typename NIK_MODULE::template _car_in_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _cdr_in_object)		= typename NIK_MODULE::template _cdr_in_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _end_object)			= typename NIK_MODULE::template _end_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _aux_object)			= typename NIK_MODULE::template _aux_object<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, _msg_object)			= typename NIK_MODULE::template _msg_object<T>;
+
+/***********************************************************************************************************************/
+
+// interval:
 
 	using nik_name(NIK_PREFIX, Interval)				= typename NIK_MODULE::Interval;
 

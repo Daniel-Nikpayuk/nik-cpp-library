@@ -38,13 +38,7 @@ namespace nik
 {
 	nik_begin_module(compile, signature, architect, v_0_5, clang)
 
-		#include"v0.5/define_macros.hpp"
-
-		#include"v0.5/0_abstract.hpp"
-		#include"v0.5/1_pair.hpp"
-		#include"v0.5/2_one_cycle.hpp"
-
-		#include"v0.5/undef_macros.hpp"
+		#include"compile-signature-architect-v_0_5-source.hpp"
 
 	nik_end_module(compile, signature, architect, v_0_5, clang)
 }

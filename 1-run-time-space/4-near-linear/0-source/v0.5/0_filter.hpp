@@ -23,6 +23,51 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// objects:
+
+/***********************************************************************************************************************/
+
+// members:
+
+public:
+
+	enum struct OneCycleMember
+	{
+		out,
+		in,
+		car_in,
+		cdr_in,
+		end,
+		aux,
+		msg,
+
+		dimension // filler
+	};
+
+	template<OneCycleMember m> static constexpr bool V_is_out		= (m == OneCycleMember::out);
+	template<OneCycleMember m> static constexpr bool V_is_in		= (m == OneCycleMember::in);
+	template<OneCycleMember m> static constexpr bool V_is_car_in		= (m == OneCycleMember::car_in);
+	template<OneCycleMember m> static constexpr bool V_is_cdr_in		= (m == OneCycleMember::cdr_in);
+	template<OneCycleMember m> static constexpr bool V_is_end		= (m == OneCycleMember::end);
+	template<OneCycleMember m> static constexpr bool V_is_aux		= (m == OneCycleMember::aux);
+	template<OneCycleMember m> static constexpr bool V_is_msg		= (m == OneCycleMember::msg);
+
+/***********************************************************************************************************************/
+
+// kinds:
+
+	template<typename T> using _out_object			= _object < OneCycleMember::out    , T >;
+	template<typename T> using _in_object			= _object < OneCycleMember::in     , T >;
+	template<typename T> using _car_in_object		= _object < OneCycleMember::car_in , T >;
+	template<typename T> using _cdr_in_object		= _object < OneCycleMember::cdr_in , T >;
+	template<typename T> using _end_object			= _object < OneCycleMember::end    , T >;
+	template<typename T> using _aux_object			= _object < OneCycleMember::aux    , T >;
+	template<typename T> using _msg_object			= _object < OneCycleMember::msg    , T >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // signature arguments:
 
 /***********************************************************************************************************************/
