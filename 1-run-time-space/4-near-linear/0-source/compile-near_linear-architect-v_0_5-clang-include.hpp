@@ -26,8 +26,8 @@
 
 // dependencies:
 
-	#include nik_source(../../.., compile, one_cycle, architect, v_0_5, clang)
 	#include nik_source(../../.., compile, signature, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, one_cycle, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

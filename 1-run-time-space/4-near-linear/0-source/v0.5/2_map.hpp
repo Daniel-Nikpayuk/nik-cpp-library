@@ -31,20 +31,21 @@ public:
 
 	template
 	<
-		typename OutType , typename OutAttr , typename OutIval , typename OutNext ,
-		typename InType  , typename InAttr  , typename InIval  , typename InAxis  ,
-		                   typename InVal   , typename InNext  , typename InPeek  ,
-		typename EndType , typename EndAttr , typename EndNext , typename EndPrev ,
+		typename OutType  , typename OutIval , typename OutNext ,
+		typename InType   , typename InIval  , typename InVal   ,
+		                    typename InNext  , typename InAxis  ,
+		                    typename InPeek  ,
+		typename EndType  , typename EndNext , typename EndPrev ,
 
-		typename ActFunc
+		typename LoopTest , MapAsgn
 	>
 	class map_specification
 	<
-		_out      < OutType , OutAttr , OutIval , OutNext                           >,
-		_in       < InType  , InAttr  , InIval  , InAxis  , InVal , InNext , InPeek >,
-		_end      < EndType , EndAttr , EndNext , EndPrev                           >,
+		_out  < OutType  , OutIval   , OutNext                            >,
+		_in   < InType   , InIval    , InVal   , InNext , InAxis , InPeek >,
+		_end  < EndType  , EndNext   , EndPrev                            >,
 
-		_function < ActFunc                                                         >
+		_algo < LoopTest , LoopBreak , MapAsgn                            >
 	>
 	{
 		public:
@@ -54,52 +55,61 @@ public:
 			using end_type					= typename EndType::type;
 			using return_type				= out_type;
 
-			using signature					= one_cycle
+			using signature					= nik_signature_signature
 									<
-										_out_object < out_type >,
-										_in_object  < in_type  >,
-										_end_object < end_type >
+										out_type ,
+										in_type  ,
+										end_type
 									>;
 
 		private:
 
-			using out_attr					= typename OutAttr::type;
-			using in_attr					= typename InAttr::type;
-			using end_attr					= typename EndAttr::type;
-
 				// "deref" is dependent on the input (it might not even deref)
 
-			static constexpr auto _out_ref			= out_ref<signature>;
-			static constexpr auto _out_imm_ref		= 
-			static constexpr auto _out_deref		= 
-			static constexpr auto _out_inc			= 
-			static constexpr bool _out_is_left_open		= 
-			static constexpr bool _out_is_right_open	= 
-			static constexpr bool _out_is_right_closed	= 
+			using out_next_args				= typename OutNext::arguments;
+			using in_next_args				= typename InNext::arguments;
+			using end_next_args				= typename EndNext::arguments;
+			using end_prev_args				= typename EndPrev::arguments;
+			using loop_pred_args				= typename LoopPred::arguments;
+			using map_func_args				= typename MapAsgn::arguments;
 
-			static constexpr auto _in_ref			= 
-			static constexpr auto _in_imm_ref		= 
-			static constexpr auto _in_imm_deref		= 
-			static constexpr auto _in_inc			= 
-			static constexpr bool _in_is_left_open		= 
-			static constexpr bool _in_is_right_open		= 
-			static constexpr bool _in_is_right_closed	= 
+			static constexpr auto _out_next_l		= out_f<out_next_args::l_value>;
+			static constexpr auto _out_next_r		= out_f<out_next_args::r_value>;
+			static constexpr auto _out_next			= OutNext::function;
+			static constexpr bool _out_is_left_open		= is_left_open<OutIval::value>;
+			static constexpr bool _out_is_right_open	= is_right_open<OutIval::value>;
+			static constexpr bool _out_is_right_closed	= is_right_closed<OutIval::value>;
 
-			static constexpr auto _end_ref			= 
-			static constexpr auto _end_imm_ref		= 
-			static constexpr auto _end_inc			= 
-			static constexpr auto _end_dec			= 
+			static constexpr auto _in_next_l		= in_f<in_next_args::l_value>;
+			static constexpr auto _in_next_r		= in_f<in_next_args::r_value>;
+			static constexpr auto _in_next			= InNext::function;
+			static constexpr bool _in_is_left_open		= is_left_open<InIval::value>;
+			static constexpr bool _in_is_right_open		= is_right_open<InIval::value>;
+			static constexpr bool _in_is_right_closed	= is_right_closed<InIval::value>;
 
-			static constexpr bool _is_bidirectional		= 
-			static constexpr bool _is_last			= 
-			static constexpr auto _is_equal			= function_module::template equal<>;
-			static constexpr auto _act_f			= ActFunc::value;
+			static constexpr auto _end_next_l		= end_f<end_next_args::l_value>;
+			static constexpr auto _end_next_r		= end_f<end_next_args::r_value>;
+			static constexpr auto _end_next			= EndNext::function;
+			static constexpr auto _end_prev_l		= end_f<end_prev_args::l_value>;
+			static constexpr auto _end_prev_r		= end_f<end_prev_args::r_value>;
+			static constexpr auto _end_prev			= EndPrev::function;
+
+			static constexpr bool _is_bidirectional		= is_bidirectional<InAxis::value>;
+			static constexpr bool _is_last			= is_last<OutIval::value, InIval::value>;
+
+			static constexpr auto _loop_pred_r1		= in_f<loop_pred_args::r1_value>;
+			static constexpr auto _loop_pred_r2		= end_f<loop_pred_args::r2_value>;
+			static constexpr auto _loop_pred		= LoopPred::function;
+
+			static constexpr auto _map_func_r1		= out_f<map_func_args::r1_value>;
+			static constexpr auto _map_func_r2		= in_f<map_func_args::r2_value>;
+			static constexpr auto _map_func			= MapAsgn::function;
 
 		public:
 
 			static constexpr auto out_next			= assign
 									<
-										_out_ref, _out_inc, _out_imm_ref
+										_out_next_l, _out_next, _out_next_r
 									>;
 			static constexpr bool is_out_next_before	= _out_is_left_open;
 			static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
@@ -108,7 +118,7 @@ public:
 
 			static constexpr auto in_next			= assign
 									<
-										_in_ref, _in_inc, _in_imm_ref
+										_in_next_l, _in_next, _in_next_r
 									>;
 			static constexpr bool is_in_next_before		= _in_is_left_open;
 			static constexpr bool is_in_next_after		= _in_is_right_open && _out_is_right_closed;
@@ -117,66 +127,41 @@ public:
 
 			static constexpr auto end_next			= assign
 									<
-										_end_ref, _end_inc, _end_imm_ref
+										_end_next_l, _end_next, _end_next_r
 									>;
 			static constexpr bool is_end_next_after		= _is_bidirectional && _is_last;
 
 			static constexpr auto end_prevous		= assign
 									<
-										_end_ref, _end_dec, _end_imm_ref
+										_end_prev_l, _end_prev, _end_prev_r
 									>;
 			static constexpr bool is_end_previous_before	= _is_bidirectional && _is_last;
 
 			//
 
-			static constexpr auto loop_predicate		= test
+			static constexpr auto loop_predicate		= test // is unidir_last ?
 									<
-										_is_equal, _in_imm_ref, _end_imm_ref
+										_is_equal, is_equal_r1, _is_equal_r2
 									>;
-			static constexpr auto loop_break		= _id_;
+			static constexpr auto loop_break		= LoopBreak::function;
 
 			//
 
 			static constexpr auto act_function		= assign
 									<
-										_out_deref, _act_f, _in_imm_deref
+										_map_func_l, _map_func, _map_func_r
 									>;
 			static constexpr bool is_act_function_after	= _out_is_right_closed || _in_is_right_closed;
 
 			//
 
-			static constexpr auto return_value		= _out_ref;
+			static constexpr auto return_value		= _out_next_l;
 	};
 
 /*
-	// out:
-
-	//	using out_obj				= out_object		< out_type , out_attr		>;
-	//	using out_ref_obj			= obj_to_direct		< out_obj			>;
-	//	using out_imm_ref_obj			= obj_to_immutable	< dout_obj			>;
-
-	//	static constexpr Interval out_ival	= OutIval::value;
 	//	static constexpr auto out_cdr		= iterate<OutCdr::value, out_type>;
-
-	// in:
-
-	//	using in_obj				= in_object		< in_type	, in_attr	>;
-	//	using din_obj				= obj_to_direct		< in_obj			>;
-	//	using cin_obj				= obj_to_immutable	< in_obj			>;
-	//	using cdin_obj				= obj_to_immutable	< din_obj			>;
-
-	//	static constexpr Interval in_ival	= InIval::value;
-	//	static constexpr Axis in_axis		= InAxis::value;
-	//	static constexpr auto in_car		= InCar::value;
 	//	static constexpr auto in_cdr		= iterate<InCdr::value, in_type>;
 	//	static constexpr auto in_peek		= iterate<InPeek::value, in_type>;
-
-	// end:
-
-	//	using end_obj				= end_object		< end_type	, end_attr	>;
-	//	using dend_obj				= obj_to_direct		< end_obj			>;
-	//	using cdend_obj				= obj_to_immutable	< dend_obj			>;
-
 	//	static constexpr auto end_cdr		= iterate<EndCdr::value, end_type>;
 	//	static constexpr auto end_rcdr		= iterate<EndRCdr::value, end_type>;
 
@@ -214,6 +199,59 @@ public:
 /***********************************************************************************************************************/
 
 /*
+	// new:
+
+	template
+	<
+		typename Type,
+		auto map_function,
+
+		auto OutIval		= Interval::closing,
+		auto OutDir		= Direction::forward,
+
+		auto InIval		= Interval::closing,
+		auto InDir		= Direction::forward,
+		auto InRDir		= Direction::backward,
+		auto InAxis		= Axis::bidirectional
+	>
+	using map_spec = map_specification
+	<
+		_out
+		<
+			_type   < OutType                     >,
+			_ival   < OutInterval                 >,
+			_next   < OutNext     , OutNextArgs   >
+		>,
+
+		_in
+		<
+			_type   < InType                      >,
+			_ival   < InInterval                  >,
+			_value  < ValFunc     , ValFuncArgs   >,
+			_next   < InNext      , InNextArgs    >,
+			_axis   < InAxis                      >,
+			_peek   < InPeek      , InPeekArgs    >
+		>,
+
+		_end
+		<
+			_type   < EndType                     >,
+			_next   < EndNext     , EndNextArgs   >,
+			_prev   < EndPrev     , EndPrevArgs   >
+		>,
+
+		_algo
+		<
+			_test   < LoopPred    , LoopPredArgs  >,
+			_apply  < LoopBreak                   >
+			_assign < MapFunc     , MapArgs       >
+		>
+	>;
+*/
+
+/*
+	// old:
+
 	template
 	<
 		typename Type,

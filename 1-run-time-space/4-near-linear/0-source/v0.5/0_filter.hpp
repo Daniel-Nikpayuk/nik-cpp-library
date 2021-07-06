@@ -23,15 +23,18 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// objects:
+// signature filters:
 
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // members:
 
+/***********************************************************************************************************************/
+
 public:
 
-	enum struct OneCycleMember
+	enum struct Member
 	{
 		out,
 		in,
@@ -44,36 +47,18 @@ public:
 		dimension // filler
 	};
 
-	template<OneCycleMember m> static constexpr bool V_is_out		= (m == OneCycleMember::out);
-	template<OneCycleMember m> static constexpr bool V_is_in		= (m == OneCycleMember::in);
-	template<OneCycleMember m> static constexpr bool V_is_car_in		= (m == OneCycleMember::car_in);
-	template<OneCycleMember m> static constexpr bool V_is_cdr_in		= (m == OneCycleMember::cdr_in);
-	template<OneCycleMember m> static constexpr bool V_is_end		= (m == OneCycleMember::end);
-	template<OneCycleMember m> static constexpr bool V_is_aux		= (m == OneCycleMember::aux);
-	template<OneCycleMember m> static constexpr bool V_is_msg		= (m == OneCycleMember::msg);
-
-/***********************************************************************************************************************/
-
-// kinds:
-
-	template<typename T> using _out_object			= _object < OneCycleMember::out    , T >;
-	template<typename T> using _in_object			= _object < OneCycleMember::in     , T >;
-	template<typename T> using _car_in_object		= _object < OneCycleMember::car_in , T >;
-	template<typename T> using _cdr_in_object		= _object < OneCycleMember::cdr_in , T >;
-	template<typename T> using _end_object			= _object < OneCycleMember::end    , T >;
-	template<typename T> using _aux_object			= _object < OneCycleMember::aux    , T >;
-	template<typename T> using _msg_object			= _object < OneCycleMember::msg    , T >;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// signature arguments:
+	template<Member m> static constexpr bool V_is_out		= (m == OneCycleMember::out);
+	template<Member m> static constexpr bool V_is_in		= (m == OneCycleMember::in);
+	template<Member m> static constexpr bool V_is_car_in		= (m == OneCycleMember::car_in);
+	template<Member m> static constexpr bool V_is_cdr_in		= (m == OneCycleMember::cdr_in);
+	template<Member m> static constexpr bool V_is_end		= (m == OneCycleMember::end);
+	template<Member m> static constexpr bool V_is_aux		= (m == OneCycleMember::aux);
+	template<Member m> static constexpr bool V_is_msg		= (m == OneCycleMember::msg);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// keywords:
+// argument filters:
 
 /***********************************************************************************************************************/
 
@@ -124,18 +109,10 @@ public:
 	static constexpr bool V_is_variable_dereference		= (V_is_variable<m> && V_is_dereference<d>);
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// attribute specifications:
+// attributes:
 
-/***********************************************************************************************************************/
-
-	template
-	<
-		Mutability Mutate,
-		Denotation Denote,
-		auto...
-	>
+	template<Mutability Mutate, Denotation Denote>
 	struct _argument_attributes
 	{
 		static constexpr Mutability mutate		= Mutate;
@@ -144,26 +121,28 @@ public:
 
 	//
 
-	using imm_ref_arg_attr		= _argument_attributes < Mutability::immutable , Denotation::reference   >;
-	using imm_deref_arg_attr	= _argument_attributes < Mutability::immutable , Denotation::dereference >;
-	using var_ref_arg_attr		= _argument_attributes < Mutability::variable  , Denotation::reference   >;
-	using var_deref_arg_attr	= _argument_attributes < Mutability::variable  , Denotation::dereference >;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// argument specifications:
+	using arg_attr_ref	= _argument_attributes < Mutability::variable  , Denotation::reference   >;
+	using arg_attr_deref	= _argument_attributes < Mutability::variable  , Denotation::dereference >;
+	using arg_attr_cref	= _argument_attributes < Mutability::immutable , Denotation::reference   >;
+	using arg_attr_cdref	= _argument_attributes < Mutability::immutable , Denotation::dereference >;
 
 /***********************************************************************************************************************/
 
-	template<typename = void, typename = void> struct _argument		{ };
+// specifications:
+
+	template<typename Type, typename Attr>
+	struct _argument
+	{
+		using type = Type;
+		using attr = Attr;
+	};
 
 	//
 
-	template<typename Type = void> using imm_ref_arg		= _argument < Type , imm_ref_arg_attr   >;
-	template<typename Type = void> using imm_deref_arg		= _argument < Type , imm_deref_arg_attr >;
-	template<typename Type = void> using var_ref_arg		= _argument < Type , var_ref_arg_attr   >;
-	template<typename Type = void> using var_deref_arg		= _argument < Type , var_deref_arg_attr >;
+	template<typename Type> using arg_ref			= _argument < Type , arg_attr_ref    >;
+	template<typename Type> using arg_deref			= _argument < Type , arg_atter_deref >;
+	template<typename Type> using arg_cref			= _argument < Type , arg_attr_cref   >;
+	template<typename Type> using arg_cderef		= _argument < Type , arg_attr_cderef >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -175,37 +154,37 @@ public:
 
 	template
 	<
-		OneCycleMember Member,
+		Member Member,
 		Interval Ival
 	>
 	struct _one_cycle_object_attributes
 	{
-		static constexpr OneCycleMember member	= Member;
+		static constexpr Member member	= Member;
 		static constexpr Interval interval	= Ival;
 	};
 
 	//
 
 	template<Interval ival>
-	using _out_obj_attr			= _one_cycle_object_attributes<OneCycleMember::out, ival>;
+	using _out_obj_attr			= _one_cycle_object_attributes<Member::out, ival>;
 
 	template<Interval ival>
-	using _in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::in, ival>;
+	using _in_obj_attr			= _one_cycle_object_attributes<Member::in, ival>;
 
 	template<Interval ival>
-	using _car_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::car_in, ival>;
+	using _car_in_obj_attr			= _one_cycle_object_attributes<Member::car_in, ival>;
 
 	template<Interval ival>
-	using _cdr_in_obj_attr			= _one_cycle_object_attributes<OneCycleMember::cdr_in, ival>;
+	using _cdr_in_obj_attr			= _one_cycle_object_attributes<Member::cdr_in, ival>;
 
 	template<Interval ival>
-	using _end_obj_attr			= _one_cycle_object_attributes<OneCycleMember::end, ival>;
+	using _end_obj_attr			= _one_cycle_object_attributes<Member::end, ival>;
 
 	template<Interval ival>
-	using _aux_obj_attr			= _one_cycle_object_attributes<OneCycleMember::aux, ival>;
+	using _aux_obj_attr			= _one_cycle_object_attributes<Member::aux, ival>;
 
 	template<Interval ival>
-	using _msg_obj_attr			= _one_cycle_object_attributes<OneCycleMember::msg, ival>;
+	using _msg_obj_attr			= _one_cycle_object_attributes<Member::msg, ival>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -221,6 +200,20 @@ public:
 	template<typename Type, Interval ival> using _end_object	= _object < Type , _end_obj_attr<ival>    >;
 	template<typename Type, Interval ival> using _aux_object	= _object < Type , _aux_obj_attr<ival>    >;
 	template<typename Type, Interval ival> using _msg_object	= _object < Type , _msg_obj_attr<ival>    >;
+
+/***********************************************************************************************************************/
+
+// object:
+
+	struct _o
+
+	template<typename T> using _out_object			= _object < Member::out    , T >;
+	template<typename T> using _in_object			= _object < Member::in     , T >;
+	template<typename T> using _car_in_object		= _object < Member::car_in , T >;
+	template<typename T> using _cdr_in_object		= _object < Member::cdr_in , T >;
+	template<typename T> using _end_object			= _object < Member::end    , T >;
+	template<typename T> using _aux_object			= _object < Member::aux    , T >;
+	template<typename T> using _msg_object			= _object < Member::msg    , T >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
