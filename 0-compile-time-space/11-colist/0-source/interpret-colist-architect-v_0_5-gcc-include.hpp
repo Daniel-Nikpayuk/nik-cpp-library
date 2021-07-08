@@ -40,7 +40,8 @@ namespace nik
 
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, static, name)
+
+		using function_module = nik_module(interpret, function, architect, v_0_5, gcc);
 
 		#include"interpret-colist-architect-v_0_5-source.hpp"
 

@@ -25,8 +25,6 @@
 
 // keywords:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, _id_)			= NIK_MODULE::_id_;
-
 	using nik_name(NIK_PREFIX, S_is_id_keyword)			= typename NIK_MODULE::S_is_id_keyword;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_id_keyword)		= NIK_MODULE::U_is_id_keyword;

@@ -43,7 +43,7 @@ public:
 	<
 		boolean_module::template V_if_then_else_VxV
 		<
-			predicate, next_f, _id_
+			predicate, next_f, U_id
 		>
 	>;
 
@@ -63,97 +63,97 @@ public:
 
 // root:
 
-	template<auto N = _id_>	static constexpr auto before_loop		= lift<N>;
+	template<auto N = U_id>	static constexpr auto before_loop		= lift<N>;
 
 	//
 
-	template<auto N = _id_>	static constexpr auto before_value		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_value		= lift<N>;
+	template<auto N = U_id>	static constexpr auto before_value		= lift<N>;
+	template<auto N = U_id>	static constexpr auto after_value		= lift<N>;
 
-	template<auto N = _id_>	static constexpr auto before_act		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_act			= lift<N>;
+	template<auto N = U_id>	static constexpr auto before_act		= lift<N>;
+	template<auto N = U_id>	static constexpr auto after_act			= lift<N>;
 
-	template<auto N = _id_>	static constexpr auto before_combine		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_combine		= lift<N>;
+	template<auto N = U_id>	static constexpr auto before_combine		= lift<N>;
+	template<auto N = U_id>	static constexpr auto after_combine		= lift<N>;
 
-	template<auto N = _id_>	static constexpr auto before_next		= lift<N>;
-	template<auto N = _id_>	static constexpr auto after_next		= lift<N>;
+	template<auto N = U_id>	static constexpr auto before_next		= lift<N>;
+	template<auto N = U_id>	static constexpr auto after_next		= lift<N>;
 
 	//
 
-	template<auto N = _id_>	static constexpr auto after_loop		= lift<N>;
+	template<auto N = U_id>	static constexpr auto after_loop		= lift<N>;
 
 /***********************************************************************************************************************/
 
 // stem:
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_loop		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_before_loop		= stem<P, B, N>;
 
 	//
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_value		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_value		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_before_value		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_after_value		= stem<P, B, N>;
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_act		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_act		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_before_act		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_after_act		= stem<P, B, N>;
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_combine	= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_combine	= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_before_combine	= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_after_combine	= stem<P, B, N>;
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_before_next		= stem<P, B, N>;
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_next		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_before_next		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_after_next		= stem<P, B, N>;
 
 	//
 
-	template<auto P, auto B, auto N = _id_> static constexpr auto stem_after_loop		= stem<P, B, N>;
+	template<auto P, auto B, auto N = U_id> static constexpr auto stem_after_loop		= stem<P, B, N>;
 
 /***********************************************************************************************************************/
 
 // costem:
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_loop	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_before_loop	= costem<P, N, B>;
 
 	//
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_value	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_value	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_before_value	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_after_value	= costem<P, N, B>;
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_act		= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_act		= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_before_act		= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_after_act		= costem<P, N, B>;
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_combine	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_combine	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_before_combine	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_after_combine	= costem<P, N, B>;
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_before_next	= costem<P, N, B>;
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_next		= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_before_next	= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_after_next		= costem<P, N, B>;
 
 	//
 
-	template<auto P, auto N, auto B = _id_> static constexpr auto costem_after_loop		= costem<P, N, B>;
+	template<auto P, auto N, auto B = U_id> static constexpr auto costem_after_loop		= costem<P, N, B>;
 
 /***********************************************************************************************************************/
 
 // distem:
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_loop	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_before_loop	= distem<P, N1, N2>;
 
 	//
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_value	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_value	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_before_value	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_after_value	= distem<P, N1, N2>;
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_act	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_act	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_before_act	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_after_act	= distem<P, N1, N2>;
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_combine	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_combine	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_before_combine	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_after_combine	= distem<P, N1, N2>;
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_before_next	= distem<P, N1, N2>;
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_next	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_before_next	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_after_next	= distem<P, N1, N2>;
 
 	//
 
-	template<auto P, auto N1, auto N2 = _id_> static constexpr auto distem_after_loop	= distem<P, N1, N2>;
+	template<auto P, auto N1, auto N2 = U_id> static constexpr auto distem_after_loop	= distem<P, N1, N2>;
 
 /***********************************************************************************************************************/
 
@@ -192,7 +192,7 @@ public:
 	<
 		boolean_module::template V_if_then_else_VxV
 		<
-			predicate, act_combine_f, _id_
+			predicate, act_combine_f, U_id
 		>
 	>;
 

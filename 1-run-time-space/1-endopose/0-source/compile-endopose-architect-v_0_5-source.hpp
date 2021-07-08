@@ -55,10 +55,10 @@ public:
 
 	struct S_is_lifted_id_keyword
 	{
-		static constexpr auto U_lift_id_ = U_type_T<S_lift<_id_>>;
+		static constexpr auto U_lift_id = U_type_T<S_lift<function_module::U_id>>;
 
 		template<auto uf>
-		static constexpr bool result = V_is_equal_UxU(U_pack_Vs<uf>, U_lift_id_);
+		static constexpr bool result = V_is_equal_UxU(U_pack_Vs<uf>, U_lift_id);
 	};
 
 	static constexpr auto U_is_lifted_id_keyword = U_type_T<S_is_lifted_id_keyword>;
@@ -196,7 +196,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*ante)(InTypes...)
 		>
-		struct S_stem<pred, ante, _id_>
+		struct S_stem<pred, ante, function_module::U_id>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -232,7 +232,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*conse)(InTypes...)
 		>
-		struct S_stem<pred, _id_, conse>
+		struct S_stem<pred, function_module::U_id, conse>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -267,7 +267,7 @@ public:
 
 			bool(*pred)(InType, InTypes...)
 		>
-		struct S_stem<pred, _id_, _id_>
+		struct S_stem<pred, function_module::U_id, function_module::U_id>
 		{
 			using OutType	= InType;
 
@@ -432,7 +432,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*ante)(InTypes...)
 		>
-		struct S_costem<pred, ante, _id_>
+		struct S_costem<pred, ante, function_module::U_id>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -468,7 +468,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*conse)(InTypes...)
 		>
-		struct S_costem<pred, _id_, conse>
+		struct S_costem<pred, function_module::U_id, conse>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -503,7 +503,7 @@ public:
 
 			bool(*pred)(InType, InTypes...)
 		>
-		struct S_costem<pred, _id_, _id_>
+		struct S_costem<pred, function_module::U_id, function_module::U_id>
 		{
 			using OutType	= InType;
 
@@ -668,7 +668,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*ante)(InTypes...)
 		>
-		struct S_distem<pred, ante, _id_>
+		struct S_distem<pred, ante, function_module::U_id>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -704,7 +704,7 @@ public:
 			bool(*pred)(InTypes...),
 			OutType(*conse)(InTypes...)
 		>
-		struct S_distem<pred, _id_, conse>
+		struct S_distem<pred, function_module::U_id, conse>
 		{
 			using out_type	= OutType;
 			using in_types	= typename_pack<InTypes...>;
@@ -739,7 +739,7 @@ public:
 
 			bool(*pred)(InType, InTypes...)
 		>
-		struct S_distem<pred, _id_, _id_>
+		struct S_distem<pred, function_module::U_id, function_module::U_id>
 		{
 			using OutType	= InType;
 

@@ -29,12 +29,10 @@ public:
 
 /***********************************************************************************************************************/
 
-	static constexpr void _id_()	{ }
-
 	struct S_is_id_keyword
 	{
 		template<auto f>
-		static constexpr bool result = V_equal_VxV<f, _id_>;
+		static constexpr bool result = V_equal_VxV<f, U_id>;
 	};
 
 	static constexpr auto U_is_id_keyword = U_type_T<S_is_id_keyword>;

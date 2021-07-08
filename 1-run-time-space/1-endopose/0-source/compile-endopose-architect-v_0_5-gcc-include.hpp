@@ -41,7 +41,8 @@ namespace nik
 		#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
 
-		using pack_module = nik_module(interpret, pack, architect, v_0_5, gcc);
+		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
+		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
 
 		#include"compile-endopose-architect-v_0_5-source.hpp"
 

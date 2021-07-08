@@ -84,8 +84,8 @@ private:
 	{
 		constexpr auto length	= sizeof...(Vs);
 
-		constexpr auto is_zero	= is_value<depth_type, 0>;
-		constexpr auto dec	= subtract_by<depth_type, 1>;
+		constexpr auto is_zero	= function_module::template is_value<depth_type, 0>;
+		constexpr auto dec	= function_module::template subtract_by<depth_type, 1>;
 
 		constexpr auto i	= _one;
 		constexpr auto j	= _zero;

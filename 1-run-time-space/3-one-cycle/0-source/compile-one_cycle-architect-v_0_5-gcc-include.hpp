@@ -42,8 +42,10 @@ namespace nik
 		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., compile, endopose, architect, v_0_5, gcc, static, name)
 
-		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, gcc);
-		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
+		using boolean_module		= nik_module(interpret, boolean, architect, v_0_5, gcc);
+		using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
+
+		static constexpr auto U_id	= function_module::U_id;
 
 		#include"compile-one_cycle-architect-v_0_5-source.hpp"
 
