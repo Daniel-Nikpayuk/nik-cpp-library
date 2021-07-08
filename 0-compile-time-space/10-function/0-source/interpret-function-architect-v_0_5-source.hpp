@@ -52,16 +52,17 @@ public:
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_constant
 	{
-		template<auto V>
 		static constexpr auto result()				{ return V; }
 	};
 
-	static constexpr auto U_constant = functor_module::template U_type_T<S_constant>;
+	template<auto V>
+	static constexpr auto U_constant = functor_module::template U_type_T<S_constant<V>>;
 
 	template<auto V>
-	static constexpr auto constant = S_constant::template result<V>;
+	static constexpr auto constant = S_constant<V>::result;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -135,68 +136,78 @@ public:
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_add_by
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr T result(T v)				{ return v + V; }
 	};
 
-	static constexpr auto U_add_by = functor_module::template U_type_T<S_add_by>;
+	template<auto V>
+	static constexpr auto U_add_by = functor_module::template U_type_T<S_add_by<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto add_by = S_add_by::template result<T, V>;
+	static constexpr auto add_by = S_add_by<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_subtract_by
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr T result(T v)				{ return v - V; }
 	};
 
-	static constexpr auto U_subtract_by = functor_module::template U_type_T<S_subtract_by>;
+	template<auto V>
+	static constexpr auto U_subtract_by = functor_module::template U_type_T<S_subtract_by<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto subtract_by = S_subtract_by::template result<T, V>;
+	static constexpr auto subtract_by = S_subtract_by<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_multiply_by
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr T result(T v)				{ return v * V; }
 	};
 
-	static constexpr auto U_multiply_by = functor_module::template U_type_T<S_multiply_by>;
+	template<auto V>
+	static constexpr auto U_multiply_by = functor_module::template U_type_T<S_multiply_by<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto multiply_by = S_multiply_by::template result<T, V>;
+	static constexpr auto multiply_by = S_multiply_by<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_divide_by
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr T result(T v)				{ return v / V; }
 	};
 
-	static constexpr auto U_divide_by = functor_module::template U_type_T<S_divide_by>;
+	template<auto V>
+	static constexpr auto U_divide_by = functor_module::template U_type_T<S_divide_by<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto divide_by = S_divide_by::template result<T, V>;
+	static constexpr auto divide_by = S_divide_by<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_modulo_by
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr T result(T v)				{ return v % V; }
 	};
 
-	static constexpr auto U_modulo_by = functor_module::template U_type_T<S_modulo_by>;
+	template<auto V>
+	static constexpr auto U_modulo_by = functor_module::template U_type_T<S_modulo_by<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto modulo_by = S_modulo_by::template result<T, V>;
+	static constexpr auto modulo_by = S_modulo_by<V>::template result<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -314,81 +325,93 @@ public:
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_is_value
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v == V); }
 	};
 
-	static constexpr auto U_is_value = functor_module::template U_type_T<S_is_value>;
+	template<auto V>
+	static constexpr auto U_is_value = functor_module::template U_type_T<S_is_value<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto is_value = S_is_value::template result<T, V>;
+	static constexpr auto is_value = S_is_value<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_not_value
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v != V); }
 	};
 
-	static constexpr auto U_not_value = functor_module::template U_type_T<S_not_value>;
+	template<auto V>
+	static constexpr auto U_not_value = functor_module::template U_type_T<S_not_value<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto not_value = S_not_value::template result<T, V>;
+	static constexpr auto not_value = S_not_value<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_is_less_than
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v < V); }
 	};
 
-	static constexpr auto U_is_less_than = functor_module::template U_type_T<S_is_less_than>;
+	template<auto V>
+	static constexpr auto U_is_less_than = functor_module::template U_type_T<S_is_less_than<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto is_less_than = S_is_less_than::template result<T, V>;
+	static constexpr auto is_less_than = S_is_less_than<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_is_less_than_or_equal
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v <= V); }
 	};
 
-	static constexpr auto U_is_less_than_or_equal = functor_module::template U_type_T<S_is_less_than_or_equal>;
+	template<auto V>
+	static constexpr auto U_is_less_than_or_equal = functor_module::template U_type_T<S_is_less_than_or_equal<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto is_less_than_or_equal = S_is_less_than_or_equal::template result<T, V>;
+	static constexpr auto is_less_than_or_equal = S_is_less_than_or_equal<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_is_greater_than
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v > V); }
 	};
 
-	static constexpr auto U_is_greater_than = functor_module::template U_type_T<S_is_greater_than>;
+	template<auto V>
+	static constexpr auto U_is_greater_than = functor_module::template U_type_T<S_is_greater_than<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto is_greater_than = S_is_greater_than::template result<T, V>;
+	static constexpr auto is_greater_than = S_is_greater_than<V>::template result<T>;
 
 /***********************************************************************************************************************/
 
+	template<auto V>
 	struct S_is_greater_than_or_equal
 	{
-		template<typename T, auto V>
+		template<typename T>
 		static constexpr bool result(T v)			{ return (v >= V); }
 	};
 
-	static constexpr auto U_is_greater_than_or_equal = functor_module::template U_type_T<S_is_greater_than_or_equal>;
+	template<auto V>
+	static constexpr auto U_is_greater_than_or_equal = functor_module::template U_type_T<S_is_greater_than_or_equal<V>>;
 
 	template<typename T, auto V>
-	static constexpr auto is_greater_than_or_equal = S_is_greater_than_or_equal::template result<T, V>;
+	static constexpr auto is_greater_than_or_equal = S_is_greater_than_or_equal<V>::template result<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

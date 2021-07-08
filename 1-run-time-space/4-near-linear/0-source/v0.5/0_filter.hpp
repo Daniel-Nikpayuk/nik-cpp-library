@@ -19,46 +19,18 @@
 
 // filter source:
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// signature filters:
+	// This component provides tools to refine the engine down to near linear functions.
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-// members:
-
 /***********************************************************************************************************************/
 
-public:
-
-	enum struct Member
-	{
-		out,
-		in,
-		car_in,
-		cdr_in,
-		end,
-		aux,
-		msg,
-
-		dimension // filler
-	};
-
-	template<Member m> static constexpr bool V_is_out		= (m == OneCycleMember::out);
-	template<Member m> static constexpr bool V_is_in		= (m == OneCycleMember::in);
-	template<Member m> static constexpr bool V_is_car_in		= (m == OneCycleMember::car_in);
-	template<Member m> static constexpr bool V_is_cdr_in		= (m == OneCycleMember::cdr_in);
-	template<Member m> static constexpr bool V_is_end		= (m == OneCycleMember::end);
-	template<Member m> static constexpr bool V_is_aux		= (m == OneCycleMember::aux);
-	template<Member m> static constexpr bool V_is_msg		= (m == OneCycleMember::msg);
+// enumeration filters (level 0):
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// argument filters:
+// attributes:
 
 /***********************************************************************************************************************/
 
@@ -109,158 +81,6 @@ public:
 	static constexpr bool V_is_variable_dereference		= (V_is_variable<m> && V_is_dereference<d>);
 
 /***********************************************************************************************************************/
-
-// attributes:
-
-	template<Mutability Mutate, Denotation Denote>
-	struct _argument_attributes
-	{
-		static constexpr Mutability mutate		= Mutate;
-		static constexpr Denotation denote		= Denote;
-	};
-
-	//
-
-	using arg_attr_ref	= _argument_attributes < Mutability::variable  , Denotation::reference   >;
-	using arg_attr_deref	= _argument_attributes < Mutability::variable  , Denotation::dereference >;
-	using arg_attr_cref	= _argument_attributes < Mutability::immutable , Denotation::reference   >;
-	using arg_attr_cdref	= _argument_attributes < Mutability::immutable , Denotation::dereference >;
-
-/***********************************************************************************************************************/
-
-// specifications:
-
-	template<typename Type, typename Attr>
-	struct _argument
-	{
-		using type = Type;
-		using attr = Attr;
-	};
-
-	//
-
-	template<typename Type> using arg_ref			= _argument < Type , arg_attr_ref    >;
-	template<typename Type> using arg_deref			= _argument < Type , arg_atter_deref >;
-	template<typename Type> using arg_cref			= _argument < Type , arg_attr_cref   >;
-	template<typename Type> using arg_cderef		= _argument < Type , arg_attr_cderef >;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// attribute specifications:
-
-/***********************************************************************************************************************/
-
-	template
-	<
-		Member Member,
-		Interval Ival
-	>
-	struct _one_cycle_object_attributes
-	{
-		static constexpr Member member	= Member;
-		static constexpr Interval interval	= Ival;
-	};
-
-	//
-
-	template<Interval ival>
-	using _out_obj_attr			= _one_cycle_object_attributes<Member::out, ival>;
-
-	template<Interval ival>
-	using _in_obj_attr			= _one_cycle_object_attributes<Member::in, ival>;
-
-	template<Interval ival>
-	using _car_in_obj_attr			= _one_cycle_object_attributes<Member::car_in, ival>;
-
-	template<Interval ival>
-	using _cdr_in_obj_attr			= _one_cycle_object_attributes<Member::cdr_in, ival>;
-
-	template<Interval ival>
-	using _end_obj_attr			= _one_cycle_object_attributes<Member::end, ival>;
-
-	template<Interval ival>
-	using _aux_obj_attr			= _one_cycle_object_attributes<Member::aux, ival>;
-
-	template<Interval ival>
-	using _msg_obj_attr			= _one_cycle_object_attributes<Member::msg, ival>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// object specifications:
-
-/***********************************************************************************************************************/
-
-	template<typename Type, Interval ival> using _out_object	= _object < Type , _out_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _in_object		= _object < Type , _in_obj_attr<ival>     >;
-	template<typename Type, Interval ival> using _car_in_object	= _object < Type , _car_in_obj_attr<ival> >;
-	template<typename Type, Interval ival> using _cdr_in_object	= _object < Type , _cdr_in_obj_attr<ival> >;
-	template<typename Type, Interval ival> using _end_object	= _object < Type , _end_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _aux_object	= _object < Type , _aux_obj_attr<ival>    >;
-	template<typename Type, Interval ival> using _msg_object	= _object < Type , _msg_obj_attr<ival>    >;
-
-/***********************************************************************************************************************/
-
-// object:
-
-	struct _o
-
-	template<typename T> using _out_object			= _object < Member::out    , T >;
-	template<typename T> using _in_object			= _object < Member::in     , T >;
-	template<typename T> using _car_in_object		= _object < Member::car_in , T >;
-	template<typename T> using _cdr_in_object		= _object < Member::cdr_in , T >;
-	template<typename T> using _end_object			= _object < Member::end    , T >;
-	template<typename T> using _aux_object			= _object < Member::aux    , T >;
-	template<typename T> using _msg_object			= _object < Member::msg    , T >;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// near linear source:
-
-	// This component provides tools to refine the engine down to near linear functions.
-
-public:
-
-	// map:
-
-		//     ival meet: (out is right closed) or (in is right closed) ?
-		// out ival meet: (out is right open) and (in is right closed) ?
-		//  in ival meet: (in is right open) and (out is right closed) ?
-
-	// find all:
-
-		//     ival meet: (out is right closed) or (in is right closed) ?
-		// out ival meet: (out is right open) and (in is right closed) ?
-		//  in ival meet: (in is right open) and (out is right closed) ?
-
-	// zip:
-
-		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
-		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
-		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
-		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
-		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
-
-	// fasten:
-
-		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
-		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
-		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
-		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
-		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
-
-	// glide:
-
-		//        ival meet: (car in is right closed) or (cdr in is right closed) ?
-		// car in ival meet: (car in is right open) and (cdr in is right closed) ?
-		// cdr in ival meet: (cdr in is right open) and (car in is right closed) ?
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // interval:
@@ -307,7 +127,6 @@ public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
 // direction:
 
@@ -338,25 +157,6 @@ public:
 							>;
 
 /***********************************************************************************************************************/
-
-// iterate:
-
-/*
-	template<auto, auto U> using return_add_by		= S_value_V<add_by<T_type_U<U>,  1>>;
-	template<auto, auto U> using return_subtract_by		= S_value_V<add_by<T_type_U<U>, -1>>;
-
-	template<auto f, typename Type>
-	static constexpr auto iterate = V_colist_Bs
-	<
-		f, _na_,		f, U_type_T<Type>,
-
-		S_is_forward,		return_add_by,
-		S_is_backward,		return_subtract_by,
-		otherwise,		return_function
-	>;
-*/
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
@@ -384,9 +184,166 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// loop interval functions:
+// attribute filters (level 1):
 
 /***********************************************************************************************************************/
+
+	template<Mutability Mutate, Denotation Denote>
+	struct _attributes
+	{
+		static constexpr Mutability mutate = Mutate;
+		static constexpr Denotation denote = Denote;
+	};
+
+	//
+
+	using attr_ref		= _attributes < Mutability::variable  , Denotation::reference   >;
+	using attr_deref	= _attributes < Mutability::variable  , Denotation::dereference >;
+	using attr_cref		= _attributes < Mutability::immutable , Denotation::reference   >;
+	using attr_cderef	= _attributes < Mutability::immutable , Denotation::dereference >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// argument filters (level 2):
+
+/***********************************************************************************************************************/
+
+	template<typename LAttr, typename RAttr>
+	struct _unary_arguments
+	{
+		using l_attributes	= LAttr;
+		using r_attributes	= RAttr;
+	};
+
+	template<typename LAttr, typename R1Attr, typename R2Attr>
+	struct _binary_arguments
+	{
+		using l_attributes	= LAttr;
+		using r1_attributes	= R1Attr;
+		using r2_attributes	= R2Attr;
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// algorithm filters (level 3):
+
+/***********************************************************************************************************************/
+
+	template<typename T>		struct _type		{ using type = T; };
+	template<Interval V>		struct _ival		{ static constexpr auto value = V; };
+	template<Axis V>		struct _axis		{ static constexpr auto value = V; };
+
+	template<auto UFunc, typename Args>
+	struct _value
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _next
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _prev
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _peek
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _test
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _apply
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+	template<auto UFunc, typename Args>
+	struct _assign
+	{
+		static constexpr auto ufunction	= UFunc;
+		using arguments			= Args;
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// near linear filters (level 4):
+
+/***********************************************************************************************************************/
+
+	template<typename...> struct _out	{ };
+	template<typename...> struct _in	{ };
+	template<typename...> struct _end	{ };
+	template<typename...> struct _algo	{ };
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// dispatchers:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// interval:
+
+	// map:
+
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
+
+	// find all:
+
+		//     ival meet: (out is right closed) or (in is right closed) ?
+		// out ival meet: (out is right open) and (in is right closed) ?
+		//  in ival meet: (in is right open) and (out is right closed) ?
+
+	// zip:
+
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
+
+	// fasten:
+
+		//     in ival meet: (car in is right closed) or (cdr in is right closed) ?
+		//        ival meet: (out is right closed) or (car in is right closed) or (cdr in is right closed) ?
+		//    out ival meet: (out is right open) and (car in or cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (out or cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (out or car in is right closed) ?
+
+	// glide:
+
+		//        ival meet: (car in is right closed) or (cdr in is right closed) ?
+		// car in ival meet: (car in is right open) and (cdr in is right closed) ?
+		// cdr in ival meet: (cdr in is right open) and (car in is right closed) ?
+
 /***********************************************************************************************************************/
 
 // unary:
@@ -438,7 +395,6 @@ public:
 		>;
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
 // binary:
 
@@ -477,7 +433,6 @@ public:
 		static constexpr bool right_open_and		= (V_is_right_open<ival> && meet);
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
 // trinary:
 
@@ -486,183 +441,54 @@ public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// subspecifications:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// object specs:
+// direction:
 
 /***********************************************************************************************************************/
 
-/*
-	template<typename ObjSpec> using spec_type_	= typename ObjSpec::type;
+//	template<auto, auto U> using return_add_by		= S_value_V<add_by<T_type_U<U>,  1>>;
+//	template<auto, auto U> using return_subtract_by		= S_value_V<add_by<T_type_U<U>, -1>>;
 
-	template<typename ObjSpec>
-	static constexpr auto spec_ival_		= ObjSpec::interval;
+//	template<auto f, typename Type>
+//	static constexpr auto iterate = V_colist_Bs
+//	<
+//		f, _na_,		f, U_type_T<Type>,
 
-	template<typename ObjSpec>
-	static constexpr auto spec_pred_		= ObjSpec::predicate;
-
-	template<typename ObjSpec>
-	static constexpr auto spec_func_		= ObjSpec::function;
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template<typename Type, auto Interval = _na_>
-	struct _object
-	{
-		using type						= Type;
-
-		static constexpr auto interval				= Interval;
-	};
-
-	template<typename Type, auto Interval>
-	using _out_obj					= _object<Type, Interval>;
-
-	template<typename Type, auto Interval>
-	using _in_obj					= _object<Type, Interval>;
-
-	template<typename Type, auto Interval>
-	using _end_obj					= _object<Type, Interval>;
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template<typename Type, auto Cons>
-	struct _return
-	{
-		using type						= Type;
-
-		static constexpr auto function				= Cons;
-	};
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template
-	<
-		auto left_f		= _id_,
-		typename left_attr	= cdout_attr,
-		auto right_f		= _id_,
-		typename right_attr	= cdend_attr,
-
-		template
-		<
-			auto,
-			auto, typename,
-			auto, typename,
-			typename
-
-		> class cast		= one_cycle_bicast,
-		auto equal_f		= equal<Type>
-	>
-	struct _loop_predicate
-	{
-		template<typename signature>
-		static constexpr auto predicate = cast
-		<
-			equal_f,
-			left_f, left_attr,
-			right_f, right_attr,
-			signature
-		>;
-	};
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template
-	<
-		auto left_f		= _id_,
-		typename left_attr	= out_attr,
-		auto right_f		= _id_,
-		typename right_attr	= cin_attr,
-
-		template
-		<
-			auto,
-			auto, typename,
-			auto, typename,
-			typename
-
-		> class apply		= one_cycle_biapply,
-		auto equal_f		= equal<Type>
-	>
-	struct _act_function
-	{
-		template<typename signature>
-		static constexpr auto predicate = apply
-		<
-			equal_f,
-			left_f, left_attr,
-			right_f, right_attr,
-			signature
-		>;
-	};
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template
-	<
-		auto left_f		= _id_,
-		typename left_attr	= in_attr,
-		auto right_f		= _id_,
-		typename right_attr	= cin_attr,
-
-		template
-		<
-			auto,
-			auto, typename,
-			auto, typename,
-			typename
-
-		> class apply		= one_cycle_biapply,
-		auto equal_f		= equal<Type>
-	>
-	struct _next_function
-	{
-		template<typename signature>
-		static constexpr auto predicate = apply
-		<
-			equal_f,
-			left_f, left_attr,
-			right_f, right_attr,
-			signature
-		>;
-	};
-*/
+//		S_is_forward,		return_add_by,
+//		S_is_backward,		return_subtract_by,
+//		otherwise,		return_function
+//	>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-	template<typename T>	struct _type		{ using type = T; };
-	template<typename T>	struct _attr		{ using type = T; };
-	template<Interval V>	struct _ival		{ static constexpr auto value = V; };
-	template<Axis V>	struct _axis		{ static constexpr auto value = V; };
-	template<auto V>	struct _value		{ static constexpr auto value = V; };
-	template<auto V>	struct _next		{ static constexpr auto value = V; };
-	template<auto V>	struct _prev		{ static constexpr auto value = V; };
-	template<auto V>	struct _peek		{ static constexpr auto value = V; };
-	template<auto V>	struct _act_f		{ static constexpr auto value = V; };
-	template<auto V>	struct _combine_f	{ static constexpr auto value = V; };
+// axis:
 
 /***********************************************************************************************************************/
 
-	template<typename...> struct _out	{ };
-	template<typename...> struct _in	{ };
-	template<typename...> struct _end	{ };
-	template<typename...> struct _function	{ };
+	// is_bidirectional // ?
+
+	// is_last // ?
+
+/***********************************************************************************************************************/
+
+	// out_f
+
+	// in_f
+
+	// end_f
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// algorithm:
+
+/***********************************************************************************************************************/
+
+// make function:
+
+	template<typename T, typename F>
+	static constexpr auto make_function
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

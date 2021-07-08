@@ -64,8 +64,6 @@ public:
 
 		private:
 
-				// "deref" is dependent on the input (it might not even deref)
-
 			using out_next_args				= typename OutNext::arguments;
 			using in_next_args				= typename InNext::arguments;
 			using end_next_args				= typename EndNext::arguments;
@@ -73,37 +71,37 @@ public:
 			using loop_pred_args				= typename LoopPred::arguments;
 			using map_func_args				= typename MapAsgn::arguments;
 
-			static constexpr auto _out_next_l		= out_f<out_next_args::l_value>;
-			static constexpr auto _out_next_r		= out_f<out_next_args::r_value>;
-			static constexpr auto _out_next			= OutNext::function;
+			static constexpr auto _out_next_l		= out_f<out_next_args::l_attributes>;
+			static constexpr auto _out_next_r		= out_f<out_next_args::r_attributes>;
+			static constexpr auto _out_next			= make_unary_function<out_type, OutNext>;
 			static constexpr bool _out_is_left_open		= is_left_open<OutIval::value>;
 			static constexpr bool _out_is_right_open	= is_right_open<OutIval::value>;
 			static constexpr bool _out_is_right_closed	= is_right_closed<OutIval::value>;
 
-			static constexpr auto _in_next_l		= in_f<in_next_args::l_value>;
-			static constexpr auto _in_next_r		= in_f<in_next_args::r_value>;
-			static constexpr auto _in_next			= InNext::function;
+			static constexpr auto _in_next_l		= in_f<in_next_args::l_attributes>;
+			static constexpr auto _in_next_r		= in_f<in_next_args::r_attributes>;
+			static constexpr auto _in_next			= make_unary_function<in_type, InNext>;
 			static constexpr bool _in_is_left_open		= is_left_open<InIval::value>;
 			static constexpr bool _in_is_right_open		= is_right_open<InIval::value>;
 			static constexpr bool _in_is_right_closed	= is_right_closed<InIval::value>;
 
-			static constexpr auto _end_next_l		= end_f<end_next_args::l_value>;
-			static constexpr auto _end_next_r		= end_f<end_next_args::r_value>;
-			static constexpr auto _end_next			= EndNext::function;
-			static constexpr auto _end_prev_l		= end_f<end_prev_args::l_value>;
-			static constexpr auto _end_prev_r		= end_f<end_prev_args::r_value>;
-			static constexpr auto _end_prev			= EndPrev::function;
+			static constexpr auto _end_next_l		= end_f<end_next_args::l_attributes>;
+			static constexpr auto _end_next_r		= end_f<end_next_args::r_attributes>;
+			static constexpr auto _end_next			= make_unary_function<end_type, EndNext>;
+			static constexpr auto _end_prev_l		= end_f<end_prev_args::l_attributes>;
+			static constexpr auto _end_prev_r		= end_f<end_prev_args::r_attributes>;
+			static constexpr auto _end_prev			= make_unary_function<end_type, EndPrev>;
 
 			static constexpr bool _is_bidirectional		= is_bidirectional<InAxis::value>;
 			static constexpr bool _is_last			= is_last<OutIval::value, InIval::value>;
 
-			static constexpr auto _loop_pred_r1		= in_f<loop_pred_args::r1_value>;
-			static constexpr auto _loop_pred_r2		= end_f<loop_pred_args::r2_value>;
-			static constexpr auto _loop_pred		= LoopPred::function;
+			static constexpr auto _loop_pred_r1		= in_f<loop_pred_args::r1_attributes>;
+			static constexpr auto _loop_pred_r2		= end_f<loop_pred_args::r2_attributes>;
+			static constexpr auto _loop_pred		= make_binary_function<in_type, end_type, LoopPred>;
 
-			static constexpr auto _map_func_r1		= out_f<map_func_args::r1_value>;
-			static constexpr auto _map_func_r2		= in_f<map_func_args::r2_value>;
-			static constexpr auto _map_func			= MapAsgn::function;
+			static constexpr auto _map_func_r1		= out_f<map_func_args::r1_attributes>;
+			static constexpr auto _map_func_r2		= in_f<map_func_args::r2_attributes>;
+			static constexpr auto _map_func			= make_binary_function<out_type, in_type, MapAsgn>;
 
 		public:
 
