@@ -30,6 +30,34 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// members:
+
+/***********************************************************************************************************************/
+
+	enum struct Member
+	{
+		out,
+		in,
+		car_in,
+		cdr_in,
+		end,
+		aux,
+		msg,
+
+		dimension // filler
+	};
+
+	template<Member m> static constexpr bool V_is_out		= (m == Member::out);
+	template<Member m> static constexpr bool V_is_in		= (m == Member::in);
+	template<Member m> static constexpr bool V_is_car_in		= (m == Member::car_in);
+	template<Member m> static constexpr bool V_is_cdr_in		= (m == Member::cdr_in);
+	template<Member m> static constexpr bool V_is_end		= (m == Member::end);
+	template<Member m> static constexpr bool V_is_aux		= (m == Member::aux);
+	template<Member m> static constexpr bool V_is_msg		= (m == Member::msg);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // attributes:
 
 /***********************************************************************************************************************/
@@ -210,20 +238,7 @@
 
 /***********************************************************************************************************************/
 
-	template<typename LAttr, typename RAttr>
-	struct _unary_arguments
-	{
-		using l_attributes	= LAttr;
-		using r_attributes	= RAttr;
-	};
-
-	template<typename LAttr, typename R1Attr, typename R2Attr>
-	struct _binary_arguments
-	{
-		using l_attributes	= LAttr;
-		using r1_attributes	= R1Attr;
-		using r2_attributes	= R2Attr;
-	};
+	template<typename LAttr, typename... RAttrs> struct _arguments { };
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -233,57 +248,60 @@
 
 /***********************************************************************************************************************/
 
-	template<typename T>		struct _type		{ using type = T; };
-	template<Interval V>		struct _ival		{ static constexpr auto value = V; };
-	template<Axis V>		struct _axis		{ static constexpr auto value = V; };
+	template<typename T>	struct _type		{ using type = T; };
+	template<Interval V>	struct _ival		{ static constexpr auto value = V; };
+	template<Axis V>	struct _axis		{ static constexpr auto value = V; };
 
 	template<auto UFunc, typename Args>
 	struct _value
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
-	template<auto UFunc, typename Args>
+	template<auto UFunc, Direction Dir, typename Args>
 	struct _next
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto direction		= Dir;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
-	template<auto UFunc, typename Args>
+	template<auto UFunc, Direction Dir, typename Args>
 	struct _prev
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto direction		= Dir;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
-	template<auto UFunc, typename Args>
+	template<auto UFunc, Direction Dir, typename Args>
 	struct _peek
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto direction		= Dir;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
 	template<auto UFunc, typename Args>
 	struct _test
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
 	template<auto UFunc, typename Args>
 	struct _apply
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
 	template<auto UFunc, typename Args>
 	struct _assign
 	{
-		static constexpr auto ufunction	= UFunc;
-		using arguments			= Args;
+		static constexpr auto ufunction		= UFunc;
+		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
 	};
 
 /***********************************************************************************************************************/
@@ -362,37 +380,37 @@
 
 	// before:
 
-		template<bool predicate, auto next_f>
-		static constexpr auto boolean_before_loop = lift
-		<
-			boolean_module::template V_if_then_else_VxV
-			<
-				predicate, next_f, _id_
-			>
-		>;
+	//	template<bool predicate, auto next_f>
+	//	static constexpr auto boolean_before_loop = lift
+	//	<
+	//		boolean_module::template V_if_then_else_VxV
+	//		<
+	//			predicate, next_f, _id_
+	//		>
+	//	>;
 
-		template<Interval i, auto next_f>
-		static constexpr auto interval_before_loop = boolean_before_loop
-		<
-			V_is_left_open<i>, next_f
-		>;
+	//	template<Interval i, auto next_f>
+	//	static constexpr auto interval_before_loop = boolean_before_loop
+	//	<
+	//		V_is_left_open<i>, next_f
+	//	>;
 
 	// after:
 
-		template<bool predicate, auto act_combine_f>
-		static constexpr auto boolean_after_loop = lift
-		<
-			boolean_module::template V_if_then_else_VxV
-			<
-				predicate, act_combine_f, _id_
-			>
-		>;
+	//	template<bool predicate, auto act_combine_f>
+	//	static constexpr auto boolean_after_loop = lift
+	//	<
+	//		boolean_module::template V_if_then_else_VxV
+	//		<
+	//			predicate, act_combine_f, _id_
+	//		>
+	//	>;
 
-		template<Interval i, auto act_combine_f>
-		static constexpr auto interval_after_loop = boolean_after_loop
-		<
-			V_is_right_closed<i>, act_combine_f
-		>;
+	//	template<Interval i, auto act_combine_f>
+	//	static constexpr auto interval_after_loop = boolean_after_loop
+	//	<
+	//		V_is_right_closed<i>, act_combine_f
+	//	>;
 
 /***********************************************************************************************************************/
 
@@ -426,18 +444,18 @@
 	4. If (3), then for each right endpoint, when open, iterate.
 */
 
-		template<Interval ival1, Interval ival2>
-		static constexpr bool or_right_closed		= (V_is_right_closed<ival1> || V_is_right_closed<ival2>);
+	//	template<Interval ival1, Interval ival2>
+	//	static constexpr bool or_right_closed		= (V_is_right_closed<ival1> || V_is_right_closed<ival2>);
 
-		template<Interval ival, bool meet>
-		static constexpr bool right_open_and		= (V_is_right_open<ival> && meet);
+	//	template<Interval ival, bool meet>
+	//	static constexpr bool right_open_and		= (V_is_right_open<ival> && meet);
 
 /***********************************************************************************************************************/
 
 // trinary:
 
-		template<Interval ival, bool meet>
-		static constexpr bool right_closed_or		= (V_is_right_closed<ival> || meet);
+	//	template<Interval ival, bool meet>
+	//	static constexpr bool right_closed_or		= (V_is_right_closed<ival> || meet);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -485,10 +503,27 @@
 
 /***********************************************************************************************************************/
 
+// members:
+
+	// out:
+
+	//	template<typename Sign, typename Attr>
+	//	static constexpr out_f = 
+
+	// in:
+
+	//	template<typename Sign, typename Attr>
+	//	static constexpr in_f = 
+
+/***********************************************************************************************************************/
+
 // make function:
 
-	template<typename T, typename F>
-	static constexpr auto make_function
+	//	template<auto uf, auto l, auto r>
+	//	static constexpr auto make_unary_function = 
+
+	//	template<auto uf, auto l, auto r1, auto r2>
+	//	static constexpr auto make_binary_function = 
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

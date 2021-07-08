@@ -40,12 +40,13 @@ namespace nik
 	nik_begin_module(compile, near_linear, architect, v_0_5, gcc)
 
 		#include nik_import(../../.., compile, compose, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, title)
 
-		using function_module = nik_module(interpret, function, architect, v_0_5, clang);
+		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
 
-	//	#include"v0.5/0_filter.hpp"
+		#include"v0.5/0_filter.hpp"
 	//	#include"v0.5/1_repeat.hpp"
-	//	#include"v0.5/2_map.hpp"
+		#include"v0.5/2_map.hpp"
 	//	#include"v0.5/3_fold.hpp"
 	//	#include"v0.5/4_find.hpp"
 	//	#include"v0.5/5_zip.hpp"

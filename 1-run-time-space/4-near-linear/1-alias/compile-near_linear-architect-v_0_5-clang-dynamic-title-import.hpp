@@ -19,7 +19,7 @@
 
 #define NIK_MODULE nik_module(compile, near_linear, architect, v_0_5, clang)
 #define NIK_POLICY constexpr
-#define NIK_PREFIX nik_constant_
+#define NIK_PREFIX nik_near_linear_
 
 #define NIK_COMPOSE nik_module(compile, compose, architect, v_0_5, clang)
 

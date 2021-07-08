@@ -19,7 +19,7 @@
 
 #define NIK_MODULE nik_module(compile, signature, architect, v_0_5, gcc)
 #define NIK_POLICY static constexpr
-#define NIK_PREFIX nik_constant_
+#define NIK_PREFIX nik_signature_
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

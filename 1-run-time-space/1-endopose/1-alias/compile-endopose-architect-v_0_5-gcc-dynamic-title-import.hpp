@@ -19,7 +19,7 @@
 
 #define NIK_MODULE nik_module(compile, endopose, architect, v_0_5, gcc)
 #define NIK_POLICY constexpr
-#define NIK_PREFIX nik_constant_
+#define NIK_PREFIX nik_endopose_
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

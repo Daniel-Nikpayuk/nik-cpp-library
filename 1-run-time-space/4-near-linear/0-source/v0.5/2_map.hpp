@@ -19,6 +19,29 @@
 
 // map source:
 
+/***********************************************************************************************************************/
+
+// make assign:
+
+private:
+
+	template<typename Sign, auto UFunc, typename LAttr, typename... RAttrs>
+	static constexpr auto make_assign(void(*)(_arguments<LAttr, RAttrs...>))
+	{
+		using S_function		= functor_module::template T_type_U<UFunc>;
+
+		// constexpr auto l_value	= out_f<signature, out_next_args::l_attributes>;
+		// constexpr auto _out_next_r	= out_f<signature, out_next_args::r_attributes>;
+		// constexpr auto _out_next	= make_next_function
+		//							<
+		//								OutNext::direction,
+		//								OutNext::ufunction,
+		//								_out_next_l, _out_next_r
+		//							>;
+
+		return 0;
+	}
+
 public:
 
 /***********************************************************************************************************************/
@@ -31,13 +54,13 @@ public:
 
 	template
 	<
-		typename OutType  , typename OutIval , typename OutNext ,
-		typename InType   , typename InIval  , typename InVal   ,
-		                    typename InNext  , typename InAxis  ,
-		                    typename InPeek  ,
-		typename EndType  , typename EndNext , typename EndPrev ,
+		typename OutType  , typename OutIval   , typename OutNext ,
+		typename InType   , typename InIval    , typename InVal   ,
+		                    typename InNext    , typename InAxis  ,
+		                    typename InPeek    ,
+		typename EndType  , typename EndNext   , typename EndPrev ,
 
-		typename LoopTest , MapAsgn
+		typename LoopTest , typename LoopBreak , typename MapAsgn
 	>
 	class map_specification
 	<
@@ -62,98 +85,185 @@ public:
 										end_type
 									>;
 
+		public:
+
+			static constexpr auto out_next			= make_assign
+									<
+										signature, OutNext::ufunction
+
+									>(OutNext::uarguments);
+		//	static constexpr bool is_out_next_before	= _out_is_left_open;
+		//	static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
+
+		//	//
+
+		//	static constexpr auto in_next			= assign
+		//							<
+		//								_in_next_l, _in_next, _in_next_r
+		//							>;
+		//	static constexpr bool is_in_next_before		= _in_is_left_open;
+		//	static constexpr bool is_in_next_after		= _in_is_right_open && _out_is_right_closed;
+
+		//	//
+
+		//	static constexpr auto end_next			= assign
+		//							<
+		//								_end_next_l, _end_next, _end_next_r
+		//							>;
+		//	static constexpr bool is_end_next_after		= _is_bidirectional && _is_last;
+
+		//	static constexpr auto end_prevous		= assign
+		//							<
+		//								_end_prev_l, _end_prev, _end_prev_r
+		//							>;
+		//	static constexpr bool is_end_previous_before	= _is_bidirectional && _is_last;
+
+		//	//
+
+		//	static constexpr auto loop_predicate		= test // is unidir_last ?
+		//							<
+		//								_is_equal, is_equal_r1, _is_equal_r2
+		//							>;
+		//	static constexpr auto loop_break		= LoopBreak::function;
+
+		//	//
+
+		//	static constexpr auto act_function		= assign
+		//							<
+		//								_map_func_l, _map_func, _map_func_r
+		//							>;
+		//	static constexpr bool is_act_function_after	= _out_is_right_closed || _in_is_right_closed;
+
+		//	//
+
+		//	static constexpr auto return_value		= _out_next_l;
+
 		private:
 
-			using out_next_args				= typename OutNext::arguments;
-			using in_next_args				= typename InNext::arguments;
-			using end_next_args				= typename EndNext::arguments;
-			using end_prev_args				= typename EndPrev::arguments;
-			using loop_pred_args				= typename LoopPred::arguments;
-			using map_func_args				= typename MapAsgn::arguments;
+		//	using out_next_args				= typename OutNext::arguments;
+		//	using in_next_args				= typename InNext::arguments;
+		//	using end_next_args				= typename EndNext::arguments;
+		//	using end_prev_args				= typename EndPrev::arguments;
+		//	using loop_pred_args				= typename LoopPred::arguments;
+		//	using map_func_args				= typename MapAsgn::arguments;
 
-			static constexpr auto _out_next_l		= out_f<out_next_args::l_attributes>;
-			static constexpr auto _out_next_r		= out_f<out_next_args::r_attributes>;
-			static constexpr auto _out_next			= make_unary_function<out_type, OutNext>;
-			static constexpr bool _out_is_left_open		= is_left_open<OutIval::value>;
-			static constexpr bool _out_is_right_open	= is_right_open<OutIval::value>;
-			static constexpr bool _out_is_right_closed	= is_right_closed<OutIval::value>;
+		// don't implement these here,
+		// use functions in filter.
+		// more robust as we don't
+		// want to predefine the
+		// argument size.
 
-			static constexpr auto _in_next_l		= in_f<in_next_args::l_attributes>;
-			static constexpr auto _in_next_r		= in_f<in_next_args::r_attributes>;
-			static constexpr auto _in_next			= make_unary_function<in_type, InNext>;
-			static constexpr bool _in_is_left_open		= is_left_open<InIval::value>;
-			static constexpr bool _in_is_right_open		= is_right_open<InIval::value>;
-			static constexpr bool _in_is_right_closed	= is_right_closed<InIval::value>;
+		//	static constexpr auto _out_next_l		= out_f<signature, out_next_args::l_attributes>;
+		//	static constexpr auto _out_next_r		= out_f<signature, out_next_args::r_attributes>;
+		//	static constexpr auto _out_next			= make_next_function
+		//							<
+		//								OutNext::direction,
+		//								OutNext::ufunction,
+		//								_out_next_l, _out_next_r
+		//							>;
+		//	static constexpr bool _out_is_left_open		= is_left_open<OutIval::value>;
+		//	static constexpr bool _out_is_right_open	= is_right_open<OutIval::value>;
+		//	static constexpr bool _out_is_right_closed	= is_right_closed<OutIval::value>;
 
-			static constexpr auto _end_next_l		= end_f<end_next_args::l_attributes>;
-			static constexpr auto _end_next_r		= end_f<end_next_args::r_attributes>;
-			static constexpr auto _end_next			= make_unary_function<end_type, EndNext>;
-			static constexpr auto _end_prev_l		= end_f<end_prev_args::l_attributes>;
-			static constexpr auto _end_prev_r		= end_f<end_prev_args::r_attributes>;
-			static constexpr auto _end_prev			= make_unary_function<end_type, EndPrev>;
+		//	static constexpr auto _in_next_l		= in_f<signature, in_next_args::l_attributes>;
+		//	static constexpr auto _in_next_r		= in_f<signature, in_next_args::r_attributes>;
+		//	static constexpr auto _in_next			= make_next_function
+		//							<
+		//								InNext::direction,
+		//								InNext::ufunction,
+		//								_in_next_l, _in_next_r
+		//							>;
+		//	static constexpr bool _in_is_left_open		= is_left_open<InIval::value>;
+		//	static constexpr bool _in_is_right_open		= is_right_open<InIval::value>;
+		//	static constexpr bool _in_is_right_closed	= is_right_closed<InIval::value>;
 
-			static constexpr bool _is_bidirectional		= is_bidirectional<InAxis::value>;
-			static constexpr bool _is_last			= is_last<OutIval::value, InIval::value>;
+		//	static constexpr auto _end_next_l		= end_f<signature, end_next_args::l_attributes>;
+		//	static constexpr auto _end_next_r		= end_f<signature, end_next_args::r_attributes>;
+		//	static constexpr auto _end_next			= make_unary_function
+		//							<
+		//								EndNext::ufunction,
+		//								EndNext::direction,
+		//								_end_next_l, _end_next_r
+		//							>;
+		//	static constexpr auto _end_prev_l		= end_f<signature, end_prev_args::l_attributes>;
+		//	static constexpr auto _end_prev_r		= end_f<signature, end_prev_args::r_attributes>;
+		//	static constexpr auto _end_prev			= make_unary_function
+		//							<
+		//								EndPrev::ufunction,
+		//								EndPrev::direction,
+		//								_end_prev_l, _end_prev_r
+		//							>;
 
-			static constexpr auto _loop_pred_r1		= in_f<loop_pred_args::r1_attributes>;
-			static constexpr auto _loop_pred_r2		= end_f<loop_pred_args::r2_attributes>;
-			static constexpr auto _loop_pred		= make_binary_function<in_type, end_type, LoopPred>;
+		//	static constexpr bool _is_bidirectional		= is_bidirectional<InAxis::value>;
+		//	static constexpr bool _is_last			= is_last<OutIval::value, InIval::value>;
 
-			static constexpr auto _map_func_r1		= out_f<map_func_args::r1_attributes>;
-			static constexpr auto _map_func_r2		= in_f<map_func_args::r2_attributes>;
-			static constexpr auto _map_func			= make_binary_function<out_type, in_type, MapAsgn>;
+		//	static constexpr auto _loop_pred_r1		= in_f<signature, loop_pred_args::r1_attributes>;
+		//	static constexpr auto _loop_pred_r2		= end_f<signature, loop_pred_args::r2_attributes>;
+		//	static constexpr auto _loop_pred		= make_binary_predicate
+		//							<
+		//								LoopPred::ufunction,
+		//								_loop_pred_r1, _loop_pred_r2
+		//							>;
+
+		//	static constexpr auto _map_func_r1		= out_f<signature, map_func_args::r1_attributes>;
+		//	static constexpr auto _map_func_r2		= in_f<signature, map_func_args::r2_attributes>;
+		//	static constexpr auto _map_func			= make_binary_function
+		//							<
+		//								out_type, in_type, MapAsgn
+		//								_map_func_r1, _map_func_r2
+		//							>;
 
 		public:
 
-			static constexpr auto out_next			= assign
-									<
-										_out_next_l, _out_next, _out_next_r
-									>;
-			static constexpr bool is_out_next_before	= _out_is_left_open;
-			static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
+		//	static constexpr auto out_next			= assign
+		//							<
+		//								_out_next_l, _out_next, _out_next_r
+		//							>;
+		//	static constexpr bool is_out_next_before	= _out_is_left_open;
+		//	static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
 
-			//
+		//	//
 
-			static constexpr auto in_next			= assign
-									<
-										_in_next_l, _in_next, _in_next_r
-									>;
-			static constexpr bool is_in_next_before		= _in_is_left_open;
-			static constexpr bool is_in_next_after		= _in_is_right_open && _out_is_right_closed;
+		//	static constexpr auto in_next			= assign
+		//							<
+		//								_in_next_l, _in_next, _in_next_r
+		//							>;
+		//	static constexpr bool is_in_next_before		= _in_is_left_open;
+		//	static constexpr bool is_in_next_after		= _in_is_right_open && _out_is_right_closed;
 
-			//
+		//	//
 
-			static constexpr auto end_next			= assign
-									<
-										_end_next_l, _end_next, _end_next_r
-									>;
-			static constexpr bool is_end_next_after		= _is_bidirectional && _is_last;
+		//	static constexpr auto end_next			= assign
+		//							<
+		//								_end_next_l, _end_next, _end_next_r
+		//							>;
+		//	static constexpr bool is_end_next_after		= _is_bidirectional && _is_last;
 
-			static constexpr auto end_prevous		= assign
-									<
-										_end_prev_l, _end_prev, _end_prev_r
-									>;
-			static constexpr bool is_end_previous_before	= _is_bidirectional && _is_last;
+		//	static constexpr auto end_prevous		= assign
+		//							<
+		//								_end_prev_l, _end_prev, _end_prev_r
+		//							>;
+		//	static constexpr bool is_end_previous_before	= _is_bidirectional && _is_last;
 
-			//
+		//	//
 
-			static constexpr auto loop_predicate		= test // is unidir_last ?
-									<
-										_is_equal, is_equal_r1, _is_equal_r2
-									>;
-			static constexpr auto loop_break		= LoopBreak::function;
+		//	static constexpr auto loop_predicate		= test // is unidir_last ?
+		//							<
+		//								_is_equal, is_equal_r1, _is_equal_r2
+		//							>;
+		//	static constexpr auto loop_break		= LoopBreak::function;
 
-			//
+		//	//
 
-			static constexpr auto act_function		= assign
-									<
-										_map_func_l, _map_func, _map_func_r
-									>;
-			static constexpr bool is_act_function_after	= _out_is_right_closed || _in_is_right_closed;
+		//	static constexpr auto act_function		= assign
+		//							<
+		//								_map_func_l, _map_func, _map_func_r
+		//							>;
+		//	static constexpr bool is_act_function_after	= _out_is_right_closed || _in_is_right_closed;
 
-			//
+		//	//
 
-			static constexpr auto return_value		= _out_next_l;
+		//	static constexpr auto return_value		= _out_next_l;
 	};
 
 /*
