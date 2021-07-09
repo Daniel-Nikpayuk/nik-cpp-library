@@ -37,6 +37,7 @@
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, junction, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
@@ -61,6 +62,10 @@
 
 	int main(int argc, char *argv[])
 	{
+		constexpr auto uf = compose<U_add_by<1>, U_multiply_by<2>>;
+
+		printf("%d\n", apply<uf>(5));
+
 	//	char arr[5];
 	//	arr[4] = '\0';
 

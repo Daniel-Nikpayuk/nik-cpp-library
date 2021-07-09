@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
+#ifndef NIK_INTERPRET_JUNCTION_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_INTERPRET_JUNCTION_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -36,18 +36,14 @@
 
 namespace nik
 {
-	nik_begin_module(compile, signature, architect, v_0_5, gcc)
+	nik_begin_module(interpret, junction, architect, v_0_5, gcc)
 
 		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
 
-		#include"v0.5/define_macros.hpp"
+		#include"v0.5/0_space.hpp"
+		#include"v0.5/1_dispatch.hpp"
 
-		#include"v0.5/0_signatures.hpp"
-		#include"v0.5/1_dispatchers.hpp"
-
-		#include"v0.5/undef_macros.hpp"
-
-	nik_end_module(compile, signature, architect, v_0_5, gcc)
+	nik_end_module(interpret, junction, architect, v_0_5, gcc)
 }
 
 /***********************************************************************************************************************/

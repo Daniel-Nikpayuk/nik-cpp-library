@@ -17,14 +17,10 @@
 **
 ************************************************************************************************************************/
 
-// signature source:
+// define macros source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// signature macros:
-
 /***********************************************************************************************************************/
 
 // member typenames:
@@ -296,101 +292,6 @@
 															\
 		NIK_MEMBER_ACCESSOR(_num_, VARIABLE)									\
 		NIK_MEMBER_ACCESSOR(_num_, IMMUTABLE)
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-public:
-
-	template<typename...> class signature;
-
-/***********************************************************************************************************************/
-
-// accessors:
-
-	// members 0-5:
-
-		NIK_DEFINE_ACCESSORS(0)
-		NIK_DEFINE_ACCESSORS(1)
-		NIK_DEFINE_ACCESSORS(2)
-		NIK_DEFINE_ACCESSORS(3)
-		NIK_DEFINE_ACCESSORS(4)
-		NIK_DEFINE_ACCESSORS(5)
-
-/***********************************************************************************************************************/
-
-// signatures:
-
-	// specializations 1-6:
-
-		NIK_DEFINE_SIGNATURE(1)
-		NIK_DEFINE_SIGNATURE(2)
-		NIK_DEFINE_SIGNATURE(3)
-		NIK_DEFINE_SIGNATURE(4)
-		NIK_DEFINE_SIGNATURE(5)
-		NIK_DEFINE_SIGNATURE(6)
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// accessor macros:
-
-	#undef NIK_DEFINE_ACCESSORS
-
-	#undef NIK_MEMBER_ACCESSOR
-	#undef NIK_MEMBER_IMMUTABLE
-	#undef NIK_MEMBER_VARIABLE
-	#undef NIK_IMMUTABLE
-	#undef NIK_VARIABLE
-
-/***********************************************************************************************************************/
-
-// signature macros:
-
-	#undef NIK_DEFINE_SIGNATURE
-
-	#undef NIK_MEMBER_FRIENDS_6
-	#undef NIK_MEMBER_FRIENDS_5
-	#undef NIK_MEMBER_FRIENDS_4
-	#undef NIK_MEMBER_FRIENDS_3
-	#undef NIK_MEMBER_FRIENDS_2
-	#undef NIK_MEMBER_FRIENDS_1
-	#undef NIK_MEMBER_FRIEND
-
-	#undef NIK_MEMBER_INSTANTIATIONS_6
-	#undef NIK_MEMBER_INSTANTIATIONS_5
-	#undef NIK_MEMBER_INSTANTIATIONS_4
-	#undef NIK_MEMBER_INSTANTIATIONS_3
-	#undef NIK_MEMBER_INSTANTIATIONS_2
-	#undef NIK_MEMBER_INSTANTIATIONS_1
-
-	#undef NIK_MEMBER_ARGUMENTS_6
-	#undef NIK_MEMBER_ARGUMENTS_5
-	#undef NIK_MEMBER_ARGUMENTS_4
-	#undef NIK_MEMBER_ARGUMENTS_3
-	#undef NIK_MEMBER_ARGUMENTS_2
-	#undef NIK_MEMBER_ARGUMENTS_1
-
-	#undef NIK_MEMBER_DECLARATIONS_6
-	#undef NIK_MEMBER_DECLARATIONS_5
-	#undef NIK_MEMBER_DECLARATIONS_4
-	#undef NIK_MEMBER_DECLARATIONS_3
-	#undef NIK_MEMBER_DECLARATIONS_2
-	#undef NIK_MEMBER_DECLARATIONS_1
-
-	#undef NIK_MEMBER_TYPES_6
-	#undef NIK_MEMBER_TYPES_5
-	#undef NIK_MEMBER_TYPES_4
-	#undef NIK_MEMBER_TYPES_3
-	#undef NIK_MEMBER_TYPES_2
-	#undef NIK_MEMBER_TYPES_1
-
-	#undef NIK_MEMBER_TYPENAMES_6
-	#undef NIK_MEMBER_TYPENAMES_5
-	#undef NIK_MEMBER_TYPENAMES_4
-	#undef NIK_MEMBER_TYPENAMES_3
-	#undef NIK_MEMBER_TYPENAMES_2
-	#undef NIK_MEMBER_TYPENAMES_1
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	// none.
+	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,7 +38,14 @@ namespace nik
 {
 	nik_begin_module(compile, signature, architect, v_0_5, clang)
 
-		#include"compile-signature-architect-v_0_5-source.hpp"
+		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
+
+		#include"v0.5/define_macros.hpp"
+
+		#include"v0.5/0_signatures.hpp"
+		#include"v0.5/1_dispatchers.hpp"
+
+		#include"v0.5/undef_macros.hpp"
 
 	nik_end_module(compile, signature, architect, v_0_5, clang)
 }

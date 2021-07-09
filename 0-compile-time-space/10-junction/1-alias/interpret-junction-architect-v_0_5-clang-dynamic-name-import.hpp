@@ -17,40 +17,21 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_COLIST_ARCHITECT_V_0_5_CLANG_HPP
-#define NIK_INTERPRET_COLIST_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_MODULE nik_module(interpret, junction, architect, v_0_5, clang)
+#define NIK_POLICY constexpr
+#define NIK_PREFIX
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// dependencies:
-
-	#include nik_source(../../.., interpret, function, architect, v_0_5, clang)
+#include"interpret-junction-architect-v_0_5-alias.hpp"
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// module:
-
-namespace nik
-{
-	nik_begin_module(interpret, colist, architect, v_0_5, clang)
-
-		#include nik_import(../../.., interpret, constant, architect, v_0_5, clang, static, name)
-		#include nik_import(../../.., interpret, machine, architect, v_0_5, clang, static, name)
-
-		using function_module = nik_module(interpret, function, architect, v_0_5, clang);
-
-		#include"interpret-colist-architect-v_0_5-source.hpp"
-
-	nik_end_module(interpret, colist, architect, v_0_5, clang)
-}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-#endif
+#undef NIK_PREFIX
+#undef NIK_POLICY
+#undef NIK_MODULE
 

@@ -17,40 +17,92 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_COLIST_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_INTERPRET_COLIST_ARCHITECT_V_0_5_GCC_HPP
+// colist source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// dependencies:
+// controller:
 
-	#include nik_source(../../.., interpret, function, architect, v_0_5, gcc)
+private:
+
+	template
+	<
+		// labels:
+
+			index_type loop		= 1,
+			index_type fail		= 2,
+			index_type done		= 3,
+
+		// registers:
+
+			index_type cond_val	= 0,
+			index_type func_val	= 1,
+			index_type def_val	= 2,
+			index_type length	= 3,
+
+			index_type is_zero	= 4,
+			index_type dec		= 5,
+
+			index_type cond		= 6,
+			index_type func		= 7
+	>
+	static constexpr auto colist_contr = r_controller
+	<
+		r_label // loop:
+		<
+			test       < is_zero  , length            >,
+			branch     < fail                         >,
+			check      < cond     , cond_val          >,
+			branch     < done                         >,
+			erase      < func                         >,
+			erase      < cond                         >,
+			apply      < length   , dec      , length >,
+			goto_label < loop                         >
+		>,
+
+		r_label // fail:
+		<
+			stop       < def_val                      >
+		>,
+
+		r_label // done:
+		<
+			compel     < func_val , func , func_val   >,
+			stop       < func_val                     >,
+			reg_size   < _eight                       >
+		>
+	>;
+
+/***********************************************************************************************************************/
+
+// colist:
+
+	template<auto d, auto cond_val, auto func_val, auto def_val, auto... Vs>
+	static constexpr auto f_colist()
+	{
+		constexpr auto length	= sizeof...(Vs);
+
+		constexpr auto is_zero	= junction_module::template is_value<depth_type, 0>;
+		constexpr auto dec	= junction_module::template subtract_by<depth_type, 1>;
+
+		constexpr auto i	= _one;
+		constexpr auto j	= _zero;
+
+		return start
+		<
+			register_machine, colist_contr<>, d, i, j,
+			cond_val, func_val, def_val, length, is_zero, dec, Vs...
+		>();
+	}
+
+public:
+
+	template<auto cond_val, auto func_val, auto def_val, auto... Vs>
+	static constexpr auto colist = f_colist<500, cond_val, func_val, def_val, Vs...>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-// module:
-
-namespace nik
-{
-	nik_begin_module(interpret, colist, architect, v_0_5, gcc)
-
-		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, static, name)
-
-		using function_module = nik_module(interpret, function, architect, v_0_5, gcc);
-
-		#include"interpret-colist-architect-v_0_5-source.hpp"
-
-	nik_end_module(interpret, colist, architect, v_0_5, gcc)
-}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-#endif
 

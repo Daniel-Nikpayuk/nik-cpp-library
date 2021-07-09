@@ -17,42 +17,72 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_COMPILE_SIGNATURE_ARCHITECT_V_0_5_GCC_HPP
+// undef macros source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// dependencies:
+// accessor macros:
 
-	#include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
+	#undef NIK_DEFINE_ACCESSORS
+
+	#undef NIK_MEMBER_ACCESSOR
+	#undef NIK_MEMBER_IMMUTABLE
+	#undef NIK_MEMBER_VARIABLE
+	#undef NIK_IMMUTABLE
+	#undef NIK_VARIABLE
+
+/***********************************************************************************************************************/
+
+// signature macros:
+
+	#undef NIK_DEFINE_SIGNATURE
+
+	#undef NIK_MEMBER_FRIENDS_6
+	#undef NIK_MEMBER_FRIENDS_5
+	#undef NIK_MEMBER_FRIENDS_4
+	#undef NIK_MEMBER_FRIENDS_3
+	#undef NIK_MEMBER_FRIENDS_2
+	#undef NIK_MEMBER_FRIENDS_1
+	#undef NIK_MEMBER_FRIEND
+
+	#undef NIK_MEMBER_INSTANTIATIONS_6
+	#undef NIK_MEMBER_INSTANTIATIONS_5
+	#undef NIK_MEMBER_INSTANTIATIONS_4
+	#undef NIK_MEMBER_INSTANTIATIONS_3
+	#undef NIK_MEMBER_INSTANTIATIONS_2
+	#undef NIK_MEMBER_INSTANTIATIONS_1
+
+	#undef NIK_MEMBER_ARGUMENTS_6
+	#undef NIK_MEMBER_ARGUMENTS_5
+	#undef NIK_MEMBER_ARGUMENTS_4
+	#undef NIK_MEMBER_ARGUMENTS_3
+	#undef NIK_MEMBER_ARGUMENTS_2
+	#undef NIK_MEMBER_ARGUMENTS_1
+
+	#undef NIK_MEMBER_DECLARATIONS_6
+	#undef NIK_MEMBER_DECLARATIONS_5
+	#undef NIK_MEMBER_DECLARATIONS_4
+	#undef NIK_MEMBER_DECLARATIONS_3
+	#undef NIK_MEMBER_DECLARATIONS_2
+	#undef NIK_MEMBER_DECLARATIONS_1
+
+	#undef NIK_MEMBER_TYPES_6
+	#undef NIK_MEMBER_TYPES_5
+	#undef NIK_MEMBER_TYPES_4
+	#undef NIK_MEMBER_TYPES_3
+	#undef NIK_MEMBER_TYPES_2
+	#undef NIK_MEMBER_TYPES_1
+
+	#undef NIK_MEMBER_TYPENAMES_6
+	#undef NIK_MEMBER_TYPENAMES_5
+	#undef NIK_MEMBER_TYPENAMES_4
+	#undef NIK_MEMBER_TYPENAMES_3
+	#undef NIK_MEMBER_TYPENAMES_2
+	#undef NIK_MEMBER_TYPENAMES_1
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-
-// module:
-
-namespace nik
-{
-	nik_begin_module(compile, signature, architect, v_0_5, gcc)
-
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
-
-		#include"v0.5/define_macros.hpp"
-
-		#include"v0.5/0_signatures.hpp"
-		#include"v0.5/1_dispatchers.hpp"
-
-		#include"v0.5/undef_macros.hpp"
-
-	nik_end_module(compile, signature, architect, v_0_5, gcc)
-}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-#endif
 

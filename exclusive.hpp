@@ -78,6 +78,7 @@ namespace nik
 		pack,
 
 		list,
+		junction,
 		function,
 		continuation,
 		colist,
@@ -243,13 +244,17 @@ namespace nik
 															\
 		09-list
 
+	#define nik_junction()												\
+															\
+		10-junction
+
 	#define nik_function()												\
 															\
-		10-function
+		11-function
 
 	#define nik_colist()												\
 															\
-		11-colist
+		12-colist
 
 
 /***********************************************************************************************************************/

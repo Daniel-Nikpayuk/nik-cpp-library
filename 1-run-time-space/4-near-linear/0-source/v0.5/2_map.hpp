@@ -19,29 +19,6 @@
 
 // map source:
 
-/***********************************************************************************************************************/
-
-// make assign:
-
-private:
-
-	template<typename Sign, auto UFunc, typename LAttr, typename... RAttrs>
-	static constexpr auto make_assign(void(*)(_arguments<LAttr, RAttrs...>))
-	{
-		using S_function		= functor_module::template T_type_U<UFunc>;
-
-		// constexpr auto l_value	= out_f<signature, out_next_args::l_attributes>;
-		// constexpr auto _out_next_r	= out_f<signature, out_next_args::r_attributes>;
-		// constexpr auto _out_next	= make_next_function
-		//							<
-		//								OutNext::direction,
-		//								OutNext::ufunction,
-		//								_out_next_l, _out_next_r
-		//							>;
-
-		return 0;
-	}
-
 public:
 
 /***********************************************************************************************************************/
@@ -87,11 +64,13 @@ public:
 
 		public:
 
-			static constexpr auto out_next			= make_assign
-									<
-										signature, OutNext::ufunction
+		//	static constexpr auto out_next			= make_assign
+		//							<
+		//								OutNext::ufunction,
+		//								OutNext::member,
+		//								signature
 
-									>(OutNext::uarguments);
+		//							>(OutNext::uarguments);
 		//	static constexpr bool is_out_next_before	= _out_is_left_open;
 		//	static constexpr bool is_out_next_after		= _out_is_right_open && _in_is_right_closed;
 

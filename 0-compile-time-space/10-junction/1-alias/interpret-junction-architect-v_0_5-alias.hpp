@@ -17,13 +17,13 @@
 **
 ************************************************************************************************************************/
 
-// function alias:
+// junction alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// atomic functions:
+// atomic junctions:
 
 /***********************************************************************************************************************/
 
@@ -295,88 +295,34 @@
 	template<typename T>
 	NIK_POLICY auto nik_name(NIK_PREFIX, cdereference)		= NIK_MODULE::template cdereference<T>;
 
+// evaluation operators:
+
+	template<auto uf, typename T>
+	inline NIK_POLICY auto nik_name(NIK_PREFIX, apply)(T v)
+	{
+		return NIK_MODULE::template apply<uf, T>(v);
+	}
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// reflection:
+// compounds:
 
 /***********************************************************************************************************************/
 
-// match:
+// compose:
 
-	using nik_name(NIK_PREFIX, S_is_function)			= typename NIK_MODULE::S_is_function;
+	template<auto uf1, auto uf2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, compose)			= NIK_MODULE::template compose<uf1, uf2>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_function)		= NIK_MODULE::U_is_function;
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-	template<auto f>
-	NIK_POLICY auto nik_name(NIK_PREFIX, is_function)		= NIK_MODULE::template is_function<f>;
+// dispatchers:
 
-// arity:
-
-	using nik_name(NIK_PREFIX, S_arity)				= typename NIK_MODULE::S_arity;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_arity)			= NIK_MODULE::U_arity;
-
-	template<auto f>
-	NIK_POLICY auto nik_name(NIK_PREFIX, arity)			= NIK_MODULE::template arity<f>;
-
-// is n-ary:
-
-	using nik_name(NIK_PREFIX, S_is_n_ary)				= typename NIK_MODULE::S_is_n_ary;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_n_ary)		= NIK_MODULE::U_is_n_ary;
-
-	template<auto f, auto n>
-	NIK_POLICY auto nik_name(NIK_PREFIX, is_n_ary)			= NIK_MODULE::template is_n_ary<f, n>;
-
-// out type:
-
-	using nik_name(NIK_PREFIX, S_out_type)				= typename NIK_MODULE::S_out_type;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_out_type)		= NIK_MODULE::U_out_type;
-
-	template<auto f>
-	using nik_name(NIK_PREFIX, out_type)				= typename NIK_MODULE::template out_type<f>;
-
-// in type:
-
-	using nik_name(NIK_PREFIX, S_in_type)				= typename NIK_MODULE::S_in_type;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_in_type)			= NIK_MODULE::U_in_type;
-
-	template<auto f, auto pos = 0, auto depth = 500>
-	using nik_name(NIK_PREFIX, in_type)				= typename NIK_MODULE::template
-										in_type<f, pos, depth>;
-
-// in types:
-
-	using nik_name(NIK_PREFIX, S_in_types)				= typename NIK_MODULE::S_in_types;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_in_types)		= NIK_MODULE::U_in_types;
-
-	template<auto f>
-	using nik_name(NIK_PREFIX, in_types)				= typename NIK_MODULE::template in_types<f>;
-
-// in types left:
-
-	using nik_name(NIK_PREFIX, S_in_types_left)			= typename NIK_MODULE::S_in_types_left;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_in_types_left)		= NIK_MODULE::U_in_types_left;
-
-	template<auto f, auto pos, auto depth = 500>
-	using nik_name(NIK_PREFIX, in_types_left)			= typename NIK_MODULE::template
-										in_types_left<f, pos, depth>;
-
-// in types right:
-
-	using nik_name(NIK_PREFIX, S_in_types_right)			= typename NIK_MODULE::S_in_types_right;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_in_types_right)		= NIK_MODULE::U_in_types_right;
-
-	template<auto f, auto pos, auto depth = 500>
-	using nik_name(NIK_PREFIX, in_types_right)			= typename NIK_MODULE::template
-										in_types_right<f, pos, depth>;
+/***********************************************************************************************************************/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
