@@ -78,15 +78,13 @@ namespace nik
 		pack,
 
 		list,
-		junction,
 		function,
-		continuation,
 		colist,
 
 	// compile:
 
-		compose,
-		endopose,
+		procedure,
+		continuation,
 		signature,
 		one_cycle,
 		near_linear,
@@ -244,17 +242,13 @@ namespace nik
 															\
 		09-list
 
-	#define nik_junction()												\
-															\
-		10-junction
-
 	#define nik_function()												\
 															\
-		11-function
+		10-function
 
 	#define nik_colist()												\
 															\
-		12-colist
+		11-colist
 
 
 /***********************************************************************************************************************/
@@ -269,13 +263,13 @@ namespace nik
 /***********************************************************************************************************************/
 
 
-	#define nik_compose()												\
+	#define nik_procedure()												\
 															\
-		0-compose
+		0-procedure
 
-	#define nik_endopose()												\
+	#define nik_continuation()											\
 															\
-		1-endopose
+		1-continuation
 
 	#define nik_signature()												\
 															\

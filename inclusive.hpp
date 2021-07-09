@@ -39,17 +39,16 @@
 //#include nik_source(., interpret, controller, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., interpret, machine, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., interpret, pack, architect, v_0_5, gcc)			// redundant inclusion
-#include nik_source(., interpret, list, architect, v_0_5, gcc)
-//#include nik_source(., interpret, junction, architect, v_0_5, gcc)			// redundant inclusion
-#include nik_source(., interpret, function, architect, v_0_5, gcc)			// ?
+//#include nik_source(., interpret, list, architect, v_0_5, gcc)
+//#include nik_source(., interpret, function, architect, v_0_5, gcc)			// redundant inclusion
 #include nik_source(., interpret, colist, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 
 // run time space:
 
-//#include nik_source(., compile, compose, architect, v_0_5, gcc)			// redundant inclusion
-//#include nik_source(., compile, endopose, architect, v_0_5, gcc)			// redundant inclusion
+//#include nik_source(., compile, procedure, architect, v_0_5, gcc)			// redundant inclusion
+#include nik_source(., compile, continuation, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., compile, signature, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., compile, one_cycle, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., compile, near_linear, architect, v_0_5, gcc)			// redundant inclusion
