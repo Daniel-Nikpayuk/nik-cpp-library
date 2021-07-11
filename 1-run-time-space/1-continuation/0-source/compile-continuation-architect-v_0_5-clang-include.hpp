@@ -41,8 +41,11 @@ namespace nik
 		#include nik_import(../../.., interpret, functor, architect, v_0_5, clang, static, name)
 		#include nik_import(../../.., compile, procedure, architect, v_0_5, clang, static, name)
 
-		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
-		using function_module	= nik_module(interpret, function, architect, v_0_5, clang);
+		using pack_module			= nik_module(interpret, pack, architect, v_0_5, clang);
+		using function_module			= nik_module(interpret, function, architect, v_0_5, clang);
+
+		template<auto f>
+		static constexpr bool is_id_keyword	= function_module::template is_id_keyword<f>;
 
 		#include"compile-continuation-architect-v_0_5-source.hpp"
 

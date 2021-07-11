@@ -27,6 +27,7 @@
 // dependencies:
 
 	#include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, pack, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,7 +39,8 @@ namespace nik
 {
 	nik_begin_module(interpret, function, architect, v_0_5, gcc)
 
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
+		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
 
 		#include"v0.5/0_space.hpp"
 		#include"v0.5/1_dispatch.hpp"

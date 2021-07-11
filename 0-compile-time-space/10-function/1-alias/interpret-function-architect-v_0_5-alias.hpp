@@ -217,7 +217,25 @@
 
 /***********************************************************************************************************************/
 
+// keywords:
+
+	using nik_name(NIK_PREFIX, S_is_id_keyword)			= typename NIK_MODULE::S_is_id_keyword;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_id_keyword)		= NIK_MODULE::U_is_id_keyword;
+
+	template<auto f>
+	NIK_POLICY auto nik_name(NIK_PREFIX, is_id_keyword)		= NIK_MODULE::template is_id_keyword<f>;
+
+/***********************************************************************************************************************/
+
 // composition operators:
+
+	using nik_name(NIK_PREFIX, S_postcompose)			= typename NIK_MODULE::S_postcompose;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_postcompose)		= NIK_MODULE::U_postcompose;
+
+	template<auto uf1, auto uf2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, postcompose)		= NIK_MODULE::template postcompose<uf1, uf2>;
 
 	using nik_name(NIK_PREFIX, S_precompose)			= typename NIK_MODULE::S_precompose;
 
@@ -226,12 +244,30 @@
 	template<auto uf1, auto uf2>
 	NIK_POLICY auto nik_name(NIK_PREFIX, precompose)		= NIK_MODULE::template precompose<uf1, uf2>;
 
-	using nik_name(NIK_PREFIX, S_postcompose)			= typename NIK_MODULE::S_postcompose;
+	template<auto uf0, auto... ufs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, chain_precompose)		= NIK_MODULE::template chain_precompose<uf0, ufs...>;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_postcompose)		= NIK_MODULE::U_postcompose;
+/***********************************************************************************************************************/
+
+// optimized composition operators:
+
+	using nik_name(NIK_PREFIX, S_opt_postcompose)			= typename NIK_MODULE::S_opt_postcompose;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_opt_postcompose)		= NIK_MODULE::U_opt_postcompose;
 
 	template<auto uf1, auto uf2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, postcompose)		= NIK_MODULE::template postcompose<uf1, uf2>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_postcompose)		= NIK_MODULE::template opt_postcompose<uf1, uf2>;
+
+	using nik_name(NIK_PREFIX, S_opt_precompose)			= typename NIK_MODULE::S_opt_precompose;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_opt_precompose)		= NIK_MODULE::U_opt_precompose;
+
+	template<auto uf1, auto uf2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_precompose)		= NIK_MODULE::template opt_precompose<uf1, uf2>;
+
+	template<auto uf0, auto... ufs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_chain_precompose)	= NIK_MODULE::template
+										opt_chain_precompose<uf0, ufs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

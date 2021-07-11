@@ -436,43 +436,20 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// precompose:
+// keywords:
 
 /***********************************************************************************************************************/
 
-private:
-
-	template<typename SF1, typename SF2>
-	struct S_precomposition
+	struct S_is_id_keyword
 	{
-		template<typename... Ts>
-		static constexpr auto result(Ts... vs)
-		{
-			using mid_type = decltype(SF1::template result<Ts...>(vs...));
-
-			return SF2::template result<mid_type>(SF1::template result<Ts...>(vs...));
-		}
+		template<auto f>
+		static constexpr bool result = functor_module::template V_equal_VxV<f, U_id>;
 	};
 
-public:
+	static constexpr auto U_is_id_keyword = functor_module::template U_type_T<S_is_id_keyword>;
 
-	struct S_precompose
-	{
-		template<auto uf1, auto uf2>
-		static constexpr auto result = functor_module::template U_type_T
-		<
-			S_precomposition
-			<
-				functor_module::template T_type_U<uf1>,
-				functor_module::template T_type_U<uf2>
-			>
-		>;
-	};
-
-	static constexpr auto U_precompose = functor_module::template U_type_T<S_precompose>;
-
-	template<auto uf1, auto uf2>
-	static constexpr auto precompose = S_precompose::template result<uf1, uf2>;
+	template<auto f>
+	static constexpr bool is_id_keyword = S_is_id_keyword::template result<f>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -499,21 +476,96 @@ public:
 
 	struct S_postcompose
 	{
-		template<auto uf1, auto uf2>
+		template<auto uf, auto ug>
 		static constexpr auto result = functor_module::template U_type_T
 		<
 			S_postcomposition
 			<
-				functor_module::template T_type_U<uf1>,
-				functor_module::template T_type_U<uf2>
+				functor_module::template T_type_U<uf>,
+				functor_module::template T_type_U<ug>
 			>
 		>;
 	};
 
 	static constexpr auto U_postcompose = functor_module::template U_type_T<S_postcompose>;
 
-	template<auto uf1, auto uf2>
-	static constexpr auto postcompose = S_postcompose::template result<uf1, uf2>;
+	template<auto uf, auto ug>
+	static constexpr auto postcompose = S_postcompose::template result<uf, ug>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// precompose:
+
+/***********************************************************************************************************************/
+
+	struct S_precompose
+	{
+		template<auto uf, auto ug>
+		static constexpr auto result = S_postcompose::template result<ug, uf>;
+	};
+
+	static constexpr auto U_precompose = functor_module::template U_type_T<S_precompose>;
+
+	template<auto uf, auto ug>
+	static constexpr auto precompose = S_precompose::template result<uf, ug>;
+
+/***********************************************************************************************************************/
+
+// chain precompose:
+
+	template<auto uf0, auto... ufs>
+	static constexpr auto chain_precompose = pack_module::template roll<500, U_precompose, uf0, ufs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// optimized composition:
+
+/***********************************************************************************************************************/
+
+// opt postcompose:
+
+	struct S_opt_postcompose
+	{
+		template<auto uf, auto ug>
+		static constexpr auto f_result()
+		{
+			if constexpr      (is_id_keyword<uf, U_id>)	return ug;
+			else if constexpr (is_id_keyword<ug, U_id>)	return uf;
+			else						return postcompose<uf, ug>;
+		};
+
+		template<auto uf, auto ug>
+		static constexpr auto result = f_result<uf, ug>();
+	};
+
+	static constexpr auto U_opt_postcompose = functor_module::template U_type_T<S_opt_postcompose>;
+
+	template<auto uf, auto ug>
+	static constexpr auto opt_postcompose = S_opt_postcompose::template f_result<uf, ug>();
+
+/***********************************************************************************************************************/
+
+// opt precompose:
+
+	struct S_opt_precompose
+	{
+		template<auto uf, auto ug>
+		static constexpr auto result = S_opt_postcompose::template f_result<ug, uf>();
+	};
+
+	static constexpr auto U_opt_precompose = functor_module::template U_type_T<S_opt_precompose>;
+
+	template<auto uf, auto ug>	// S_opt_postcompose, not S_opt_precompose
+	static constexpr auto opt_precompose = S_opt_postcompose::template f_result<ug, uf>();
+
+/***********************************************************************************************************************/
+
+// opt chain precompose:
+
+	template<auto uf0, auto... ufs>
+	static constexpr auto opt_chain_precompose = pack_module::template roll<500, U_opt_precompose, uf0, ufs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
