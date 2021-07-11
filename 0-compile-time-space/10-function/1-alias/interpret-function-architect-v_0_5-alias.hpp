@@ -240,6 +240,95 @@
 // dispatchers:
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// enumeration filters (level 0):
+
+/***********************************************************************************************************************/
+
+// attributes:
+
+	using nik_name(NIK_PREFIX, Mutability)				= typename NIK_MODULE::Mutability;
+
+	using nik_name(NIK_PREFIX, Denotation)				= typename NIK_MODULE::Denotation;
+
+	//
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_immutable)		= NIK_MODULE::template is_immutable<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_variable)		= NIK_MODULE::template is_variable<m>;
+
+	//
+
+	template<auto d>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_by_value)		= NIK_MODULE::template is_by_value<d>;
+
+	template<auto d>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_by_reference)		= NIK_MODULE::template is_by_reference<d>;
+
+/***********************************************************************************************************************/
+
+// attribute filters (level 1):
+
+/***********************************************************************************************************************/
+
+	template<auto m, auto d>
+	using nik_name(NIK_PREFIX, _attributes)				= typename NIK_MODULE::template _attributes<m, d>;
+
+	//
+
+	using nik_name(NIK_PREFIX, attr_by_val)				= typename NIK_MODULE::attr_by_val;
+	using nik_name(NIK_PREFIX, attr_by_ref)				= typename NIK_MODULE::attr_by_ref;
+	using nik_name(NIK_PREFIX, attr_by_cval)			= typename NIK_MODULE::attr_by_cval;
+	using nik_name(NIK_PREFIX, attr_by_cref)			= typename NIK_MODULE::attr_by_cref;
+
+/***********************************************************************************************************************/
+
+// member argument filters (level 2):
+
+/***********************************************************************************************************************/
+
+	template<typename T, typename A>
+	using nik_name(NIK_PREFIX, _argument)				= typename NIK_MODULE::template _argument<T, A>;
+
+	//
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, arg_by_val)				= typename NIK_MODULE::template arg_by_val<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, arg_by_ref)				= typename NIK_MODULE::template arg_by_ref<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, arg_by_cval)				= typename NIK_MODULE::template arg_by_cval<T>;
+
+	template<typename T>
+	using nik_name(NIK_PREFIX, arg_by_cref)				= typename NIK_MODULE::template arg_by_cref<T>;
+
+/***********************************************************************************************************************/
+
+// facade filters (level 3):
+
+/***********************************************************************************************************************/
+
+	template<typename... Args>
+	using nik_name(NIK_PREFIX, _facade)				= typename NIK_MODULE::template _facade<Args...>;
+
+/***********************************************************************************************************************/
+
+// sign:
+
+	template<typename Arg>
+	using nik_name(NIK_PREFIX, sign)				= typename NIK_MODULE::template sign<Arg>;
+
+/***********************************************************************************************************************/
+
+// resolve:
+
+	template<auto ufunc, typename Facade>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve)			= NIK_MODULE::template resolve<ufunc, Facade>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

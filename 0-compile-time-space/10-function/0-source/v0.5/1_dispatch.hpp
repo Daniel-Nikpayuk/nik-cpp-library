@@ -44,8 +44,8 @@ public:
 
 	enum struct Denotation
 	{
-		reference,
-		dereference,
+		by_value,
+		by_reference,
 
 		dimension // filler
 	};
@@ -61,24 +61,10 @@ public:
 	//
 
 	template<Denotation d>
-	static constexpr bool is_reference			= (d == Denotation::reference);
+	static constexpr bool is_by_value			= (d == Denotation::by_value);
 
 	template<Denotation d>
-	static constexpr bool is_dereference			= (d == Denotation::dereference);
-
-/***********************************************************************************************************************/
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_immutable_reference		= (is_immutable<m> && is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_immutable_dereference		= (is_immutable<m> && is_dereference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_variable_reference		= (is_variable<m> && is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_variable_dereference		= (is_variable<m> && is_dereference<d>);
+	static constexpr bool is_by_reference			= (d == Denotation::by_reference);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -96,10 +82,10 @@ public:
 
 	//
 
-	using attr_ref		= _attributes < Mutability::variable  , Denotation::reference   >;
-	using attr_deref	= _attributes < Mutability::variable  , Denotation::dereference >;
-	using attr_cref		= _attributes < Mutability::immutable , Denotation::reference   >;
-	using attr_cderef	= _attributes < Mutability::immutable , Denotation::dereference >;
+	using attr_by_val	= _attributes < Mutability::variable  , Denotation::by_value     >;
+	using attr_by_ref	= _attributes < Mutability::variable  , Denotation::by_reference >;
+	using attr_by_cval	= _attributes < Mutability::immutable , Denotation::by_value     >;
+	using attr_by_cref	= _attributes < Mutability::immutable , Denotation::by_reference >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -114,6 +100,13 @@ public:
 		using type		= Type;
 		using attributes	= Attr;
 	};
+
+	//
+
+	template<typename Type> using arg_by_val	= _argument<Type, attr_by_val>;
+	template<typename Type> using arg_by_ref	= _argument<Type, attr_by_ref>;
+	template<typename Type> using arg_by_cval	= _argument<Type, attr_by_cval>;
+	template<typename Type> using arg_by_cref	= _argument<Type, attr_by_cref>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -133,30 +126,62 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// make assign:
+// sign:
 
 /***********************************************************************************************************************/
 
-	template<typename Sign, auto UFunc, typename... Args>
-	static constexpr auto make_assign(void(*)(_facade<Args...>))
+private:
+
+	template<typename Arg>
+	static constexpr auto f_sign()
 	{
-		using S_function		= functor_module::template T_type_U<UFunc>;
+		using type		= typename Arg::type;
+		using attr		= typename Arg::attributes;
 
-		// constexpr auto l_value	= out_f<signature, out_next_args::l_attributes>;
-		// constexpr auto _out_next_r	= out_f<signature, out_next_args::r_attributes>;
-		// constexpr auto _out_next	= make_next_function
-		//							<
-		//								OutNext::direction,
-		//								OutNext::ufunction,
-		//								_out_next_l, _out_next_r
-		//							>;
+		constexpr auto mutate	= attr::mutate;
+		constexpr auto denote	= attr::denote;
 
-		return 0;
+		if constexpr (is_immutable<mutate>)
+		{
+			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<type const>;
+			else					return functor_module::template U_type_T<type const &>;
+		}
+		else
+		{
+			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<type>;
+			else					return functor_module::template U_type_T<type &>;
+		}
 	}
 
+public:
+
+	template<typename Arg>
+	using sign = functor_module::template T_type_U
+	<
+		f_sign<Arg>()
+	>;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // resolve:
+
+/***********************************************************************************************************************/
+
+private:
+
+	template<auto UFunc, typename... Args>
+	static constexpr auto f_resolve(void(*)(_facade<Args...>*))
+	{
+		using S_function = functor_module::template T_type_U<UFunc>;
+
+		return S_function::template result<sign<Args>...>;
+	}
+
+public:
+
+	template<auto ufunction, typename Facade>
+	static constexpr auto resolve = f_resolve<ufunction>(functor_module::template U_type_T<Facade>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
