@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, functor, architect, v_0_5, gcc)
+	#include nik_source(../../.., compile, procedure, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,12 +38,15 @@ namespace nik
 {
 	nik_begin_module(compile, signature, architect, v_0_5, gcc)
 
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, gcc);
+		#include nik_import(../../.., compile, procedure, architect, v_0_5, gcc, static, name)
+
+		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
 
 		#include"v0.5/define_macros.hpp"
 
-		#include"v0.5/0_signatures.hpp"
-		#include"v0.5/1_dispatchers.hpp"
+		#include"v0.5/0_signature.hpp"
+		#include"v0.5/1_dispatch.hpp"
 
 		#include"v0.5/undef_macros.hpp"
 

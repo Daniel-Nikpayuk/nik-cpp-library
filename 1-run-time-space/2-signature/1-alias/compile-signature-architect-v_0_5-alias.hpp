@@ -92,5 +92,112 @@
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// dispatch:
+
+/***********************************************************************************************************************/
+
+	using nik_name(NIK_PREFIX, SignMember)				= typename NIK_MODULE::SignMember;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_0)		= NIK_MODULE::template is_sign_member_0<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_1)		= NIK_MODULE::template is_sign_member_1<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_2)		= NIK_MODULE::template is_sign_member_2<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_3)		= NIK_MODULE::template is_sign_member_3<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_4)		= NIK_MODULE::template is_sign_member_4<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_member_5)		= NIK_MODULE::template is_sign_member_5<m>;
+
+	//
+
+	using nik_name(NIK_PREFIX, SignMutability)			= typename NIK_MODULE::SignMutability;
+
+	using nik_name(NIK_PREFIX, SignDenotation)			= typename NIK_MODULE::SignDenotation;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, sign_is_immutable)		= NIK_MODULE::template sign_is_immutable<m>;
+
+	template<auto m>
+	NIK_POLICY bool nik_name(NIK_PREFIX, sign_is_variable)		= NIK_MODULE::template sign_is_variable<m>;
+
+	template<auto d>
+	NIK_POLICY bool nik_name(NIK_PREFIX, sign_member_is_reference)	= NIK_MODULE::template sign_member_is_reference<d>;
+
+	template<auto d>
+	NIK_POLICY bool nik_name(NIK_PREFIX, sign_member_is_dereference) = NIK_MODULE::template sign_member_is_dereference<d>;
+
+	//
+
+	template<auto m, auto d>
+	using nik_name(NIK_PREFIX, _sign_attributes)		= typename NIK_MODULE::template _sign_attributes<m, d>;
+
+	using nik_name(NIK_PREFIX, sign_attr_ref)		= typename NIK_MODULE::sign_attr_ref;
+	using nik_name(NIK_PREFIX, sign_attr_deref)		= typename NIK_MODULE::sign_attr_deref;
+	using nik_name(NIK_PREFIX, sign_attr_cref)		= typename NIK_MODULE::sign_attr_cref;
+	using nik_name(NIK_PREFIX, sign_attr_cderef)		= typename NIK_MODULE::sign_attr_cderef;
+
+	//
+
+	template<typename S, typename A>
+	using nik_name(NIK_PREFIX, _sign_argument)		= typename NIK_MODULE::template _sign_argument<S, A>;
+
+	template<typename S>
+	using nik_name(NIK_PREFIX, sign_arg_by_ref)		= typename NIK_MODULE::template sign_arg_by_ref<S>;
+
+	template<typename S>
+	using nik_name(NIK_PREFIX, sign_arg_by_deref)		= typename NIK_MODULE::template sign_arg_by_deref<S>;
+
+	template<typename S>
+	using nik_name(NIK_PREFIX, sign_arg_by_cref)		= typename NIK_MODULE::template sign_arg_by_cref<S>;
+
+	template<typename S>
+	using nik_name(NIK_PREFIX, sign_arg_by_cderef)		= typename NIK_MODULE::template sign_arg_by_cderef<S>;
+
+	// member 0:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_0)	= NIK_MODULE::template resolve_member_0<S, A>;
+
+	// member 1:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_1)	= NIK_MODULE::template resolve_member_1<S, A>;
+
+	// member 2:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_2)	= NIK_MODULE::template resolve_member_2<S, A>;
+
+	// member 3:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_3)	= NIK_MODULE::template resolve_member_3<S, A>;
+
+	// member 4:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_4)	= NIK_MODULE::template resolve_member_4<S, A>;
+
+	// member 5:
+
+	template<typename S, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_5)	= NIK_MODULE::template resolve_member_5<S, A>;
+
+	//
+
+	template<auto m, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member)	= NIK_MODULE::template resolve_member<m, A>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 

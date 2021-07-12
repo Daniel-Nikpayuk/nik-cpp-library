@@ -27,7 +27,7 @@
 // dependencies:
 
 	#include nik_source(../../.., interpret, boolean, architect, v_0_5, clang)
-	#include nik_source(../../.., compile, endopose, architect, v_0_5, clang)
+	#include nik_source(../../.., compile, continuation, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -39,13 +39,12 @@ namespace nik
 {
 	nik_begin_module(compile, one_cycle, architect, v_0_5, clang)
 
-		#include nik_import(../../.., compile, compose, architect, v_0_5, clang, static, name)
-		#include nik_import(../../.., compile, endopose, architect, v_0_5, clang, static, name)
+		#include nik_import(../../.., compile, procedure, architect, v_0_5, clang, static, name)
+		#include nik_import(../../.., compile, continuation, architect, v_0_5, clang, static, name)
 
 		using boolean_module		= nik_module(interpret, boolean, architect, v_0_5, clang);
-		using function_module		= nik_module(interpret, function, architect, v_0_5, clang);
 
-		static constexpr auto U_id	= function_module::U_id;
+		static constexpr auto U_id	= nik_module(interpret, function, architect, v_0_5, clang)::U_id;
 
 		#include"compile-one_cycle-architect-v_0_5-source.hpp"
 

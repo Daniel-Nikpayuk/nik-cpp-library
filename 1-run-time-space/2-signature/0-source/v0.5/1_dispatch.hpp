@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// dispatchers source:
+// dispatch source:
 
 public:
 
@@ -34,7 +34,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	enum struct Member
+	enum struct SignMember
 	{
 		member_0,
 		member_1,
@@ -46,12 +46,12 @@ public:
 		dimension // filler
 	};
 
-	template<Member m> static constexpr bool is_member_0		= (m == Member::member_0);
-	template<Member m> static constexpr bool is_member_1		= (m == Member::member_1);
-	template<Member m> static constexpr bool is_member_2		= (m == Member::member_2);
-	template<Member m> static constexpr bool is_member_3		= (m == Member::member_3);
-	template<Member m> static constexpr bool is_member_4		= (m == Member::member_4);
-	template<Member m> static constexpr bool is_member_5		= (m == Member::member_5);
+	template<SignMember m> static constexpr bool is_sign_member_0		= (m == SignMember::member_0);
+	template<SignMember m> static constexpr bool is_sign_member_1		= (m == SignMember::member_1);
+	template<SignMember m> static constexpr bool is_sign_member_2		= (m == SignMember::member_2);
+	template<SignMember m> static constexpr bool is_sign_member_3		= (m == SignMember::member_3);
+	template<SignMember m> static constexpr bool is_sign_member_4		= (m == SignMember::member_4);
+	template<SignMember m> static constexpr bool is_sign_member_5		= (m == SignMember::member_5);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -60,15 +60,9 @@ public:
 
 /***********************************************************************************************************************/
 
-	enum struct Mutability
-	{
-		immutable,
-		variable,
+	using SignMutability = typename function_module::Mutability;
 
-		dimension // filler
-	};
-
-	enum struct Denotation
+	enum struct SignDenotation
 	{
 		reference,
 		dereference,
@@ -78,33 +72,19 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<Mutability m>
-	static constexpr bool is_immutable			= (m == Mutability::immutable);
+	template<SignMutability m>
+	static constexpr bool sign_is_immutable			= function_module::template is_immutable<m>;
 
-	template<Mutability m>
-	static constexpr bool is_variable			= (m == Mutability::variable);
+	template<SignMutability m>
+	static constexpr bool sign_is_variable			= function_module::template is_variable<m>;
 
 	//
 
-	template<Denotation d>
-	static constexpr bool is_reference			= (d == Denotation::reference);
+	template<SignDenotation d>
+	static constexpr bool sign_member_is_reference		= (d == SignDenotation::reference);
 
-	template<Denotation d>
-	static constexpr bool is_dereference			= (d == Denotation::dereference);
-
-/***********************************************************************************************************************/
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_immutable_reference		= (is_immutable<m> && is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_immutable_dereference		= (is_immutable<m> && is_dereference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_variable_reference		= (is_variable<m> && is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool is_variable_dereference		= (is_variable<m> && is_dereference<d>);
+	template<SignDenotation d>
+	static constexpr bool sign_member_is_dereference	= (d == SignDenotation::dereference);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -113,19 +93,19 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<Mutability Mutate, Denotation Denote>
-	struct _attributes
+	template<SignMutability Mutate, SignDenotation Denote>
+	struct _sign_attributes
 	{
-		static constexpr Mutability mutate = Mutate;
-		static constexpr Denotation denote = Denote;
+		static constexpr SignMutability mutate = Mutate;
+		static constexpr SignDenotation denote = Denote;
 	};
 
 	//
 
-	using attr_ref		= _attributes < Mutability::variable  , Denotation::reference   >;
-	using attr_deref	= _attributes < Mutability::variable  , Denotation::dereference >;
-	using attr_cref		= _attributes < Mutability::immutable , Denotation::reference   >;
-	using attr_cderef	= _attributes < Mutability::immutable , Denotation::dereference >;
+	using sign_attr_ref		= _sign_attributes < SignMutability::variable  , SignDenotation::reference   >;
+	using sign_attr_deref		= _sign_attributes < SignMutability::variable  , SignDenotation::dereference >;
+	using sign_attr_cref		= _sign_attributes < SignMutability::immutable , SignDenotation::reference   >;
+	using sign_attr_cderef		= _sign_attributes < SignMutability::immutable , SignDenotation::dereference >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -134,21 +114,19 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<Member Mem, typename Attr>
-	struct _member_argument
+	template<typename Sign, typename Attr>
+	struct _sign_argument
 	{
-		static constexpr auto member	= Mem;
-		using attributes		= Attr;
+		using signature		= Sign;
+		using attributes	= Attr;
 	};
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+	//
 
-// facade filters (level 3):
-
-/***********************************************************************************************************************/
-
-	template<typename... Args> struct _facade { };
+	template<typename Sign> using sign_arg_by_ref		= _sign_argument<Sign, sign_attr_ref>;
+	template<typename Sign> using sign_arg_by_deref		= _sign_argument<Sign, sign_attr_deref>;
+	template<typename Sign> using sign_arg_by_cref		= _sign_argument<Sign, sign_attr_cref>;
+	template<typename Sign> using sign_arg_by_cderef	= _sign_argument<Sign, sign_attr_cderef>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -159,26 +137,53 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// make assign:
+// resolve member:
 
 /***********************************************************************************************************************/
 
-	template<typename Sign, auto UFunc, typename... Args>
-	static constexpr auto make_assign(void(*)(_facade<Args...>))
+private:
+
+	// members 0-5:
+
+		NIK_DEFINE_F_RESOLVE_MEMBER(0)
+		NIK_DEFINE_F_RESOLVE_MEMBER(1)
+		NIK_DEFINE_F_RESOLVE_MEMBER(2)
+		NIK_DEFINE_F_RESOLVE_MEMBER(3)
+		NIK_DEFINE_F_RESOLVE_MEMBER(4)
+		NIK_DEFINE_F_RESOLVE_MEMBER(5)
+
+public:
+
+	// members 0-5:
+
+		NIK_DEFINE_RESOLVE_MEMBER(0)
+		NIK_DEFINE_RESOLVE_MEMBER(1)
+		NIK_DEFINE_RESOLVE_MEMBER(2)
+		NIK_DEFINE_RESOLVE_MEMBER(3)
+		NIK_DEFINE_RESOLVE_MEMBER(4)
+		NIK_DEFINE_RESOLVE_MEMBER(5)
+
+/***********************************************************************************************************************/
+
+private:
+
+	template<SignMember member, typename Arg>
+	static constexpr auto f_resolve_member()
 	{
-		using S_function		= functor_module::template T_type_U<UFunc>;
+		using sign = typename Arg::signature;
 
-		// constexpr auto l_value	= out_f<signature, out_next_args::l_attributes>;
-		// constexpr auto _out_next_r	= out_f<signature, out_next_args::r_attributes>;
-		// constexpr auto _out_next	= make_next_function
-		//							<
-		//								OutNext::direction,
-		//								OutNext::ufunction,
-		//								_out_next_l, _out_next_r
-		//							>;
-
-		return 0;
+		if constexpr      (is_sign_member_0<member>) return resolve_member_0<sign, Arg>;
+		else if constexpr (is_sign_member_1<member>) return resolve_member_1<sign, Arg>;
+		else if constexpr (is_sign_member_2<member>) return resolve_member_2<sign, Arg>;
+		else if constexpr (is_sign_member_3<member>) return resolve_member_3<sign, Arg>;
+		else if constexpr (is_sign_member_4<member>) return resolve_member_4<sign, Arg>;
+		else                                         return resolve_member_5<sign, Arg>;
 	}
+
+public:
+
+	template<SignMember member, typename Arg>
+	static constexpr auto resolve_member = f_resolve_member<member, Arg>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
