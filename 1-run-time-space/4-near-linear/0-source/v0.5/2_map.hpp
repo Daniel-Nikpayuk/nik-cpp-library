@@ -25,6 +25,36 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// members:
+
+/***********************************************************************************************************************/
+
+private:
+
+	template<NLMember... Ms> using _map_name	= _name<NLAlgorithm::map, Ms...>;
+
+public:
+
+	template<typename... Ts> using _map_out		= _members < _map_name<NLMember::out> , Ts... >;
+	template<typename... Ts> using _map_in		= _members < _map_name<NLMember::in > , Ts... >;
+	template<typename... Ts> using _map_end		= _members < _map_name<NLMember::end> , Ts... >;
+
+	// out, in, end:
+
+	template<typename... Ts> using _map_algo	= _members
+	<
+		_map_name
+		<
+			NLMember::out,
+			NLMember::in,
+			NLMember::end
+
+		>, Ts...
+	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // out:
 
 	template
@@ -33,8 +63,10 @@ public:
 		Interval Ival ,
 		   auto UFunc , typename SignAttrs
 	>
-	class _out // map
+	class _members
 	<
+		_map_name < NLMember::out >,
+
 		_type < Type  , SignMem   >,
 		_ival < Ival              >,
 		_next < UFunc , SignAttrs >

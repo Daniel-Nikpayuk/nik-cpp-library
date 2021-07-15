@@ -32,6 +32,36 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// algorithms:
+
+/***********************************************************************************************************************/
+
+	enum struct NLAlgorithm
+	{
+		repeat,
+		map,
+		fold,
+		find_first,
+		find_all,
+		zip,
+		fasten,
+		glide,
+
+		dimension // filler
+	};
+
+	template<NLAlgorithm a> static constexpr bool V_is_repeat    	= (a == NLAlgorithm::repeat);
+	template<NLAlgorithm a> static constexpr bool V_is_map       	= (a == NLAlgorithm::map);
+	template<NLAlgorithm a> static constexpr bool V_is_fold      	= (a == NLAlgorithm::fold);
+	template<NLAlgorithm a> static constexpr bool V_is_find_first	= (a == NLAlgorithm::find_first);
+	template<NLAlgorithm a> static constexpr bool V_is_find_all  	= (a == NLAlgorithm::find_all);
+	template<NLAlgorithm a> static constexpr bool V_is_zip       	= (a == NLAlgorithm::zip);
+	template<NLAlgorithm a> static constexpr bool V_is_fasten    	= (a == NLAlgorithm::fasten);
+	template<NLAlgorithm a> static constexpr bool V_is_glide     	= (a == NLAlgorithm::glide);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // members:
 
 /***********************************************************************************************************************/
@@ -218,6 +248,8 @@ public:
 
 /***********************************************************************************************************************/
 
+	template<NLAlgorithm A, NLMember... Ms>	struct _name		{ };
+
 	template<typename T, SignMember M>	struct _type		{ };
 	template<Interval V>			struct _ival		{ };
 	template<Axis V>			struct _axis		{ };
@@ -240,10 +272,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename...> class _out;
-	template<typename...> class _in;
-	template<typename...> class _end;
-	template<typename...> class _algo;
+	template<typename...> struct _members;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
