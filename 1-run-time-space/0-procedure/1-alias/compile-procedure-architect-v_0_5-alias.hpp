@@ -322,13 +322,13 @@
 
 // test:
 
-	template<auto op, auto l0, auto... ls>
-	NIK_POLICY auto nik_name(NIK_PREFIX, test)			= NIK_MODULE::template test<op, l0, ls...>;
+	template<auto op, auto r0, auto... rs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, test)			= NIK_MODULE::template test<op, r0, rs...>;
 
 // assign:
 
-	template<auto r, auto op, auto... ls>
-	NIK_POLICY auto nik_name(NIK_PREFIX, assign)			= NIK_MODULE::template assign<r, op, ls...>;
+	template<auto l, auto op, auto... rs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, assign)			= NIK_MODULE::template assign<l, op, rs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

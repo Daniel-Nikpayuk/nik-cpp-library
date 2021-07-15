@@ -110,23 +110,36 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// member argument filters (level 2):
+// argument filters (level 2):
 
 /***********************************************************************************************************************/
 
-	template<typename Sign, typename Attr>
+	template<SignMember Member, typename Attr>
 	struct _sign_argument
 	{
-		using signature		= Sign;
-		using attributes	= Attr;
+		static constexpr auto member	= Member;
+		using attributes		= Attr;
 	};
 
 	//
 
-	template<typename Sign> using sign_arg_by_ref		= _sign_argument<Sign, sign_attr_ref>;
-	template<typename Sign> using sign_arg_by_deref		= _sign_argument<Sign, sign_attr_deref>;
-	template<typename Sign> using sign_arg_by_cref		= _sign_argument<Sign, sign_attr_cref>;
-	template<typename Sign> using sign_arg_by_cderef	= _sign_argument<Sign, sign_attr_cderef>;
+	template<SignMember Member> using sign_arg_ref		= _sign_argument < Member , sign_attr_ref    >;
+	template<SignMember Member> using sign_arg_deref	= _sign_argument < Member , sign_attr_deref  >;
+	template<SignMember Member> using sign_arg_cref		= _sign_argument < Member , sign_attr_cref   >;
+	template<SignMember Member> using sign_arg_cderef	= _sign_argument < Member , sign_attr_cderef >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// facade filters (level 3):
+
+/***********************************************************************************************************************/
+
+	template<typename... Args>
+	using _sign_arg_facade = typename functor_module::template typename_pack<Args...>;
+
+	template<auto... Members>
+	using _sign_member_facade = typename functor_module::template auto_pack<Members...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -167,23 +180,57 @@ public:
 
 private:
 
-	template<SignMember member, typename Arg>
+	template<typename Signature, typename Arg>
 	static constexpr auto f_resolve_member()
 	{
-		using sign = typename Arg::signature;
+		constexpr auto member	= Arg::member;
+		using attributes	= typename Arg::attributes;
 
-		if constexpr      (is_sign_member_0<member>) return resolve_member_0<sign, Arg>;
-		else if constexpr (is_sign_member_1<member>) return resolve_member_1<sign, Arg>;
-		else if constexpr (is_sign_member_2<member>) return resolve_member_2<sign, Arg>;
-		else if constexpr (is_sign_member_3<member>) return resolve_member_3<sign, Arg>;
-		else if constexpr (is_sign_member_4<member>) return resolve_member_4<sign, Arg>;
-		else                                         return resolve_member_5<sign, Arg>;
+		if constexpr      (is_sign_member_0<member>) return resolve_member_0<Signature, attributes>;
+		else if constexpr (is_sign_member_1<member>) return resolve_member_1<Signature, attributes>;
+		else if constexpr (is_sign_member_2<member>) return resolve_member_2<Signature, attributes>;
+		else if constexpr (is_sign_member_3<member>) return resolve_member_3<Signature, attributes>;
+		else if constexpr (is_sign_member_4<member>) return resolve_member_4<Signature, attributes>;
+		else                                         return resolve_member_5<Signature, attributes>;
 	}
 
 public:
 
-	template<SignMember member, typename Arg>
-	static constexpr auto resolve_member = f_resolve_member<member, Arg>();
+	template<typename Signature, typename Arg>
+	static constexpr auto resolve_member = f_resolve_member<Signature, Arg>();
+
+/***********************************************************************************************************************/
+
+private:
+
+	template<typename Signature, typename... Args>
+	static constexpr auto f_resolve_facade(void(*)(_sign_arg_facade<Args...>*))
+	{
+		return functor_module::template U_type_T
+		<
+			_sign_member_facade<resolve_member<Signature, Args>...>
+		>;
+	}
+
+public:
+
+	template<typename Signature, typename Facade>
+	static constexpr auto resolve_facade = f_resolve_facade<Signature>(functor_module::template U_type_T<Facade>);
+
+/***********************************************************************************************************************/
+
+private:
+
+	template<auto... Members>
+	static constexpr auto f_resolve_out_types(void(*)(_sign_member_facade<Members...>*))
+	{
+		return functor_module::template U_pack_Vs<out_type<Members>...>;
+	}
+
+public:
+
+	template<auto UMem>
+	static constexpr auto resolve_out_types = f_resolve_out_types(functor_module::template U_type_T<UMem>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

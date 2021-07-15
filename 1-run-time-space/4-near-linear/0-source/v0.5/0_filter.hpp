@@ -21,6 +21,8 @@
 
 	// This component provides tools to refine the engine down to near linear functions.
 
+public:
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -34,7 +36,7 @@
 
 /***********************************************************************************************************************/
 
-	enum struct Member
+	enum struct NLMember
 	{
 		out,
 		in,
@@ -47,13 +49,13 @@
 		dimension // filler
 	};
 
-	template<Member m> static constexpr bool V_is_out		= (m == Member::out);
-	template<Member m> static constexpr bool V_is_in		= (m == Member::in);
-	template<Member m> static constexpr bool V_is_car_in		= (m == Member::car_in);
-	template<Member m> static constexpr bool V_is_cdr_in		= (m == Member::cdr_in);
-	template<Member m> static constexpr bool V_is_end		= (m == Member::end);
-	template<Member m> static constexpr bool V_is_aux		= (m == Member::aux);
-	template<Member m> static constexpr bool V_is_msg		= (m == Member::msg);
+	template<NLMember m> static constexpr bool V_is_out		= (m == NLMember::out);
+	template<NLMember m> static constexpr bool V_is_in		= (m == NLMember::in);
+	template<NLMember m> static constexpr bool V_is_car_in		= (m == NLMember::car_in);
+	template<NLMember m> static constexpr bool V_is_cdr_in		= (m == NLMember::cdr_in);
+	template<NLMember m> static constexpr bool V_is_end		= (m == NLMember::end);
+	template<NLMember m> static constexpr bool V_is_aux		= (m == NLMember::aux);
+	template<NLMember m> static constexpr bool V_is_msg		= (m == NLMember::msg);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -212,110 +214,36 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// attribute filters (level 1):
+// algorithm filters (level 1):
 
 /***********************************************************************************************************************/
 
-	template<Mutability Mutate, Denotation Denote>
-	struct _attributes
-	{
-		static constexpr Mutability mutate = Mutate;
-		static constexpr Denotation denote = Denote;
-	};
+	template<typename T, SignMember M>	struct _type		{ };
+	template<Interval V>			struct _ival		{ };
+	template<Axis V>			struct _axis		{ };
 
-	//
+	template<typename... Attrs>		struct _attrs		{ };
 
-	using attr_ref		= _attributes < Mutability::variable  , Denotation::reference   >;
-	using attr_deref	= _attributes < Mutability::variable  , Denotation::dereference >;
-	using attr_cref		= _attributes < Mutability::immutable , Denotation::reference   >;
-	using attr_cderef	= _attributes < Mutability::immutable , Denotation::dereference >;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// argument filters (level 2):
-
-/***********************************************************************************************************************/
-
-	template<typename LAttr, typename... RAttrs> struct _arguments { };
+	template<auto UFunc, typename Attrs>	struct _value		{ };
+	template<auto UFunc, typename Attrs>	struct _next		{ };
+	template<auto UFunc, typename Attrs>	struct _prev		{ };
+	template<auto UFunc, typename Attrs>	struct _peek		{ };
+	template<auto UFunc, typename Attrs>	struct _test		{ };
+	template<auto UFunc, typename Attrs>	struct _apply		{ };
+	template<auto UFunc, typename Attrs>	struct _assign		{ };
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// algorithm filters (level 3):
+// near linear filters (level 2):
 
 /***********************************************************************************************************************/
 
-	template<typename T>	struct _type		{ using type = T; };
-	template<Interval V>	struct _ival		{ static constexpr auto value = V; };
-	template<Axis V>	struct _axis		{ static constexpr auto value = V; };
-
-	template<auto UFunc, typename Args>
-	struct _value
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, Direction Dir, typename Args>
-	struct _next
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto direction		= Dir;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, Direction Dir, typename Args>
-	struct _prev
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto direction		= Dir;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, Direction Dir, typename Args>
-	struct _peek
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto direction		= Dir;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, typename Args>
-	struct _test
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, typename Args>
-	struct _apply
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-	template<auto UFunc, typename Args>
-	struct _assign
-	{
-		static constexpr auto ufunction		= UFunc;
-		static constexpr auto uarguments	= functor_module::template U_type_T<Args>;
-	};
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// near linear filters (level 4):
-
-/***********************************************************************************************************************/
-
-	template<typename...> struct _out	{ };
-	template<typename...> struct _in	{ };
-	template<typename...> struct _end	{ };
-	template<typename...> struct _algo	{ };
+	template<typename...> class _out;
+	template<typename...> class _in;
+	template<typename...> class _end;
+	template<typename...> class _algo;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -380,15 +308,6 @@
 
 	// before:
 
-	//	template<bool predicate, auto next_f>
-	//	static constexpr auto boolean_before_loop = lift
-	//	<
-	//		boolean_module::template V_if_then_else_VxV
-	//		<
-	//			predicate, next_f, _id_
-	//		>
-	//	>;
-
 	//	template<Interval i, auto next_f>
 	//	static constexpr auto interval_before_loop = boolean_before_loop
 	//	<
@@ -396,15 +315,6 @@
 	//	>;
 
 	// after:
-
-	//	template<bool predicate, auto act_combine_f>
-	//	static constexpr auto boolean_after_loop = lift
-	//	<
-	//		boolean_module::template V_if_then_else_VxV
-	//		<
-	//			predicate, act_combine_f, _id_
-	//		>
-	//	>;
 
 	//	template<Interval i, auto act_combine_f>
 	//	static constexpr auto interval_after_loop = boolean_after_loop
@@ -499,31 +409,62 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// algorithm:
+// make signature (prevents name clashes):
+
+	template<typename... Ts>
+	using make_signature = typename signature_module::template signature<Ts...>;
 
 /***********************************************************************************************************************/
-
-// members:
-
-	// out:
-
-	//	template<typename Sign, typename Attr>
-	//	static constexpr out_f = 
-
-	// in:
-
-	//	template<typename Sign, typename Attr>
-	//	static constexpr in_f = 
-
 /***********************************************************************************************************************/
 
-// make function:
+// make assign:
 
-	//	template<auto uf, auto l, auto r>
-	//	static constexpr auto make_unary_function = 
+private:
 
-	//	template<auto uf, auto l, auto r1, auto r2>
-	//	static constexpr auto make_binary_function = 
+	template<auto LMem, auto Func, auto... RMems>
+	static constexpr auto f_make_assign(void(*)(_sign_member_facade<RMems...>*))
+	{
+		return assign<LMem, Func, RMems...>;
+	}
+
+	template<typename Type, auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
+	static constexpr auto f_prepare_assign(void(*)(_attrs<SignAttrs...>*))
+	{
+		using SignFacade			= _sign_arg_facade
+							<
+								_sign_argument<SignMem, SignAttrs>...
+							>;
+
+		constexpr auto member_ref		= resolve_member
+							<
+								Signature, sign_arg_ref<SignMem>
+							>;
+		constexpr auto member_args		= resolve_facade
+							<
+								Signature, SignFacade
+							>;
+		constexpr auto out_type_args		= resolve_out_types
+							<
+								Type, member_args
+							>;
+		constexpr auto function			= function_module::template resolve
+							<
+								UFunc, out_type_args
+							>;
+
+		return f_make_assign<member_ref, function>(member_args);
+	}
+
+public:
+
+	template<typename Type, auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
+	static constexpr auto make_assign = f_prepare_assign<Type, UFunc, SignMem, Signature>
+						(functor_module::template U_type_T<SignAttrs>);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// make test:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

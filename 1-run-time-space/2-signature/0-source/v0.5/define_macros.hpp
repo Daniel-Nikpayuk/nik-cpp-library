@@ -303,13 +303,11 @@
 
 	#define NIK_DEFINE_F_RESOLVE_MEMBER(_num_)									\
 															\
-		template<typename Arg, typename... Ts>									\
-		static constexpr auto f_resolve_member_ ## _num_(void(*)(signature<Ts...>))				\
+		template<typename Attr, typename... Ts>									\
+		static constexpr auto f_resolve_member_ ## _num_(void(*)(signature<Ts...>*))				\
 		{													\
-			using attr		= typename Arg::attributes;						\
-															\
-			constexpr auto mutate	= attr::mutate;								\
-			constexpr auto denote	= attr::denote;								\
+			constexpr auto mutate	= Attr::mutate;								\
+			constexpr auto denote	= Attr::denote;								\
 															\
 			if constexpr (sign_is_immutable<mutate>)							\
 			{												\
@@ -329,9 +327,9 @@
 
 	#define NIK_DEFINE_RESOLVE_MEMBER(_num_)									\
 															\
-		template<typename Sign, typename Arg>									\
-		static constexpr auto resolve_member_ ## _num_ = f_resolve_member_ ## _num_<Arg>			\
-			(functor_module::template U_type_T<Sign>);
+		template<typename Signature, typename Attr>								\
+		static constexpr auto resolve_member_ ## _num_ = f_resolve_member_ ## _num_<Attr>			\
+			(functor_module::template U_type_T<Signature>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

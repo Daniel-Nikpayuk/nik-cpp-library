@@ -115,7 +115,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename... Args> struct _facade { };
+	template<typename... Args> using _facade	= functor_module::template typename_pack<Args...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -132,24 +132,27 @@ public:
 
 private:
 
-	template<typename Arg>
-	static constexpr auto f_sign()
+	template<typename Type>
+	static constexpr auto f_sign(void(*f)(Type*))
 	{
-		using type		= typename Arg::type;
-		using attr		= typename Arg::attributes;
+		return f;
+	}
 
-		constexpr auto mutate	= attr::mutate;
-		constexpr auto denote	= attr::denote;
+	template<typename Type, typename Attr>
+	static constexpr auto f_sign(void(*)(_argument<Type, Attr>*))
+	{
+		constexpr auto mutate = Attr::mutate;
+		constexpr auto denote = Attr::denote;
 
 		if constexpr (is_immutable<mutate>)
 		{
-			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<type const>;
-			else					return functor_module::template U_type_T<type const &>;
+			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<Type const>;
+			else					return functor_module::template U_type_T<Type const &>;
 		}
 		else
 		{
-			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<type>;
-			else					return functor_module::template U_type_T<type &>;
+			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<Type>;
+			else					return functor_module::template U_type_T<Type &>;
 		}
 	}
 
@@ -158,7 +161,7 @@ public:
 	template<typename Arg>
 	using sign = functor_module::template T_type_U
 	<
-		f_sign<Arg>()
+		f_sign(functor_module::template U_type_T<Arg>)
 	>;
 
 /***********************************************************************************************************************/

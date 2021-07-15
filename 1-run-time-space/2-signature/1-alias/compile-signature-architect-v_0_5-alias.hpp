@@ -147,20 +147,28 @@
 
 	//
 
-	template<typename S, typename A>
-	using nik_name(NIK_PREFIX, _sign_argument)		= typename NIK_MODULE::template _sign_argument<S, A>;
+	template<auto M, typename A>
+	using nik_name(NIK_PREFIX, _sign_argument)		= typename NIK_MODULE::template _sign_argument<M, A>;
 
-	template<typename S>
-	using nik_name(NIK_PREFIX, sign_arg_by_ref)		= typename NIK_MODULE::template sign_arg_by_ref<S>;
+	template<auto M>
+	using nik_name(NIK_PREFIX, sign_arg_ref)		= typename NIK_MODULE::template sign_arg_ref<M>;
 
-	template<typename S>
-	using nik_name(NIK_PREFIX, sign_arg_by_deref)		= typename NIK_MODULE::template sign_arg_by_deref<S>;
+	template<auto M>
+	using nik_name(NIK_PREFIX, sign_arg_deref)		= typename NIK_MODULE::template sign_arg_deref<M>;
 
-	template<typename S>
-	using nik_name(NIK_PREFIX, sign_arg_by_cref)		= typename NIK_MODULE::template sign_arg_by_cref<S>;
+	template<auto M>
+	using nik_name(NIK_PREFIX, sign_arg_cref)		= typename NIK_MODULE::template sign_arg_cref<M>;
 
-	template<typename S>
-	using nik_name(NIK_PREFIX, sign_arg_by_cderef)		= typename NIK_MODULE::template sign_arg_by_cderef<S>;
+	template<auto M>
+	using nik_name(NIK_PREFIX, sign_arg_cderef)		= typename NIK_MODULE::template sign_arg_cderef<M>;
+
+	//
+
+	template<typename... As>
+	using nik_name(NIK_PREFIX, _sign_arg_facade)		= typename NIK_MODULE::template _sign_arg_facade<As...>;
+
+	template<auto... Ms>
+	using nik_name(NIK_PREFIX, _sign_member_facade)		= typename NIK_MODULE::template _sign_member_facade<Ms...>;
 
 	// member 0:
 
@@ -194,8 +202,14 @@
 
 	//
 
-	template<auto m, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member)	= NIK_MODULE::template resolve_member<m, A>;
+	template<auto M, typename A>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member)	= NIK_MODULE::template resolve_member<M, A>;
+
+	template<typename S, typename F>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_facade)	= NIK_MODULE::template resolve_facade<S, F>;
+
+	template<auto M>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_out_types)	= NIK_MODULE::template resolve_out_types<M>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

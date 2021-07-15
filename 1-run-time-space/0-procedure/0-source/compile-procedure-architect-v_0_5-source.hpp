@@ -518,20 +518,20 @@ public:
 
 // test:
 
-	template<auto op, auto l0, auto... ls>
-	static constexpr bool test(in_type<l0> x)
+	template<auto op, auto r0, auto... rs>
+	static constexpr bool test(in_type<r0> x)
 	{
-		return op(l0(x), ls(x)...);
+		return op(r0(x), rs(x)...);
 	}
 
 /***********************************************************************************************************************/
 
 // assign:
 
-	template<auto r, auto op, auto... ls>
-	static constexpr in_type<r> assign(in_type<r> x)
+	template<auto l, auto op, auto... rs>
+	static constexpr in_type<l> assign(in_type<l> x)
 	{
-		r(x) = op(ls(x)...);
+		l(x) = op(rs(x)...);
 
 		return x;
 	}

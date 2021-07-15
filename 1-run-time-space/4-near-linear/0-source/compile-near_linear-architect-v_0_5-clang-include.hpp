@@ -40,9 +40,9 @@ namespace nik
 	nik_begin_module(compile, near_linear, architect, v_0_5, clang)
 
 		#include nik_import(../../.., compile, procedure, architect, v_0_5, clang, static, name)
-		#include nik_import(../../.., compile, signature, architect, v_0_5, clang, static, title)
 
 		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
+		using signature_module	= nik_module(compile, signature, architect, v_0_5, clang);
 
 		#include"v0.5/0_filter.hpp"
 		#include"v0.5/1_repeat.hpp"

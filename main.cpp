@@ -61,6 +61,9 @@
 
 	int main(int argc, char *argv[])
 	{
+		return 0;
+	}
+
 	//	constexpr auto add = resolve
 	//	<
 	//		U_add,
@@ -88,7 +91,4 @@
 	//	printf("%d\n", at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);
 	//	printf("%llu\n", rp_factorial<utype(20)>);
-
-		return 0;
-	}
 
