@@ -73,6 +73,55 @@ public:
 	static constexpr auto right = f_right<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
+
+// name:
+
+private:
+
+	template<template<auto...> class ListName, auto... Vs>
+	static constexpr auto f_name(void(*)(ListName<Vs...>*))
+	{
+		return template_pack<ListName>;
+	}
+
+public:
+
+	template<typename List>
+	static constexpr auto name = f_name(functor_module::template U_type_T<List>);
+
+/***********************************************************************************************************************/
+
+// catenate:
+
+private:
+
+	template
+	<
+		template<auto...> class OutList,
+		template<auto...> class InList1, auto... Vs,
+		template<auto...> class InList2, auto... Ws
+	>
+	static constexpr auto f_catenate
+	(
+		void(*)(template_pack<OutList>*),
+		void(*)(InList1<Vs...>*),
+		void(*)(InList2<Ws...>*)
+	)
+	{
+		return functor_module::template U_type_T<OutList<Vs..., Ws...>>;
+	}
+
+public:
+
+	template<typename InList1, typename InList2, typename OutList = InList1>
+	static constexpr auto catenate	= f_right
+					(
+						name<OutList>,
+						functor_module::template U_type_T<InList1>,
+						functor_module::template U_type_T<InList2>
+					);
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 

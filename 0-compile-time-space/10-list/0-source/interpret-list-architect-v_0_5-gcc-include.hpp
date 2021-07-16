@@ -17,32 +17,44 @@
 **
 ************************************************************************************************************************/
 
-// list alias:
+#ifndef NIK_INTERPRET_LIST_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_INTERPRET_LIST_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// at:
+// dependencies:
 
-	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, at)		= NIK_MODULE::template at<List, pos, depth>;
-
-/***********************************************************************************************************************/
-
-// left:
-
-	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, left)		= NIK_MODULE::template left<List, pos, depth>;
-
-/***********************************************************************************************************************/
-
-// right:
-
-	template<typename List, auto pos, auto depth = 500>
-	NIK_POLICY auto nik_name(NIK_PREFIX, right)	= NIK_MODULE::template right<List, pos, depth>;
+	#include nik_source(../../.., interpret, function, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// module:
+
+namespace nik
+{
+	nik_begin_module(interpret, list, architect, v_0_5, gcc)
+
+		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
+		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
+
+		template<template<auto...> class... Cs>
+		using template_pack	= typename functor_module::template template_pack<Cs...>;
+
+		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, gcc)::depth_type;
+
+		#include"interpret-list-architect-v_0_5-source.hpp"
+
+	nik_end_module(interpret, list, architect, v_0_5, gcc)
+}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+#endif
 

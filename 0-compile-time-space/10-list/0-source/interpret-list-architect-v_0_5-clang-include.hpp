@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, pack, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, function, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -40,6 +40,10 @@ namespace nik
 
 		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
+		using function_module	= nik_module(interpret, function, architect, v_0_5, clang);
+
+		template<template<auto...> class... Cs>
+		using template_pack	= typename functor_module::template template_pack<Cs...>;
 
 		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::depth_type;
 

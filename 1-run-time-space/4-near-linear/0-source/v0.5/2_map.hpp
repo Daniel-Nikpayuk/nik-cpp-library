@@ -29,21 +29,17 @@ public:
 
 /***********************************************************************************************************************/
 
-private:
-
-	template<NLMember... Ms> using _map_name	= _name<NLAlgorithm::map, Ms...>;
-
 public:
 
-	template<typename... Ts> using _map_out		= _members < _map_name<NLMember::out> , Ts... >;
-	template<typename... Ts> using _map_in		= _members < _map_name<NLMember::in > , Ts... >;
-	template<typename... Ts> using _map_end		= _members < _map_name<NLMember::end> , Ts... >;
+	template<typename... Ts> using _map_out		= _members_specification < _map<NLMember::out> , Ts... >;
+	template<typename... Ts> using _map_in		= _members_specification < _map<NLMember::in > , Ts... >;
+	template<typename... Ts> using _map_end		= _members_specification < _map<NLMember::end> , Ts... >;
 
 	// out, in, end:
 
-	template<typename... Ts> using _map_algo	= _members
+	template<typename... Ts> using _map_algo	= _members_specification
 	<
-		_map_name
+		_map
 		<
 			NLMember::out,
 			NLMember::in,
@@ -59,29 +55,29 @@ public:
 
 	template
 	<
-		typename Type , SignMember SignMem ,
+		typename Type , SignMember SignMem     ,
 		Interval Ival ,
-		   auto UFunc , typename SignAttrs
+		auto NextFunc , typename NextFuncAttrs
 	>
-	class _members
+	class _members_specification
 	<
-		_map_name < NLMember::out >,
+		_map  < NLMember::out            >,
 
-		_type < Type  , SignMem   >,
-		_ival < Ival              >,
-		_next < UFunc , SignAttrs >
+		_type < Type     , SignMem       >,
+		_ival < Ival                     >,
+		_next < NextFunc , NextFuncAttrs >
 	>
 	{
 		public:
 
+			using name					= _map<NLMember::out>;
 			using type					= Type;
 
 			template<typename Signature>
 			static constexpr auto next_assign		= make_assign
 									<
-										Type, UFunc,
-										SignMem, SignAttrs,
-										Signature
+										NextFunc, SignMem,
+										NextFuncAttrs, Signature
 									>;
 
 			static constexpr bool is_left_open		= V_is_left_open<Ival>;
@@ -93,40 +89,57 @@ public:
 
 // in:
 
-/*
 	template
 	<
-		typename Type , SignMember SignMem ,
+		typename Type , SignMember SignMem     ,
 		Interval Ival ,
-		   auto UFunc , typename SignAttrs
+		auto ValFunc  , typename ValFuncAttrs  ,
+		auto NextFunc , typename NextFuncAttrs ,
+		auto Axis     ,
+		auto PeekFunc , typename PeekFuncAttrs
 	>
-	class _in // map
+	class _members_specification
 	<
-		_type  < Type    , SignMem     >,
-		_ival  < Ival                  >,
-		_value < ValFunc , ValFuncArgs >,
-		_next  < UFunc   , SignAttrs   >,
-		_axis  < InAxis                >,
-		_peek  < InPeek  , InPeekArgs  >
+		_map   < NLMember::in             >,
+
+		_type  < Type     , SignMem       >,
+		_ival  < Ival                     >,
+		_value < ValFunc  , ValFuncAttrs  >,
+		_next  < NextFunc , NextFuncAttrs >,
+		_axis  < Axis                     >,
+		_peek  < PeekFunc , PeekFuncAttrs >
 	>
 	{
 		public:
 
+			using name					= _map<NLMember::in>;
 			using type					= Type;
 
 			template<typename Signature>
 			static constexpr auto next_assign		= make_assign
 									<
-										Type, UFunc,
-										SignMem, SignAttrs,
-										Signature
+										NextFunc, SignMem,
+										NextFuncAttrs, Signature
+									>;
+
+			template<typename Signature>
+			static constexpr auto value_assign		= make_assign
+									<
+										ValFunc, SignMem,
+										ValFuncAttrs, Signature
+									>;
+
+			template<typename Signature>
+			static constexpr auto peek_test			= make_test
+									<
+										PeekFunc, SignMem,
+										PeekFuncAttrs, Signature
 									>;
 
 			static constexpr bool is_left_open		= V_is_left_open<Ival>;
 			static constexpr bool is_right_open		= V_is_right_open<Ival>;
 			static constexpr bool is_right_closed		= V_is_right_closed<Ival>;
 	};
-*/
 
 /***********************************************************************************************************************/
 
@@ -140,6 +153,9 @@ public:
 		   auto UFunc , typename SignAttrs
 	>
 	class _end // map
+	class _members_specification
+	<
+		_map  < NLMember::out         >,
 	<
 		_type < Type  , SignMem       >,
 		_next < UNext , NextSignAttrs >
@@ -148,6 +164,7 @@ public:
 	{
 		public:
 
+			using name					= _map<NLMember::end>;
 			using type					= Type;
 
 			template<typename Signature>
@@ -168,11 +185,12 @@ public:
 
 // interval:
 
-	template<typename...> class _interval;
-
 /*
 	template<typename OutSpec, typename InSpec>
 	class _interval
+	class _members_specification
+	<
+		_map < NLMember::out >,
 	{
 			static constexpr bool is_bidirectional		= InSpec;
 			static constexpr bool is_last			= OutSpec, InSpec;
@@ -194,6 +212,9 @@ public:
 // algo:
 
 /*
+	class _members_specification
+	<
+		_map < NLMember::out >,
 		_algo
 		<
 			_test   < LoopPred    , LoopPredArgs  >,
@@ -248,7 +269,8 @@ public:
 
 		private:
 
-			using IvalSpec					= _interval<OutSpec, InSpec>;
+			using _map_ival					= _map<NLMember::out, NLMember::in>;
+			using IvalSpec					= AlgoSpec; // _power_map<OutSpec, InSpec>;
 
 		public:
 

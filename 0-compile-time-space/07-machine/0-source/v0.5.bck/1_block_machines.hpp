@@ -133,6 +133,26 @@ private:
 	};
 
 /***********************************************************************************************************************/
+
+// pass:
+
+	template<index_type... filler>
+	struct machine<MN::pass, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			NIK_FIXED_HEAP_PARAMS, auto un, auto nc, auto ni, auto nj, typename... Heaps
+		>
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, void(*H2)(auto_pack<un, nc, ni, nj>*), Heaps... Hs)
+		{
+			using nn = T_type_U<un>;
+
+			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // passers (stack):
@@ -266,52 +286,6 @@ private:
 // copy stack block, insert at heap zero front (2^N):
 
 	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(0);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// interposers:
-
-/***********************************************************************************************************************/
-
-// call heap zero all:
-
-	template<index_type... filler>
-	struct machine<MN::call_h0_all, _zero, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto un, auto nc, auto ni, auto nj, typename Heap1, typename... Heaps
-		>
-		static constexpr auto result(void(*H0)(auto_pack<un, nc, ni, nj>*), Heap1 H1, Heaps... Hs)
-		{
-			using nn		= T_type_U<un>;
-			constexpr auto _un	= U_type_T<n>;
-
-			return NIK_MACHINE(nn, nc, d, ni, nj)(U_opt_pack_Vs<>, H1, U_opt_pack_Vs<_un, c, i, j>, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// pass:
-
-	template<index_type... filler>
-	struct machine<MN::pass, _zero, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			NIK_FIXED_HEAP_PARAMS, auto un, auto nc, auto ni, auto nj, typename... Heaps
-		>
-		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, void(*H2)(auto_pack<un, nc, ni, nj>*), Heaps... Hs)
-		{
-			using nn = T_type_U<un>;
-
-			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, Hs...);
-		}
-	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

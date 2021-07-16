@@ -38,6 +38,8 @@ public:
 
 	enum struct NLAlgorithm
 	{
+		generic,
+
 		repeat,
 		map,
 		fold,
@@ -248,7 +250,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<NLAlgorithm A, NLMember... Ms>	struct _name		{ };
+	template<NLMember... Ms>		struct _map		{ };
 
 	template<typename T, SignMember M>	struct _type		{ };
 	template<Interval V>			struct _ival		{ };
@@ -272,7 +274,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename...> struct _members;
+	template<typename...> struct _members_specification;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -456,44 +458,63 @@ private:
 		return assign<LMem, Func, RMems...>;
 	}
 
-	template<typename Type, auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
+	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
 	static constexpr auto f_prepare_assign(void(*)(_attrs<SignAttrs...>*))
 	{
-		using SignFacade			= _sign_arg_facade
-							<
-								_sign_argument<SignMem, SignAttrs>...
-							>;
+		using SignFacade			= _sign_arg_facade<_sign_argument<SignMem, SignAttrs>...>;
 
-		constexpr auto member_ref		= resolve_member
-							<
-								Signature, sign_arg_ref<SignMem>
-							>;
-		constexpr auto member_args		= resolve_facade
-							<
-								Signature, SignFacade
-							>;
-		constexpr auto out_type_args		= resolve_out_types
-							<
-								Type, member_args
-							>;
-		constexpr auto function			= function_module::template resolve
-							<
-								UFunc, out_type_args
-							>;
+		constexpr auto member_ref		= resolve_member<Signature, sign_arg_ref<SignMem>>;
+		constexpr auto member_args		= resolve_facade<Signature, SignFacade>;
+		constexpr auto out_type_args		= resolve_out_types<member_args>;
+		constexpr auto function			= function_module::template resolve<UFunc, out_type_args>;
 
 		return f_make_assign<member_ref, function>(member_args);
 	}
 
 public:
 
-	template<typename Type, auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
-	static constexpr auto make_assign = f_prepare_assign<Type, UFunc, SignMem, Signature>
+	template<auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
+	static constexpr auto make_assign = f_prepare_assign<UFunc, SignMem, Signature>
 						(functor_module::template U_type_T<SignAttrs>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // make test:
+
+private:
+
+	template<auto Func, auto... RMems>
+	static constexpr auto f_make_test(void(*)(_sign_member_facade<RMems...>*))
+	{
+		return test<Func, RMems...>;
+	}
+
+	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
+	static constexpr auto f_prepare_test(void(*)(_attrs<SignAttrs...>*))
+	{
+		using SignFacade			= _sign_arg_facade<_sign_argument<SignMem, SignAttrs>...>;
+
+		constexpr auto member_args		= resolve_facade<Signature, SignFacade>;
+		constexpr auto out_type_args		= resolve_out_types<member_args>;
+		constexpr auto function			= function_module::template resolve<UFunc, out_type_args>;
+
+		return f_make_test<function>(member_args);
+	}
+
+public:
+
+	template<auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
+	static constexpr auto make_test = f_prepare_test<UFunc, SignMem, Signature>
+						(functor_module::template U_type_T<SignAttrs>);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// power (members):
+
+	template<typename... MemberSpecs>
+	using _power_map = void;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

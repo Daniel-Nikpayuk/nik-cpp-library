@@ -36,8 +36,8 @@
 //	#include nik_import(., interpret, controller, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
@@ -62,33 +62,9 @@
 	int main(int argc, char *argv[])
 	{
 		return 0;
-	}
-
-	//	constexpr auto add = resolve
-	//	<
-	//		U_add,
-
-	//		_facade
-	//		<
-	//			arg_by_cval<float>,
-	//			arg_by_cval<int>
-	//		>
-	//	>;
-
-	//	printf("%f\n", add(3.2, 7));
-
-	//	constexpr auto uf = postcompose<U_add_by<1>, U_multiply_by<2>>;
-
-	//	printf("%d\n", apply<uf>(5));
-
-	//	char arr[5];
-	//	arr[4] = '\0';
-
-	//	make_range<add_by<char, 1>>(arr, '0', '4'); // prints: "1234"
-
-	//	printf("%s\n", arr);
 
 	//	printf("%d\n", at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);
 	//	printf("%llu\n", rp_factorial<utype(20)>);
+	}
 

@@ -170,7 +170,7 @@ private:
 		>
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
-			constexpr auto nc = controller_module::template step_contr<n::appl(c, i, j)>;
+			constexpr auto nc = controller_module::template call_contr<n::appl(c, i, j)>;
 			constexpr auto un = U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);

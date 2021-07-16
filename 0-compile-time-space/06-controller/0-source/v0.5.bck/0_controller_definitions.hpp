@@ -53,67 +53,62 @@ public:
 			static constexpr index_type depth					=  5;
 			static constexpr index_type dump					=  6;
 
+		// interoperability:
+
+			static constexpr index_type pass					=  7;
+
 		// passers:
 
 			// stack -> stack:
 
-			static constexpr index_type drop_s_block				=  7;
-			static constexpr index_type move_s_block__insert_at_s_back		=  8;
+			static constexpr index_type drop_s_block				=  8;
+			static constexpr index_type move_s_block__insert_at_s_back		=  9;
 
-			static constexpr index_type fold_s_block__op_at_h0_first		=  9;
-			static constexpr index_type roll_s_block__act_at_h0_first		= 10;
+			static constexpr index_type fold_s_block__op_at_h0_first		= 10;
+			static constexpr index_type roll_s_block__act_at_h0_first		= 11;
 
 			// stack -> heap:
 
-			static constexpr index_type move_s_block__insert_at_h0_front		= 11;
-			static constexpr index_type move_s_block__insert_at_h0_back		= 12;
-			static constexpr index_type move_s_block__insert_at_h1_back		= 13;
-
-			static constexpr index_type move_s_first__replace_h0_value		= 14; // *
+			static constexpr index_type move_s_block__insert_at_h0_front		= 12;
+			static constexpr index_type move_s_block__insert_at_h0_back		= 13;
+			static constexpr index_type move_s_block__insert_at_h1_back		= 14;
 
 			static constexpr index_type copy_s_block__insert_at_h0_front		= 15;
-
-		// interposers:
-
-			static constexpr index_type call_h0_all					= 16; // *
-			static constexpr index_type pass					= 17;
 
 	// variadic:
 
 		// halters:
 
-			static constexpr index_type stop					= 18;
+			static constexpr index_type stop					= 16;
 
 		// passers:
 
 			// stack -> stack:
 
-			static constexpr index_type drop_s_segment				= 19;
-			static constexpr index_type move_s_segment__insert_at_s_back		= 20;
+			static constexpr index_type drop_s_segment				= 17;
+			static constexpr index_type move_s_segment__insert_at_s_back		= 18;
 
-			static constexpr index_type fold_s_segment__pos_at_h0_first		= 21;
-			static constexpr index_type roll_s_segment__pos_at_h0_first		= 22;
+			static constexpr index_type fold_s_segment__pos_at_h0_first		= 19;
+			static constexpr index_type roll_s_segment__pos_at_h0_first		= 20;
 
 			// stack -> heap:
 
-			static constexpr index_type move_s_segment__insert_at_h0_back		= 23;
-			static constexpr index_type move_s_segment__insert_at_h1_back		= 24;
+			static constexpr index_type move_s_segment__insert_at_h0_back		= 21;
+			static constexpr index_type move_s_segment__insert_at_h1_back		= 22;
 
 			// heap -> stack:
 
-			static constexpr index_type move_h0_all__insert_at_s_front		= 25;
-			static constexpr index_type move_h1_all__insert_at_s_front		= 26;
+			static constexpr index_type move_h0_all__insert_at_s_front		= 23;
+			static constexpr index_type move_h1_all__insert_at_s_front		= 24;
 
-			static constexpr index_type move_h0_all__pack_at_s_front		= 27; // *
+			static constexpr index_type copy_h0_all__insert_at_s_front		= 25;
+			static constexpr index_type copy_h1_all__insert_at_s_front		= 26;
 
-			static constexpr index_type copy_h0_all__insert_at_s_front		= 28;
-			static constexpr index_type copy_h1_all__insert_at_s_front		= 29;
+			static constexpr index_type apply_h0_all__move__insert_at_s_front	= 27;
+			static constexpr index_type apply_h0_all__replace_h0_all		= 28;
 
-			static constexpr index_type apply_h0_all__move__insert_at_s_front	= 30;
-			static constexpr index_type apply_h0_all__replace_h0_all		= 31;
-
-			static constexpr index_type compel_h0_all__move__insert_at_s_front	= 32;
-			static constexpr index_type compel_h0_all__replace_h0_all		= 33;
+			static constexpr index_type compel_h0_all__move__insert_at_s_front	= 29;
+			static constexpr index_type compel_h0_all__replace_h0_all		= 30;
 
 	// permutatic:
 
@@ -121,78 +116,78 @@ public:
 
 			// stack -> stack:
 
-			static constexpr index_type drop_s_pos					= 34;
-			static constexpr index_type move_s_pos__insert_at_s_back		= 35;
+			static constexpr index_type drop_s_pos					= 31;
+			static constexpr index_type move_s_pos__insert_at_s_back		= 32;
 
 			// stack -> heap:
 
-			static constexpr index_type move_s_pos__insert_at_h0_front		= 36;
-			static constexpr index_type copy_s_pos__insert_at_h0_front		= 37;
+			static constexpr index_type move_s_pos__insert_at_h0_front		= 33;
+			static constexpr index_type copy_s_pos__insert_at_h0_front		= 34;
 
 			// heap -> stack:
 
-			static constexpr index_type move_h0_all__insert_at_s_pos		= 38;
-			static constexpr index_type move_h0_all__replace_at_s_pos		= 39;
+			static constexpr index_type move_h0_all__insert_at_s_pos		= 35;
+			static constexpr index_type move_h0_all__replace_at_s_pos		= 36;
 
-			static constexpr index_type apply_h0_all__move__replace_at_s_pos	= 40;
-			static constexpr index_type compel_h0_all__move__replace_at_s_pos	= 41;
+			static constexpr index_type apply_h0_all__move__replace_at_s_pos	= 37;
+			static constexpr index_type compel_h0_all__move__replace_at_s_pos	= 38;
 
 	// distributic:
 
 		// passers:
 
-			static constexpr index_type erase					= 42;
-			static constexpr index_type insert					= 43;
-			static constexpr index_type replace					= 44;
+			static constexpr index_type erase					= 39;
+			static constexpr index_type insert					= 40;
+			static constexpr index_type replace					= 41;
 
-			static constexpr index_type fold					= 45;
-			static constexpr index_type roll					= 46;
+			static constexpr index_type fold					= 42;
+			static constexpr index_type roll					= 43;
 
-			static constexpr index_type apply					= 47;
-			static constexpr index_type compel					= 48;
+			static constexpr index_type apply					= 44;
+			static constexpr index_type compel					= 45;
 
-			static constexpr index_type test					= 49;
-			static constexpr index_type check					= 50;
+			static constexpr index_type test					= 46;
+			static constexpr index_type check					= 47;
 
-			static constexpr index_type skip					= 51;
+			static constexpr index_type skip					= 48;
 
 	// near linear:
 
 		// halters:
 
-			static constexpr index_type halt					= 52;
+			static constexpr index_type halt					= 49;
 
 		// passers:
 
-			static constexpr index_type size_of					= 53;
-			static constexpr index_type clear					= 54;
-			static constexpr index_type map						= 55;
-			static constexpr index_type plot					= 56;
-			static constexpr index_type align					= 57;
+			static constexpr index_type size_of					= 50;
+			static constexpr index_type clear					= 51;
+			static constexpr index_type map						= 52;
+			static constexpr index_type plot					= 53;
+			static constexpr index_type align					= 54;
 
-			static constexpr index_type lift					= 58;
-			static constexpr index_type stem					= 59;
-			static constexpr index_type costem					= 60;
-			static constexpr index_type cycle					= 61;
+			static constexpr index_type lift					= 55;
+			static constexpr index_type stem					= 56;
+			static constexpr index_type costem					= 57;
+			static constexpr index_type cycle					= 58;
 
 	// register:
 
 		// passers:
 
-			static constexpr index_type assign					= 62;
+			static constexpr index_type assign					= 59;
 
-			static constexpr index_type branch					= 63;
-			static constexpr index_type go_to__next_at_h0_front			= 64;
-			static constexpr index_type go_to					= 65;
+			static constexpr index_type branch					= 60;
+			static constexpr index_type go_to__next_at_h0_front			= 61;
+			static constexpr index_type go_to					= 62;
 
-			static constexpr index_type save					= 66;
-			static constexpr index_type restore					= 67;
+			static constexpr index_type save					= 63;
+			static constexpr index_type restore					= 64;
 
 	// reflection:
 
 		// sizes:
 
-			static constexpr index_type reg_size					= 68;
+			static constexpr index_type reg_size					= 65;
 	};
 
 	using machine_name = MN;
@@ -288,6 +283,14 @@ public:
 
 /***********************************************************************************************************************/
 
+	// generic:
+
+		template<index_type Name, index_type Note, index_type... Args>
+		static constexpr ma_type call = m_application
+		<
+			Name, Note, Args...
+		>;
+
 	// abstract:
 
 		// id
@@ -334,6 +337,16 @@ public:
 			MN::dump, Note
 		>;
 
+		template<index_type Note = _zero>
+		static constexpr ma_type pass = m_application
+		<
+			MN::pass, Note
+		>;
+
+		// interoperability:
+
+		// pass
+
 		// passers:
 
 			// stack -> stack:
@@ -351,20 +364,6 @@ public:
 		// move_s_block__insert_at_h1_back
 
 		// copy_s_block__insert_at_h0_front
-
-		// interposers:
-
-	//	template<index_type Name, index_type Note, index_type... Args>
-	//	static constexpr ma_type call = m_application
-	//	<
-	//		Name, Note, Args...
-	//	>;
-
-		template<index_type Note = _zero>
-		static constexpr ma_type pass = m_application
-		<
-			MN::pass, Note
-		>;
 
 	// variadic:
 
@@ -392,17 +391,8 @@ public:
 			MN::move_s_segment__insert_at_s_back, Note, Pos
 		>;
 
-		template<index_type Note = _zero>
-		static constexpr ma_type fold_s_segment__pos_at_h0_first = m_application
-		<
-			MN::fold_s_segment__pos_at_h0_first, Note
-		>;
-
-		template<index_type Note = _zero>
-		static constexpr ma_type roll_s_segment__pos_at_h0_first = m_application
-		<
-			MN::roll_s_segment__pos_at_h0_first, Note
-		>;
+		// fold_s_segment__op_at_h0_first
+		// roll_s_segment__act_at_h0_first
 
 			// stack -> heap:
 
@@ -623,11 +613,7 @@ public:
 			MN::branch, Note, Pos
 		>;
 
-		template<index_type Next = _zero>
-		static constexpr ma_type goto__next_at_h0_front = m_application
-		<
-			MN::go_to__next_at_h0_front, Next
-		>;
+		// go_to__next_at_h0_front
 
 		template<index_type Pos>
 		static constexpr ma_type goto_label = m_application
