@@ -44,7 +44,7 @@
 
 // numeric:
 
-	using index_type						= typename NIK_MODULE::index_type;
+	using key_type							= typename NIK_MODULE::key_type;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, _zero)			= NIK_MODULE::_zero;
 	NIK_POLICY auto nik_name(NIK_PREFIX, _one)			= NIK_MODULE::_one;
@@ -58,7 +58,7 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX, _nine)			= NIK_MODULE::_nine;
 	NIK_POLICY auto nik_name(NIK_PREFIX, _ten)			= NIK_MODULE::_ten;
 
-	using depth_type						= typename NIK_MODULE::depth_type;
+	using index_type						= typename NIK_MODULE::index_type;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_0)			= NIK_MODULE::_2_0;
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_1)			= NIK_MODULE::_2_1;
@@ -70,6 +70,8 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_7)			= NIK_MODULE::_2_7;
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_8)			= NIK_MODULE::_2_8;
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_9)			= NIK_MODULE::_2_9;
+
+	using depth_type						= typename NIK_MODULE::depth_type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

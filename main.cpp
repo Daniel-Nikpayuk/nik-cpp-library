@@ -42,7 +42,7 @@
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
-//	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
+	#include"0-compile-time-space/10-list/2-testing/unit_lists.hpp"
 
 // run time space:
 
@@ -59,12 +59,37 @@
 
 	using utype = unsigned long long;
 
+/***********************************************************************************************************************/
+
+	using controller_module = nik_module(interpret, controller, architect, v_0_5, gcc);
+	using machine_module = nik_module(interpret, machine, architect, v_0_5, gcc);
+
+	//
+
+	template<auto n, auto d, auto... Vs>
+	constexpr auto f_list_at(void(*)(auto_pack<Vs...>*))
+	{
+		using VD = typename machine_module::VD;
+
+		constexpr auto c = controller_module::template label
+		<
+			controller_module::template stop<n>
+		>;
+
+		return machine_module::template start<VD, c, d, 1, 0, Vs...>();
+	}
+
+	template<typename List, auto n, auto d = 500>
+	constexpr auto list_at = f_list_at<n, d>(U_type_T<List>);
+
+/***********************************************************************************************************************/
+
 	int main(int argc, char *argv[])
 	{
-		return 0;
-
-	//	printf("%d\n", at<list_1000, 887>);
+		printf("%d\n", list_at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);
 	//	printf("%llu\n", rp_factorial<utype(20)>);
+
+		return 0;
 	}
 

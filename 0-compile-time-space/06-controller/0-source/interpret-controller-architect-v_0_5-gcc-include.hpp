@@ -42,8 +42,8 @@ namespace nik
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., interpret, array, architect, v_0_5, gcc, static, name)
 
-		#include"v0.5/0_controller_definitions.hpp"
-		#include"v0.5/1_controller_declarations.hpp"
+		#include"v0.5/0_controller_declarations.hpp"
+		#include"v0.5/1_controller_definitions.hpp"
 
 	nik_end_module(interpret, controller, architect, v_0_5, gcc)
 }

@@ -35,7 +35,7 @@ private:
 
 public:
 
-	template<typename List, depth_type pos, depth_type depth = 500>
+	template<typename List, index_type pos, depth_type depth = 500>
 	static constexpr auto at = f_at<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
@@ -52,7 +52,7 @@ private:
 
 public:
 
-	template<typename List, depth_type pos, depth_type depth = 500>
+	template<typename List, index_type pos, depth_type depth = 500>
 	static constexpr auto left = f_left<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
@@ -69,7 +69,7 @@ private:
 
 public:
 
-	template<typename List, depth_type pos, depth_type depth = 500>
+	template<typename List, index_type pos, depth_type depth = 500>
 	static constexpr auto right = f_right<depth, pos>(functor_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/

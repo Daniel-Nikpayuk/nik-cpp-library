@@ -76,7 +76,7 @@
 
 	#define NIK_DEFINE__DROP_S_BLOCK(_n_)										\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::drop_s_block, _n_, filler...>							\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
@@ -92,7 +92,7 @@
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(_n_)								\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_block__insert_at_s_back, _n_, filler...>					\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
@@ -112,7 +112,7 @@
 
 	#define NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(_n_)								\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::fold_s_block__op_at_h0_first, _n_, filler...>					\
 		{													\
 			template											\
@@ -136,7 +136,7 @@
 
 	#define NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(_n_)								\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::roll_s_block__act_at_h0_first, _n_, filler...>					\
 		{													\
 			template											\
@@ -162,7 +162,7 @@
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(_n_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_block__insert_at_h0_front, _n_, filler...>					\
 		{													\
 			template											\
@@ -182,7 +182,7 @@
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(_n_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_block__insert_at_h0_back, _n_, filler...>					\
 		{													\
 			template											\
@@ -202,7 +202,7 @@
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(_n_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_block__insert_at_h1_back, _n_, filler...>					\
 		{													\
 			template											\
@@ -223,7 +223,7 @@
 
 	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(_n_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::copy_s_block__insert_at_h0_front, _n_, filler...>					\
 		{													\
 			template											\
@@ -252,7 +252,7 @@
 
 	#define NIK_DEFINE__DROP_S_POS(_s_, _n_, _c_)									\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::drop_s_pos, _s_, filler...>								\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
@@ -272,7 +272,7 @@
 
 	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(_s_, _n_, _c_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_pos__insert_at_s_back, _s_, filler...>					\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
@@ -292,7 +292,7 @@
 
 	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(_s_, _n_, _c_)						\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_s_pos__insert_at_h0_front, _s_, filler...>					\
 		{													\
 			template											\
@@ -316,7 +316,7 @@
 
 	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(_s_, _n_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::copy_s_pos__insert_at_h0_front, _s_, filler...>					\
 		{													\
 			template											\
@@ -340,7 +340,7 @@
 
 	#define NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(_s_, _n_, _c_)							\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_h0_all__insert_at_s_pos, _s_, filler...>					\
 		{													\
 			template											\
@@ -364,7 +364,7 @@
 
 	#define NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::move_h0_all__replace_at_s_pos, _s_, filler...>					\
 		{													\
 			template											\
@@ -388,7 +388,7 @@
 
 	#define NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::apply_h0_all__move__replace_at_s_pos, _s_, filler...>				\
 		{													\
 			template											\
@@ -412,7 +412,7 @@
 
 	#define NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)					\
 															\
-		template<index_type... filler>										\
+		template<key_type... filler>										\
 		struct machine<MN::compel_h0_all__move__replace_at_s_pos, _s_, filler...>				\
 		{													\
 			template											\

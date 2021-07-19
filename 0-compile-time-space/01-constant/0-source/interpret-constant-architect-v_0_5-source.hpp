@@ -48,34 +48,36 @@ public:
 
 	// [0-10]:
 
-	using index_type = unsigned char;
+	using key_type = unsigned char;
 
-	static constexpr index_type _zero	=   0;
-	static constexpr index_type _one	=   1;
-	static constexpr index_type _two	=   2;
-	static constexpr index_type _three	=   3;
-	static constexpr index_type _four	=   4;
-	static constexpr index_type _five	=   5;
-	static constexpr index_type _six	=   6;
-	static constexpr index_type _seven	=   7;
-	static constexpr index_type _eight	=   8;
-	static constexpr index_type _nine	=   9;
-	static constexpr index_type _ten	=  10;
+	static constexpr key_type _zero		=   0;
+	static constexpr key_type _one		=   1;
+	static constexpr key_type _two		=   2;
+	static constexpr key_type _three	=   3;
+	static constexpr key_type _four		=   4;
+	static constexpr key_type _five		=   5;
+	static constexpr key_type _six		=   6;
+	static constexpr key_type _seven	=   7;
+	static constexpr key_type _eight	=   8;
+	static constexpr key_type _nine		=   9;
+	static constexpr key_type _ten		=  10;
 
 	// [2^0-2^9]:
 
-	using depth_type = unsigned short;
+	using index_type = unsigned short;
 
-	static constexpr depth_type _2_0	=   1;
-	static constexpr depth_type _2_1	=   2;
-	static constexpr depth_type _2_2	=   4;
-	static constexpr depth_type _2_3	=   8;
-	static constexpr depth_type _2_4	=  16;
-	static constexpr depth_type _2_5	=  32;
-	static constexpr depth_type _2_6	=  64;
-	static constexpr depth_type _2_7	= 128;
-	static constexpr depth_type _2_8	= 256;
-	static constexpr depth_type _2_9	= 512;
+	static constexpr index_type _2_0	=   1;
+	static constexpr index_type _2_1	=   2;
+	static constexpr index_type _2_2	=   4;
+	static constexpr index_type _2_3	=   8;
+	static constexpr index_type _2_4	=  16;
+	static constexpr index_type _2_5	=  32;
+	static constexpr index_type _2_6	=  64;
+	static constexpr index_type _2_7	= 128;
+	static constexpr index_type _2_8	= 256;
+	static constexpr index_type _2_9	= 512;
+
+	using depth_type = unsigned short;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

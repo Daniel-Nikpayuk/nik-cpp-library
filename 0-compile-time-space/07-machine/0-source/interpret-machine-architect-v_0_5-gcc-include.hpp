@@ -49,12 +49,7 @@ namespace nik
 		//
 
 		#include"v0.5/0_machine_declarations.hpp"
-		#include"v0.5/1_block_machines.hpp"
-		#include"v0.5/2_variadic_machines.hpp"
-		#include"v0.5/3_permutatic_machines.hpp"
-		#include"v0.5/4_distributic_machines.hpp"
-		#include"v0.5/5_near_linear_machines.hpp"
-		#include"v0.5/6_register_machines.hpp"
+		#include"v0.5/1_machine_definitions.hpp"
 
 		//
 

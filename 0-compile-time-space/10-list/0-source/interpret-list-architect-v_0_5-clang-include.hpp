@@ -45,6 +45,7 @@ namespace nik
 		template<template<auto...> class... Cs>
 		using template_pack	= typename functor_module::template template_pack<Cs...>;
 
+		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::index_type;
 		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::depth_type;
 
 		#include"interpret-list-architect-v_0_5-source.hpp"
