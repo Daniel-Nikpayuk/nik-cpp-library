@@ -69,14 +69,14 @@
 	template<auto n, auto d, auto... Vs>
 	constexpr auto f_list_at(void(*)(auto_pack<Vs...>*))
 	{
-		using VD = typename machine_module::VD;
+		using LD = typename machine_module::LD;
 
 		constexpr auto c = controller_module::template label
 		<
 			controller_module::template stop<n>
 		>;
 
-		return machine_module::template start<VD, c, d, 1, 0, Vs...>();
+		return machine_module::template start<LD, c, d, 1, 0, Vs...>();
 	}
 
 	template<typename List, auto n, auto d = 500>

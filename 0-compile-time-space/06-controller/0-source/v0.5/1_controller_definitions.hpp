@@ -137,19 +137,10 @@ public:
 			static constexpr instr_type block_call		= call<CallNote::block, Name, Pos>;
 
 			template<key_type Name, index_type... Vs>
-			static constexpr instr_type variadic_call	= call<CallNote::variadic, Name, Vs...>;
+			static constexpr instr_type linear_call		= call<CallNote::linear, Name, Vs...>;
 
 			template<key_type Name, index_type... Vs>
-			static constexpr instr_type permutatic_call	= call<CallNote::permutatic, Name, Vs...>;
-
-			template<key_type Name, index_type... Vs>
-			static constexpr instr_type distributic_call	= call<CallNote::distributic, Name, Vs...>;
-
-			template<key_type Name, index_type... Vs>
-			static constexpr instr_type near_linear_call	= call<CallNote::near_linear, Name, Vs...>;
-
-			template<key_type Name, index_type... Vs>
-			static constexpr instr_type register_call	= call<CallNote::user, Name, Vs...>;
+			static constexpr instr_type user_call		= call<CallNote::user, Name, Vs...>;
 
 		template<key_type Note = _zero>
 		static constexpr instr_type pass = instruction
@@ -196,49 +187,49 @@ public:
 	template<key_type... filler>
 	struct block_controller<BN::stop, filler...>
 	{
-		template<instr_type Cont = MN::first>
+		template<key_type Cont = MN::first>
 		static constexpr instr_type result = instruction<MN::drop_s_block, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::drop_s_segment, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::drop_s_block, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::move_s_segment__insert_at_s_back, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::move_s_block__insert_at_s_back, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::fold_s_segment__pos_at_h0_first, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::fold_s_block__op_at_h0_first, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::roll_s_segment__pos_at_h0_first, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::roll_s_block__act_at_h0_first, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::move_s_segment__insert_at_h0_back, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::move_s_block__insert_at_h0_back, Cont>;
 	};
 
 	template<key_type... filler>
 	struct block_controller<BN::move_s_segment__insert_at_h1_back, filler...>
 	{
-		template<instr_type Cont = MN::pass>
+		template<key_type Cont = MN::pass>
 		static constexpr instr_type result = instruction<MN::move_s_block__insert_at_h1_back, Cont>;
 	};
 
@@ -386,14 +377,26 @@ public:
 
 	struct VN
 	{
+		// passers:
+
+			// stack -> stack:
+
+			static constexpr key_type drop_s_pos					= 0;
+			static constexpr key_type move_s_pos__insert_at_s_back			= 1;
+
+			// stack -> heap:
+
+			static constexpr key_type move_s_pos__insert_at_h0_front		= 2;
+			static constexpr key_type copy_s_pos__insert_at_h0_front		= 3;
+
+			// heap -> stack:
+
+			static constexpr key_type move_h0_all__insert_at_s_pos			= 4;
+			static constexpr key_type move_h0_all__replace_at_s_pos			= 5;
+
+			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 6;
+			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 7;
 	};
-
-	using locus_type = index_type const*;
-
-		// pack length is stored as the initial value.
-
-	template<index_type... Vs>
-	static constexpr locus_type locus = array<index_type, sizeof...(Vs), Vs...>;
 
 /***********************************************************************************************************************/
 
@@ -403,181 +406,164 @@ public:
 
 	//
 
-	//	template<key_type... filler>
-	//	struct machine<MN::stop, _zero, filler...>
-	//	{
-	//		using nn			= BD;
-	//		static constexpr auto nc	= controller_module::template
-	//						  drop_s_block__contr<MN::first>;
+	template<key_type... filler>
+	struct variadic_controller<VN::drop_s_pos, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h0_back<Pos>,
+			drop_s_block<>,
+			move_h0_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	//		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
-	//		static constexpr auto result(Heaps... Hs)
-	//		{
-	//			constexpr auto pos	= n::pos(c, i, j);
-	//			constexpr index_type nj	= block_max_index2(pos);
-	//			constexpr index_type ni	= pos + nj;
+	template<key_type... filler>
+	struct variadic_controller<VN::move_s_pos__insert_at_s_back, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h0_back<Pos>,
+			move_s_block__insert_at_s_back<>,
+			move_h0_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	//			return NIK_MACHINE(nn, nc, d, ni, nj)(Hs...);
-	//		}
-	//	};
+	template<key_type... filler>
+	struct variadic_controller<VN::move_s_pos__insert_at_h0_front, filler...>
+	{
+		template<index_type Obj, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Obj>,
+			move_s_block__insert_at_h0_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	// template<key_type... filler>
-	// struct variadic_controller<VN::stop, filler...>
-	// {
-	// 	template<instr_type Cont = pass<>>
-	// 	static constexpr auto result = linear_controller<drop_s_block<>, Cont>;
-	// };
-															
-	// drop stack position:
+	template<key_type... filler>
+	struct variadic_controller<VN::copy_s_pos__insert_at_h0_front, filler...>
+	{
+		template<index_type Obj, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Obj>,
+			copy_s_block__insert_at_h0_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto drop_s_pos__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h0_back,
-	//		MN::drop_s_block,
-	//		MN::move_h0_all__insert_at_s_front,
+	template<key_type... filler>
+	struct variadic_controller<VN::move_h0_all__insert_at_s_pos, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Pos>,
+			move_h0_all__insert_at_s_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	//		Cont
-	//	>;
+	template<key_type... filler>
+	struct variadic_controller<VN::move_h0_all__replace_at_s_pos, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Pos>,
+			drop_s_block<>,
+			move_h0_all__insert_at_s_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	//	template<index_type Pos>
-	//	static constexpr auto drop_s_pos__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero
-	//	>;
+	template<key_type... filler>
+	struct variadic_controller<VN::apply_h0_all__move__replace_at_s_pos, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Pos>,
+			drop_s_block<>,
+			apply_h0_all__move__insert_at_s_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
-	// move stack position, insert at stack back:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto move_s_pos__insert_at_s_back__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h0_back,
-	//		MN::move_s_block__insert_at_s_back,
-	//		MN::move_h0_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr auto move_s_pos__insert_at_s_back__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero
-	//	>;
-
-	// move stack position, insert at heap zero front:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto move_s_pos__insert_at_h0_front__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::move_s_block__insert_at_h0_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Obj>
-	//	static constexpr auto move_s_pos__insert_at_h0_front__locus = v_locus
-	//	<
-	//		Obj, _zero, _zero, _zero
-	//	>;
-
-	// copy stack position, insert at heap zero front:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto copy_s_pos__insert_at_h0_front__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::copy_s_block__insert_at_h0_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Obj>
-	//	static constexpr auto copy_s_pos__insert_at_h0_front__locus = v_locus
-	//	<
-	//		Obj, _zero, _zero, _zero
-	//	>;
-
-	// move heap zero all, insert at stack position:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto move_h0_all__insert_at_s_pos__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::move_h0_all__insert_at_s_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr auto move_h0_all__insert_at_s_pos__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero
-	//	>;
-
-	// move heap zero all, replace at stack position:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto move_h0_all__replace_at_s_pos__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::drop_s_block,
-	//		MN::move_h0_all__insert_at_s_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr auto move_h0_all__replace_at_s_pos__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero, _zero
-	//	>;
-
-	// apply heap zero all, move, replace at stack position:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto apply_h0_all__move__replace_at_s_pos__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::drop_s_block,
-	//		MN::apply_h0_all__move__insert_at_s_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr auto apply_h0_all__move__replace_at_s_pos__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero, _zero
-	//	>;
-
-	// compel heap zero all, move, replace at stack position:
-
-	//	template<key_type Cont = MN::pass>
-	//	static constexpr auto compel_h0_all__move__replace_at_s_pos__contr = variadic_controller
-	//	<
-	//		MN::move_s_segment__insert_at_h1_back,
-	//		MN::drop_s_block,
-	//		MN::compel_h0_all__move__insert_at_s_front,
-	//		MN::move_h1_all__insert_at_s_front,
-
-	//		Cont
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr auto compel_h0_all__move__replace_at_s_pos__locus = v_locus
-	//	<
-	//		Pos, _zero, _zero, _zero, _zero
-	//	>;
+	template<key_type... filler>
+	struct variadic_controller<VN::compel_h0_all__move__replace_at_s_pos, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Pos>,
+			drop_s_block<>,
+			compel_h0_all__move__insert_at_s_front<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
 
 /***********************************************************************************************************************/
 
 // syntactic sugar:
+
+		template<index_type Pos>
+		static constexpr instr_type drop_s_pos = linear_call
+		<
+			VN::drop_s_pos, MI::patch(Pos), Pos
+		>;
+
+		template<index_type Pos, key_type Note = _zero>
+		static constexpr instr_type move_s_pos__insert_at_s_back = linear_call
+		<
+			VN::move_s_pos__insert_at_s_back, Note, Pos
+		>;
+
+		template<index_type Obj>
+		static constexpr instr_type move_s_pos__insert_at_h0_front = linear_call
+		<
+			VN::move_s_pos__insert_at_h0_front, MI::patch(Obj), Obj
+		>;
+
+		template<index_type Obj>
+		static constexpr instr_type copy_s_pos__insert_at_h0_front = linear_call
+		<
+			VN::copy_s_pos__insert_at_h0_front, MI::patch(Obj), Obj
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type move_h0_all__insert_at_s_pos = linear_call
+		<
+			VN::move_h0_all__insert_at_s_pos, MI::patch(Pos), Pos
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type move_h0_all__replace_at_s_pos = linear_call
+		<
+			VN::move_h0_all__replace_at_s_pos, MI::patch(Pos), Pos
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type apply_h0_all__move__replace_at_s_pos = linear_call
+		<
+			VN::apply_h0_all__move__replace_at_s_pos, MI::patch(Pos), Pos
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type compel_h0_all__move__replace_at_s_pos = linear_call
+		<
+			VN::compel_h0_all__move__replace_at_s_pos, MI::patch(Pos), Pos
+		>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -593,84 +579,21 @@ public:
 	{
 		// passers:
 
-			// stack -> stack:
+			static constexpr key_type erase			= 0;
+			static constexpr key_type insert		= 1;
+			static constexpr key_type replace		= 2;
 
-			static constexpr key_type drop_s_pos					= 34;
-			static constexpr key_type move_s_pos__insert_at_s_back			= 35;
-
-			// stack -> heap:
-
-			static constexpr key_type move_s_pos__insert_at_h0_front		= 36;
-			static constexpr key_type copy_s_pos__insert_at_h0_front		= 37;
-
-			// heap -> stack:
-
-			static constexpr key_type move_h0_all__insert_at_s_pos			= 38;
-			static constexpr key_type move_h0_all__replace_at_s_pos			= 39;
-
-			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 40;
-			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 41;
+			static constexpr key_type apply_replace		= 3;
+			static constexpr key_type compel_replace	= 4;
+			static constexpr key_type test_replace		= 5;
+			static constexpr key_type check_replace		= 6;
 	};
 
 /***********************************************************************************************************************/
 
 // instructions:
 
-	// passers:
-
-			// stack -> stack:
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type drop_s_pos = instruction
-	//	<
-	//		MN::drop_s_pos, MA::patch(Pos), Pos
-	//	>;
-
-	//	template<index_type Pos, key_type Note = _zero>
-	//	static constexpr instr_type move_s_pos__insert_at_s_back = instruction
-	//	<
-	//		MN::move_s_pos__insert_at_s_back, Note, Pos
-	//	>;
-
-			// stack -> heap:
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type move_s_pos__insert_at_h0_front = instruction
-	//	<
-	//		MN::move_s_pos__insert_at_h0_front, MA::patch(Pos), Pos
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type copy_s_pos__insert_at_h0_front = instruction
-	//	<
-	//		MN::copy_s_pos__insert_at_h0_front, MA::patch(Pos), Pos
-	//	>;
-
-			// heap -> stack:
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type move_h0_all__insert_at_s_pos = instruction
-	//	<
-	//		MN::move_h0_all__insert_at_s_pos, MA::patch(Pos), Pos
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type move_h0_all__replace_at_s_pos = instruction
-	//	<
-	//		MN::move_h0_all__replace_at_s_pos, MA::patch(Pos), Pos
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type apply_h0_all__move__replace_at_s_pos = instruction
-	//	<
-	//		MN::apply_h0_all__move__replace_at_s_pos, MA::patch(Pos), Pos
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type compel_h0_all__move__replace_at_s_pos = instruction
-	//	<
-	//		MN::compel_h0_all__move__replace_at_s_pos, MA::patch(Pos), Pos
-	//	>;
+	// skip
 
 /***********************************************************************************************************************/
 
@@ -680,170 +603,148 @@ public:
 
 	//
 
-	// template<key_type... filler>
-	// struct permutatic_controller<PN::drop_s_block, filler...>
-	// {
-	// 	template<instr_type Cont = pass<>>
-	// 	static constexpr auto result = linear_controller<drop_s_block<>, Cont>;
-	// };
+	template<key_type... filler>
+	struct permutatic_controller<PN::erase, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			drop_s_pos<Pos>,
+			Cont
+		>;
+	};
 
-	// erase:
+	template<key_type... filler>
+	struct permutatic_controller<PN::insert, filler...>
+	{
+		template<index_type Pos, index_type Obj, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<Obj>,
+			move_h0_all__insert_at_s_pos<Pos>,	// includes undefined behaviour.
+			Cont
+		>;
+	};
 
-	//	template<index_type Pos, pa_type Cont = pass<>>
-	//	static constexpr auto erase_contr = permutatic_controller
-	//	<
-	//		drop_s_pos<Pos>,
+	template<key_type... filler>
+	struct permutatic_controller<PN::replace, filler...>
+	{
+		template<index_type Pos, index_type Obj, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<Obj>,
+			move_h0_all__replace_at_s_pos<Pos>,	// includes undefined behaviour.
+			Cont
+		>;
+	};
 
-	//		Cont
-	//	>;
+	template<key_type... filler>
+	struct permutatic_controller<PN::apply_replace, filler...>
+	{
+		template<index_type Pos, index_type Op, index_type... RArgs>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<RArgs>...,
 
-	// insert:
+			copy_s_pos__insert_at_h0_front<Op>,
+			apply_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
+			pass<>
+		>;
+	};
 
-	//	template<index_type Pos, index_type Obj, pa_type Cont = pass<>>
-	//	static constexpr auto insert_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Obj>,
-	//		move_h0_all__insert_at_s_pos<Pos>,	// includes undefined behaviour.
+	template<key_type... filler>
+	struct permutatic_controller<PN::compel_replace, filler...>
+	{
+		template<index_type Pos, index_type Op, index_type... RArgs>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<RArgs>...,
 
-	//		Cont
-	//	>;
+			copy_s_pos__insert_at_h0_front<Op>,
+			compel_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
+			pass<>
+		>;
+	};
 
-	// replace:
+	template<key_type... filler>
+	struct permutatic_controller<PN::test_replace, filler...>
+	{
+		template<index_type Op, index_type... RArgs>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<RArgs>...,
 
-	//	template<index_type Pos, index_type Obj, pa_type Cont = pass<>>
-	//	static constexpr auto replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Obj>,
-	//		move_h0_all__replace_at_s_pos<Pos>,	// includes undefined behaviour.
+			copy_s_pos__insert_at_h0_front<Op>,
+			apply_h0_all__replace_h0_all<>,			// includes undefined behaviour.
+			pass<>
+		>;
+	};
 
-	//		Cont
-	//	>;
+	template<key_type... filler>
+	struct permutatic_controller<PN::check_replace, filler...>
+	{
+		template<index_type Op, index_type... RArgs>
+		static constexpr label_type result = label
+		<
+			copy_s_pos__insert_at_h0_front<RArgs>...,
 
-	// unary apply replace:
-
-	//	template<index_type Pos, index_type Op, index_type Arg, pa_type Cont = pass<>>
-	//	static constexpr auto apply1_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		apply_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// binary apply replace:
-
-	//	template<index_type Pos, index_type Op, index_type Arg1, index_type Arg2, pa_type Cont = pass<>>
-	//	static constexpr auto apply2_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg2>,
-	//		copy_s_pos__insert_at_h0_front<Arg1>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		apply_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// unary compel replace:
-
-	//	template<index_type Pos, index_type Op, index_type Arg, pa_type Cont = pass<>>
-	//	static constexpr auto compel1_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		compel_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// binary compel replace:
-
-	//	template<index_type Pos, index_type Op, index_type Arg1, index_type Arg2, pa_type Cont = pass<>>
-	//	static constexpr auto compel2_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg2>,
-	//		copy_s_pos__insert_at_h0_front<Arg1>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		compel_h0_all__move__replace_at_s_pos<Pos>,	// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// unary test replace:
-
-	//	template<index_type Op, index_type Arg, pa_type Cont = pass<>>
-	//	static constexpr auto test1_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		apply_h0_all__replace_h0_all<>,			// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// binary test replace:
-
-	//	template<index_type Op, index_type Arg1, index_type Arg2, pa_type Cont = pass<>>
-	//	static constexpr auto test2_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg2>,
-	//		copy_s_pos__insert_at_h0_front<Arg1>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		apply_h0_all__replace_h0_all<>,			// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// unary check replace:
-
-	//	template<index_type Op, index_type Arg, pa_type Cont = pass<>>
-	//	static constexpr auto check1_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		compel_h0_all__replace_h0_all<>,		// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// binary check replace:
-
-	//	template<index_type Op, index_type Arg1, index_type Arg2, pa_type Cont = pass<>>
-	//	static constexpr auto check2_replace_contr = permutatic_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_front<Arg2>,
-	//		copy_s_pos__insert_at_h0_front<Arg1>,
-	//		copy_s_pos__insert_at_h0_front<Op>,
-	//		compel_h0_all__replace_h0_all<>,		// includes undefined behaviour.
-
-	//		Cont
-	//	>;
-
-	// left:
-
-	//	template<index_type Pos, pa_type Cont = pass<>>
-	//	static constexpr auto left_contr = permutatic_controller
-	//	<
-	//		move_s_segment__insert_at_h1_back<Pos>,
-	//		clear<>,
-	//		move_h1_all__insert_at_s_front<>,
-
-	//		Cont
-	//	>;
-
-	// roll:
-
-	//	template<pa_type Cont = pass<>>
-	//	static constexpr auto roll__contr = permutatic_controller
-	//	<
-	//		roll_s_segment__pos_at_h0_first<>,
-
-	//		Cont
-	//	>;
+			copy_s_pos__insert_at_h0_front<Op>,
+			compel_h0_all__replace_h0_all<>,		// includes undefined behaviour.
+			pass<>
+		>;
+	};
 
 /***********************************************************************************************************************/
 
 // syntactic sugar:
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type  = linear_call
+	//	<
+	//		VN::, MI::patch(Pos), Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type erase = linear_call
+	//	<
+	//		LN::erase, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type insert = linear_call
+	//	<
+	//		LN::insert, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type replace = linear_call
+	//	<
+	//		LN::replace, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type apply_replace = linear_call
+	//	<
+	//		LN::apply_replace, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type compel_replace = linear_call
+	//	<
+	//		LN::compel_replace, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type test_replace = linear_call
+	//	<
+	//		LN::test_replace, Pos
+	//	>;
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type check_replace = linear_call
+	//	<
+	//		LN::check_replace, Pos
+	//	>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -857,22 +758,29 @@ public:
 
 	struct DN
 	{
+		// halters:
+
+			static constexpr key_type halt			= 0;
+
 		// passers:
 
-			static constexpr key_type erase					= 42;
-			static constexpr key_type insert				= 43;
-			static constexpr key_type replace				= 44;
+			static constexpr key_type size_of		= 1;
+			static constexpr key_type clear			= 2;
+			static constexpr key_type map			= 3;
+			static constexpr key_type plot			= 4;
+			static constexpr key_type align			= 5;
 
-			static constexpr key_type fold					= 45;
-			static constexpr key_type roll					= 46;
+			static constexpr key_type lift			= 6;
+			static constexpr key_type stem			= 7;
+			static constexpr key_type costem		= 8;
+			static constexpr key_type cycle			= 9;
 
-			static constexpr key_type apply					= 47;
-			static constexpr key_type compel				= 48;
+		// constants:
 
-			static constexpr key_type test					= 49;
-			static constexpr key_type check					= 50;
-
-			static constexpr key_type skip					= 51;
+			static constexpr instr_type lift_instr		= instruction<lift, _zero>;
+			static constexpr instr_type stem_instr		= instruction<stem, _zero>;
+			static constexpr instr_type halt_instr		= instruction<halt, _zero>;
+			static constexpr instr_type cycle_instr		= instruction<cycle, _zero>;
 	};
 
 /***********************************************************************************************************************/
@@ -914,28 +822,28 @@ public:
 	//	template<index_type Pos, index_type Op, index_type... Args>
 	//	static constexpr instr_type apply = instruction
 	//	<
-	//		MN::apply, MA::arity(sizeof...(Args)), Pos, Op, Args...
+	//		MN::apply, MI::arity(sizeof...(Args)), Pos, Op, Args...
 	//	>;
 
 	//	template<index_type Pos, index_type Op, index_type... Args>
 	//	static constexpr instr_type compel = instruction
 	//	<
-	//		MN::compel, MA::arity(sizeof...(Args)), Pos, Op, Args...
+	//		MN::compel, MI::arity(sizeof...(Args)), Pos, Op, Args...
 	//	>;
 
 	//	template<index_type Op, index_type... Args>
 	//	static constexpr instr_type test = instruction
 	//	<
-	//		MN::test, MA::arity(sizeof...(Args)), Op, Args...
+	//		MN::test, MI::arity(sizeof...(Args)), Op, Args...
 	//	>;
 
 	//	template<index_type Op, index_type... Args>
 	//	static constexpr instr_type check = instruction
 	//	<
-	//		MN::check, MA::arity(sizeof...(Args)), Op, Args...
+	//		MN::check, MI::arity(sizeof...(Args)), Op, Args...
 	//	>;
 
-	//	template<key_type Note = MA::unary>
+	//	template<key_type Note = MI::unary>
 	//	static constexpr instr_type skip = instruction
 	//	<
 	//		MN::skip, Note
@@ -964,7 +872,15 @@ public:
 	// skip:
 
 	//	template<da_type Test, da_type Ante, da_type Conse, da_type Cont = pass<>>
-	//	static constexpr auto skip_contr = distributic_controller<Test, skip<MA::binary>, Ante, Cont, Conse, Cont>;
+	//	static constexpr auto skip_contr = distributic_controller<Test, skip<MI::binary>, Ante, Cont, Conse, Cont>;
+
+	// left:
+
+	//	template<index_type Pos, pa_type Cont = pass<>>
+	//	static constexpr auto left_contr = permutatic_controller
+	//	<
+
+	//	>;
 
 /***********************************************************************************************************************/
 
@@ -982,40 +898,16 @@ public:
 
 	struct NN
 	{
-		// halters:
-
-			static constexpr key_type halt			= 52;
-
 		// passers:
 
-			static constexpr key_type size_of		= 53;
-			static constexpr key_type clear			= 54;
-			static constexpr key_type map			= 55;
-			static constexpr key_type plot			= 56;
-			static constexpr key_type align			= 57;
+			static constexpr key_type assign				= 0;
 
-			static constexpr key_type lift			= 58;
-			static constexpr key_type stem			= 59;
-			static constexpr key_type costem		= 60;
-			static constexpr key_type cycle			= 61;
+			static constexpr key_type branch				= 1;
+			static constexpr key_type go_to__next_at_h0_front		= 2;
+			static constexpr key_type go_to					= 3;
 
-		// members:
-
-			static constexpr key_type size			= 0;
-			static constexpr key_type name			= 1;
-
-			static constexpr key_type appl			= 2;
-
-			static constexpr key_type cond			= 2;
-			static constexpr key_type appl1			= 3;
-			static constexpr key_type appl2			= 4;
-
-		// constants:
-
-			static constexpr instr_type lift_instr		= instruction<lift, _zero>;
-			static constexpr instr_type stem_instr		= instruction<stem, _zero>;
-			static constexpr instr_type halt_instr		= instruction<halt, _zero>;
-			static constexpr instr_type cycle_instr		= instruction<cycle, _zero>;
+			static constexpr key_type save					= 4;
+			static constexpr key_type restore				= 5;
 	};
 
 /***********************************************************************************************************************/
@@ -1083,22 +975,6 @@ public:
 
 	struct RN
 	{
-		// passers:
-
-			static constexpr key_type assign				= 62;
-
-			static constexpr key_type branch				= 63;
-			static constexpr key_type go_to__next_at_h0_front		= 64;
-			static constexpr key_type go_to					= 65;
-
-			static constexpr key_type save					= 66;
-			static constexpr key_type restore				= 67;
-
-	// reflection:
-
-		// sizes:
-
-			static constexpr key_type reg_size				= 68;
 	};
 
 /***********************************************************************************************************************/
@@ -1156,6 +1032,32 @@ public:
 	template<key_type, key_type...> struct near_linear_controller;
 
 	//
+
+/*
+	template<key_type... filler>
+	struct permutatic_controller<PN::left, filler...>
+	{
+		template<index_type Pos, instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			move_s_segment__insert_at_h1_back<Pos>,
+			clear<>,
+			move_h1_all__insert_at_s_front<>,
+			Cont
+		>;
+	};
+
+	template<key_type... filler>
+	struct permutatic_controller<PN::roll, filler...>
+	{
+		template<instr_type Cont = pass<>>
+		static constexpr label_type result = label
+		<
+			roll_s_segment__pos_at_h0_first<>,
+			Cont
+		>;
+	};
+*/
 
 	// template<key_type... filler>
 	// struct near_linear_controller<NN::drop_s_block, filler...>

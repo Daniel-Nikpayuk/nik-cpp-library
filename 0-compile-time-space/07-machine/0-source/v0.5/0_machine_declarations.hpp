@@ -270,11 +270,11 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// variadic:
+// linear:
 
 /***********************************************************************************************************************/
 
-	struct VD
+	struct LD
 	{
 	// call:
 
@@ -283,6 +283,25 @@ public:
 
 		static constexpr index_type call_pos(label_type l, index_type, index_type j)
 			{ return l[j][CallInstr::pos]; }
+
+	// applications:
+
+	//	static constexpr index_type size   (label_type l, index_type, index_type j) { return l[j][MI::size  ]; }
+	//	static constexpr key_type name     (label_type l, index_type, index_type j) { return l[j][MI::name  ]; }
+	//	static constexpr key_type note     (label_type l, index_type, index_type j) { return l[j][MI::note  ]; }
+	//	static constexpr index_type pos    (label_type l, index_type, index_type j) { return l[j][MI::pos   ]; }
+
+	//	static constexpr index_type obj    (label_type l, index_type, index_type j) { return l[j][MI::obj   ]; }
+
+	//	static constexpr index_type op     (label_type l, index_type, index_type j) { return l[j][MI::op    ]; }
+	//	static constexpr index_type arg    (label_type l, index_type, index_type j) { return l[j][MI::arg   ]; }
+	//	static constexpr index_type arg1   (label_type l, index_type, index_type j) { return l[j][MI::arg1  ]; }
+	//	static constexpr index_type arg2   (label_type l, index_type, index_type j) { return l[j][MI::arg2  ]; }
+
+	//	static constexpr index_type pred   (label_type l, index_type, index_type j) { return l[j][MI::pred  ]; }
+	//	static constexpr index_type input  (label_type l, index_type, index_type j) { return l[j][MI::input ]; }
+	//	static constexpr index_type input1 (label_type l, index_type, index_type j) { return l[j][MI::input1]; }
+	//	static constexpr index_type input2 (label_type l, index_type, index_type j) { return l[j][MI::input2]; }
 
 	// iterators:
 
@@ -319,191 +338,6 @@ public:
 				else 		return j+1;
 			}
 	};
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// permutatic:
-
-/***********************************************************************************************************************/
-
-/*
-	struct PD
-	{
-	// applications:
-
-		static constexpr index_type size (pc_type c, index_type i, index_type) { return c[i][PA::size]; }
-		static constexpr key_type name   (pc_type c, index_type i, index_type) { return c[i][PA::name]; }
-		static constexpr key_type note   (pc_type c, index_type i, index_type) { return c[i][PA::note]; }
-		static constexpr index_type pos  (pc_type c, index_type i, index_type) { return c[i][PA::pos ]; }
-
-	// iterators:
-
-		// name:
-
-			static constexpr key_type next_name(pc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0)	return MN::pause;
-				else 		return c[i+1][PA::name];
-			}
-
-		// note:
-
-			static constexpr key_type next_note(pc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0) return _zero;
-				else return c[i+1][PA::note];
-			}
-
-		// depth:
-
-			static constexpr depth_type (*next_depth)(depth_type) =
-				MD::template default_next_depth<depth_type>;
-
-		// index1:
-
-			static constexpr index_type next_index1(pc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0)	return i;
-				else 		return i+1;
-			}
-
-		// index2:
-
-			static constexpr index_type (*next_index2)(pc_type, depth_type, index_type, index_type) =
-				MD::template default_next_index2<pc_type, depth_type, index_type, index_type>;
-	};
-*/
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// distributic:
-
-/***********************************************************************************************************************/
-
-/*
-	struct DD
-	{
-	// applications:
-
-		static constexpr index_type size   (dc_type c, index_type i, index_type) { return c[i][DA::size  ]; }
-		static constexpr key_type name     (dc_type c, index_type i, index_type) { return c[i][DA::name  ]; }
-		static constexpr key_type note     (dc_type c, index_type i, index_type) { return c[i][DA::note  ]; }
-		static constexpr index_type pos    (dc_type c, index_type i, index_type) { return c[i][DA::pos   ]; }
-
-		static constexpr index_type obj    (dc_type c, index_type i, index_type) { return c[i][DA::obj   ]; }
-
-		static constexpr index_type op     (dc_type c, index_type i, index_type) { return c[i][DA::op    ]; }
-		static constexpr index_type arg    (dc_type c, index_type i, index_type) { return c[i][DA::arg   ]; }
-		static constexpr index_type arg1   (dc_type c, index_type i, index_type) { return c[i][DA::arg1  ]; }
-		static constexpr index_type arg2   (dc_type c, index_type i, index_type) { return c[i][DA::arg2  ]; }
-
-		static constexpr index_type pred   (dc_type c, index_type i, index_type) { return c[i][DA::pred  ]; }
-		static constexpr index_type input  (dc_type c, index_type i, index_type) { return c[i][DA::input ]; }
-		static constexpr index_type input1 (dc_type c, index_type i, index_type) { return c[i][DA::input1]; }
-		static constexpr index_type input2 (dc_type c, index_type i, index_type) { return c[i][DA::input2]; }
-
-	// iterators:
-
-		// name:
-
-			static constexpr key_type next_name(dc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0)	return MN::pause;
-				else 		return c[i+1][DA::name];
-			}
-
-		// note:
-
-			static constexpr key_type next_note(dc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0)	return _zero;
-				else		return c[i+1][DA::note];
-			}
-
-		// depth:
-
-			static constexpr depth_type (*next_depth)(depth_type) =
-				MD::template default_next_depth<depth_type>;
-
-		// index1:
-
-			static constexpr index_type next_index1(dc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0)	return i;
-				else 		return i+1;
-			}
-
-		// index2:
-
-			static constexpr index_type (*next_index2)(dc_type, depth_type, index_type, index_type) =
-				MD::template default_next_index2<dc_type, depth_type, index_type, index_type>;
-	};
-*/
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// near linear:
-
-/***********************************************************************************************************************/
-
-/*
-	struct ND
-	{
-	// applications:
-
-		static constexpr index_type appl  (nc_type c, index_type i, index_type) { return c[i][NP::appl ]; }
-
-		static constexpr index_type cond  (nc_type c, index_type i, index_type) { return c[i][NP::cond ]; }
-		static constexpr index_type appl1 (nc_type c, index_type i, index_type) { return c[i][NP::appl1]; }
-		static constexpr index_type appl2 (nc_type c, index_type i, index_type) { return c[i][NP::appl2]; }
-
-	// iterators:
-
-		// name:
-
-			static constexpr key_type next_name(nc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0) return MN::pause;
-
-				key_type name = c[i+1][NP::name][NA::name];
-
-				if (name != MN::cycle)	return name;
-				else			return c[_one][NP::name][NA::name];
-			}
-
-		// note:
-
-			static constexpr key_type (*next_note)(nc_type, depth_type, index_type, index_type) =
-				MD::template default_next_note<nc_type, depth_type, index_type, index_type>;
-
-		// depth:
-
-			static constexpr depth_type (*next_depth)(depth_type) =
-				MD::template default_next_depth<depth_type>;
-		// index1:
-
-			static constexpr index_type next_index1(nc_type c, depth_type d, index_type i, index_type)
-			{
-				if (d == 0) return i;
-
-				key_type name = c[i+1][NP::name][NA::name];
-
-				if (name != MN::cycle)	return i+1;
-				else			return _one;
-			}
-
-		// index2:
-
-			static constexpr index_type (*next_index2)(nc_type, depth_type, index_type, index_type) =
-				MD::template default_next_index2<nc_type, depth_type, index_type, index_type>;
-	};
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

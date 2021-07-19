@@ -157,7 +157,6 @@ private:
 
 // move stack block, insert at stack back (2^N):
 
-/*
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(0);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(1);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(2);
@@ -168,13 +167,11 @@ private:
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(7);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(8);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(9);
-*/
 
 /***********************************************************************************************************************/
 
 // fold stack block, op at heap zero first (2^N):
 
-/*
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(0);
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(1);
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(2);
@@ -184,7 +181,6 @@ private:
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(6);
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(7);
 	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(8);
-*/
 
 #ifdef GCC_IMPLEMENTATION
 
@@ -194,7 +190,6 @@ private:
 
 		// clang: bracket nesting level defaults to a maximum of 256
 
-/*
 	template<key_type... filler>
 	struct machine<MN::fold_s_block__op_at_h0_first, _nine, filler...>
 	{
@@ -210,13 +205,11 @@ private:
 			END_NIK_MACHINE(H0, Hs...);
 		}
 	};
-*/
 
 /***********************************************************************************************************************/
 
 // roll stack block, act at heap zero first (2^N):
 
-/*
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(0);
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(1);
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(2);
@@ -227,7 +220,6 @@ private:
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(7);
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(8);
 	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(9);
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -238,13 +230,12 @@ private:
 
 // move stack block, insert at heap zero front (2^N):
 
-//	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(0);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(0);
 
 /***********************************************************************************************************************/
 
 // move stack block, insert at heap zero back (2^N):
 
-/*
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(0);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(1);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(2);
@@ -255,13 +246,11 @@ private:
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(7);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(8);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(9);
-*/
 
 /***********************************************************************************************************************/
 
 // move stack block, insert at heap one back (2^N):
 
-/*
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(0);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(1);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(2);
@@ -272,15 +261,12 @@ private:
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(7);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(8);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(9);
-*/
 
 /***********************************************************************************************************************/
 
 // copy stack block, insert at heap zero front (2^N):
 
-/*
 	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(0);
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -397,9 +383,35 @@ private:
 
 /***********************************************************************************************************************/
 
-// pass:
+// call (user):
 
 /*
+	template<key_type... filler>
+	struct machine<MN::call, MI::user, filler...>
+	{
+		using nn			= DD;
+		static constexpr auto ni	= _zero;
+		static constexpr auto nj	= _zero;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			NIK_FIXED_HEAP_PARAMS, typename... Heaps
+		>
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
+		{
+			constexpr auto nc = distributic_controller_array[n::index(c, i, j)];
+			constexpr auto un = U_type_T<n>;
+
+			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
+		}
+	};
+*/
+
+/***********************************************************************************************************************/
+
+// pass:
+
 	template<key_type... filler>
 	struct machine<MN::pass, _zero, filler...>
 	{
@@ -415,7 +427,6 @@ private:
 			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, Hs...);
 		}
 	};
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -691,7 +702,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__DROP_S_POS(1, 0, 0);
 		NIK_DEFINE__DROP_S_POS(2, 1, 1);
 		NIK_DEFINE__DROP_S_POS(3, 2, 1);
@@ -700,7 +710,6 @@ private:
 		NIK_DEFINE__DROP_S_POS(6, 5, 1);
 		NIK_DEFINE__DROP_S_POS(7, 6, 1);
 		NIK_DEFINE__DROP_S_POS(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -708,7 +717,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(1, 0, 0);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(2, 1, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(3, 2, 1);
@@ -717,7 +725,6 @@ private:
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(6, 5, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(7, 6, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -725,7 +732,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(1, 0, 0);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(2, 1, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(3, 2, 1);
@@ -734,7 +740,6 @@ private:
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(6, 5, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(7, 6, 1);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -742,7 +747,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(1, 0);
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(2, 1);
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(3, 2);
@@ -751,7 +755,6 @@ private:
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(6, 5);
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(7, 6);
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(8, 7);
-*/
 
 /***********************************************************************************************************************/
 
@@ -759,7 +762,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(2, 1, 1);
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(3, 2, 1);
@@ -768,7 +770,6 @@ private:
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -776,7 +777,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(2, 1, 1);
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(3, 2, 1);
@@ -785,7 +785,6 @@ private:
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -793,7 +792,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
@@ -802,7 +800,6 @@ private:
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 
@@ -810,7 +807,6 @@ private:
 
 	// optimizations:
 
-/*
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
@@ -819,7 +815,6 @@ private:
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -175,11 +175,8 @@ public:
 	struct CallNote
 	{
 		static constexpr key_type block			= 0;
-		static constexpr key_type variadic		= 1;
-		static constexpr key_type permutatic		= 2;
-		static constexpr key_type distributic		= 3;
-		static constexpr key_type near_linear		= 4;
-		static constexpr key_type user			= 5;
+		static constexpr key_type linear		= 1;
+		static constexpr key_type user			= 2;
 	};
 
 	struct ApplNote
@@ -248,6 +245,15 @@ public:
 		static constexpr index_type input		= 4;
 		static constexpr index_type input1		= 4;
 		static constexpr index_type input2		= 5;
+	};
+
+	struct NLInstr : public MI
+	{
+		static constexpr key_type appl			= 2;
+
+		static constexpr key_type cond			= 2;
+		static constexpr key_type appl1			= 3;
+		static constexpr key_type appl2			= 4;
 	};
 
 		// pack length is stored as the initial value.
