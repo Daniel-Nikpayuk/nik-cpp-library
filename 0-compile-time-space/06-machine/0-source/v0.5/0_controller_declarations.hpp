@@ -316,51 +316,6 @@ public:
 	static constexpr contr_type controller = array
 		<label_type, array<instr_type, array<index_type, sizeof...(Vs)>>, Vs...>;
 
-	template<instr_type... Vs>
-	static constexpr contr_type linear_controller = controller<label<Vs...>>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// (default) dispatch:
-
-/***********************************************************************************************************************/
-
-	struct MachDisp
-	{
-		static constexpr depth_type default_next_depth(depth_type d)
-		{
-			if (d > 0)	return d-1;
-			else 		return d;
-		}
-
-		template<typename c_type>
-		static constexpr key_type default_next_note(c_type, depth_type, index_type, index_type)
-		{
-			return _zero;
-		}
-
-		template<typename c_type>
-		static constexpr index_type default_next_index1(c_type, depth_type, index_type, index_type)
-		{
-			return _one;
-		}
-	};
-
-	using MD = MachDisp;
-
-/***********************************************************************************************************************/
-
-// instructions:
-
-	// reg_size:
-
-		template<index_type Length, key_type Note = _zero>
-		static constexpr instr_type reg_size = instruction
-		<
-			MN::reg_size, Note, Length
-		>;
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

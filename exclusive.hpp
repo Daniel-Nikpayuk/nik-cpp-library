@@ -73,7 +73,6 @@ namespace nik
 		reference,
 		array,
 
-		controller,
 		machine,
 		pack,
 
@@ -226,29 +225,25 @@ namespace nik
 															\
 		05-array
 
-	#define nik_controller()											\
-															\
-		06-controller
-
 	#define nik_machine()												\
 															\
-		07-machine
+		06-machine
 
 	#define nik_pack()												\
 															\
-		08-pack
+		07-pack
 
 	#define nik_function()												\
 															\
-		09-function
+		08-function
 
 	#define nik_list()												\
 															\
-		10-list
+		09-list
 
 	#define nik_colist()												\
 															\
-		11-colist
+		10-colist
 
 
 /***********************************************************************************************************************/

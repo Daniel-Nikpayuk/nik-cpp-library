@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_MACHINE_ARCHITECT_V_0_5_CLANG_HPP
-#define NIK_INTERPRET_MACHINE_ARCHITECT_V_0_5_CLANG_HPP
+#ifndef NIK_INTERPRET_MACHINE_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_INTERPRET_MACHINE_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,7 +26,8 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, controller, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, constant, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, array, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -36,28 +37,29 @@
 
 namespace nik
 {
-	nik_begin_module(interpret, machine, architect, v_0_5, clang)
+	nik_begin_module(interpret, machine, architect, v_0_5, gcc)
 
-		#include nik_import(../../.., interpret, functor, architect, v_0_5, clang, static, name)
-		#include nik_import(../../.., interpret, constant, architect, v_0_5, clang, static, name)
-
-		using controller_module = nik_module(interpret, controller, architect, v_0_5, clang);
+		#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., interpret, array, architect, v_0_5, gcc, static, name)
 
 		#include"v0.5/define_parameter_macros.hpp"
 		#include"v0.5/define_machine_macros.hpp"
 
 		//
 
-		#include"v0.5/0_machine_declarations.hpp"
-		#include"v0.5/1_machine_definitions.hpp"
+		#include"v0.5/0_controller_declarations.hpp"
+		#include"v0.5/1_controller_definitions.hpp"
+		#include"v0.5/2_machine_declarations.hpp"
+		#include"v0.5/3_machine_definitions.hpp"
 
 		//
 
 		#include"v0.5/undef_all_macros.hpp"
 
-		friend nik_module(interpret, pack, architect, v_0_5, clang);
+		friend nik_module(interpret, pack, architect, v_0_5, gcc);
 
-	nik_end_module(interpret, machine, architect, v_0_5, clang)
+	nik_end_module(interpret, machine, architect, v_0_5, gcc)
 }
 
 /***********************************************************************************************************************/

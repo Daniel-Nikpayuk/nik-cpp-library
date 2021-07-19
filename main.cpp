@@ -33,7 +33,6 @@
 //	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, reference, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, array, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, controller, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
@@ -42,7 +41,7 @@
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
-	#include"0-compile-time-space/10-list/2-testing/unit_lists.hpp"
+	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
 // run time space:
 
@@ -61,7 +60,6 @@
 
 /***********************************************************************************************************************/
 
-	using controller_module = nik_module(interpret, controller, architect, v_0_5, gcc);
 	using machine_module = nik_module(interpret, machine, architect, v_0_5, gcc);
 
 	//
@@ -71,9 +69,9 @@
 	{
 		using LD = typename machine_module::LD;
 
-		constexpr auto c = controller_module::template label
+		constexpr auto c = machine_module::template label
 		<
-			controller_module::template stop<n>
+			machine_module::template stop<n>
 		>;
 
 		return machine_module::template start<LD, c, d, 1, 0, Vs...>();

@@ -95,41 +95,6 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// machine:
-
-	using MN				= typename controller_module::MN;
-	using CallNote				= typename controller_module::CallNote;
-
-/***********************************************************************************************************************/
-
-	using MI				= typename controller_module::MI;
-	using CallInstr				= typename controller_module::CallInstr;
-	using instr_type			= typename controller_module::instr_type;
-
-	template<index_type... Vs>
-	static constexpr auto instruction	= controller_module::template instruction<Vs...>;
-
-/***********************************************************************************************************************/
-
-	using ML				= typename controller_module::ML;
-	using label_type			= typename controller_module::label_type;
-
-/***********************************************************************************************************************/
-
-	using MC				= typename controller_module::MC;
-	using contr_type			= typename controller_module::contr_type;
-
-	template<key_type N>
-	using block_controller			= typename controller_module::template block_controller<N>;
-
-/***********************************************************************************************************************/
-
-	using MD				= typename controller_module::MD;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // trampolining:
 
 /***********************************************************************************************************************/
@@ -247,7 +212,11 @@ public:
 
 		// depth:
 
-			static constexpr depth_type (*next_depth)(depth_type) = MD::default_next_depth;
+			static constexpr depth_type next_depth(depth_type d)
+			{
+				if (d > 0)	return d-1;
+				else 		return d;
+			}
 
 		// index1:
 
@@ -323,12 +292,18 @@ public:
 
 		// depth:
 
-			static constexpr depth_type (*next_depth)(depth_type) = MD::default_next_depth;
+			static constexpr depth_type next_depth(depth_type d)
+			{
+				if (d > 0)	return d-1;
+				else 		return d;
+			}
 
 		// index1:
 
-			static constexpr index_type (*next_index1)(label_type, depth_type, index_type, index_type) =
-				MD::template default_next_index1<label_type>;
+			static constexpr index_type next_index1(label_type, depth_type, index_type, index_type)
+			{
+				return _one;
+			}
 
 		// index2:
 
@@ -448,8 +423,11 @@ public:
 
 		// depth:
 
-			static constexpr depth_type (*next_depth)(depth_type) =
-				MD::template default_next_depth<depth_type>;
+			static constexpr depth_type next_depth(depth_type d)
+			{
+				if (d > 0)	return d-1;
+				else 		return d;
+			}
 	};
 */
 
