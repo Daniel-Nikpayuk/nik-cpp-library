@@ -219,12 +219,12 @@
 
 /***********************************************************************************************************************/
 
-// copy stack block, insert at heap zero front (2^N):
+// copy stack block, insert at heap zero back (2^N):
 
-	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(_n_)							\
+	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::copy_s_block__insert_at_h0_front, _n_, filler...>					\
+		struct machine<MN::copy_s_block__insert_at_h0_back, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -237,7 +237,7 @@
 															\
 					NIK_2_ ## _n_ ## _VS, Vs...							\
 															\
-				END_NIK_MACHINE(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, Hs...);			\
+				END_NIK_MACHINE(U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
 			}												\
 		}
 
@@ -288,36 +288,12 @@
 
 /***********************************************************************************************************************/
 
-// (fast) move stack position, insert at heap zero front:
+// (fast) copy stack position, insert at heap zero back:
 
-	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_H0_FRONT(_s_, _n_, _c_)						\
+	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(_s_, _n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_s_pos__insert_at_h0_front, _s_, filler...>					\
-		{													\
-			template											\
-			<												\
-				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto... Ws, typename... Heaps								\
-			>												\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
-			{												\
-				return BEGIN_NIK_MACHINE(n, c, d, i, j)							\
-															\
-					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Vs...				\
-															\
-				END_NIK_MACHINE(U_opt_pack_Vs<V ## _n_, Ws...>, Hs...);					\
-			}												\
-		}
-
-/***********************************************************************************************************************/
-
-// (fast) copy stack position, insert at heap zero front:
-
-	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(_s_, _n_)							\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::copy_s_pos__insert_at_h0_front, _s_, filler...>					\
+		struct machine<MN::copy_s_pos__insert_at_h0_back, _s_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -330,7 +306,7 @@
 															\
 					NIK_ ## _s_ ## _FAST_VS, Vs...							\
 															\
-				END_NIK_MACHINE(U_opt_pack_Vs<V ## _n_, Ws...>, Hs...);					\
+				END_NIK_MACHINE(U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);					\
 			}												\
 		}
 

@@ -43,15 +43,19 @@ namespace nik
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., interpret, array, architect, v_0_5, gcc, static, name)
 
+		template<auto... Vs>				// optimized because we know auto_pack<Vs...>
+		static constexpr auto U_opt_pack_Vs =		// is not void nor a reference.
+			nik_module(interpret, functor, architect, v_0_5, gcc)::template
+				type_map<auto_pack<Vs...>*>;
+
 		#include"v0.5/define_parameter_macros.hpp"
 		#include"v0.5/define_machine_macros.hpp"
 
 		//
 
-		#include"v0.5/0_controller_declarations.hpp"
-		#include"v0.5/1_controller_definitions.hpp"
-		#include"v0.5/2_machine_declarations.hpp"
-		#include"v0.5/3_machine_definitions.hpp"
+		#include"v0.5/0_machines.hpp"
+		#include"v0.5/1_dispatchers.hpp"
+		#include"v0.5/2_controllers.hpp"
 
 		//
 
