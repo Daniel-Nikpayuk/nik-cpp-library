@@ -65,9 +65,8 @@ public:
 
 	struct CallInstr : public MI
 	{
-		static constexpr index_type arch			= 2;
-		static constexpr index_type name			= 3;
-		static constexpr index_type pos				= 4;
+		static constexpr index_type name			= 2;
+		static constexpr index_type pos				= 3;
 	};
 
 	struct AsgnInstr : public MI
@@ -240,7 +239,7 @@ public:
 
 /***********************************************************************************************************************/
 
-// predefined controllers:
+// predefined:
 
 	template<key_type, key_type...> struct block_controller;
 
@@ -253,6 +252,15 @@ public:
 
 	struct LD
 	{
+	// params:
+
+	//	static constexpr auto instr_params(label_type l, index_type, index_type j)
+	//	{
+	//		constexpr auto n = ML::length(l);
+
+	//		return U_type_T<l[j][Is]...>;
+	//	}
+
 	// call:
 
 		static constexpr index_type call_name(label_type l, index_type, index_type j)
@@ -260,25 +268,6 @@ public:
 
 		static constexpr index_type call_pos(label_type l, index_type, index_type j)
 			{ return l[j][CallInstr::pos]; }
-
-	// applications:
-
-	//	static constexpr index_type size   (label_type l, index_type, index_type j) { return l[j][MI::size  ]; }
-	//	static constexpr key_type name     (label_type l, index_type, index_type j) { return l[j][MI::name  ]; }
-	//	static constexpr key_type note     (label_type l, index_type, index_type j) { return l[j][MI::note  ]; }
-	//	static constexpr index_type pos    (label_type l, index_type, index_type j) { return l[j][MI::pos   ]; }
-
-	//	static constexpr index_type obj    (label_type l, index_type, index_type j) { return l[j][MI::obj   ]; }
-
-	//	static constexpr index_type op     (label_type l, index_type, index_type j) { return l[j][MI::op    ]; }
-	//	static constexpr index_type arg    (label_type l, index_type, index_type j) { return l[j][MI::arg   ]; }
-	//	static constexpr index_type arg1   (label_type l, index_type, index_type j) { return l[j][MI::arg1  ]; }
-	//	static constexpr index_type arg2   (label_type l, index_type, index_type j) { return l[j][MI::arg2  ]; }
-
-	//	static constexpr index_type pred   (label_type l, index_type, index_type j) { return l[j][MI::pred  ]; }
-	//	static constexpr index_type input  (label_type l, index_type, index_type j) { return l[j][MI::input ]; }
-	//	static constexpr index_type input1 (label_type l, index_type, index_type j) { return l[j][MI::input1]; }
-	//	static constexpr index_type input2 (label_type l, index_type, index_type j) { return l[j][MI::input2]; }
 
 	// iterators:
 
@@ -316,7 +305,7 @@ public:
 
 /***********************************************************************************************************************/
 
-// predefined controllers:
+// predefined:
 
 	template<key_type, key_type...> struct linear_controller;
 
@@ -347,106 +336,94 @@ public:
 /*
 	struct RD
 	{
-	// applications:
+	// reg size:
 
-	static constexpr index_type size   (rc_type c, index_type i, index_type j) { return c[i][j][RA::size  ]; }
-	static constexpr key_type name     (rc_type c, index_type i, index_type j) { return c[i][j][RA::name  ]; }
-	static constexpr key_type note     (rc_type c, index_type i, index_type j) { return c[i][j][RA::note  ]; }
-	static constexpr index_type pos    (rc_type c, index_type i, index_type j) { return c[i][j][RA::pos   ]; }
-
-	static constexpr index_type obj    (rc_type c, index_type i, index_type j) { return c[i][j][RA::obj   ]; }
-
-	static constexpr index_type op     (rc_type c, index_type i, index_type j) { return c[i][j][RA::op    ]; }
-	static constexpr index_type arg    (rc_type c, index_type i, index_type j) { return c[i][j][RA::arg   ]; }
-	static constexpr index_type arg1   (rc_type c, index_type i, index_type j) { return c[i][j][RA::arg1  ]; }
-	static constexpr index_type arg2   (rc_type c, index_type i, index_type j) { return c[i][j][RA::arg2  ]; }
-
-	static constexpr index_type pred   (rc_type c, index_type i, index_type j) { return c[i][j][RA::pred  ]; }
-	static constexpr index_type input  (rc_type c, index_type i, index_type j) { return c[i][j][RA::input ]; }
-	static constexpr index_type input1 (rc_type c, index_type i, index_type j) { return c[i][j][RA::input1]; }
-	static constexpr index_type input2 (rc_type c, index_type i, index_type j) { return c[i][j][RA::input2]; }
-
-	static constexpr index_type reg_size (rc_type c, index_type, index_type)   { return RC::reg_size(c); }
+		static constexpr index_type reg_size (rc_type c, index_type, index_type)
+			{ return RC::reg_size(c); }
 
 	// iterators:
 
 		// basics:
 
-			static constexpr index_type basic_next_index1(rc_type c, index_type i, index_type j)
-			{
-				return i + bool{j == RL::length(c[i])};	// j == last : return i+1.
-									// j != last : return i.
-			}
+		static constexpr index_type basic_next_index1(rc_type c, index_type i, index_type j)
+		{
+			return i + bool{j == RL::length(c[i])};	// j == last : return i+1.
+								// j != last : return i.
+		}
 
-			static constexpr index_type basic_next_index2(rc_type c, index_type i, index_type j)
-			{
-				return (j == RL::length(c[i])) ? _one : j+1;	// j == last : return one.
-										// j != last : return j+1.
-			}
+		static constexpr index_type basic_next_index2(rc_type c, index_type i, index_type j)
+		{
+			return (j == RL::length(c[i])) ? _one : j+1;	// j == last : return one.
+									// j != last : return j+1.
+		}
 
-		// index1:
+	// index1:
 
-			static constexpr index_type next_index1(rc_type c, depth_type d, index_type i, index_type j)
-			{
-				if (d == 0) return i;
+		static constexpr index_type next_index1(rc_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return i;
 
-				index_type ni	= basic_next_index1(c, i, j);
-				index_type nj	= basic_next_index2(c, i, j);
-				key_type name	= c[ni][nj][RA::name];
-				key_type note	= c[ni][nj][RA::note];
+			index_type ni	= basic_next_index1(c, i, j);
+			index_type nj	= basic_next_index2(c, i, j);
+			key_type name	= c[ni][nj][RA::name];
+			key_type note	= c[ni][nj][RA::note];
 
-				if (name == MN::go_to && note == MD::contr)	return c[ni][nj][RA::pos];
-				else 						return ni;
-			}
+			if (name == MN::go_to && note == MD::contr)	return c[ni][nj][RA::pos];
+			else 						return ni;
+		}
 
-		// index2:
+	// index2:
 
-			static constexpr index_type next_index2(rc_type c, depth_type d, index_type i, index_type j)
-			{
-				if (d == 0) return j;
+		static constexpr index_type next_index2(rc_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return j;
 
-				index_type ni	= basic_next_index1(c, i, j);
-				index_type nj	= basic_next_index2(c, i, j);
-				key_type name	= c[ni][nj][RA::name];
-				key_type note	= c[ni][nj][RA::note];
+			index_type ni	= basic_next_index1(c, i, j);
+			index_type nj	= basic_next_index2(c, i, j);
+			key_type name	= c[ni][nj][RA::name];
+			key_type note	= c[ni][nj][RA::note];
 
-				if (name == MN::go_to && note == MD::contr)	return _one;
-				else						return nj;
-			}
+			if (name == MN::go_to && note == MD::contr)	return _one;
+			else						return nj;
+		}
 
-		// name:
+	// name:
 
-			static constexpr key_type next_name(rc_type c, depth_type d, index_type i, index_type j)
-			{
-				if (d == 0) return MN::pause;
+		static constexpr key_type next_name(rc_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return MN::pause;
 
-				index_type ni = next_index1(c, d, i, j);
-				index_type nj = next_index2(c, d, i, j);
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
 
-				return c[ni][nj][RA::name];
-			}
+			return c[ni][nj][RA::name];
+		}
 
-		// note:
+	// note:
 
-			static constexpr key_type next_note(rc_type c, depth_type d, index_type i, index_type j)
-			{
-				if (d == 0) return _zero;
+		static constexpr key_type next_note(rc_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return _zero;
 
-				index_type ni = next_index1(c, d, i, j);
-				index_type nj = next_index2(c, d, i, j);
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
 
-				return c[ni][nj][RA::note];
-			}
+			return c[ni][nj][RA::note];
+		}
 
-		// depth:
+	// depth:
 
-			static constexpr depth_type next_depth(depth_type d)
-			{
-				if (d > 0)	return d-1;
-				else 		return d;
-			}
+		static constexpr depth_type next_depth(depth_type d)
+		{
+			if (d > 0)	return d-1;
+			else 		return d;
+		}
 	};
 */
+
+/***********************************************************************************************************************/
+
+// predefined:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -459,14 +436,10 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// call:
-
-/***********************************************************************************************************************/
-
 // block:
 
 	template<key_type... filler>
-	struct machine<MN::call, MT::block, filler...>
+	struct machine<MN::block, _zero, filler...>
 	{
 		using nn = BD;
 
@@ -492,31 +465,49 @@ private:
 
 // linear:
 
-	template<key_type... filler>
-	struct machine<MN::call, MT::linear, filler...>
-	{
-		using nn			= LD;
-		static constexpr auto ni	= _zero;
-		static constexpr auto nj	= _zero;
+	// optimizations:
 
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			NIK_FIXED_HEAP_PARAMS, typename... Heaps
-		>
-		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
-		{
-			constexpr auto cp = n::contr_params(c, i, j);
-			constexpr auto nc = make_linear_controller<n::call_name(c, i, j), cp>;
-			constexpr auto un = U_type_T<n>;
+	//	NIK_DEFINE__LINEAR(0)
+	//	NIK_DEFINE__LINEAR(1)
+	//	NIK_DEFINE__LINEAR(2)
+	//	NIK_DEFINE__LINEAR(3)
+	//	NIK_DEFINE__LINEAR(4)
+	//	NIK_DEFINE__LINEAR(5)
+	//	NIK_DEFINE__LINEAR(6)
+	//	NIK_DEFINE__LINEAR(7)
 
-			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
-		}
+	#define NIK_DEFINE__LINEAR(_n_)											\
+															\
+	template<key_type... filler>											\
+	struct machine<MN::linear, _n_, filler...>									\
+	{														\
+		using nn			= LD;									\
+		static constexpr auto ni	= _zero;								\
+		static constexpr auto nj	= _zero;								\
+															\
+		template												\
+		<													\
+			NIK_CONTR_PARAMS, auto... Vs,									\
+			NIK_FIXED_HEAP_PARAMS, typename... Heaps							\
+		>													\
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)					\
+		{													\
+			constexpr auto cp = n::contr_params(c, i, j);							\
+			constexpr auto nc = make_linear_controller<n::call_name(c, i, j), cp>;				\
+			constexpr auto un = U_type_T<n>;								\
+															\
+			return NIK_MACHINE(nn, nc, d, ni, nj)								\
+				(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);				\
+		}													\
 	};
 
 /***********************************************************************************************************************/
 
-// user:
+// call heap zero all:
+
+/***********************************************************************************************************************/
+
+// call:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

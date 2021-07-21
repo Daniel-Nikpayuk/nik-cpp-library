@@ -99,63 +99,67 @@ public:
 			static constexpr key_type sizeof_s_all__insert_at_s_front		=  6; // builtin
 
 			static constexpr key_type map_s_all__op_at_h0_first			=  7; // builtin
-			static constexpr key_type plot_s_all__act_at_h0_first			=  8; // builtin
-			static constexpr key_type align_s_all__insert_at_s_front		=  9; // builtin
+			static constexpr key_type map_s_all__act_at_h0_first			=  8; // builtin
+			static constexpr key_type map_s_all__arr_at_h0_first			=  9; // <near linear>
+			static constexpr key_type align_s_all__insert_at_s_front		= 10; // builtin
 
-			static constexpr key_type drop_s_block					= 10; // <halters>
-			static constexpr key_type drop_s_pos					= 11; // opt, <mutators>
-			static constexpr key_type drop_s_all					= 12; // builtin
+			static constexpr key_type drop_s_block					= 11; // <halters>
+			static constexpr key_type drop_s_pos					= 12; // opt, <mutators>
+			static constexpr key_type drop_s_all					= 13; // builtin
 
-			static constexpr key_type move_s_block__insert_at_s_back		= 13; // filter
-			static constexpr key_type move_s_pos__insert_at_s_back			= 14; // opt, filter
+			static constexpr key_type move_s_block__insert_at_s_back		= 14; // <near linear>
+			static constexpr key_type move_s_pos__insert_at_s_back			= 15; // opt, <near linear>
 
-			static constexpr key_type fold_s_block__op_at_h0_first			= 15; // fold
-			static constexpr key_type fold_s_segment__pos_at_h0_first		= 16; // maybe atomic
+			static constexpr key_type fold_s_block__op_at_h0_first			= 16; // <near linear>
+			static constexpr key_type fold_s_segment__pos_at_h0_first		= 17; // maybe atomic
 
-			static constexpr key_type roll_s_block__act_at_h0_first			= 17; // roll
-			static constexpr key_type roll_s_segment__pos_at_h0_first		= 18; // maybe atomic
+			static constexpr key_type roll_s_block__act_at_h0_first			= 18; // <near linear>
+			static constexpr key_type roll_s_segment__pos_at_h0_first		= 19; // maybe atomic
 
 			// stack -> heap:
 
-			static constexpr key_type move_s_block__insert_at_h0_back		= 19; // <mutators>
-			static constexpr key_type move_s_block__insert_at_h1_back		= 20; // <mutators>
-			static constexpr key_type move_s_first__replace_h0_value		= 21; // <list> *
+			static constexpr key_type move_s_block__insert_at_h0_back		= 20; // <mutators>
+			static constexpr key_type move_s_block__insert_at_h1_back		= 21; // <mutators>
+			static constexpr key_type move_s_first__replace_h0_value		= 22; // <near linear>
 
-			static constexpr key_type copy_s_block__insert_at_h0_back		= 22; // <mutators>
-			static constexpr key_type copy_s_pos__insert_at_h0_back			= 23; // opt, <mutators>
+			static constexpr key_type copy_s_block__insert_at_h0_back		= 23; // <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h0_back			= 24; // opt, <mutators>
 
 			// heap -> stack:
 
-			static constexpr key_type move_h0_all__insert_at_s_front		= 24; // <mutators>
-			static constexpr key_type move_h0_all__insert_at_s_pos			= 25; // opt, <mutators>
-			static constexpr key_type move_h0_all__replace_at_s_pos			= 26; // opt, <mutators>
-			static constexpr key_type move_h0_all__pack_at_s_front			= 27; // <list> *
+			static constexpr key_type move_h0_all__insert_at_s_front		= 25; // <mutators>
+			static constexpr key_type move_h0_all__insert_at_s_pos			= 26; // opt, <mutators>
+			static constexpr key_type move_h0_all__replace_at_s_pos			= 27; // opt, <mutators>
+			static constexpr key_type move_h0_all__pack_at_s_front			= 28; // <near linear>
 
-			static constexpr key_type move_h1_all__insert_at_s_front		= 28; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_s_front		= 29; // <mutators>
 
-			static constexpr key_type apply_h0_all__move__insert_at_s_front		= 29; // <machine>
-			static constexpr key_type apply_h0_all__replace_h0_all			= 30; // <machine>
-			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 31; // opt, <machine>
+			static constexpr key_type apply_h0_all__move__insert_at_s_front		= 30; // <machine>
+			static constexpr key_type apply_h0_all__replace_h0_all			= 31; // <machine>
+			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 32; // opt, <machine>
 
-			static constexpr key_type compel_h0_all__move__insert_at_s_front	= 32; // <machine>
-			static constexpr key_type compel_h0_all__replace_h0_all			= 33; // <machine>
-			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 34; // opt, <machine>
+			static constexpr key_type compel_h0_all__move__insert_at_s_front	= 33; // <machine>
+			static constexpr key_type compel_h0_all__replace_h0_all			= 34; // <machine>
+			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 35; // opt, <machine>
 
 			// control:
 
-			static constexpr key_type skip						= 35; // near linear
-			static constexpr key_type branch					= 36; // <machine>
-			static constexpr key_type go_to__next_at_h0_front			= 37; // maybe atomic
-			static constexpr key_type go_to						= 38; // maybe atomic
+			static constexpr key_type skip						= 36; // near linear
+			static constexpr key_type branch					= 37; // <machine>
+			static constexpr key_type go_to__pos_at_h0_front			= 38; // maybe atomic
+			static constexpr key_type go_to						= 39; // maybe atomic
 
 		// interposers:
 
-			static constexpr key_type call						= 39; // <compound>
-			static constexpr key_type pass						= 40; // <compound>
+			static constexpr key_type block						= 40;
+			static constexpr key_type linear					= 41;
+			static constexpr key_type call_h0_all					= 42; // <machine>
+			static constexpr key_type call						= 43; // <machine>
+			static constexpr key_type pass						= 44; // <machine>
 
 		// reflection:
 
-			static constexpr key_type reg_size					= 41;
+			static constexpr key_type reg_size					= 45;
 	};
 
 	using MN = MachineName;
@@ -169,12 +173,6 @@ public:
 
 	struct MachineNote
 	{
-		// call:
-
-			static constexpr key_type block			= 0;
-			static constexpr key_type linear		= 1;
-			static constexpr key_type user			= 2;
-
 		// applications:
 
 			static constexpr key_type unary			= 0;
@@ -347,10 +345,10 @@ private:
 
 /***********************************************************************************************************************/
 
-// plot stack all, act at heap zero first:
+// map stack all, action at heap zero first:
 
 	template<key_type... filler>
-	struct machine<MN::plot_s_all__act_at_h0_first, _zero, filler...>
+	struct machine<MN::map_s_all__act_at_h0_first, _zero, filler...>
 	{
 		template
 		<
@@ -362,6 +360,28 @@ private:
 			return BEGIN_NIK_MACHINE(n, c, d, i, j)
 
 				T_type_U<uact>::template result<Vs>...
+
+			END_NIK_MACHINE(H0, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// map stack all, array at heap zero first:
+
+	template<key_type... filler>
+	struct machine<MN::map_s_all__arr_at_h0_first, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto arr, auto... Ws, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<arr, Ws...>*), Heaps... Hs)
+		{
+			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+
+				arr[Vs]...
 
 			END_NIK_MACHINE(H0, Hs...);
 		}
