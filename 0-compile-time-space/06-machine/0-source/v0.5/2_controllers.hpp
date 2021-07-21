@@ -299,14 +299,21 @@ public:
 		template<key_type Name, index_type... Vs>
 		static constexpr instr_type block = instruction
 		<
-			MN::block, _zero, Vs...
+			MN::block, _zero, Name, Vs...
+		>;
+
+		//
+
+		template<key_type Name, index_type Size, index_type... Vs>
+		static constexpr instr_type let_linear = instruction
+		<
+			MN::linear, (MI::patch(Size) ? _zero : _one), Name, Size, Vs...
 		>;
 
 		template<key_type Name, index_type... Vs>
-		static constexpr instr_type linear = instruction
-		<
-			MN::linear, sizeof...(Vs), Vs...
-		>;
+		static constexpr instr_type linear = let_linear<Name, sizeof...(Vs), Vs...>;
+
+		//
 
 		template<key_type Name, key_type Note = _zero>
 		static constexpr instr_type call_h0_all = instruction

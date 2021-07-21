@@ -65,8 +65,47 @@ public:
 
 	struct CallInstr : public MI
 	{
-		static constexpr index_type name			= 2;
-		static constexpr index_type pos				= 3;
+		static constexpr index_type name			= 3;
+
+		// block:
+
+		static constexpr index_type pos				= 4;
+
+		// linear:
+
+		static constexpr index_type note			= 4;
+
+		template<key_type n>
+		static constexpr auto indices()
+		{
+			if constexpr (n < 4)
+
+				if constexpr (n < 2)
+
+					if constexpr (n == 0) return U_opt_pack_Vs<>;
+					else                  return U_opt_pack_Vs<5>;
+
+				else if constexpr (n == 2)    return U_opt_pack_Vs<5, 6>;
+				else                          return U_opt_pack_Vs<5, 6, 7>;
+
+			else if constexpr (n < 6)
+
+				if constexpr (n == 4)         return U_opt_pack_Vs<5, 6, 7, 8>;
+				else                          return U_opt_pack_Vs<5, 6, 7, 8, 9>;
+
+			else if constexpr (n == 6)            return U_opt_pack_Vs<5, 6, 7, 8, 9, 10>;
+			else                                  return U_opt_pack_Vs<5, 6, 7, 8, 9, 10, 11>;
+		}
+
+		template
+		<
+			template<key_type, key_type...> class Contr, key_type Name,
+			instr_type Instr, index_type... Indices
+		>
+		static constexpr auto make_contr(void(*)(auto_pack<Indices...>*))
+		{
+			return Contr<Name>::template result<Instr[Indices]...>;
+		}
 	};
 
 	struct AsgnInstr : public MI
@@ -170,6 +209,8 @@ public:
 
 // block:
 
+	template<key_type, key_type...> struct block_controller;
+
 /***********************************************************************************************************************/
 
 	struct BD
@@ -238,36 +279,31 @@ public:
 	};
 
 /***********************************************************************************************************************/
-
-// predefined:
-
-	template<key_type, key_type...> struct block_controller;
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // linear:
+
+	template<key_type, key_type...> struct linear_controller;
 
 /***********************************************************************************************************************/
 
 	struct LD
 	{
-	// params:
+	// block:
 
-	//	static constexpr auto instr_params(label_type l, index_type, index_type j)
-	//	{
-	//		constexpr auto n = ML::length(l);
-
-	//		return U_type_T<l[j][Is]...>;
-	//	}
-
-	// call:
-
-		static constexpr index_type call_name(label_type l, index_type, index_type j)
+		static constexpr auto call_name(label_type l, index_type, index_type j)
 			{ return l[j][CallInstr::name]; }
 
 		static constexpr index_type call_pos(label_type l, index_type, index_type j)
 			{ return l[j][CallInstr::pos]; }
+
+	// linear:
+
+		static constexpr index_type call_note(label_type l, index_type, index_type j)
+			{ return l[j][CallInstr::note]; }
+
+		static constexpr instr_type call_instr(label_type l, index_type, index_type j)
+			{ return l[j]; }
 
 	// iterators:
 
@@ -302,24 +338,6 @@ public:
 			else 		return j+1;
 		}
 	};
-
-/***********************************************************************************************************************/
-
-// predefined:
-
-	template<key_type, key_type...> struct linear_controller;
-
-	template<key_type Name, index_type... Params>
-	static constexpr auto f_make_linear_controller(void(*)(auto_pack<Params...>*))
-	{
-		return U_type_T
-		<
-			linear_controller<Name>::template result<Params...>
-		>;
-	}
-
-	template<key_type Name, auto UParams>
-	static constexpr auto make_linear_controller = f_make_linear_controller<Name>(UParams);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -465,40 +483,32 @@ private:
 
 // linear:
 
-	// optimizations:
+	template<key_type... filler>
+	struct machine<MN::linear, _zero, filler...>
+	{
+		using nn			= LD;
+		static constexpr auto ni	= _zero;
+		static constexpr auto nj	= _zero;
 
-	//	NIK_DEFINE__LINEAR(0)
-	//	NIK_DEFINE__LINEAR(1)
-	//	NIK_DEFINE__LINEAR(2)
-	//	NIK_DEFINE__LINEAR(3)
-	//	NIK_DEFINE__LINEAR(4)
-	//	NIK_DEFINE__LINEAR(5)
-	//	NIK_DEFINE__LINEAR(6)
-	//	NIK_DEFINE__LINEAR(7)
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			NIK_FIXED_HEAP_PARAMS, typename... Heaps
+		>
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
+		{
+			constexpr auto cp	= CallInstr::indices<n::call_note(c, i, j)>();
+			constexpr auto nc	= CallInstr::make_contr
+						<
+							linear_controller,
+							n::call_name(c, i, j),
+							n::call_instr(c, i, j)
+						>(cp);
+			constexpr auto un	= U_type_T<n>;
 
-	#define NIK_DEFINE__LINEAR(_n_)											\
-															\
-	template<key_type... filler>											\
-	struct machine<MN::linear, _n_, filler...>									\
-	{														\
-		using nn			= LD;									\
-		static constexpr auto ni	= _zero;								\
-		static constexpr auto nj	= _zero;								\
-															\
-		template												\
-		<													\
-			NIK_CONTR_PARAMS, auto... Vs,									\
-			NIK_FIXED_HEAP_PARAMS, typename... Heaps							\
-		>													\
-		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)					\
-		{													\
-			constexpr auto cp = n::contr_params(c, i, j);							\
-			constexpr auto nc = make_linear_controller<n::call_name(c, i, j), cp>;				\
-			constexpr auto un = U_type_T<n>;								\
-															\
-			return NIK_MACHINE(nn, nc, d, ni, nj)								\
-				(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);				\
-		}													\
+			return NIK_MACHINE(nn, nc, d, ni, nj)
+				(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
+		}
 	};
 
 /***********************************************************************************************************************/
