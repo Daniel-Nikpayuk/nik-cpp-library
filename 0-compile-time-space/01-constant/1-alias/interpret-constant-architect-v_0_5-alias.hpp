@@ -102,3 +102,20 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// indices:
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_0)		= NIK_MODULE::U_index_pack_2_0;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_1)		= NIK_MODULE::U_index_pack_2_1;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_2)		= NIK_MODULE::U_index_pack_2_2;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_3)		= NIK_MODULE::U_index_pack_2_3;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_4)		= NIK_MODULE::U_index_pack_2_4;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_5)		= NIK_MODULE::U_index_pack_2_5;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_6)		= NIK_MODULE::U_index_pack_2_6;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_7)		= NIK_MODULE::U_index_pack_2_7;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_8)		= NIK_MODULE::U_index_pack_2_8;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_index_pack_2_9)		= NIK_MODULE::U_index_pack_2_9;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+

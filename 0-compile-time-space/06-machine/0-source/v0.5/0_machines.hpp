@@ -142,24 +142,28 @@ public:
 			static constexpr key_type compel_h0_all__replace_h0_all			= 34; // <machine>
 			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 35; // opt, <machine>
 
+			// heap -> heap:
+
+			static constexpr key_type shift_i_block__insert_at_h0_back		= 36; // <machine>
+
 			// control:
 
-			static constexpr key_type skip						= 36; // near linear
-			static constexpr key_type branch					= 37; // <machine>
-			static constexpr key_type go_to__pos_at_h0_front			= 38; // maybe atomic
-			static constexpr key_type go_to						= 39; // maybe atomic
+			static constexpr key_type skip						= 37; // near linear
+			static constexpr key_type branch					= 38; // <machine>
+			static constexpr key_type go_to__pos_at_h0_front			= 39; // maybe atomic
+			static constexpr key_type go_to						= 40; // maybe atomic
 
 		// interposers:
 
-			static constexpr key_type block						= 40;
-			static constexpr key_type linear					= 41;
-			static constexpr key_type call_h0_all					= 42; // <machine>
-			static constexpr key_type call						= 43; // <machine>
-			static constexpr key_type pass						= 44; // <machine>
+			static constexpr key_type block						= 41;
+			static constexpr key_type linear					= 42;
+			static constexpr key_type call_h0_all					= 43; // <machine>
+			static constexpr key_type call						= 44; // <machine>
+			static constexpr key_type pass						= 45; // <machine>
 
 		// reflection:
 
-			static constexpr key_type reg_size					= 45;
+			static constexpr key_type reg_size					= 46;
 	};
 
 	using MN = MachineName;
@@ -313,11 +317,11 @@ private:
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				sizeof...(Vs), Vs...
 
-			END_NIK_MACHINE(Hs...);
+			NIK_END_MACHINE(Hs...);
 		}
 	};
 
@@ -335,11 +339,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<op, Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				op(Vs)...
 
-			END_NIK_MACHINE(H0, Hs...);
+			NIK_END_MACHINE(H0, Hs...);
 		}
 	};
 
@@ -357,11 +361,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<uact, Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				T_type_U<uact>::template result<Vs>...
 
-			END_NIK_MACHINE(H0, Hs...);
+			NIK_END_MACHINE(H0, Hs...);
 		}
 	};
 
@@ -379,11 +383,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<arr, Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				arr[Vs]...
 
-			END_NIK_MACHINE(H0, Hs...);
+			NIK_END_MACHINE(H0, Hs...);
 		}
 	};
 
@@ -403,11 +407,11 @@ private:
 		{
 			constexpr T_type_U<utype> array[] = { Vs... };
 
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				array
 
-			END_NIK_MACHINE(H0, Hs...);
+			NIK_END_MACHINE(H0, Hs...);
 		}
 	};
 
@@ -519,11 +523,11 @@ private:
 		{
 			constexpr auto val = NIK_2_8_OPS  V,  NIK_2_8_OP_VS;
 
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				NIK_2_8_OPS  val,  NIK_UPPER_512_OP_VS, Vs...
 
-			END_NIK_MACHINE(H0, Hs...);
+			NIK_END_MACHINE(H0, Hs...);
 		}
 	};
 
@@ -643,11 +647,11 @@ private:
 		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, typename Heap0, typename... Heaps>
 		static constexpr auto result(Heap0 H0, Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				Vs...
 
-			END_NIK_MACHINE(V0, Hs...);
+			NIK_END_MACHINE(V0, Hs...);
 		}
 	};
 
@@ -691,11 +695,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				Ws..., Vs...
 
-			END_NIK_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
@@ -736,14 +740,14 @@ private:
 	template<key_type... filler>
 	struct machine<MN::move_h0_all__pack_at_s_front, _zero, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, typename... Heaps>
-		static constexpr auto result(Heap0 H0, Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
-				H0, Vs...
+				U_opt_pack_Vs<Ws...>, Vs...
 
-			END_NIK_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
@@ -761,11 +765,11 @@ private:
 		>
 		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				Ws..., Vs...
 
-			END_NIK_MACHINE(H0, U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(H0, U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
@@ -783,11 +787,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<op, args...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				op(args...), Vs...
 
-			END_NIK_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
@@ -838,11 +842,11 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)
 		{
-			return BEGIN_NIK_MACHINE(n, c, d, i, j)
+			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				T_type_U<act>::template result<args...>, Vs...
 
-			END_NIK_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
@@ -879,6 +883,26 @@ private:
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// passers (heap -> heap):
+
+/***********************************************************************************************************************/
+
+// shift index block, insert at heap zero back (2^N):
+
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(0);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(1);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(2);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(3);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(4);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(5);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(6);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(7);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(8);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(9);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -18,6 +18,7 @@
 ************************************************************************************************************************/
 
 #include<cstdio>
+#include<utility>
 
 /***********************************************************************************************************************/
 
@@ -27,7 +28,7 @@
 
 // compile time space:
 
-//	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
@@ -41,7 +42,7 @@
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
-	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
+//	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
 // run time space:
 
@@ -64,6 +65,7 @@
 
 	//
 
+/*
 	template<auto n, auto d, auto... Vs>
 	constexpr auto f_list_at(void(*)(auto_pack<Vs...>*))
 	{
@@ -79,12 +81,33 @@
 
 	template<typename List, auto n, auto d = 500>
 	constexpr auto list_at = f_list_at<n, d>(U_type_T<List>);
+*/
+
+	template<auto n, auto d>
+	constexpr auto f_index_sequence()
+	{
+		using LD = typename machine_module::LD;
+
+		constexpr auto c = machine_module::template label
+		<
+			machine_module::template make_i_segment__insert_at_h0_back<n>,
+			machine_module::template move_h0_all__pack_at_s_front<>,
+			machine_module::template first<>
+		>;
+
+		return machine_module::template start<LD, c, d, 1, 0>();
+	}
+
+	template<auto n, auto d = 500>
+	constexpr auto index_sequence = f_index_sequence<n, d>();
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", list_at<list_1000, 887>);
+		printf("%d\n", U_type_T<std::make_index_sequence<1000>>); // 0.89s/0.88s
+	//	printf("%d\n", index_sequence<1000>); // 1.53s/1.94s
+	//	printf("%d\n", list_at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);
 	//	printf("%llu\n", rp_factorial<utype(20)>);
 

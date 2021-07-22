@@ -32,7 +32,7 @@
 
 /***********************************************************************************************************************/
 
-	#undef NIK_DEFINE__LINEAR
+	#undef NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK
 
 /***********************************************************************************************************************/
 
@@ -59,7 +59,6 @@
 	#undef NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK
-	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT
 	#undef NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST
 	#undef NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK
@@ -73,8 +72,8 @@
 /***********************************************************************************************************************/
 
 	#undef NIK_MACHINE
-	#undef END_NIK_MACHINE
-	#undef BEGIN_NIK_MACHINE
+	#undef NIK_END_MACHINE
+	#undef NIK_BEGIN_MACHINE
 	#undef NIK_FIXED_HEAP_ARGS
 	#undef NIK_FIXED_HEAP_SIG_ARGS
 	#undef NIK_FIXED_HEAP_PARAMS

@@ -268,6 +268,14 @@ public:
 			MN::compel_h0_all__move__replace_at_s_pos, Note
 		>;
 
+		// heap -> heap:
+
+		template<key_type Note = _zero>
+		static constexpr instr_type shift_i_block__insert_at_h0_back = instruction
+		<
+			MN::shift_i_block__insert_at_h0_back, Note
+		>;
+
 		// control:
 
 		template<key_type Note = MT::unary>
@@ -360,19 +368,23 @@ public:
 	{
 		// halters:
 
-			static constexpr key_type stop						=  0;
+			static constexpr key_type stop						= 0;
 
 		// passers:
 
 			// stack -> stack:
 
-		//	static constexpr key_type fold_s_segment__pos_at_h0_first		=  1; // <machine>
-		//	static constexpr key_type roll_s_segment__pos_at_h0_first		=  2; // <machine>
+		//	static constexpr key_type fold_s_segment__pos_at_h0_first		= 1; // <machine>
+		//	static constexpr key_type roll_s_segment__pos_at_h0_first		= 2; // <machine>
 
 			// stack -> heap:
 
-			static constexpr key_type move_s_segment__insert_at_h0_back		=  3; // <mutators>
-			static constexpr key_type move_s_segment__insert_at_h1_back		=  4; // <mutators>
+			static constexpr key_type move_s_segment__insert_at_h0_back		= 3; // <mutators>
+			static constexpr key_type move_s_segment__insert_at_h1_back		= 4; // <mutators>
+
+			// heap -> heap:
+
+			static constexpr key_type make_i_segment__insert_at_h0_back		= 5; // <machine>
 	};
 
 	using BN = BlockName;
@@ -424,6 +436,15 @@ public:
 			static constexpr instr_type result = instruction<MN::move_s_block__insert_at_h1_back, Cont>;
 		};
 
+		// heap -> heap:
+
+		template<key_type... filler>
+		struct block_controller<BN::make_i_segment__insert_at_h0_back, filler...>
+		{
+			template<key_type Cont = MN::pass>
+			static constexpr instr_type result = instruction<MN::shift_i_block__insert_at_h0_back, Cont>;
+		};
+
 /***********************************************************************************************************************/
 
 // syntactic sugar (level 0):
@@ -450,6 +471,14 @@ public:
 		static constexpr instr_type move_s_segment__insert_at_h1_back = block
 		<
 			BN::move_s_segment__insert_at_h1_back, Pos
+		>;
+
+		// heap -> heap:
+
+		template<index_type Pos>
+		static constexpr instr_type make_i_segment__insert_at_h0_back = block
+		<
+			BN::make_i_segment__insert_at_h0_back, Pos
 		>;
 
 /***********************************************************************************************************************/

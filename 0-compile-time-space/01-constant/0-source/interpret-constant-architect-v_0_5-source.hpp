@@ -108,3 +108,38 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// indices:
+
+	static constexpr auto U_index_pack_2_0 = functor_module::template U_pack_Vs<index_type(0)>;
+
+	static constexpr auto U_index_pack_2_1 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_0, U_index_pack_2_0, _2_0>;
+
+	static constexpr auto U_index_pack_2_2 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_1, U_index_pack_2_1, _2_1>;
+
+	static constexpr auto U_index_pack_2_3 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_2, U_index_pack_2_2, _2_2>;
+
+	static constexpr auto U_index_pack_2_4 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_3, U_index_pack_2_3, _2_3>;
+
+	static constexpr auto U_index_pack_2_5 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_4, U_index_pack_2_4, _2_4>;
+
+	static constexpr auto U_index_pack_2_6 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_5, U_index_pack_2_5, _2_5>;
+
+	static constexpr auto U_index_pack_2_7 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_6, U_index_pack_2_6, _2_6>;
+
+	static constexpr auto U_index_pack_2_8 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_7, U_index_pack_2_7, _2_7>;
+
+	static constexpr auto U_index_pack_2_9 = functor_module::template
+							U_consecutive_UxU<U_index_pack_2_8, U_index_pack_2_8, _2_8>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
