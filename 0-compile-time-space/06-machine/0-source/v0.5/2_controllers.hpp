@@ -319,7 +319,7 @@ public:
 		template<key_type Name, index_type Size, index_type... Vs>
 		static constexpr instr_type let_linear = instruction
 		<
-			MN::linear, MI::linear(Size), Name, Size, Vs...
+			MN::linear, (MI::is_opt(Size) ? _zero : _two), Name, Size, Vs...
 		>;
 
 		template<key_type Name, index_type... Vs>
@@ -663,7 +663,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_drop_s_pos()
 		{
-			if constexpr (MI::patch(Pos)) return drop_s_pos_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return drop_s_pos_opt<Pos>;
 
 			return linear<LN::drop_s_pos, Pos>;
 		}
@@ -676,7 +676,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_move_s_pos__insert_at_s_back()
 		{
-			if constexpr (MI::patch(Pos)) return move_s_pos__insert_at_s_back_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return move_s_pos__insert_at_s_back_opt<Pos>;
 
 			return linear<LN::move_s_pos__insert_at_s_back, Pos>;
 		}
@@ -689,7 +689,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_copy_s_pos__insert_at_h0_back()
 		{
-			if constexpr (MI::patch(Pos)) return copy_s_pos__insert_at_h0_back_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return copy_s_pos__insert_at_h0_back_opt<Pos>;
 
 			return linear<LN::copy_s_pos__insert_at_h0_back, Pos>;
 		}
@@ -702,7 +702,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_move_h0_all__insert_at_s_pos()
 		{
-			if constexpr (MI::patch(Pos)) return move_h0_all__insert_at_s_pos_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return move_h0_all__insert_at_s_pos_opt<Pos>;
 
 			return linear<LN::move_h0_all__insert_at_s_pos, Pos>;
 		}
@@ -715,7 +715,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_move_h0_all__replace_at_s_pos()
 		{
-			if constexpr (MI::patch(Pos)) return move_h0_all__replace_at_s_pos_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return move_h0_all__replace_at_s_pos_opt<Pos>;
 
 			return linear<LN::move_h0_all__replace_at_s_pos, Pos>;
 		}
@@ -728,7 +728,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_apply_h0_all__move__replace_at_s_pos()
 		{
-			if constexpr (MI::patch(Pos)) return apply_h0_all__move__replace_at_s_pos_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return apply_h0_all__move__replace_at_s_pos_opt<Pos>;
 
 			return linear<LN::apply_h0_all__move__replace_at_s_pos, Pos>;
 		}
@@ -742,7 +742,7 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type f_compel_h0_all__move__replace_at_s_pos()
 		{
-			if constexpr (MI::patch(Pos)) return compel_h0_all__move__replace_at_s_pos_opt<Pos>;
+			if constexpr (MI::is_opt(Pos)) return compel_h0_all__move__replace_at_s_pos_opt<Pos>;
 
 			return linear<LN::compel_h0_all__move__replace_at_s_pos, Pos>;
 		}
@@ -927,17 +927,17 @@ public:
 				LN::erase, Pos
 			>;
 
-		//	template<index_type Pos>
-		//	static constexpr instr_type insert = linear
-		//	<
-		//		LN::insert, Pos
-		//	>;
+			template<index_type Pos, index_type Obj>
+			static constexpr instr_type insert = linear
+			<
+				LN::insert, Pos, Obj
+			>;
 
-		//	template<index_type Pos>
-		//	static constexpr instr_type replace = linear
-		//	<
-		//		LN::replace, Pos
-		//	>;
+			template<index_type Pos, index_type Obj>
+			static constexpr instr_type replace = linear
+			<
+				LN::replace, Pos, Obj
+			>;
 
 	// near linear:
 

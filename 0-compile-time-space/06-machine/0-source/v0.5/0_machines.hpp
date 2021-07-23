@@ -429,9 +429,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// drop stack position:
-
-	// optimizations:
+// drop stack position (optimization):
 
 		NIK_DEFINE__DROP_S_POS(1, 0, 0);
 		NIK_DEFINE__DROP_S_POS(2, 1, 1);
@@ -492,9 +490,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// move stack position, insert at stack back:
-
-	// optimizations:
+// move stack position, insert at stack back (optimization):
 
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(1, 0, 0);
 		NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(2, 1, 1);
@@ -675,9 +671,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// copy stack position, insert at heap zero back:
-
-	// optimizations:
+// copy stack position, insert at heap zero back (optimization):
 
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(1, 0);
 		NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(2, 1);
@@ -717,24 +711,20 @@ private:
 
 /***********************************************************************************************************************/
 
-// move heap zero all, insert at stack position:
+// move heap zero all, insert at stack position (optimization):
 
-	// optimizations:
-
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(1, 0, 0);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(2, 1, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(3, 2, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(4, 3, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(5, 4, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(6, 5, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(7, 6, 1);
-		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(8, 7, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(0, 0);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(1, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(2, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(3, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(4, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(5, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(6, 1);
+		NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(7, 1);
 
 /***********************************************************************************************************************/
 
-// move heap zero all, replace at stack position:
-
-	// optimizations:
+// move heap zero all, replace at stack position (optimization):
 
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(2, 1, 1);
@@ -827,9 +817,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, move, replace at stack position:
-
-	// optimizations:
+// apply heap zero all, move, replace at stack position (optimization):
 
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
@@ -883,9 +871,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// compel heap zero all, move, replace at stack position:
-
-	// optimizations:
+// compel heap zero all, move, replace at stack position (optimization):
 
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);

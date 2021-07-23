@@ -57,8 +57,7 @@ public:
 
 		static constexpr index_type length (type i)		{ return i[size]; }
 		static constexpr index_type last   (type i)		{ return i[length(i)]; }
-		static constexpr index_type patch  (index_type pos)	{ return (pos < _eight) ? pos+1 : _zero; }
-		static constexpr index_type linear (index_type n)	{ return (n < _eight) ? _zero : _two; }
+		static constexpr index_type is_opt (index_type n)	{ return (n < _eight); }
 	};
 
 	using MI							= MachineInstr;
@@ -506,7 +505,7 @@ private:
 							n::call_name(c, i, j),
 							n::call_note(c, i, j),
 							n::call_instr(c, i, j)
-						>;
+						>();
 			constexpr auto un	= U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)

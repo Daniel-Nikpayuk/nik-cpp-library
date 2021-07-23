@@ -250,12 +250,12 @@
 
 /***********************************************************************************************************************/
 
-// (fast) drop stack position:
+// drop stack position (optimization):
 
 	#define NIK_DEFINE__DROP_S_POS(_s_, _n_, _c_)									\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::drop_s_pos, _s_, filler...>								\
+		struct machine<MN::drop_s_pos, _n_, filler...>								\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
 			static constexpr auto result(Heaps... Hs)							\
@@ -270,12 +270,12 @@
 
 /***********************************************************************************************************************/
 
-// (fast) move stack position, insert at stack back:
+// move stack position, insert at stack back (optimization):
 
 	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(_s_, _n_, _c_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_s_pos__insert_at_s_back, _s_, filler...>					\
+		struct machine<MN::move_s_pos__insert_at_s_back, _n_, filler...>					\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
 			static constexpr auto result(Heaps... Hs)							\
@@ -290,12 +290,12 @@
 
 /***********************************************************************************************************************/
 
-// (fast) copy stack position, insert at heap zero back:
+// copy stack position, insert at heap zero back (optimization):
 
 	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(_s_, _n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::copy_s_pos__insert_at_h0_back, _s_, filler...>					\
+		struct machine<MN::copy_s_pos__insert_at_h0_back, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -314,12 +314,12 @@
 
 /***********************************************************************************************************************/
 
-// (fast) move heap zero all, insert at stack position:
+// move heap zero all, insert at stack position (optimization):
 
-	#define NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(_s_, _n_, _c_)							\
+	#define NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(_n_, _c_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_h0_all__insert_at_s_pos, _s_, filler...>					\
+		struct machine<MN::move_h0_all__insert_at_s_pos, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -338,12 +338,12 @@
 
 /***********************************************************************************************************************/
 
-// move heap zero, replace at stack position:
+// move heap zero all, replace at stack position (optimization):
 
 	#define NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_h0_all__replace_at_s_pos, _s_, filler...>					\
+		struct machine<MN::move_h0_all__replace_at_s_pos, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -362,12 +362,12 @@
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, move, replace at stack position:
+// apply heap zero all, move, replace at stack position (optimization):
 
 	#define NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::apply_h0_all__move__replace_at_s_pos, _s_, filler...>				\
+		struct machine<MN::apply_h0_all__move__replace_at_s_pos, _n_, filler...>				\
 		{													\
 			template											\
 			<												\
@@ -386,12 +386,12 @@
 
 /***********************************************************************************************************************/
 
-// compel heap zero all, move, replace at stack position:
+// compel heap zero all, move, replace at stack position (optimization):
 
 	#define NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)					\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::compel_h0_all__move__replace_at_s_pos, _s_, filler...>				\
+		struct machine<MN::compel_h0_all__move__replace_at_s_pos, _n_, filler...>				\
 		{													\
 			template											\
 			<												\
