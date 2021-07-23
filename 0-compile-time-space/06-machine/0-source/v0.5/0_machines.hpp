@@ -107,44 +107,42 @@ public:
 			static constexpr key_type drop_s_pos					= 12; // opt, <mutators>
 			static constexpr key_type drop_s_all					= 13; // builtin
 
-			static constexpr key_type move_s_block__insert_at_s_back		= 14; // <near linear>
-			static constexpr key_type move_s_pos__insert_at_s_back			= 15; // opt, <near linear>
+			static constexpr key_type shift_i_block__insert_at_s_back		= 14; // <machine>
 
-			static constexpr key_type fold_s_block__op_at_h0_first			= 16; // <near linear>
-			static constexpr key_type fold_s_segment__pos_at_h0_first		= 17; // maybe atomic
+			static constexpr key_type move_s_block__insert_at_s_back		= 15; // <near linear>
+			static constexpr key_type move_s_pos__insert_at_s_back			= 16; // opt, <near linear>
 
-			static constexpr key_type roll_s_block__act_at_h0_first			= 18; // <near linear>
-			static constexpr key_type roll_s_segment__pos_at_h0_first		= 19; // maybe atomic
+			static constexpr key_type fold_s_block__op_at_h0_first			= 17; // <near linear>
+			static constexpr key_type fold_s_segment__pos_at_h0_first		= 18; // maybe atomic
+
+			static constexpr key_type roll_s_block__act_at_h0_first			= 19; // <near linear>
+			static constexpr key_type roll_s_segment__pos_at_h0_first		= 20; // maybe atomic
 
 			// stack -> heap:
 
-			static constexpr key_type move_s_block__insert_at_h0_back		= 20; // <mutators>
-			static constexpr key_type move_s_block__insert_at_h1_back		= 21; // <mutators>
-			static constexpr key_type move_s_first__replace_h0_value		= 22; // <near linear>
+			static constexpr key_type move_s_block__insert_at_h0_back		= 21; // <mutators>
+			static constexpr key_type move_s_block__insert_at_h1_back		= 22; // <mutators>
+			static constexpr key_type move_s_first__replace_h0_value		= 23; // <near linear>
 
-			static constexpr key_type copy_s_block__insert_at_h0_back		= 23; // <mutators>
-			static constexpr key_type copy_s_pos__insert_at_h0_back			= 24; // opt, <mutators>
+			static constexpr key_type copy_s_block__insert_at_h0_back		= 24; // <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h0_back			= 25; // opt, <mutators>
 
 			// heap -> stack:
 
-			static constexpr key_type move_h0_all__insert_at_s_front		= 25; // <mutators>
-			static constexpr key_type move_h0_all__insert_at_s_pos			= 26; // opt, <mutators>
-			static constexpr key_type move_h0_all__replace_at_s_pos			= 27; // opt, <mutators>
-			static constexpr key_type move_h0_all__pack_at_s_front			= 28; // <near linear>
+			static constexpr key_type move_h0_all__insert_at_s_front		= 26; // <mutators>
+			static constexpr key_type move_h0_all__insert_at_s_pos			= 27; // opt, <mutators>
+			static constexpr key_type move_h0_all__replace_at_s_pos			= 28; // opt, <mutators>
+			static constexpr key_type move_h0_all__pack_at_s_front			= 29; // <near linear>
 
-			static constexpr key_type move_h1_all__insert_at_s_front		= 29; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_s_front		= 30; // <mutators>
 
-			static constexpr key_type apply_h0_all__move__insert_at_s_front		= 30; // <machine>
-			static constexpr key_type apply_h0_all__replace_h0_all			= 31; // <machine>
-			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 32; // opt, <machine>
+			static constexpr key_type apply_h0_all__move__insert_at_s_front		= 31; // <machine>
+			static constexpr key_type apply_h0_all__replace_h0_all			= 32; // <machine>
+			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 33; // opt, <machine>
 
-			static constexpr key_type compel_h0_all__move__insert_at_s_front	= 33; // <machine>
-			static constexpr key_type compel_h0_all__replace_h0_all			= 34; // <machine>
-			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 35; // opt, <machine>
-
-			// heap -> heap:
-
-			static constexpr key_type shift_i_block__insert_at_h0_back		= 36; // <machine>
+			static constexpr key_type compel_h0_all__move__insert_at_s_front	= 34; // <machine>
+			static constexpr key_type compel_h0_all__replace_h0_all			= 35; // <machine>
+			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 36; // opt, <machine>
 
 			// control:
 
@@ -471,6 +469,21 @@ private:
 			>(Hs...);
 		}
 	};
+
+/***********************************************************************************************************************/
+
+// shift index block, insert at stack back (2^N):
+
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(0);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(1);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(2);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(3);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(4);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(5);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(6);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(7);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(8);
+	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(9);
 
 /***********************************************************************************************************************/
 
@@ -883,26 +896,6 @@ private:
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
 		NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// passers (heap -> heap):
-
-/***********************************************************************************************************************/
-
-// shift index block, insert at heap zero back (2^N):
-
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(0);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(1);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(2);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(3);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(4);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(5);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(6);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(7);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(8);
-	NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(9);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

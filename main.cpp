@@ -18,7 +18,6 @@
 ************************************************************************************************************************/
 
 #include<cstdio>
-#include<utility>
 
 /***********************************************************************************************************************/
 
@@ -28,7 +27,7 @@
 
 // compile time space:
 
-	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
@@ -90,9 +89,8 @@
 
 		constexpr auto c = machine_module::template label
 		<
-			machine_module::template make_i_segment__insert_at_h0_back<n>,
-			machine_module::template move_h0_all__pack_at_s_front<>,
-			machine_module::template first<>
+			machine_module::template make_i_segment__insert_at_s_back<n>,
+			machine_module::template pack<>
 		>;
 
 		return machine_module::template start<LD, c, d, 1, 0>();
@@ -105,8 +103,8 @@
 
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", U_type_T<std::make_index_sequence<1000>>); // 0.89s/0.88s
-	//	printf("%d\n", index_sequence<1000>); // 1.53s/1.94s
+		printf("%d\n", index_sequence<11>);
+
 	//	printf("%d\n", list_at<list_1000, 887>);
 	//	printf("%llu\n", r_fibonacci<utype(5)>);
 	//	printf("%llu\n", rp_factorial<utype(20)>);

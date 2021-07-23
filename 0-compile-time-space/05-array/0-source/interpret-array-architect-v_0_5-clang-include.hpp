@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, constant, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,12 +38,7 @@ namespace nik
 {
 	nik_begin_module(interpret, array, architect, v_0_5, clang)
 
-		#include nik_import(../../.., interpret, constant, architect, v_0_5, clang, static, name)
-
-		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
-
-		template<auto... Vs>
-		using auto_pack		= typename functor_module::template auto_pack<Vs...>;
+		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
 
 		#include"interpret-array-architect-v_0_5-source.hpp"
 

@@ -32,8 +32,6 @@
 
 /***********************************************************************************************************************/
 
-	#undef NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK
-
 /***********************************************************************************************************************/
 
 // permutatic:
@@ -62,6 +60,7 @@
 	#undef NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST
 	#undef NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK
+	#undef NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK
 	#undef NIK_DEFINE__DROP_S_BLOCK
 
 /***********************************************************************************************************************/
@@ -215,6 +214,21 @@
 
 /***********************************************************************************************************************/
 
+// block indices:
+
+	#undef NIK_2_9_INDICES
+	#undef NIK_2_8_INDICES
+	#undef NIK_2_7_INDICES
+	#undef NIK_2_6_INDICES
+	#undef NIK_2_5_INDICES
+	#undef NIK_2_4_INDICES
+	#undef NIK_2_3_INDICES
+	#undef NIK_2_2_INDICES
+	#undef NIK_2_1_INDICES
+	#undef NIK_2_0_INDICES
+
+/***********************************************************************************************************************/
+
 // upper action values:
 
 	#undef NIK_UPPER_512_ACT_VS
@@ -272,6 +286,21 @@
 	#undef NIK_UPPER_4_AUTO_VS
 	#undef NIK_UPPER_2_AUTO_VS
 	#undef NIK_UPPER_1_AUTO_VS
+
+/***********************************************************************************************************************/
+
+// upper indices:
+
+	#undef NIK_UPPER_512_INDICES
+	#undef NIK_UPPER_256_INDICES
+	#undef NIK_UPPER_128_INDICES
+	#undef NIK_UPPER_64_INDICES
+	#undef NIK_UPPER_32_INDICES
+	#undef NIK_UPPER_16_INDICES
+	#undef NIK_UPPER_8_INDICES
+	#undef NIK_UPPER_4_INDICES
+	#undef NIK_UPPER_2_INDICES
+	#undef NIK_UPPER_1_INDICES
 
 /***********************************************************************************************************************/
 

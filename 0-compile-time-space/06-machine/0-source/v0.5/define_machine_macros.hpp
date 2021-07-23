@@ -88,6 +88,28 @@
 
 /***********************************************************************************************************************/
 
+// shift index block, insert at stack back (2^N):
+
+	#define NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK(_n_)							\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::shift_i_block__insert_at_s_back, _n_, filler...>					\
+		{													\
+			template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>					\
+			static constexpr auto result(Heaps... Hs)							\
+			{												\
+				constexpr index_type offset = sizeof...(Vs);						\
+															\
+				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
+															\
+					Vs..., NIK_2_ ## _n_ ## _INDICES(offset)					\
+															\
+				NIK_END_MACHINE(Hs...);									\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
 // move stack block, insert at stack back (2^N):
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(_n_)								\
@@ -385,33 +407,6 @@
 					T_type_U<act>::template result<args...>, Vs...					\
 															\
 				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
-			}												\
-		}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// heap -> heap:
-
-/***********************************************************************************************************************/
-
-// shift index block, insert at heap zero back (2^N):
-
-	#define NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_H0_BACK(_n_)							\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::shift_i_block__insert_at_h0_back, _n_, filler...>					\
-		{													\
-			template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>				\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
-			{												\
-				constexpr auto NH0	= U_consecutive_UxU						\
-							<								\
-								U_opt_pack_Vs<Ws...>,					\
-								U_index_pack_2_ ## _n_, sizeof...(Ws)			\
-							>;								\
-															\
-				return NIK_MACHINE(n, c, d, i, j)(NH0, Hs...);						\
 			}												\
 		}
 
