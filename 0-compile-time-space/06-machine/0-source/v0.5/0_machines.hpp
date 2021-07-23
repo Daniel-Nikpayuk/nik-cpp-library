@@ -153,15 +153,14 @@ public:
 
 		// interposers:
 
-			static constexpr key_type block						= 41;
-			static constexpr key_type linear					= 42;
-			static constexpr key_type call_h0_all					= 43; // <machine>
+			static constexpr key_type pass						= 41; // <machine>
+			static constexpr key_type block						= 42;
+			static constexpr key_type linear					= 43;
 			static constexpr key_type call						= 44; // <machine>
-			static constexpr key_type pass						= 45; // <machine>
 
 		// reflection:
 
-			static constexpr key_type reg_size					= 46;
+			static constexpr key_type reg_size					= 45;
 	};
 
 	using MN = MachineName;

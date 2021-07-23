@@ -302,6 +302,12 @@ public:
 
 	// interposers:
 
+		template<key_type Note = _zero>
+		static constexpr instr_type pass = instruction
+		<
+			MN::pass, Note
+		>;
+
 		template<key_type Name, index_type... Vs>
 		static constexpr instr_type block = instruction
 		<
@@ -321,22 +327,10 @@ public:
 
 		//
 
-		template<key_type Name, key_type Note = _zero>
-		static constexpr instr_type call_h0_all = instruction
-		<
-			MN::call, Name, Note
-		>;
-
 		template<key_type Name, index_type... Vs>
 		static constexpr instr_type call = instruction
 		<
 			MN::call, Name, sizeof...(Vs), Vs...
-		>;
-
-		template<key_type Note = _zero>
-		static constexpr instr_type pass = instruction
-		<
-			MN::pass, Note
 		>;
 
 	// reflection:

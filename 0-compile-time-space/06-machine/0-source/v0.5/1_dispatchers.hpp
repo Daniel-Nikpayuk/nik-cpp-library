@@ -454,6 +454,26 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// pass (zero):
+
+	template<key_type... filler>
+	struct machine<MN::pass, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			NIK_FIXED_HEAP_PARAMS, auto un, auto nc, auto ni, auto nj, typename... Heaps
+		>
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, void(*H2)(auto_pack<un, nc, ni, nj>*), Heaps... Hs)
+		{
+			using nn = T_type_U<un>;
+
+			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // block:
 
 	template<key_type... filler>
@@ -481,13 +501,13 @@ private:
 
 /***********************************************************************************************************************/
 
-// linear:
+// linear (zero):
 
 	template<key_type... filler>
 	struct machine<MN::linear, _zero, filler...>
 	{
 		using nn			= LD;
-		static constexpr auto ni	= _zero;
+		static constexpr auto ni	= _one;
 		static constexpr auto nj	= _zero;
 
 		template
@@ -513,34 +533,85 @@ private:
 
 /***********************************************************************************************************************/
 
-// call heap zero all:
+// linear (one):
+
+	template<key_type... filler>
+	struct machine<MN::linear, _one, filler...>
+	{
+		using nn			= LD;
+		static constexpr auto ni	= _one;
+		static constexpr auto nj	= _zero;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Is,
+			auto instr, auto... Ws, auto... Vs, typename Heap1, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<instr, Ws...>*), Heap1 H1,
+			void(*H2)(auto_pack<Vs...>*), Heaps... Hs
+		)
+		{
+			constexpr auto nc = linear_controller<instr[CallInstr::name]>::template result<Is...>;
+
+			return NIK_BEGIN_MACHINE(nn, nc, d, ni, nj)
+
+				Vs...
+
+			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, H1, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// linear (two):
+
+	template<key_type... filler>
+	struct machine<MN::linear, _two, filler...>
+	{
+		using nn			= LD;
+		static constexpr auto ni	= _one;
+		static constexpr auto nj	= _zero;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto... Ws, typename Heap1, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
+		{
+			constexpr auto instr	= n::call_instr(c, i, j);
+			constexpr auto size	= n::call_sizeof(c, i, j);
+			constexpr auto nc	= label
+						<
+							make_i_segment__insert_at_s_back<size>,
+							map_s_all__arr_at_h0_first<>,
+							linear<_one>
+						>;
+
+			constexpr auto un	= U_type_T<n>;
+
+			return machine
+			<
+				nn::next_name(nc, d, ni, nj),
+				nn::next_note(nc, d, ni, nj)
+
+			>::template result
+			<
+				nn, nc,
+
+				nn::next_depth(d),
+				nn::next_index1(nc, d, ni, nj),
+				nn::next_index2(nc, d, ni, nj)
+
+			>(U_opt_pack_Vs<instr, Ws...>, H1, U_opt_pack_Vs<Vs...>, U_opt_pack_Vs<un, c, i, j>, Hs...);
+		}
+	};
 
 /***********************************************************************************************************************/
 
 // call:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// pass:
-
-/***********************************************************************************************************************/
-
-	template<key_type... filler>
-	struct machine<MN::pass, _zero, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			NIK_FIXED_HEAP_PARAMS, auto un, auto nc, auto ni, auto nj, typename... Heaps
-		>
-		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, void(*H2)(auto_pack<un, nc, ni, nj>*), Heaps... Hs)
-		{
-			using nn = T_type_U<un>;
-
-			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, Hs...);
-		}
-	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
