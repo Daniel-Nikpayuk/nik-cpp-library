@@ -319,7 +319,7 @@ public:
 		template<key_type Name, index_type Size, index_type... Vs>
 		static constexpr instr_type let_linear = instruction
 		<
-			MN::linear, (MI::patch(Size) ? _zero : _one), Name, Size, Vs...
+			MN::linear, MI::linear(Size), Name, Size, Vs...
 		>;
 
 		template<key_type Name, index_type... Vs>
@@ -921,11 +921,11 @@ public:
 
 	// mutators:
 
-		//	template<index_type Pos>
-		//	static constexpr instr_type erase = linear
-		//	<
-		//		LN::erase, Pos
-		//	>;
+			template<index_type Pos>
+			static constexpr instr_type erase = linear
+			<
+				LN::erase, Pos
+			>;
 
 		//	template<index_type Pos>
 		//	static constexpr instr_type insert = linear

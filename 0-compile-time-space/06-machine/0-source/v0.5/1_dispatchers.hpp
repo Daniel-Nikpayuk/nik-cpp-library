@@ -58,6 +58,7 @@ public:
 		static constexpr index_type length (type i)		{ return i[size]; }
 		static constexpr index_type last   (type i)		{ return i[length(i)]; }
 		static constexpr index_type patch  (index_type pos)	{ return (pos < _eight) ? pos+1 : _zero; }
+		static constexpr index_type linear (index_type n)	{ return (n < _eight) ? _zero : _two; }
 	};
 
 	using MI							= MachineInstr;
@@ -74,38 +75,6 @@ public:
 		// linear:
 
 		static constexpr index_type note			= 4;
-
-		template<key_type n>
-		static constexpr auto indices()
-		{
-			if constexpr (n < 4)
-
-				if constexpr (n < 2)
-
-					if constexpr (n == 0) return U_opt_pack_Vs<>;
-					else                  return U_opt_pack_Vs<5>;
-
-				else if constexpr (n == 2)    return U_opt_pack_Vs<5, 6>;
-				else                          return U_opt_pack_Vs<5, 6, 7>;
-
-			else if constexpr (n < 6)
-
-				if constexpr (n == 4)         return U_opt_pack_Vs<5, 6, 7, 8>;
-				else                          return U_opt_pack_Vs<5, 6, 7, 8, 9>;
-
-			else if constexpr (n == 6)            return U_opt_pack_Vs<5, 6, 7, 8, 9, 10>;
-			else                                  return U_opt_pack_Vs<5, 6, 7, 8, 9, 10, 11>;
-		}
-
-		template
-		<
-			template<key_type, key_type...> class Contr, key_type Name,
-			instr_type Instr, index_type... Indices
-		>
-		static constexpr auto make_contr(void(*)(auto_pack<Indices...>*))
-		{
-			return Contr<Name>::template result<Instr[Indices]...>;
-		}
 	};
 
 	struct AsgnInstr : public MI
@@ -327,9 +296,9 @@ public:
 			else 		return d;
 		}
 
-		static constexpr index_type next_index1(label_type, depth_type, index_type, index_type)
+		static constexpr index_type next_index1(label_type, depth_type, index_type i, index_type)
 		{
-			return _one;
+			return i;
 		}
 
 		static constexpr index_type next_index2(label_type, depth_type d, index_type, index_type j)
@@ -510,6 +479,21 @@ private:
 		static constexpr auto ni	= _one;
 		static constexpr auto nj	= _zero;
 
+		template<key_type Name, key_type Note, instr_type I>
+		static constexpr auto make_linear()
+		{
+			using c = linear_controller<Name>;
+
+			if constexpr      (Note == 0) return c::template result<>;
+			else if constexpr (Note == 1) return c::template result<I[5]>;
+			else if constexpr (Note == 2) return c::template result<I[5], I[6]>;
+			else if constexpr (Note == 3) return c::template result<I[5], I[6], I[7]>;
+			else if constexpr (Note == 4) return c::template result<I[5], I[6], I[7], I[8]>;
+			else if constexpr (Note == 5) return c::template result<I[5], I[6], I[7], I[8], I[9]>;
+			else if constexpr (Note == 6) return c::template result<I[5], I[6], I[7], I[8], I[9], I[10]>;
+			else                          return c::template result<I[5], I[6], I[7], I[8], I[9], I[10], I[11]>;
+		}
+
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
@@ -517,13 +501,12 @@ private:
 		>
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
-			constexpr auto cp	= CallInstr::indices<n::call_note(c, i, j)>();
-			constexpr auto nc	= CallInstr::make_contr
+			constexpr auto nc	= make_linear
 						<
-							linear_controller,
 							n::call_name(c, i, j),
+							n::call_note(c, i, j),
 							n::call_instr(c, i, j)
-						>(cp);
+						>;
 			constexpr auto un	= U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)
@@ -553,7 +536,7 @@ private:
 			void(*H2)(auto_pack<Vs...>*), Heaps... Hs
 		)
 		{
-			constexpr auto nc = linear_controller<instr[CallInstr::name]>::template result<Is...>;
+			constexpr auto nc = linear_controller<instr[CallInstr::name]>::template result<instr[Is]...>;
 
 			return NIK_BEGIN_MACHINE(nn, nc, d, ni, nj)
 
@@ -582,14 +565,12 @@ private:
 		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
 		{
 			constexpr auto instr	= n::call_instr(c, i, j);
-			constexpr auto size	= n::call_sizeof(c, i, j);
+			constexpr auto note	= n::call_note(c, i, j);
 			constexpr auto nc	= label
 						<
-							make_i_segment__insert_at_s_back<size>,
-							map_s_all__arr_at_h0_first<>,
-							linear<_one>
+							make_i_segment__insert_at_s_back<note>,
+							instruction<MN::linear, _one> // optimization
 						>;
-
 			constexpr auto un	= U_type_T<n>;
 
 			return machine
