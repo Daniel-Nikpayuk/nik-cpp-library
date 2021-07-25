@@ -137,7 +137,7 @@ public:
 		>;
 
 		template<key_type Note = _zero>
-		static constexpr instr_type move_s_first__insert_at_s_back = instruction // first
+		static constexpr instr_type move_s_first__insert_at_s_back = instruction // block
 		<
 			MN::move_s_block__insert_at_s_back, Note
 		>;
@@ -154,23 +154,11 @@ public:
 			MN::fold_s_block__op_at_h0_first, Note
 		>;
 
-	//	template<key_type Note = _zero>
-	//	static constexpr instr_type fold_s_segment__pos_at_h0_first = instruction
-	//	<
-	//		MN::fold_s_segment__pos_at_h0_first, Note
-	//	>;
-
 		template<key_type Note = _zero>
 		static constexpr instr_type roll_s_block__act_at_h0_first = instruction
 		<
 			MN::roll_s_block__act_at_h0_first, Note
 		>;
-
-	//	template<key_type Note = _zero>
-	//	static constexpr instr_type roll_s_segment__pos_at_h0_first = instruction
-	//	<
-	//		MN::roll_s_segment__pos_at_h0_first, Note
-	//	>;
 
 		// stack -> heap:
 
@@ -274,7 +262,7 @@ public:
 			MN::compel_h0_all__move__replace_at_s_pos, Note
 		>;
 
-		// control:
+	// interposers:
 
 		template<key_type Note = MT::unary>
 		static constexpr instr_type skip = instruction
@@ -288,21 +276,7 @@ public:
 			MN::branch, Note, Pos
 		>;
 
-		template<key_type Pos, key_type Note = _zero>
-		static constexpr instr_type goto__pos_at_h0_front = instruction
-		<
-			MN::go_to__pos_at_h0_front, Note, Pos
-		>;
-
-		template<index_type Pos>
-		static constexpr instr_type goto_label = instruction
-		<
-			MN::go_to, MT::contr, Pos
-		>;
-
-	// interposers:
-
-		template<key_type Note = _zero>
+		template<key_type Note = PT::recall>
 		static constexpr instr_type pass = instruction
 		<
 			MN::pass, Note
@@ -314,18 +288,11 @@ public:
 			MN::block, _zero, Name, Vs...
 		>;
 
-		//
-
-		template<key_type Name, index_type Size, index_type... Vs>
-		static constexpr instr_type let_linear = instruction
-		<
-			MN::linear, (MI::is_opt(Size) ? _zero : _two), Name, Size, Vs...
-		>;
-
 		template<key_type Name, index_type... Vs>
-		static constexpr instr_type linear = let_linear<Name, sizeof...(Vs), Vs...>;
-
-		//
+		static constexpr instr_type linear = instruction
+		<
+			MN::linear, CallInstr::patch(sizeof...(Vs)), Name, _zero, Vs...
+		>;
 
 		template<key_type Name, index_type... Vs>
 		static constexpr instr_type call = instruction
@@ -368,8 +335,8 @@ public:
 
 			static constexpr key_type make_i_segment__insert_at_s_back		= 1; // <machine>
 
-		//	static constexpr key_type fold_s_segment__pos_at_h0_first		= 2; // <machine>
-		//	static constexpr key_type roll_s_segment__pos_at_h0_first		= 3; // <machine>
+			static constexpr key_type fold_s_segment__replace_at_s_front		= 2; // <machine>
+			static constexpr key_type roll_s_segment__replace_at_s_front		= 3; // <machine>
 
 			// stack -> heap:
 
@@ -403,19 +370,19 @@ public:
 			static constexpr instr_type result = instruction<MN::shift_i_block__insert_at_s_back, Cont>;
 		};
 
-//		template<key_type... filler>
-//		struct block_controller<BN::fold_s_segment__pos_at_h0_first, filler...>
-//		{
-//			template<key_type Cont = MN::pass>
-//			static constexpr instr_type result = instruction<MN::fold_s_block__op_at_h0_first, Cont>;
-//		};
+		template<key_type... filler>
+		struct block_controller<BN::fold_s_segment__replace_at_s_front, filler...>
+		{
+			template<key_type Cont = MN::pass>
+			static constexpr instr_type result = instruction<MN::fold_s_block__op_at_h0_first, Cont>;
+		};
 
-//		template<key_type... filler>
-//		struct block_controller<BN::roll_s_segment__pos_at_h0_first, filler...>
-//		{
-//			template<key_type Cont = MN::pass>
-//			static constexpr instr_type result = instruction<MN::roll_s_block__act_at_h0_first, Cont>;
-//		};
+		template<key_type... filler>
+		struct block_controller<BN::roll_s_segment__replace_at_s_front, filler...>
+		{
+			template<key_type Cont = MN::pass>
+			static constexpr instr_type result = instruction<MN::roll_s_block__act_at_h0_first, Cont>;
+		};
 
 		// stack -> heap:
 
@@ -453,6 +420,18 @@ public:
 		static constexpr instr_type make_i_segment__insert_at_s_back = block
 		<
 			BN::make_i_segment__insert_at_s_back, Pos
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type fold_s_segment__replace_at_s_front = block
+		<
+			BN::fold_s_segment__replace_at_s_front, Pos
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type roll_s_segment__replace_at_s_front = block
+		<
+			BN::roll_s_segment__replace_at_s_front, Pos
 		>;
 
 		// stack -> heap:
@@ -517,25 +496,23 @@ public:
 			static constexpr index_type costem					= 12;
 			static constexpr index_type cycle					= 13;
 
-			static constexpr index_type fold					= 14;
-			static constexpr index_type roll					= 15;
-
-			static constexpr index_type left					= 16;
+			static constexpr index_type left					= 14;
 
 		// register:
 
-		//	static constexpr index_type go_to__next_at_h0_front			= 17; // maybe atomic
-		//	static constexpr index_type go_to					= 18; // maybe atomic
+			static constexpr index_type go_to					= 15;
+			static constexpr index_type go_to_label					= 16;
 
-			static constexpr index_type save					= 19;
-			static constexpr index_type restore					= 20;
+			static constexpr index_type assign_label				= 17;
 
-			static constexpr index_type test					= 21;
-			static constexpr index_type check					= 22;
+			static constexpr index_type save					= 18;
+			static constexpr index_type restore					= 19;
 
-			static constexpr index_type assign					= 23;
-			static constexpr index_type apply					= 24;
-			static constexpr index_type compel					= 25;
+			static constexpr index_type test					= 20;
+			static constexpr index_type check					= 21;
+
+			static constexpr index_type apply					= 22;
+			static constexpr index_type compel					= 23;
 
 		// constants:
 
@@ -814,19 +791,6 @@ public:
 		// costem
 		// cycle
 
-		// fold
-
-	//	template<key_type... filler>
-	//	struct linear_controller<LN::roll, filler...>
-	//	{
-	//		template<instr_type Cont = pass<>>
-	//		static constexpr label_type result = label
-	//		<
-	//			roll_s_segment__pos_at_h0_first<>,
-	//			Cont
-	//		>;
-	//	};
-
 	//	template<key_type... filler>
 	//	struct linear_controller<LN::left, filler...>
 	//	{
@@ -842,14 +806,40 @@ public:
 
 	// register:
 
-		// goto pos
+		template<key_type... filler>
+		struct linear_controller<LN::go_to, filler...>
+		{
+			template<index_type Pos>
+			static constexpr label_type result = label
+			<
+				copy_s_pos__insert_at_h0_back<Pos>,
+				instruction<MN::pass, PT::reindex>
+			>;
+		};
 
-	//	template<index_type Pos>
-	//	static constexpr auto go_to_contr = linear_controller
-	//	<
-	//		copy_s_pos__insert_at_h0_back<Pos>,
-	//		goto__next_at_h0_front<>
-	//	>;
+		template<key_type... filler>
+		struct linear_controller<LN::go_to_label, filler...>
+		{
+			// goto label exists for use in linear controllers,
+			// but is optimized away for the register dispatcher.
+
+			template<index_type Pos>
+			static constexpr label_type result = label
+			<
+				instruction<MN::pass, PT::reindex>
+			>;
+		};
+
+		template<key_type... filler>
+		struct linear_controller<LN::assign_label, filler...>
+		{
+			template<index_type Pos>
+			static constexpr label_type result = label
+			<
+				move_h0_all__replace_at_s_pos<Pos>,
+				pass<>
+			>;
+		};
 
 		// save
 
@@ -886,8 +876,6 @@ public:
 				pass<>
 			>;
 		};
-
-		// assign
 
 		template<key_type... filler>
 		struct linear_controller<LN::apply, filler...>
@@ -946,27 +934,31 @@ public:
 		// costem
 		// cycle
 
-	////	template<index_type Pos, index_type Op, key_type Note = _zero>
-	////	static constexpr instr_type fold = instruction
-	////	<
-	////		MN::fold, Note, Pos, Op
-	////	>;
-
-	////	template<index_type Pos, index_type Op, key_type Note = _zero>
-	////	static constexpr instr_type roll = instruction
-	////	<
-	////		MN::roll, Note, Pos, Op
-	////	>;
-
 	// register:
 
-		// goto pos
+		template<index_type Pos>
+		static constexpr instr_type goto_using = linear
+		<
+			LN::go_to, Pos
+		>;
 
-	//	template<index_type Pos>
-	//	static constexpr instr_type goto_using = instruction
-	//	<
-	//		MN::go_to, MD::regtr, Pos
-	//	>;
+		template<index_type Val>
+		static constexpr instr_type goto_label = instruction
+		<
+			MN::linear, LT::direct, LN::go_to_label, _one, Val
+		>;
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type assign_using = linear // convenience
+		<
+			LN::replace, Pos, Obj
+		>;
+
+		template<index_type Val, index_type Pos>
+		static constexpr instr_type assign_label = instruction
+		<
+			MN::linear, LT::direct, LN::assign_label, _one, Val, Pos
+		>;
 
 	//	template<index_type Pos, key_type Note = _zero>
 	//	static constexpr instr_type save = instruction
@@ -980,35 +972,29 @@ public:
 	//		MN::restore, Note, Pos
 	//	>;
 
-	//	template<index_type Pos>
-	//	static constexpr instr_type test = linear
-	//	<
-	//		LN::test, Pos
-	//	>;
+		template<index_type Op, index_type... Args>
+		static constexpr instr_type test = linear
+		<
+			LN::test, Op, Args...
+		>;
 
-	//	template<index_type Pos>
-	//	static constexpr instr_type check = linear
-	//	<
-	//		LN::check, Pos
-	//	>;
+		template<index_type Act, index_type... Args>
+		static constexpr instr_type check = linear
+		<
+			LN::check, Act, Args...
+		>;
 
-	//	template<index_type Pos, index_type Obj, key_type Note = _zero>
-	//	static constexpr instr_type assign = instruction
-	//	<
-	//		MN::assign, Note, Pos, Obj
-	//	>;
+		template<index_type Pos, index_type Op, index_type... Args>
+		static constexpr instr_type apply = linear
+		<
+			LN::apply, Pos, Op, Args...
+		>;
 
-	//	template<index_type Pos>
-	//	static constexpr instr_type apply = linear
-	//	<
-	//		LN::apply, Pos
-	//	>;
-
-	//	template<index_type Pos>
-	//	static constexpr instr_type compel = linear
-	//	<
-	//		LN::compel, Pos
-	//	>;
+		template<index_type Pos, index_type Act, index_type... Args>
+		static constexpr instr_type compel = linear
+		<
+			LN::compel, Pos, Act, Args...
+		>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

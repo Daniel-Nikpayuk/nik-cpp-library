@@ -148,27 +148,27 @@
 	<
 		r_label // fact loop:
 		<
-			test       < eq        , n          , c_1       >,
-			branch     < base_case                          >,
-			save       < cont                               >,
-			save       < n                                  >,
-			apply      < n         , sub        , n   , c_1 >,
-			assign     < cont      , after_fact             >,
-			goto_label < fact_loop                          >
+			test         < eq        , n          , c_1       >,
+			branch       < base_case                          >,
+			save         < cont                               >,
+			save         < n                                  >,
+			apply        < n         , sub        , n   , c_1 >,
+			assign_label < cont      , after_fact             >,
+			goto_label   < fact_loop                          >
 		>,
 
 		r_label // after fact:
 		<
-			restore    < n                     >,
-			restore    < cont                  >,
-			apply      < val  , mult , n , val >,
-			goto_using < cont                  >
+			restore      < n                     >,
+			restore      < cont                  >,
+			apply        < val  , mult , n , val >,
+			goto_using   < cont                  >
 		>,
 
 		r_label // base case:
 		<
-			replace    < val  , c_1 >,
-			goto_using < cont       >
+			replace      < val  , c_1 >,
+			goto_using   < cont       >
 		>,
 
 		r_label // fact done:

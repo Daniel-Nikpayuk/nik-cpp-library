@@ -56,24 +56,24 @@
 	<
 		r_label // fib loop:
 		<
-			test       < less_than        , n          , c_2       >,
-			branch     < immediate_answer                          >,
-			save       < cont                                      >,
-			assign     < cont             , after_fib_n_1          >,
-			save       < n                                         >,
-			apply      < n                , sub        , n   , c_1 >,
-			goto_label < fib_loop                                  >
+			test         < less_than        , n          , c_2       >,
+			branch       < immediate_answer                          >,
+			save         < cont                                      >,
+			assign_label < cont             , after_fib_n_1          >,
+			save         < n                                         >,
+			apply        < n                , sub        , n   , c_1 >,
+			goto_label   < fib_loop                                  >
 		>,
 
 		r_label // after fib n 1:
 		<
-			restore    < n                     >,
-			restore    < cont                  >,
-			apply      < n    , sub , n , c_2  >,
-			save       < cont                  >,
-			assign     < cont , after_fib_n_2  >,
-			save       < val                   >,
-			goto_label < fib_loop              >
+			restore      < n                     >,
+			restore      < cont                  >,
+			apply        < n    , sub , n , c_2  >,
+			save         < cont                  >,
+			assign_label < cont , after_fib_n_2  >,
+			save         < val                   >,
+			goto_label   < fib_loop              >
 		>,
 
 		r_label // after fib n 2:

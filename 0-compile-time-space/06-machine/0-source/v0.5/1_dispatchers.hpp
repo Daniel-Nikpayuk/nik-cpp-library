@@ -65,45 +65,21 @@ public:
 
 	struct CallInstr : public MI
 	{
-		static constexpr index_type name			= 3;
+		// Assumes the subnote value equals the direct parameter length.
+		// Otherwise the remaining parameters are intended to locate register values.
 
-		// block:
+		static constexpr index_type subname			= 3;
+		static constexpr index_type subnote			= 4;
+		static constexpr index_type offset			= 5;
 
+		static constexpr index_type substart (type i)		{ return offset + i[subnote]; }
+		static constexpr index_type subsize  (type i)		{ return i[size] - subnote - i[subnote]; }
+		static constexpr index_type patch    (index_type n)	{ return is_opt(n) ? LT::fast : LT::scalable; }
+	};
+
+	struct BlockInstr : public CallInstr
+	{
 		static constexpr index_type pos				= 4;
-
-		// linear:
-
-		static constexpr index_type note			= 4;
-	};
-
-	struct AsgnInstr : public MI
-	{
-		static constexpr index_type obj				= 4;
-	};
-
-	struct ApplInstr : public MI
-	{
-		static constexpr index_type op				= 4;
-		static constexpr index_type arg				= 5;
-		static constexpr index_type arg1			= 5;
-		static constexpr index_type arg2			= 6;
-	};
-
-	struct PredInstr : public MI
-	{
-		static constexpr index_type pred			= 3;
-		static constexpr index_type input			= 4;
-		static constexpr index_type input1			= 4;
-		static constexpr index_type input2			= 5;
-	};
-
-	struct NLInstr : public MI
-	{
-		static constexpr key_type appl				= 2;
-
-		static constexpr key_type cond				= 2;
-		static constexpr key_type appl1				= 3;
-		static constexpr key_type appl2				= 4;
 	};
 
 		// pack length is stored as the initial value.
@@ -253,24 +229,41 @@ public:
 
 	template<key_type, key_type...> struct linear_controller;
 
+	template<instr_type I>
+	static constexpr auto f_linear_controller_opt()
+	{
+		using c			= linear_controller<I[CallInstr::subname]>;
+		constexpr auto i	= CallInstr::substart(I);
+		constexpr auto n	= CallInstr::subsize(I);
+
+		if constexpr      (n == 0) return c::template result<>;
+		else if constexpr (n == 1) return c::template result<I[i]>;
+		else if constexpr (n == 2) return c::template result<I[i], I[i+1]>;
+		else if constexpr (n == 3) return c::template result<I[i], I[i+1], I[i+2]>;
+		else if constexpr (n == 4) return c::template result<I[i], I[i+1], I[i+2], I[i+3]>;
+		else if constexpr (n == 5) return c::template result<I[i], I[i+1], I[i+2], I[i+3], I[i+4]>;
+		else if constexpr (n == 6) return c::template result<I[i], I[i+1], I[i+2], I[i+3], I[i+4], I[i+5]>;
+		else                       return c::template result<I[i], I[i+1], I[i+2], I[i+3], I[i+4], I[i+5], I[i+6]>;
+	}
+
 /***********************************************************************************************************************/
 
 	struct LD
 	{
 	// block:
 
-		static constexpr auto call_name(label_type l, index_type, index_type j)
-			{ return l[j][CallInstr::name]; }
+		static constexpr auto subname(label_type l, index_type, index_type j)
+			{ return l[j][CallInstr::subname]; }
 
 		static constexpr index_type call_pos(label_type l, index_type, index_type j)
-			{ return l[j][CallInstr::pos]; }
+			{ return l[j][BlockInstr::pos]; }
 
 	// linear:
 
-		static constexpr index_type call_note(label_type l, index_type, index_type j)
-			{ return l[j][CallInstr::note]; }
+		static constexpr index_type subnote(label_type l, index_type, index_type j)
+			{ return l[j][CallInstr::subnote]; }
 
-		static constexpr instr_type call_instr(label_type l, index_type, index_type j)
+		static constexpr instr_type subinstr(label_type l, index_type, index_type j)
 			{ return l[j]; }
 
 	// iterators:
@@ -408,10 +401,6 @@ public:
 */
 
 /***********************************************************************************************************************/
-
-// predefined:
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
@@ -422,10 +411,14 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// pass (zero):
+// pass:
+
+/***********************************************************************************************************************/
+
+// recall:
 
 	template<key_type... filler>
-	struct machine<MN::pass, _zero, filler...>
+	struct machine<MN::pass, PT::recall, filler...>
 	{
 		template
 		<
@@ -442,7 +435,37 @@ private:
 
 /***********************************************************************************************************************/
 
+// reindex:
+
+	template<key_type... filler>
+	struct machine<MN::pass, PT::reindex, filler...>
+	{
+		static constexpr key_type oj = _zero;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto oi, auto... Ws, typename Heap1,
+			auto un, auto nc, auto ni, auto nj, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<oi, Ws...>*), Heap1 H1,
+			void(*H2)(auto_pack<un, nc, ni, nj>*), Heaps... Hs
+		)
+		{
+			using nn = T_type_U<un>;
+
+			return NIK_MACHINE(nn, nc, d, oi, oj)(U_opt_pack_Vs<Ws...>, H1, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // block:
+
+/***********************************************************************************************************************/
 
 	template<key_type... filler>
 	struct machine<MN::block, _zero, filler...>
@@ -456,11 +479,10 @@ private:
 		>
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
-			constexpr auto nc	= block_controller<n::call_name(c, i, j)>::template result<>;
+			constexpr auto nc	= block_controller<n::subname(c, i, j)>::template result<>;
 			constexpr auto pos	= n::call_pos(c, i, j);
 			constexpr auto nj	= nn::max_index2(pos);
 			constexpr auto ni	= pos + nj;
-
 			constexpr auto un	= U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
@@ -468,30 +490,47 @@ private:
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// linear (zero):
+// linear:
+
+/***********************************************************************************************************************/
+
+// direct (fast):
 
 	template<key_type... filler>
-	struct machine<MN::linear, _zero, filler...>
+	struct machine<MN::linear, LT::direct, filler...>
 	{
 		using nn			= LD;
 		static constexpr auto ni	= _one;
 		static constexpr auto nj	= _zero;
 
-		template<key_type Name, key_type Note, instr_type I>
-		static constexpr auto make_linear()
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto... Ws, typename Heap1, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
 		{
-			using c = linear_controller<Name>;
+			constexpr auto instr	= n::subinstr(c, i, j);
+			constexpr auto nc	= f_linear_controller_opt<instr>();
+			constexpr auto nH0	= U_opt_pack_Vs<instr[CallInstr::offset], Ws...>;
+			constexpr auto un	= U_type_T<n>;
 
-			if constexpr      (Note == 0) return c::template result<>;
-			else if constexpr (Note == 1) return c::template result<I[5]>;
-			else if constexpr (Note == 2) return c::template result<I[5], I[6]>;
-			else if constexpr (Note == 3) return c::template result<I[5], I[6], I[7]>;
-			else if constexpr (Note == 4) return c::template result<I[5], I[6], I[7], I[8]>;
-			else if constexpr (Note == 5) return c::template result<I[5], I[6], I[7], I[8], I[9]>;
-			else if constexpr (Note == 6) return c::template result<I[5], I[6], I[7], I[8], I[9], I[10]>;
-			else                          return c::template result<I[5], I[6], I[7], I[8], I[9], I[10], I[11]>;
+			return NIK_MACHINE(nn, nc, d, ni, nj)(nH0, H1, U_opt_pack_Vs<un, c, i, j>, Hs...);
 		}
+	};
+
+/***********************************************************************************************************************/
+
+// fast:
+
+	template<key_type... filler>
+	struct machine<MN::linear, LT::fast, filler...>
+	{
+		using nn			= LD;
+		static constexpr auto ni	= _one;
+		static constexpr auto nj	= _zero;
 
 		template
 		<
@@ -500,13 +539,8 @@ private:
 		>
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
-			constexpr auto nc	= make_linear
-						<
-							n::call_name(c, i, j),
-							n::call_note(c, i, j),
-							n::call_instr(c, i, j)
-						>();
-			constexpr auto un	= U_type_T<n>;
+			constexpr auto nc = f_linear_controller_opt<n::subinstr(c, i, j)>();
+			constexpr auto un = U_type_T<n>;
 
 			return NIK_MACHINE(nn, nc, d, ni, nj)
 				(NIK_FIXED_HEAP_ARGS, U_opt_pack_Vs<un, c, i, j>, Hs...);
@@ -515,10 +549,10 @@ private:
 
 /***********************************************************************************************************************/
 
-// linear (one):
+// (scalable) helper:
 
 	template<key_type... filler>
-	struct machine<MN::linear, _one, filler...>
+	struct machine<MN::linear, LT::helper, filler...>
 	{
 		using nn			= LD;
 		static constexpr auto ni	= _one;
@@ -535,7 +569,8 @@ private:
 			void(*H2)(auto_pack<Vs...>*), Heaps... Hs
 		)
 		{
-			constexpr auto nc = linear_controller<instr[CallInstr::name]>::template result<instr[Is]...>;
+			using lc		= linear_controller<instr[CallInstr::subname]>;
+			constexpr auto nc	= lc::template result<instr[Is]...>;
 
 			return NIK_BEGIN_MACHINE(nn, nc, d, ni, nj)
 
@@ -547,10 +582,10 @@ private:
 
 /***********************************************************************************************************************/
 
-// linear (two):
+// scalable:
 
 	template<key_type... filler>
-	struct machine<MN::linear, _two, filler...>
+	struct machine<MN::linear, LT::scalable, filler...>
 	{
 		using nn			= LD;
 		static constexpr auto ni	= _one;
@@ -563,12 +598,12 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
 		{
-			constexpr auto instr	= n::call_instr(c, i, j);
-			constexpr auto note	= n::call_note(c, i, j);
+			constexpr auto instr	= n::subinstr(c, i, j);
+			constexpr auto note	= n::subnote(c, i, j);
 			constexpr auto nc	= label
 						<
 							make_i_segment__insert_at_s_back<note>,
-							instruction<MN::linear, _one> // optimization
+							instruction<MN::linear, _two> // optimization
 						>;
 			constexpr auto un	= U_type_T<n>;
 
@@ -590,8 +625,11 @@ private:
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // call:
+
+/***********************************************************************************************************************/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
