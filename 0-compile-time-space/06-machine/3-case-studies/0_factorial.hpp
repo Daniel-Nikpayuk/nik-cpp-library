@@ -21,7 +21,7 @@
 
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
-	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -31,6 +31,7 @@
 
 /***********************************************************************************************************************/
 
+/*
 	template
 	<
 		// registers:
@@ -59,9 +60,9 @@
 		using n_type = decltype(n);
 
 		constexpr n_type p		= _one;
-		constexpr auto eq_op		= equal<n_type, n_type>;
-		constexpr auto sub_op		= subtract<n_type, n_type>;
-		constexpr auto mult_op		= multiply<n_type, n_type>;
+		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
+		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
 		constexpr n_type c_0		= _zero;
 		constexpr n_type c_1		= _one;
 
@@ -77,6 +78,7 @@
 
 	template<auto n, depth_type d = 500>
 	constexpr auto n_factorial = f_n_factorial<n, d>();
+*/
 
 /***********************************************************************************************************************/
 
@@ -144,9 +146,9 @@
 			index_type c_1		= 5,
 			index_type cont		= 6
 	>
-	constexpr auto fact_contr = r_controller
+	constexpr auto fact_contr = controller
 	<
-		r_label // fact loop:
+		label // fact loop:
 		<
 			test         < eq        , n          , c_1       >,
 			branch       < base_case                          >,
@@ -157,7 +159,7 @@
 			goto_label   < fact_loop                          >
 		>,
 
-		r_label // after fact:
+		label // after fact:
 		<
 			restore      < n                     >,
 			restore      < cont                  >,
@@ -165,13 +167,13 @@
 			goto_using   < cont                  >
 		>,
 
-		r_label // base case:
+		label // base case:
 		<
 			replace      < val  , c_1 >,
 			goto_using   < cont       >
 		>,
 
-		r_label // fact done:
+		label // fact done:
 		<
 			stop       < val    >,
 			reg_size   < _seven >
@@ -186,9 +188,9 @@
 		using n_type = decltype(n);
 
 		constexpr n_type val		= _one;
-		constexpr auto eq_op		= equal<n_type, n_type>;
-		constexpr auto sub_op		= subtract<n_type, n_type>;
-		constexpr auto mult_op		= multiply<n_type, n_type>;
+		constexpr auto eq_op		= nik_function_S_equal::template result <n_type, n_type>;
+		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
 		constexpr n_type c_1		= _one;
 		constexpr index_type cont	= _four;
 
@@ -265,9 +267,9 @@
 			index_type c_0		= 5,
 			index_type c_1		= 6
 	>
-	constexpr auto fact1_contr = r_controller
+	constexpr auto pair_fact_contr = controller
 	<
-		r_label // fact loop:
+		label // fact loop:
 		<
 			test       < eq        , n        , c_0       >,
 			branch     < fact_done                        >,
@@ -276,7 +278,7 @@
 			goto_label < fact_loop                        >
 		>,
 
-		r_label // fact done:
+		label // fact done:
 		<
 			stop       < p      >,
 			reg_size   < _seven >
@@ -286,14 +288,14 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d>
-	constexpr auto f_rp_factorial()
+	constexpr auto f_fast_factorial()
 	{
 		using n_type = decltype(n);
 
 		constexpr n_type p		= _one;
-		constexpr auto eq_op		= equal<n_type, n_type>;
-		constexpr auto sub_op		= subtract<n_type, n_type>;
-		constexpr auto mult_op		= multiply<n_type, n_type>;
+		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
+		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
 		constexpr n_type c_0		= _zero;
 		constexpr n_type c_1		= _one;
 
@@ -302,13 +304,13 @@
 
 		return start
 		<
-			register_machine, fact1_contr<>, d, i, j,
+			register_machine, pair_fact_contr<>, d, i, j,
 			p, n, eq_op, sub_op, mult_op, c_0, c_1
 		>();
 	}
 
 	template<auto n, depth_type d = 500>
-	constexpr auto rp_factorial = f_rp_factorial<n, d>();
+	constexpr auto fast_factorial = f_fast_factorial<n, d>();
 
 /***********************************************************************************************************************/
 

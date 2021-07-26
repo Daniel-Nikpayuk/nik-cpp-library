@@ -34,11 +34,14 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_at()
 	{
-		constexpr auto c = controller_module::template drop_s_block__contr<machine_name::first>;
-		constexpr auto j = machine_module::block_max_index2(n);
-		constexpr auto i = n + j;
+		constexpr auto i	= _one;
+		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template stop<n>
+					>;
 
-		return machine_module::template start<block_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -55,11 +58,15 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_right()
 	{
-		constexpr auto c = controller_module::template drop_s_block__contr<machine_name::pack>;
-		constexpr auto j = machine_module::block_max_index2(n);
-		constexpr auto i = n + j;
+		constexpr auto i	= _one;
+		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template drop_s_segment<n>,
+						machine_module::template pack<>
+					>;
 
-		return machine_module::template start<block_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -82,14 +89,15 @@ private:
 	template<auto d, auto pos, auto... Vs>
 	static constexpr auto f_erase()
 	{
-		constexpr auto c	= controller_module::template erase_contr
-					<
-						pos, controller_module::template pack<>
-					>;
-		constexpr auto i	= _zero;
+		constexpr auto i	= _one;
 		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template erase<pos>,
+						machine_module::template pack<>
+					>;
 
-		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -106,14 +114,15 @@ private:
 	template<auto d, auto pos, auto obj, auto... Vs>
 	static constexpr auto f_insert()
 	{
-		constexpr auto c	= controller_module::template insert_contr
-					<
-						pos, obj, controller_module::template pack<>
-					>;
-		constexpr auto i	= _zero;
+		constexpr auto i	= _one;
 		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template insert<pos, obj>,
+						machine_module::template pack<>
+					>;
 
-		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -130,14 +139,15 @@ private:
 	template<auto d, auto pos, auto obj, auto... Vs>
 	static constexpr auto f_replace()
 	{
-		constexpr auto c	= controller_module::template replace_contr
-					<
-						pos, obj, controller_module::template pack<>
-					>;
-		constexpr auto i	= _zero;
+		constexpr auto i	= _one;
 		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template replace<pos, obj>,
+						machine_module::template pack<>
+					>;
 
-		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -154,14 +164,17 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_left()
 	{
-		constexpr auto c	= controller_module::template left_contr
-					<
-						n, controller_module::template pack<>
-					>;
+		constexpr auto i	= _one;
 		constexpr auto j	= _zero;
-		constexpr auto i	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template move_s_segment__insert_at_h1_back<n>,
+						machine_module::template drop_s_all<>,
+						machine_module::template move_h1_all__insert_at_s_front<>,
+						machine_module::template pack<>
+					>;
 
-		return machine_module::template start<permutatic_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
 	}
 
 public:
@@ -181,19 +194,18 @@ private:
 		constexpr auto length = sizeof...(Vs);
 
 		if constexpr (length == 0) return V0;
-		else
-		{
-			constexpr auto c	= controller_module::template roll__contr
-						<
-							controller_module::template stop<_zero>
-						>;
-			constexpr auto i	= _zero;
-			constexpr auto j	= _zero;
 
-			return machine_module::template
-				start<permutatic_machine, c, d, i, j, V0, Vs...>
-					(functor_module::template U_pack_Vs<length, uact>);
-		}
+		constexpr auto i	= _one;
+		constexpr auto j	= _zero;
+		constexpr auto c	= machine_module::template label
+					<
+						machine_module::template roll_s_segment__replace_at_s_front<length>,
+						machine_module::template first<>
+					>;
+
+		return machine_module::template
+			start<linear_machine, c, d, i, j, V0, Vs...>
+				(functor_module::template U_pack_Vs<length, uact>);
 	}
 
 public:

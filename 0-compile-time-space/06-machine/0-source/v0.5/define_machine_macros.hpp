@@ -180,12 +180,12 @@
 
 /***********************************************************************************************************************/
 
-// move stack block, insert at heap zero back (2^N):
+// move stack block, insert at heap zero front (2^N):
 
-	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(_n_)							\
+	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_s_block__insert_at_h0_back, _n_, filler...>					\
+		struct machine<MN::move_s_block__insert_at_h0_front, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -194,7 +194,7 @@
 			>												\
 			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
 			{												\
-				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);	\
+				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, Hs...);	\
 			}												\
 		}
 
@@ -221,12 +221,12 @@
 
 /***********************************************************************************************************************/
 
-// copy stack block, insert at heap zero back (2^N):
+// copy stack block, insert at heap zero front (2^N):
 
-	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK(_n_)							\
+	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::copy_s_block__insert_at_h0_back, _n_, filler...>					\
+		struct machine<MN::copy_s_block__insert_at_h0_front, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -239,7 +239,31 @@
 															\
 					NIK_2_ ## _n_ ## _VS, Vs...							\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
+				NIK_END_MACHINE(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, Hs...);			\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// copy stack block, insert at heap one back (2^N):
+
+	#define NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H1_BACK(_n_)							\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::copy_s_block__insert_at_h1_back, _n_, filler...>					\
+		{													\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs,				\
+				typename Heap0, auto... Ws, typename... Heaps						\
+			>												\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
+			{												\
+				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
+															\
+					NIK_2_ ## _n_ ## _VS, Vs...							\
+															\
+				NIK_END_MACHINE(H0, U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
 			}												\
 		}
 
@@ -290,12 +314,12 @@
 
 /***********************************************************************************************************************/
 
-// copy stack position, insert at heap zero back (optimization):
+// copy stack position, insert at heap zero front (optimization):
 
-	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(_s_, _n_)							\
+	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(_s_, _n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::copy_s_pos__insert_at_h0_back, _n_, filler...>					\
+		struct machine<MN::copy_s_pos__insert_at_h0_front, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
@@ -308,97 +332,121 @@
 															\
 					NIK_ ## _s_ ## _FAST_VS, Vs...							\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);					\
+				NIK_END_MACHINE(U_opt_pack_Vs<V ## _n_, Ws...>, Hs...);					\
 			}												\
 		}
 
 /***********************************************************************************************************************/
 
-// move heap zero all, insert at stack position (optimization):
+// copy stack position, insert at heap one back (optimization):
 
-	#define NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(_n_, _c_)							\
+	#define NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(_s_, _n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_h0_all__insert_at_s_pos, _n_, filler...>					\
+		struct machine<MN::copy_s_pos__insert_at_h1_back, _n_, filler...>					\
+		{													\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
+				typename Heap0, auto... Ws, typename... Heaps						\
+			>												\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
+			{												\
+				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
+															\
+					NIK_ ## _s_ ## _FAST_VS, Vs...							\
+															\
+				NIK_END_MACHINE(H0, U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);				\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// move heap zero first, insert at stack position (optimization):
+
+	#define NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(_n_, _c_)							\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::move_h0_first__insert_at_s_pos, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_ ## _n_ ## _FAST_AUTO_VS  NIK_ ## _c_ ## _COMMA  auto... Vs,	\
-				auto... Ws, typename... Heaps								\
+				auto W0, auto... Ws, typename... Heaps							\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
+			static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)			\
 			{												\
 				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
 															\
-					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Ws..., Vs...			\
+					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  W0, Vs...			\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
+				NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, Hs...);						\
 			}												\
 		}
 
 /***********************************************************************************************************************/
 
-// move heap zero all, replace at stack position (optimization):
+// move heap zero first, replace at stack position (optimization):
 
-	#define NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
+	#define NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_h0_all__replace_at_s_pos, _n_, filler...>					\
+		struct machine<MN::move_h0_first__replace_at_s_pos, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto... Ws, typename... Heaps								\
+				auto W0, auto... Ws, typename... Heaps							\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
+			static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)			\
 			{												\
 				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
 															\
-					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Ws..., Vs...			\
+					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  W0, Vs...			\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
+				NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, Hs...);						\
 			}												\
 		}
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, move, replace at stack position (optimization):
+// apply heap one all, move, replace at stack position (optimization):
 
-	#define NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
+	#define NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)						\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::apply_h0_all__move__replace_at_s_pos, _n_, filler...>				\
+		struct machine<MN::apply_h1_all__move__replace_at_s_pos, _n_, filler...>				\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto op, auto... args, typename... Heaps						\
+				typename Heap0, auto op, auto... args, typename... Heaps				\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<op, args...>*), Heaps... Hs)			\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<op, args...>*), Heaps... Hs)		\
 			{												\
 				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
 															\
 					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  op(args...), Vs...		\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
+				NIK_END_MACHINE(H0, U_opt_pack_Vs<>, Hs...);						\
 			}												\
 		}
 
 /***********************************************************************************************************************/
 
-// compel heap zero all, move, replace at stack position (optimization):
+// compel heap one all, move, replace at stack position (optimization):
 
-	#define NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)					\
+	#define NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(_s_, _n_, _c_)					\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::compel_h0_all__move__replace_at_s_pos, _n_, filler...>				\
+		struct machine<MN::compel_h1_all__move__replace_at_s_pos, _n_, filler...>				\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto act, auto... args, typename... Heaps						\
+				typename Heap0, auto act, auto... args, typename... Heaps				\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)			\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<act, args...>*), Heaps... Hs)	\
 			{												\
 				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
 															\
@@ -406,7 +454,7 @@
 															\
 					T_type_U<act>::template result<args...>, Vs...					\
 															\
-				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
+				NIK_END_MACHINE(H0, U_opt_pack_Vs<>, Hs...);						\
 			}												\
 		}
 

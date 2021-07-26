@@ -81,7 +81,7 @@ private:
 	template<template<auto...> class ListName, auto... Vs>
 	static constexpr auto f_name(void(*)(ListName<Vs...>*))
 	{
-		return template_pack<ListName>;
+		return functor_module::template U_pack_Cs<ListName>;
 	}
 
 public:

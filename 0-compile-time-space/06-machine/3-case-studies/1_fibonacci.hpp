@@ -21,7 +21,7 @@
 
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
-	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -52,9 +52,9 @@
 			index_type c_2			= 6,
 			index_type cont			= 7
 	>
-	constexpr auto fib_contr = r_controller
+	constexpr auto fib_contr = controller
 	<
-		r_label // fib loop:
+		label // fib loop:
 		<
 			test         < less_than        , n          , c_2       >,
 			branch       < immediate_answer                          >,
@@ -65,7 +65,7 @@
 			goto_label   < fib_loop                                  >
 		>,
 
-		r_label // after fib n 1:
+		label // after fib n 1:
 		<
 			restore      < n                     >,
 			restore      < cont                  >,
@@ -76,7 +76,7 @@
 			goto_label   < fib_loop              >
 		>,
 
-		r_label // after fib n 2:
+		label // after fib n 2:
 		<
 			replace    < n    , val           >,
 			restore    < val                  >,
@@ -85,13 +85,13 @@
 			goto_using < cont                 >
 		>,
 
-		r_label // immediate answer:
+		label // immediate answer:
 		<
 			replace    < val  , n >,
 			goto_using < cont     >
 		>,
 
-		r_label // fib done:
+		label // fib done:
 		<
 			stop       < val       >,
 			reg_size   < _eight    >
@@ -101,14 +101,14 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d>
-	constexpr auto f_r_fibonacci()
+	constexpr auto f_fibonacci()
 	{
 		using n_type = decltype(n);
 
 		constexpr n_type val		= _one;
-		constexpr auto lt_op		= less_than<n_type, n_type>;
-		constexpr auto add_op		= add<n_type, n_type>;
-		constexpr auto sub_op		= subtract<n_type, n_type>;
+		constexpr auto lt_op		= nik_function_S_less_than::template result<n_type, n_type>;
+		constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
+		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
 		constexpr n_type c_1		= _one;
 		constexpr n_type c_2		= _two;
 		constexpr index_type cont	= _five;
@@ -124,13 +124,13 @@
 	}
 
 	template<auto n, depth_type d = 500>
-	constexpr auto r_fibonacci = f_r_fibonacci<n, d>();
+	constexpr auto fibonacci = f_fibonacci<n, d>();
 
 /***********************************************************************************************************************/
 
 // perf:
 
-//		printf("%llu\n", r_fibonacci<utype(5)>);
+//		printf("%llu\n", fibonacci<utype(5)>);
 
 //			gcc compile time:		gcc run time:
 //			                                
@@ -148,7 +148,7 @@
 //			user	0m2.722s                user	0m0.001s
 //			sys	0m0.160s                sys	0m0.000s
 
-//		printf("%llu\n", r_fibonacci<utype(13)>);
+//		printf("%llu\n", fibonacci<utype(13)>);
 
 //			gcc compile time:		gcc run time:
 //			                                
@@ -166,7 +166,7 @@
 //			user	1m58.793s               user	0m0.000s
 //			sys	0m3.142s                sys	0m0.001s
 
-//		printf("%llu\n", r_fibonacci<utype(14)>);
+//		printf("%llu\n", fibonacci<utype(14)>);
 
 //			gcc compile time:		gcc run time:
 //			                                

@@ -255,7 +255,7 @@ public:
 		static constexpr auto subname(label_type l, index_type, index_type j)
 			{ return l[j][CallInstr::subname]; }
 
-		static constexpr index_type call_pos(label_type l, index_type, index_type j)
+		static constexpr index_type subpos(label_type l, index_type, index_type j)
 			{ return l[j][BlockInstr::pos]; }
 
 	// linear:
@@ -312,83 +312,30 @@ public:
 	// modularizing assign, save, restore, is better design, but given
 	// compile time performance constraints optimization is privileged.
 
-/*
 	struct RD
 	{
-	// reg size:
+	// block:
 
-		static constexpr index_type reg_size (rc_type c, index_type, index_type)
-			{ return RC::reg_size(c); }
+		static constexpr auto subname(contr_type c, index_type, index_type j)
+			{ return c[ML::first][j][CallInstr::subname]; }
+
+		static constexpr index_type subpos(contr_type c, index_type, index_type j)
+			{ return c[ML::first][j][BlockInstr::pos]; }
+
+	// linear:
+
+		static constexpr index_type subnote(contr_type c, index_type, index_type j)
+			{ return c[ML::first][j][CallInstr::subnote]; }
+
+		static constexpr instr_type subinstr(contr_type c, index_type, index_type j)
+			{ return c[ML::first][j]; }
+
+	// register:
+
+		static constexpr index_type pos(contr_type c, index_type i, index_type j)
+			{ return c[i][j][MI::pos]; }
 
 	// iterators:
-
-		// basics:
-
-		static constexpr index_type basic_next_index1(rc_type c, index_type i, index_type j)
-		{
-			return i + bool{j == RL::length(c[i])};	// j == last : return i+1.
-								// j != last : return i.
-		}
-
-		static constexpr index_type basic_next_index2(rc_type c, index_type i, index_type j)
-		{
-			return (j == RL::length(c[i])) ? _one : j+1;	// j == last : return one.
-									// j != last : return j+1.
-		}
-
-	// index1:
-
-		static constexpr index_type next_index1(rc_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return i;
-
-			index_type ni	= basic_next_index1(c, i, j);
-			index_type nj	= basic_next_index2(c, i, j);
-			key_type name	= c[ni][nj][RA::name];
-			key_type note	= c[ni][nj][RA::note];
-
-			if (name == MN::go_to && note == MD::contr)	return c[ni][nj][RA::pos];
-			else 						return ni;
-		}
-
-	// index2:
-
-		static constexpr index_type next_index2(rc_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return j;
-
-			index_type ni	= basic_next_index1(c, i, j);
-			index_type nj	= basic_next_index2(c, i, j);
-			key_type name	= c[ni][nj][RA::name];
-			key_type note	= c[ni][nj][RA::note];
-
-			if (name == MN::go_to && note == MD::contr)	return _one;
-			else						return nj;
-		}
-
-	// name:
-
-		static constexpr key_type next_name(rc_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return MN::pause;
-
-			index_type ni = next_index1(c, d, i, j);
-			index_type nj = next_index2(c, d, i, j);
-
-			return c[ni][nj][RA::name];
-		}
-
-	// note:
-
-		static constexpr key_type next_note(rc_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return _zero;
-
-			index_type ni = next_index1(c, d, i, j);
-			index_type nj = next_index2(c, d, i, j);
-
-			return c[ni][nj][RA::note];
-		}
 
 	// depth:
 
@@ -397,8 +344,89 @@ public:
 			if (d > 0)	return d-1;
 			else 		return d;
 		}
+
+		// basics:
+
+	//	static constexpr index_type basic_next_index1(contr_type c, index_type i, index_type j)
+	//	{
+	//		return i + bool{j == RL::length(c[i])};	// j == last : return i+1.
+	//							// j != last : return i.
+	//	}
+
+	//	static constexpr index_type basic_next_index2(contr_type c, index_type i, index_type j)
+	//	{
+	//		return (j == RL::length(c[i])) ? _one : j+1;	// j == last : return one.
+	//								// j != last : return j+1.
+	//	}
+
+	// index1:
+
+		static constexpr index_type next_index1(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return i;
+			else        return i + bool{j == ML::length(c[i])};	// j == last : return i+1.
+										// j != last : return i.
+		}
+
+	//	static constexpr index_type next_index1(contr_type c, depth_type d, index_type i, index_type j)
+	//	{
+	//		if (d == 0) return i;
+
+	//		index_type ni	= basic_next_index1(c, i, j);
+	//		index_type nj	= basic_next_index2(c, i, j);
+	//		key_type name	= c[ni][nj][MI::name];
+	//		key_type note	= c[ni][nj][MI::note];
+
+	//		if (name == MN::go_to && note == MD::contr)	return c[ni][nj][MI::pos];
+	//		else 						return ni;
+	//	}
+
+	// index2:
+
+		static constexpr index_type next_index2(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return j;
+			else        return (j == ML::length(c[i])) ? _one : j+1;	// j == last : return one.
+											// j != last : return j+1.
+		}
+
+	//	static constexpr index_type next_index2(contr_type c, depth_type d, index_type i, index_type j)
+	//	{
+	//		if (d == 0) return j;
+
+	//		index_type ni	= basic_next_index1(c, i, j);
+	//		index_type nj	= basic_next_index2(c, i, j);
+	//		key_type name	= c[ni][nj][MI::name];
+	//		key_type note	= c[ni][nj][MI::note];
+
+	//		if (name == MN::go_to && note == MD::contr)	return _one;
+	//		else						return nj;
+	//	}
+
+	// name:
+
+		static constexpr key_type next_name(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return MN::pause;
+
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
+
+			return c[ni][nj][MI::name];
+		}
+
+	// note:
+
+		static constexpr key_type next_note(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return _zero;
+
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
+
+			return c[ni][nj][MI::note];
+		}
 	};
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -480,7 +508,7 @@ private:
 		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
 			constexpr auto nc	= block_controller<n::subname(c, i, j)>::template result<>;
-			constexpr auto pos	= n::call_pos(c, i, j);
+			constexpr auto pos	= n::subpos(c, i, j);
 			constexpr auto nj	= nn::max_index2(pos);
 			constexpr auto ni	= pos + nj;
 			constexpr auto un	= U_type_T<n>;
@@ -665,12 +693,11 @@ private:
 	{
 		static_assert(bool(d), "machine trampolining nesting depth exceeded.");
 
-		using n = T_type_U<un>;
+		using n			= T_type_U<un>;
+		constexpr auto result	= NIK_MACHINE(n, c, d, i, j)(Hs...);
 
-		constexpr auto result = NIK_MACHINE(n, c, d, i, j)(Hs...);
-
-		if constexpr (is_trampoline_pair(result))	return machine_trampoline<d-1>(result.sc, result.hc);
-		else						return result;
+		if constexpr (is_trampoline_pair(result)) return machine_trampoline<d-1>(result.sc, result.hc);
+		else                                      return result;
 	}
 
 /***********************************************************************************************************************/
@@ -688,8 +715,8 @@ public:
 	{
 		constexpr auto result = NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws...>, U_opt_pack_Vs<Xs...>);
 
-		if constexpr (is_trampoline_pair(result))	return machine_trampoline<d>(result.sc, result.hc);
-		else						return result;
+		if constexpr (is_trampoline_pair(result)) return machine_trampoline<d>(result.sc, result.hc);
+		else                                      return result;
 	}
 
 /***********************************************************************************************************************/

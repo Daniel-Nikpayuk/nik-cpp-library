@@ -19,6 +19,18 @@
 
 // machines source:
 
+	// Heap policy:
+
+		// Heap zero:
+
+			// Stores and moves single objects.
+			// Privileges front mutations.
+
+		// Heap one:
+
+			// Stores and moves entire packs.
+			// Privileges back mutations.
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -118,44 +130,47 @@ public:
 
 			// stack -> heap:
 
-			static constexpr key_type move_s_block__insert_at_h0_back		= 19; // <mutators>
+			static constexpr key_type move_s_block__insert_at_h0_front		= 19; // <mutators>
 			static constexpr key_type move_s_block__insert_at_h1_back		= 20; // <mutators>
-			static constexpr key_type move_s_first__replace_h0_value		= 21; // <near linear>
+			static constexpr key_type move_s_first__replace_at_h1_value		= 21; // <near linear>
 
-			static constexpr key_type copy_s_block__insert_at_h0_back		= 22; // <mutators>
-			static constexpr key_type copy_s_pos__insert_at_h0_back			= 23; // opt, <mutators>
+			static constexpr key_type copy_s_block__insert_at_h0_front		= 22; // <mutators>
+			static constexpr key_type copy_s_block__insert_at_h1_back		= 23; // <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h0_front		= 24; // opt, <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h1_back			= 25; // opt, <mutators>
 
 			// heap -> stack:
 
-			static constexpr key_type move_h0_all__insert_at_s_front		= 24; // <mutators>
-			static constexpr key_type move_h0_all__insert_at_s_pos			= 25; // opt, <mutators>
-			static constexpr key_type move_h0_all__replace_at_s_pos			= 26; // opt, <mutators>
-			static constexpr key_type move_h0_all__pack_at_s_front			= 27; // <near linear>
+			static constexpr key_type move_h0_first__insert_at_s_front		= 26; // <mutators>
+			static constexpr key_type move_h0_first__insert_at_s_pos		= 27; // opt, <mutators>
+			static constexpr key_type move_h0_first__replace_at_s_pos		= 28; // opt, <mutators>
+			static constexpr key_type move_h0_first__insert_at_h2_value		= 29; // <machine>
 
-			static constexpr key_type move_h1_all__insert_at_s_front		= 28; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_s_front		= 30; // <mutators>
+			static constexpr key_type move_h1_all__pack_at_s_front			= 31; // <near linear>
 
-			static constexpr key_type apply_h0_all__move__insert_at_s_front		= 29; // <machine>
-			static constexpr key_type apply_h0_all__replace_h0_all			= 30; // <machine>
-			static constexpr key_type apply_h0_all__move__replace_at_s_pos		= 31; // opt, <machine>
+			static constexpr key_type move_h2_all__insert_at_h0_front		= 32; // <machine>
 
-			static constexpr key_type compel_h0_all__move__insert_at_s_front	= 32; // <machine>
-			static constexpr key_type compel_h0_all__replace_h0_all			= 33; // <machine>
-			static constexpr key_type compel_h0_all__move__replace_at_s_pos		= 34; // opt, <machine>
+			static constexpr key_type apply_h1_all__move__insert_at_h0_front	= 33; // <machine>
+			static constexpr key_type apply_h1_all__move__replace_at_s_pos		= 34; // opt, <machine>
+
+			static constexpr key_type compel_h1_all__move__insert_at_h0_front	= 35; // <machine>
+			static constexpr key_type compel_h1_all__move__replace_at_s_pos		= 36; // opt, <machine>
 
 		// interposers:
 
-			static constexpr key_type skip						= 35; // <near linear>
-			static constexpr key_type branch					= 36; // <machine>
-			static constexpr key_type go_to						= 37; // <machine>
+			static constexpr key_type skip						= 37; // <near linear>
+			static constexpr key_type branch					= 38; // <machine>
+			static constexpr key_type go_to						= 39; // <machine>
 
-			static constexpr key_type pass						= 38; // <machine>
-			static constexpr key_type block						= 39;
-			static constexpr key_type linear					= 40;
-			static constexpr key_type call						= 41; // <machine>
+			static constexpr key_type pass						= 40; // <machine>
+			static constexpr key_type block						= 41;
+			static constexpr key_type linear					= 42;
+			static constexpr key_type call						= 43; // <machine>
 
 		// reflection:
 
-			static constexpr key_type reg_size					= 42;
+			static constexpr key_type reg_size					= 44;
 	};
 
 	using MN = MachineName;
@@ -569,18 +584,18 @@ private:
 
 /***********************************************************************************************************************/
 
-// move stack block, insert at heap zero back (2^N):
+// move stack block, insert at heap zero front (2^N):
 
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(0);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(1);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(2);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(3);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(4);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(5);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(6);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(7);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(8);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_BACK(9);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(0);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(1);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(2);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(3);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(4);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(5);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(6);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(7);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(8);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(9);
 
 /***********************************************************************************************************************/
 
@@ -599,40 +614,59 @@ private:
 
 /***********************************************************************************************************************/
 
-// move stack first, replace heap zero value:
+// move stack first, replace heap one value:
 
 	template<key_type... filler>
-	struct machine<MN::move_s_first__replace_h0_value, _zero, filler...>
+	struct machine<MN::move_s_first__replace_at_h1_value, _zero, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, typename Heap0, typename... Heaps>
-		static constexpr auto result(Heap0 H0, Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, NIK_FIXED_HEAP_PARAMS, typename... Heaps>
+		static constexpr auto result(NIK_FIXED_HEAP_SIG_ARGS, Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
 				Vs...
 
-			NIK_END_MACHINE(V0, Hs...);
+			NIK_END_MACHINE(H0, V0, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// copy stack block, insert at heap zero back (2^N):
+// copy stack block, insert at heap zero front (2^N):
 
-	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK(0);
+	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(0);
 
 /***********************************************************************************************************************/
 
-// copy stack position, insert at heap zero back (optimization):
+// copy stack position, insert at heap zero front (optimization):
 
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(1, 0);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(2, 1);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(3, 2);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(4, 3);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(5, 4);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(6, 5);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(7, 6);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(8, 7);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(1, 0);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(2, 1);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(3, 2);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(4, 3);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(5, 4);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(6, 5);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(7, 6);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(8, 7);
+
+/***********************************************************************************************************************/
+
+// copy stack block, insert at heap one back (2^N):
+
+	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H1_BACK(0);
+
+/***********************************************************************************************************************/
+
+// copy stack position, insert at heap one back (optimization):
+
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(1, 0);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(2, 1);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(3, 2);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(4, 3);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(5, 4);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(6, 5);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(7, 6);
+	NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK(8, 7);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -641,67 +675,67 @@ private:
 
 /***********************************************************************************************************************/
 
-// move heap zero all, insert at stack front:
+// move heap zero first, insert at stack front:
 
 	template<key_type... filler>
-	struct machine<MN::move_h0_all__insert_at_s_front, _zero, filler...>
+	struct machine<MN::move_h0_first__insert_at_s_front, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, typename... Heaps
+			auto W0, auto... Ws, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
+		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
-				Ws..., Vs...
+				W0, Vs...
 
-			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// move heap zero all, insert at stack position (optimization):
+// move heap zero first, insert at stack position (optimization):
 
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(0, 0);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(1, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(2, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(3, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(4, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(5, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(6, 1);
-	NIK_DEFINE__MOVE_H0_ALL__INSERT_AT_S_POS(7, 1);
-
-/***********************************************************************************************************************/
-
-// move heap zero all, replace at stack position (optimization):
-
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(1, 0, 0);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(2, 1, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(3, 2, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(4, 3, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(5, 4, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(6, 5, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(7, 6, 1);
-	NIK_DEFINE__MOVE_H0_ALL__REPLACE_AT_S_POS(8, 7, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(0, 0);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(1, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(2, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(3, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(4, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(5, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(6, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(7, 1);
 
 /***********************************************************************************************************************/
 
-// move heap zero all, pack at stack front:
+// move heap zero first, replace at stack position (optimization):
+
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(1, 0, 0);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(2, 1, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(3, 2, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(4, 3, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(5, 4, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(6, 5, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(7, 6, 1);
+	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(8, 7, 1);
+
+/***********************************************************************************************************************/
+
+// move heap zero first, insert at heap two value:
 
 	template<key_type... filler>
-	struct machine<MN::move_h0_all__pack_at_s_front, _zero, filler...>
+	struct machine<MN::move_h0_first__insert_at_h2_value, _zero, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto W0, auto... Ws, typename Heap1, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heaps... Hs)
 		{
-			return NIK_BEGIN_MACHINE(n, c, d, i, j)
-
-				U_opt_pack_Vs<Ws...>, Vs...
-
-			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws...>, H1, U_opt_pack_Vs<W0>, Hs...);
 		}
 	};
 
@@ -729,110 +763,116 @@ private:
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, move, insert at stack front:
+// move heap one all, pack at stack front:
 
 	template<key_type... filler>
-	struct machine<MN::apply_h0_all__move__insert_at_s_front, _zero, filler...>
+	struct machine<MN::move_h1_all__pack_at_s_front, _zero, filler...>
 	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto op, auto... args, typename... Heaps
-		>
-		static constexpr auto result(void(*H0)(auto_pack<op, args...>*), Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, auto... Ws, typename... Heaps>
+		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(n, c, d, i, j)
 
-				op(args...), Vs...
+				U_opt_pack_Vs<Ws...>, Vs...
 
-			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
+			NIK_END_MACHINE(H0, U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, replace heap zero all:
+// move heap two all, insert at heap zero front:
 
 	template<key_type... filler>
-	struct machine<MN::apply_h0_all__replace_h0_all, _zero, filler...>
+	struct machine<MN::move_h2_all__insert_at_h0_front, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto op, auto... args, typename... Heaps
+			auto... Ws, typename Heap1, auto... Xs, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<op, args...>*), Heaps... Hs)
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*), Heap1 H1, void(*H2)(auto_pack<Xs...>*), Heaps... Hs
+		)
 		{
-			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<op(args...)>, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Xs..., Ws...>, H1, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// apply heap zero all, move, replace at stack position (optimization):
-
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(4, 3, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(5, 4, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
-	NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
-
-/***********************************************************************************************************************/
-
-// compel heap zero all, move, insert at stack front:
+// apply heap one all, move, insert at heap zero front:
 
 	template<key_type... filler>
-	struct machine<MN::compel_h0_all__move__insert_at_s_front, _zero, filler...>
+	struct machine<MN::apply_h1_all__move__insert_at_h0_front, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto act, auto... args, typename... Heaps
+			auto... Ws, auto op, auto... args, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*), void(*H1)(auto_pack<op, args...>*), Heaps... Hs
+		)
 		{
-			return NIK_BEGIN_MACHINE(n, c, d, i, j)
-
-				T_type_U<act>::template result<args...>, Vs...
-
-			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<op(args...), Ws...>, U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// compel heap zero all, replace heap zero all:
+// apply heap one all, move, replace at stack position (optimization):
+
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(4, 3, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(5, 4, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
+	NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
+
+/***********************************************************************************************************************/
+
+// compel heap one all, move, insert at heap zero front:
 
 	template<key_type... filler>
-	struct machine<MN::compel_h0_all__replace_h0_all, _zero, filler...>
+	struct machine<MN::compel_h1_all__move__insert_at_h0_front, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto act, auto... args, typename... Heaps
+			auto... Ws, auto act, auto... args, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*), void(*H1)(auto_pack<act, args...>*), Heaps... Hs
+		)
 		{
-			return NIK_MACHINE(n, c, d, i, j)
-				(U_opt_pack_Vs<T_type_U<act>::template result<args...>>, Hs...);
+			constexpr auto nH0	= U_opt_pack_Vs
+						<
+							T_type_U<act>::template result<args...>,
+							Ws...
+						>;
+
+			return NIK_MACHINE(n, c, d, i, j)(nH0, U_opt_pack_Vs<>, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// compel heap zero all, move, replace at stack position (optimization):
+// compel heap one all, move, replace at stack position (optimization):
 
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(4, 3, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(5, 4, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
-	NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(1, 0, 0);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(2, 1, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(3, 2, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(4, 3, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(5, 4, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(6, 5, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(7, 6, 1);
+	NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS(8, 7, 1);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

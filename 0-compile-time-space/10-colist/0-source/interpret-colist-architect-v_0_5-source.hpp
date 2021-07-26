@@ -48,9 +48,9 @@ private:
 			index_type cond		= 6,
 			index_type func		= 7
 	>
-	static constexpr auto colist_contr = r_controller
+	static constexpr auto colist_contr = controller
 	<
-		r_label // loop:
+		label // loop:
 		<
 			test       < is_zero  , length            >,
 			branch     < fail                         >,
@@ -62,12 +62,12 @@ private:
 			goto_label < loop                         >
 		>,
 
-		r_label // fail:
+		label // fail:
 		<
 			stop       < def_val                      >
 		>,
 
-		r_label // done:
+		label // done:
 		<
 			compel     < func_val , func , func_val   >,
 			stop       < func_val                     >,

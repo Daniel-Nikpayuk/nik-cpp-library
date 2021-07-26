@@ -40,12 +40,10 @@ namespace nik
 
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, clang, static, name)
 
-		using controller_module		= nik_module(interpret, controller, architect, v_0_5, clang);
-		using machine_name		= typename controller_module::MN;
+		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
+		using machine_module	= nik_module(interpret, machine, architect, v_0_5, clang);
 
-		using machine_module		= nik_module(interpret, machine, architect, v_0_5, clang);
-		using block_machine		= typename machine_module::BD;
-		using permutatic_machine	= typename machine_module::PD;
+		using linear_machine	= typename machine_module::LD;
 
 		#include"interpret-pack-architect-v_0_5-source.hpp"
 
