@@ -227,9 +227,9 @@ public:
 		>;
 
 		template<key_type Note = _zero>
-		static constexpr instr_type move_h0_first__insert_at_h2_value = instruction
+		static constexpr instr_type move_h0_first__insert_at_h3_value = instruction
 		<
-			MN::move_h0_first__insert_at_h2_value, Note
+			MN::move_h0_first__insert_at_h3_value, Note
 
 		>;
 
@@ -246,9 +246,9 @@ public:
 		>;
 
 		template<key_type Note = _zero>
-		static constexpr instr_type move_h2_all__insert_at_h0_front = instruction
+		static constexpr instr_type move_h3_all__insert_at_h0_front = instruction
 		<
-			MN::move_h2_all__insert_at_h0_front, Note
+			MN::move_h3_all__insert_at_h0_front, Note
 		>;
 
 		template<key_type Note = _zero>
@@ -283,10 +283,10 @@ public:
 			MN::skip, Note
 		>;
 
-		template<index_type Pos, key_type Note = _zero>
-		static constexpr instr_type branch = instruction
+		template<index_type Val, key_type Note = _zero>
+		static constexpr instr_type branch = instruction // shifts label value:
 		<
-			MN::branch, Note, Pos
+			MN::branch, Note, Val+1
 		>;
 
 		template<key_type Note = PT::recall>
@@ -295,16 +295,16 @@ public:
 			MN::pass, Note
 		>;
 
-		template<key_type Name, index_type... Vs>
+		template<key_type SubName, index_type... Vs>
 		static constexpr instr_type block = instruction
 		<
-			MN::block, _zero, Name, Vs...
+			MN::block, _zero, SubName, _zero, Vs...
 		>;
 
-		template<key_type Name, index_type... Vs>
+		template<key_type SubName, key_type SubNote, index_type... Vs>
 		static constexpr instr_type linear = instruction
 		<
-			MN::linear, CallInstr::patch(sizeof...(Vs)), Name, _zero, Vs...
+			MN::linear, CallInstr::patch(sizeof...(Vs)), SubName, SubNote, Vs...
 		>;
 
 		template<key_type Name, index_type... Vs>
@@ -527,19 +527,19 @@ public:
 
 		// register:
 
-			static constexpr index_type go_to					= 16;
-			static constexpr index_type go_to_label					= 17;
+			static constexpr index_type go_to					= 15;
+			static constexpr index_type go_to_label					= 16;
 
-			static constexpr index_type assign_label				= 18;
+			static constexpr index_type assign_label				= 17;
 
-			static constexpr index_type save					= 19;
-			static constexpr index_type restore					= 20;
+			static constexpr index_type save					= 18;
+			static constexpr index_type restore					= 19;
 
-			static constexpr index_type test					= 21;
-			static constexpr index_type check					= 22;
+			static constexpr index_type test					= 20;
+			static constexpr index_type check					= 21;
 
-			static constexpr index_type apply					= 23;
-			static constexpr index_type compel					= 24;
+			static constexpr index_type apply					= 22;
+			static constexpr index_type compel					= 23;
 
 		// constants:
 
@@ -683,8 +683,7 @@ public:
 		static constexpr instr_type f_drop_s_pos()
 		{
 			if constexpr (MI::is_opt(Pos)) return drop_s_pos_opt<Pos>;
-
-			return linear<LN::drop_s_pos, Pos>;
+			else return linear<LN::drop_s_pos, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -696,8 +695,7 @@ public:
 		static constexpr instr_type f_move_s_pos__insert_at_s_back()
 		{
 			if constexpr (MI::is_opt(Pos)) return move_s_pos__insert_at_s_back_opt<Pos>;
-
-			return linear<LN::move_s_pos__insert_at_s_back, Pos>;
+			else return linear<LN::move_s_pos__insert_at_s_back, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -709,8 +707,7 @@ public:
 		static constexpr instr_type f_copy_s_pos__insert_at_h0_front()
 		{
 			if constexpr (MI::is_opt(Pos)) return copy_s_pos__insert_at_h0_front_opt<Pos>;
-
-			return linear<LN::copy_s_pos__insert_at_h0_front, Pos>;
+			else return linear<LN::copy_s_pos__insert_at_h0_front, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -722,8 +719,7 @@ public:
 		static constexpr instr_type f_copy_s_pos__insert_at_h1_back()
 		{
 			if constexpr (MI::is_opt(Pos)) return copy_s_pos__insert_at_h1_back_opt<Pos>;
-
-			return linear<LN::copy_s_pos__insert_at_h1_back, Pos>;
+			else return linear<LN::copy_s_pos__insert_at_h1_back, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -735,8 +731,7 @@ public:
 		static constexpr instr_type f_move_h0_first__insert_at_s_pos()
 		{
 			if constexpr (MI::is_opt(Pos)) return move_h0_first__insert_at_s_pos_opt<Pos>;
-
-			return linear<LN::move_h0_first__insert_at_s_pos, Pos>;
+			else return linear<LN::move_h0_first__insert_at_s_pos, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -748,8 +743,7 @@ public:
 		static constexpr instr_type f_move_h0_first__replace_at_s_pos()
 		{
 			if constexpr (MI::is_opt(Pos)) return move_h0_first__replace_at_s_pos_opt<Pos>;
-
-			return linear<LN::move_h0_first__replace_at_s_pos, Pos>;
+			else return linear<LN::move_h0_first__replace_at_s_pos, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -761,8 +755,7 @@ public:
 		static constexpr instr_type f_apply_h1_all__move__replace_at_s_pos()
 		{
 			if constexpr (MI::is_opt(Pos)) return apply_h1_all__move__replace_at_s_pos_opt<Pos>;
-
-			return linear<LN::apply_h1_all__move__replace_at_s_pos, Pos>;
+			else return linear<LN::apply_h1_all__move__replace_at_s_pos, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -775,8 +768,7 @@ public:
 		static constexpr instr_type f_compel_h1_all__move__replace_at_s_pos()
 		{
 			if constexpr (MI::is_opt(Pos)) return compel_h1_all__move__replace_at_s_pos_opt<Pos>;
-
-			return linear<LN::compel_h1_all__move__replace_at_s_pos, Pos>;
+			else return linear<LN::compel_h1_all__move__replace_at_s_pos, _zero, Pos>;
 		}
 
 		template<index_type Pos>
@@ -865,7 +857,7 @@ public:
 			// goto label exists for use in linear controllers,
 			// but is optimized away for the register dispatcher.
 
-			template<index_type Pos>
+			template<key_type...>
 			static constexpr label_type result = label
 			<
 				instruction<MN::pass, PT::reindex>
@@ -890,7 +882,7 @@ public:
 			static constexpr label_type result = label
 			<
 				copy_s_pos__insert_at_h0_front<Pos>,
-				move_h0_first__insert_at_h2_value<>,
+				move_h0_first__insert_at_h3_value<>,
 				pass<>
 			>;
 		};
@@ -901,7 +893,7 @@ public:
 			template<index_type Pos>
 			static constexpr label_type result = label
 			<
-				move_h2_all__insert_at_h0_front<>,
+				move_h3_all__insert_at_h0_front<>,
 				move_h0_first__replace_at_s_pos<Pos>,
 				pass<>
 			>;
@@ -968,19 +960,19 @@ public:
 			template<index_type Pos>
 			static constexpr instr_type erase = linear
 			<
-				LN::erase, Pos
+				LN::erase, _zero, Pos
 			>;
 
 			template<index_type Pos, index_type Obj>
 			static constexpr instr_type insert = linear
 			<
-				LN::insert, Pos, Obj
+				LN::insert, _zero, Pos, Obj
 			>;
 
 			template<index_type Pos, index_type Obj>
 			static constexpr instr_type replace = linear
 			<
-				LN::replace, Pos, Obj
+				LN::replace, _zero, Pos, Obj
 			>;
 
 	// near linear:
@@ -995,61 +987,61 @@ public:
 		template<index_type Pos>
 		static constexpr instr_type goto_using = linear
 		<
-			LN::go_to, Pos
+			LN::go_to, _zero, Pos
 		>;
 
 		template<index_type Val>
-		static constexpr instr_type goto_label = instruction
+		static constexpr instr_type goto_label = linear // shifts label value:
 		<
-			MN::linear, LT::direct, LN::go_to_label, _one, Val
+			LN::go_to_label, _one, Val+1
 		>;
 
 		template<index_type Pos, index_type Obj>
 		static constexpr instr_type assign_using = linear // convenience
 		<
-			LN::replace, Pos, Obj
+			LN::replace, _zero, Pos, Obj
 		>;
 
-		template<index_type Val, index_type Pos>
-		static constexpr instr_type assign_label = instruction
+		template<index_type Pos, index_type Val>
+		static constexpr instr_type assign_label = linear // shifts label value:
 		<
-			MN::linear, LT::direct, LN::assign_label, _one, Val, Pos
+			LN::assign_label, _one, Val+1, Pos
 		>;
 
 		template<index_type Pos>
 		static constexpr instr_type save = linear
 		<
-			LN::save, Pos
+			LN::save, _zero, Pos
 		>;
 
 		template<index_type Pos>
 		static constexpr instr_type restore = linear
 		<
-			LN::restore, Pos
+			LN::restore, _zero, Pos
 		>;
 
 		template<index_type Op, index_type... Args>
 		static constexpr instr_type test = linear
 		<
-			LN::test, Op, Args...
+			LN::test, _zero, Op, Args...
 		>;
 
 		template<index_type Act, index_type... Args>
 		static constexpr instr_type check = linear
 		<
-			LN::check, Act, Args...
+			LN::check, _zero, Act, Args...
 		>;
 
 		template<index_type Pos, index_type Op, index_type... Args>
 		static constexpr instr_type apply = linear
 		<
-			LN::apply, Pos, Op, Args...
+			LN::apply, _zero, Pos, Op, Args...
 		>;
 
 		template<index_type Pos, index_type Act, index_type... Args>
 		static constexpr instr_type compel = linear
 		<
-			LN::compel, Pos, Act, Args...
+			LN::compel, _zero, Pos, Act, Args...
 		>;
 
 /***********************************************************************************************************************/

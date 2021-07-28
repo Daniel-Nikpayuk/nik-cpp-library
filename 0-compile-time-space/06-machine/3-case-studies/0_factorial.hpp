@@ -131,10 +131,10 @@
 	<
 		// labels:
 
-			index_type fact_loop	= 1,
-			index_type after_fact	= 2,
-			index_type base_case	= 3,
-			index_type fact_done	= 4,
+			index_type fact_loop	= 0,
+			index_type after_fact	= 1,
+			index_type base_case	= 2,
+			index_type fact_done	= 3,
 
 		// registers:
 
@@ -146,13 +146,14 @@
 			index_type c_1		= 5,
 			index_type cont		= 6
 	>
-	constexpr auto fact_contr = controller
+	constexpr auto naive_fact_contr = controller
 	<
 		label // fact loop:
 		<
 			test         < eq        , n          , c_1       >,
 			branch       < base_case                          >,
 			save         < cont                               >,
+		//	stop<val>, // debugging
 			save         < n                                  >,
 			apply        < n         , sub        , n   , c_1 >,
 			assign_label < cont      , after_fact             >,
@@ -183,7 +184,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d>
-	constexpr auto f_r_factorial()
+	constexpr auto f_naive_factorial()
 	{
 		using n_type = decltype(n);
 
@@ -199,13 +200,13 @@
 
 		return start
 		<
-			register_machine, fact_contr<>, d, i, j,
+			register_machine, naive_fact_contr<>, d, i, j,
 			val, n, eq_op, sub_op, mult_op, c_1, cont
 		>();
 	}
 
 	template<auto n, depth_type d = 500>
-	constexpr auto r_factorial = f_r_factorial<n, d>();
+	constexpr auto naive_factorial = f_naive_factorial<n, d>();
 
 /***********************************************************************************************************************/
 
@@ -254,8 +255,8 @@
 	<
 		// labels:
 
-			index_type fact_loop	= 1,
-			index_type fact_done	= 2,
+			index_type fact_loop	= 0,
+			index_type fact_done	= 1,
 
 		// registers:
 

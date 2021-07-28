@@ -199,8 +199,8 @@
 			NIK_MODULE::template move_h0_first__replace_at_s_pos_opt<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, move_h0_first__insert_at_h2_value)		=
-			NIK_MODULE::template move_h0_first__insert_at_h2_value<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, move_h0_first__insert_at_h3_value)		=
+			NIK_MODULE::template move_h0_first__insert_at_h3_value<Note...>;
 
 		template<auto... Note>
 		NIK_POLICY auto nik_name(NIK_PREFIX, move_h1_all__insert_at_s_front)		=
@@ -211,8 +211,8 @@
 			NIK_MODULE::template move_h1_all__pack_at_s_front<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, move_h2_all__insert_at_h0_front)		=
-			NIK_MODULE::template move_h2_all__insert_at_h0_front<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, move_h3_all__insert_at_h0_front)		=
+			NIK_MODULE::template move_h3_all__insert_at_h0_front<Note...>;
 
 		template<auto... Note>
 		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h1_all__move__insert_at_h0_front)	=
@@ -248,9 +248,9 @@
 		NIK_POLICY auto nik_name(NIK_PREFIX, block)					=
 			NIK_MODULE::template block<Name, Vs...>;
 
-		template<auto Name, auto... Vs>
+		template<auto SubName, auto SubNote, auto... Vs>
 		NIK_POLICY auto nik_name(NIK_PREFIX, linear)					=
-			NIK_MODULE::template linear<Name, Vs...>;
+			NIK_MODULE::template linear<SubName, SubNote, Vs...>;
 
 		template<auto Name, auto... Vs>
 		NIK_POLICY auto nik_name(NIK_PREFIX, call)					=

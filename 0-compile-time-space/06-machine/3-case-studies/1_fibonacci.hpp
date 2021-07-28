@@ -35,11 +35,11 @@
 	<
 		// labels:
 
-			index_type fib_loop		= 1,
-			index_type after_fib_n_1	= 2,
-			index_type after_fib_n_2	= 3,
-			index_type immediate_answer	= 4,
-			index_type fib_done		= 5,
+			index_type fib_loop		= 0,
+			index_type after_fib_n_1	= 1,
+			index_type after_fib_n_2	= 2,
+			index_type immediate_answer	= 3,
+			index_type fib_done		= 4,
 
 		// registers:
 
@@ -52,7 +52,7 @@
 			index_type c_2			= 6,
 			index_type cont			= 7
 	>
-	constexpr auto fib_contr = controller
+	constexpr auto naive_fib_contr = controller
 	<
 		label // fib loop:
 		<
@@ -101,7 +101,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d>
-	constexpr auto f_fibonacci()
+	constexpr auto f_naive_fibonacci()
 	{
 		using n_type = decltype(n);
 
@@ -118,13 +118,13 @@
 
 		return start
 		<
-			register_machine, fib_contr<>, d, i, j,
+			register_machine, naive_fib_contr<>, d, i, j,
 			val, n, lt_op, add_op, sub_op, c_1, c_2, cont
 		>();
 	}
 
 	template<auto n, depth_type d = 500>
-	constexpr auto fibonacci = f_fibonacci<n, d>();
+	constexpr auto naive_fibonacci = f_naive_fibonacci<n, d>();
 
 /***********************************************************************************************************************/
 

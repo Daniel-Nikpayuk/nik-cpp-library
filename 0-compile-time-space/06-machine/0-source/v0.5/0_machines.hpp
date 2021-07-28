@@ -144,12 +144,12 @@ public:
 			static constexpr key_type move_h0_first__insert_at_s_front		= 26; // <mutators>
 			static constexpr key_type move_h0_first__insert_at_s_pos		= 27; // opt, <mutators>
 			static constexpr key_type move_h0_first__replace_at_s_pos		= 28; // opt, <mutators>
-			static constexpr key_type move_h0_first__insert_at_h2_value		= 29; // <machine>
+			static constexpr key_type move_h0_first__insert_at_h3_value		= 29; // <machine>
 
 			static constexpr key_type move_h1_all__insert_at_s_front		= 30; // <mutators>
 			static constexpr key_type move_h1_all__pack_at_s_front			= 31; // <near linear>
 
-			static constexpr key_type move_h2_all__insert_at_h0_front		= 32; // <machine>
+			static constexpr key_type move_h3_all__insert_at_h0_front		= 32; // <machine>
 
 			static constexpr key_type apply_h1_all__move__insert_at_h0_front	= 33; // <machine>
 			static constexpr key_type apply_h1_all__move__replace_at_s_pos		= 34; // opt, <machine>
@@ -200,10 +200,9 @@ public:
 
 	struct LinearNote
 	{
-		static constexpr key_type direct		= 0;
-		static constexpr key_type fast			= 1;
-		static constexpr key_type helper		= 2;
-		static constexpr key_type scalable		= 3;
+		static constexpr key_type fast			= 0;
+		static constexpr key_type helper		= 1;
+		static constexpr key_type scalable		= 2;
 	};
 
 	using LT = LinearNote;
@@ -726,18 +725,37 @@ private:
 // move heap zero first, insert at heap two value:
 
 	template<key_type... filler>
-	struct machine<MN::move_h0_first__insert_at_h2_value, _zero, filler...>
+	struct machine<MN::move_h0_first__insert_at_h3_value, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto W0, auto... Ws, typename Heap1, typename... Heaps
+			auto W0, auto... Ws, typename Heap1, typename Heap2, auto... Zs
 		>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heaps... Hs)
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, void(*H3)(auto_pack<Zs...>*)
+		)
 		{
-			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws...>, H1, U_opt_pack_Vs<W0>, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws...>, H1, H2, U_opt_pack_Vs<W0, Zs...>);
 		}
 	};
+
+/*
+	template<key_type... filler>
+	struct machine<MN::move_h0_first__insert_at_h3_value, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto W0, auto... Ws, typename Heap1, typename Heap2, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heaps... Hs)
+		{
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Ws...>, H1, H2, U_opt_pack_Vs<W0>, Hs...);
+		}
+	};
+*/
 
 /***********************************************************************************************************************/
 
@@ -784,21 +802,40 @@ private:
 // move heap two all, insert at heap zero front:
 
 	template<key_type... filler>
-	struct machine<MN::move_h2_all__insert_at_h0_front, _zero, filler...>
+	struct machine<MN::move_h3_all__insert_at_h0_front, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, typename Heap1, auto... Xs, typename... Heaps
+			auto... Ws, typename Heap1, typename Heap2, auto Z0, auto... Zs
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<Ws...>*), Heap1 H1, void(*H2)(auto_pack<Xs...>*), Heaps... Hs
+			void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heap2 H2, void(*H3)(auto_pack<Z0, Zs...>*)
 		)
 		{
-			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Xs..., Ws...>, H1, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Z0, Ws...>, H1, H2, U_opt_pack_Vs<Zs...>);
 		}
 	};
+
+/*
+	template<key_type... filler>
+	struct machine<MN::move_h3_all__insert_at_h0_front, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto... Ws, typename Heap1, typename Heap2, auto... Xs, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heap2 H2, void(*H3)(auto_pack<Xs...>*), Heaps... Hs
+		)
+		{
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<Xs..., Ws...>, H1, H2, Hs...);
+		}
+	};
+*/
 
 /***********************************************************************************************************************/
 
@@ -942,10 +979,10 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<is_br, Ws...>*), Heaps... Hs)
 		{
-			constexpr auto i1 = is_br ? n::pos(c, i, j) : i;
-			constexpr auto j1 = is_br ? _zero : j;
+			constexpr auto ni = is_br ? n::val(c, i, j) : i;
+			constexpr auto nj = is_br ? _zero : j;
 
-			return NIK_MACHINE(n, c, d, i1, j1)(U_opt_pack_Vs<Ws...>, Hs...);
+			return NIK_MACHINE(n, c, d, ni, nj)(U_opt_pack_Vs<Ws...>, Hs...);
 		}
 	};
 
