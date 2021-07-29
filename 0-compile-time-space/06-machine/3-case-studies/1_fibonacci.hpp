@@ -19,6 +19,7 @@
 
 // fibonacci:
 
+	#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, dynamic, name) // ?
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
@@ -222,6 +223,89 @@
 		{
 			return _fixed_fib(n, false, Type(0), Type(1));
 		}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// builtin (naive) fibonacci:
+
+/***********************************************************************************************************************/
+
+	template
+	<
+		// labels:
+
+			index_type fib_loop		= 0,
+			index_type fib_done		= 1,
+
+		// registers:
+
+			index_type m			= 0,
+			index_type n			= 1,
+			index_type eq			= 2,
+			index_type sub			= 3,
+			index_type add			= 4,
+			index_type fib			= 5,
+			index_type c_0			= 6,
+			index_type c_1			= 7
+	>
+	constexpr auto builtin_naive_fib_contr = controller
+	<
+		label // fib loop:
+		<
+			test         < eq        , n          , c_1       >,
+			branch       < fib_done                           >,
+			test         < eq        , n          , c_0       >,
+			branch       < fib_done                           >,
+			apply        < n         , sub        , n   , c_1 >,
+			compel       < m         , fib        , n         >,
+			apply        < n         , sub        , n   , c_1 >,
+			compel       < n         , fib        , n         >,
+			apply        < m         , add        , m   , n   >,
+			goto_label   < fib_done                           >
+		>,
+
+		label // fib done:
+		<
+			stop       < m         >,
+			reg_size   < _eight    >
+		>
+	>;
+
+/***********************************************************************************************************************/
+
+	struct S_builtin_naive_fibonacci
+	{
+		template<auto n>
+		static constexpr auto f_result()
+		{
+			using n_type = decltype(n);
+
+			constexpr n_type m		= _one;
+			constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
+			constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+			constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
+			constexpr auto fib_op		= U_type_T<S_builtin_naive_fibonacci>;
+			constexpr n_type c_0		= _zero;
+			constexpr n_type c_1		= _one;
+
+			constexpr index_type d		= 500;
+			constexpr index_type i		= _one;
+			constexpr index_type j		= _zero;
+
+			return start
+			<
+				register_machine, builtin_naive_fib_contr<>, d, i, j,
+				m, n, eq_op, sub_op, add_op, fib_op, c_0, c_1
+			>();
+		}
+
+		template<auto n>
+		static constexpr auto result = f_result<n>();
+	};
+
+	template<auto n>
+	constexpr auto builtin_naive_fibonacci = S_builtin_naive_fibonacci::template f_result<n>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

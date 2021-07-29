@@ -62,9 +62,12 @@
 
 	int main(int argc, char *argv[])
 	{
+	//	printf("%llu\n", naive_fibonacci<utype(5)>); // fib(13): clang over 5 minutes!
+		printf("%llu\n", builtin_naive_fibonacci<utype(13)>); // 1.82s (gcc) / 2.33s (clang)
+
+	//	printf("%llu\n", factorial<utype(20)>);
 	//	printf("%llu\n", naive_factorial<utype(5)>);
 	//	printf("%llu\n", fast_factorial<utype(20)>);
-		printf("%llu\n", naive_fibonacci<utype(13)>); // clang over 5 minutes!
 	
 		return 0;
 	}

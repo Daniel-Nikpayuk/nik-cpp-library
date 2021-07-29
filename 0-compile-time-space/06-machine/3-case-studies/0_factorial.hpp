@@ -19,6 +19,7 @@
 
 // factorial:
 
+	#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, dynamic, name) // ?
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
@@ -153,7 +154,6 @@
 			test         < eq        , n          , c_1       >,
 			branch       < base_case                          >,
 			save         < cont                               >,
-		//	stop<val>, // debugging
 			save         < n                                  >,
 			apply        < n         , sub        , n   , c_1 >,
 			assign_label < cont      , after_fact             >,
@@ -365,6 +365,144 @@
 
 	//	print_factorial<20>();
 	//	print_fibonacci<14>();
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+/*
+	template
+	<
+		// labels:
+
+			index_type fact_loop	= 0,
+			index_type fact_done	= 1,
+
+		// registers:
+
+			index_type p		= 0,
+			index_type n		= 1,
+			index_type eq		= 2,
+			index_type fact		= 3,
+			index_type c_0		= 4
+	>
+	constexpr auto fact_contr = controller
+	<
+		label // fact loop:
+		<
+			test       < eq        , n        , c_0       >,
+			branch     < fact_done                        >,
+			compel     < p         , fact , p , n         >
+		>,
+
+		label // fact done:
+		<
+			stop       < p     >,
+			reg_size   < _five >
+		>
+	>;
+*/
+
+/***********************************************************************************************************************/
+
+/*
+	struct S_factorial
+	{
+		template<auto p, auto n>
+		static constexpr auto f_result()
+		{
+			using n_type = decltype(n);
+
+			constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
+			constexpr auto fact_op		= U_type_T<S_factorial>;
+			constexpr n_type c_0		= _zero;
+
+			constexpr index_type d		= 500;
+			constexpr index_type i		= _one;
+			constexpr index_type j		= _zero;
+
+			return start
+			<
+				register_machine, fact_contr<>, d, i, j,
+				p, n, eq_op, fact_op, c_0
+			>();
+		}
+
+		template<auto p, auto n>
+		static constexpr auto result = f_result<p*n, n-1>();
+	};
+
+	template<auto n>
+	constexpr auto factorial = S_factorial::template f_result<decltype(n){1}, n>();
+*/
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+	template
+	<
+		// labels:
+
+			index_type fact_loop	= 0,
+			index_type fact_done	= 1,
+
+		// registers:
+
+			index_type p		= 0,
+			index_type n		= 1,
+			index_type eq		= 2,
+			index_type mult		= 3,
+			index_type fact		= 4,
+			index_type c_0		= 5
+	>
+	constexpr auto fact_contr = controller
+	<
+		label // fact loop:
+		<
+			test       < eq        , n        , c_0       >,
+			branch     < fact_done                        >,
+			compel     < p         , fact , n             >,
+			apply      < p         , mult , p , n         >
+		>,
+
+		label // fact done:
+		<
+			stop       < p    >,
+			reg_size   < _six >
+		>
+	>;
+
+/***********************************************************************************************************************/
+
+	struct S_factorial
+	{
+		template<auto n>
+		static constexpr auto f_result()
+		{
+			using n_type = decltype(n);
+
+			constexpr n_type p		= _one;
+			constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
+			constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
+			constexpr auto fact_op		= U_type_T<S_factorial>;
+			constexpr n_type c_0		= _zero;
+
+			constexpr index_type d		= 500;
+			constexpr index_type i		= _one;
+			constexpr index_type j		= _zero;
+
+			return start
+			<
+				register_machine, fact_contr<>, d, i, j,
+				p, n, eq_op, mult_op, fact_op, c_0
+			>();
+		}
+
+		template<auto n>
+		static constexpr auto result = f_result<n-1>();
+	};
+
+	template<auto n>
+	constexpr auto factorial = S_factorial::template f_result<n>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
