@@ -21,6 +21,8 @@
 
 /***********************************************************************************************************************/
 
+	// To Do: Change module versions to strings so they can be given arbitrary names.
+
 #include"inclusive.hpp"
 
 /***********************************************************************************************************************/
@@ -39,8 +41,8 @@
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
-//	#include"0-compile-time-space/06-machine/3-case-studies/0_factorial.hpp"
-	#include"0-compile-time-space/06-machine/3-case-studies/1_fibonacci.hpp"
+	#include"0-compile-time-space/06-machine/3-case-studies/0_factorial.hpp"
+//	#include"0-compile-time-space/06-machine/3-case-studies/1_fibonacci.hpp"
 //	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
 // run time space:
@@ -63,7 +65,7 @@
 	int main(int argc, char *argv[])
 	{
 	//	printf("%llu\n", naive_fibonacci<utype(5)>); // fib(13): clang over 5 minutes!
-		printf("%llu\n", builtin_naive_fibonacci<utype(13)>); // 1.82s (gcc) / 2.33s (clang)
+	//	printf("%llu\n", builtin_naive_fibonacci<utype(13)>); // 1.82s (gcc) / 2.33s (clang)
 
 	//	printf("%llu\n", factorial<utype(20)>);
 	//	printf("%llu\n", naive_factorial<utype(5)>);

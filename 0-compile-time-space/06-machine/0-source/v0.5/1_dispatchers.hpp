@@ -252,6 +252,9 @@ public:
 
 	struct LD
 	{
+		static constexpr auto i = _one;
+		static constexpr auto j = _zero;
+
 	// block:
 
 		static constexpr auto subname(label_type l, index_type, index_type j)
@@ -316,6 +319,9 @@ public:
 
 	struct RD
 	{
+		static constexpr auto i = _one;
+		static constexpr auto j = _zero;
+
 	// block:
 
 		static constexpr auto subname(contr_type c, index_type i, index_type j)
@@ -546,9 +552,7 @@ private:
 	template<key_type... filler>
 	struct machine<MN::linear, LT::fast, filler...>
 	{
-		using nn			= LD;
-		static constexpr auto ni	= _one;
-		static constexpr auto nj	= _zero;
+		using nn = LD;
 
 		template
 		<
@@ -565,7 +569,8 @@ private:
 			constexpr auto nH0	= CallInstr::prepend_direct<instr, Ws...>();
 			constexpr auto un	= U_type_T<n>;
 
-			return NIK_MACHINE(nn, nc, d, ni, nj)(nH0, H1, U_opt_pack_Vs<un, c, i, j, Ns...>, Hs...);
+			return NIK_MACHINE(nn, nc, d, nn::i, nn::j)
+				(nH0, H1, U_opt_pack_Vs<un, c, i, j, Ns...>, Hs...);
 		}
 	};
 
@@ -576,9 +581,7 @@ private:
 	template<key_type... filler>
 	struct machine<MN::linear, LT::helper, filler...>
 	{
-		using nn			= LD;
-		static constexpr auto ni	= _one;
-		static constexpr auto nj	= _zero;
+		using nn = LD;
 
 		template
 		<
@@ -594,7 +597,7 @@ private:
 			using lc		= linear_controller<instr[CallInstr::subname]>;
 			constexpr auto nc	= lc::template result<instr[Is]...>;
 
-			return NIK_BEGIN_MACHINE(nn, nc, d, ni, nj)
+			return NIK_BEGIN_MACHINE(nn, nc, d, nn::i, nn::j)
 
 				Vs...
 
@@ -609,9 +612,7 @@ private:
 	template<key_type... filler>
 	struct machine<MN::linear, LT::scalable, filler...>
 	{
-		using nn			= LD;
-		static constexpr auto ni	= _one;
-		static constexpr auto nj	= _zero;
+		using nn = LD;
 
 		template
 		<
@@ -634,16 +635,16 @@ private:
 
 			return machine
 			<
-				nn::next_name(nc, d, ni, nj),
-				nn::next_note(nc, d, ni, nj)
+				nn::next_name(nc, d, nn::i, nn::j),
+				nn::next_note(nc, d, nn::i, nn::j)
 
 			>::template result
 			<
 				nn, nc,
 
 				nn::next_depth(d),
-				nn::next_index1(nc, d, ni, nj),
-				nn::next_index2(nc, d, ni, nj)
+				nn::next_index1(nc, d, nn::i, nn::j),
+				nn::next_index2(nc, d, nn::i, nn::j)
 			>
 			(
 				U_opt_pack_Vs<instr, Ws...>,
@@ -689,6 +690,67 @@ private:
 
 /***********************************************************************************************************************/
 
+// recurse:
+
+	template<key_type... filler>
+	struct machine<MN::recurse, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename Heap1, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heaps... Hs)
+		{
+			constexpr auto val	= NIK_MACHINE(n, c, d, n::i, n::j)(Hs...);
+			constexpr auto is_br	= is_trampoline_pair(val);
+
+			if constexpr (is_br)
+
+				return NIK_MACHINE(n, c, d, i, j)
+					(U_opt_pack_Vs<is_br, Ws...>, H1, val.sc, val.hc, Hs...);
+			else
+				return NIK_MACHINE(n, c, d, i, j)
+					(U_opt_pack_Vs<is_br, val, Ws...>, H1, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// trampoline:
+
+	template<key_type... filler>
+	struct machine<MN::trampoline, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto... Ws,
+			typename Heap1,
+			auto un, auto nc, auto ni, auto nj, auto... Xs,
+			auto... Is,
+			typename... Heaps
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*), Heap1 H1,
+			void(*H2)(auto_pack<un, nc, ni, nj, Xs...>*),
+			void(*H3)(auto_pack<Is...>*),
+			Heaps... Hs
+		)
+		{
+			using nn		= T_type_U<un>;
+			constexpr auto val	= NIK_MACHINE(nn, nc, d, ni, nj)(Is...);
+			constexpr auto is_br	= is_trampoline_pair(val);
+
+			if constexpr (is_br)
+
+				return NIK_MACHINE(n, c, d, i, j)
+					(U_opt_pack_Vs<is_br, Ws...>, H1, val.sc, val.hc, Hs...);
+			else
+				return NIK_MACHINE(n, c, d, i, j)
+					(U_opt_pack_Vs<is_br, val, Ws...>, H1, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // trampoline:
 
 	template<auto d, auto un, auto c, auto i, auto j, auto... Vs, auto... Hs>
@@ -709,7 +771,7 @@ private:
 
 public:
 
-	template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, auto... Xs, auto... Ys, auto... Zs>
+	template<typename n, auto c, auto d, auto... Vs, auto... Ws, auto... Xs, auto... Ys, auto... Zs>
 	static constexpr auto start
 	(
 		void(*H0)(auto_pack<Ws...>*) = U_opt_pack_Vs<>,
@@ -718,7 +780,7 @@ public:
 		void(*H3)(auto_pack<Zs...>*) = U_opt_pack_Vs<>
 	)
 	{
-		constexpr auto result = NIK_MACHINE(n, c, d, i, j)
+		constexpr auto result = NIK_MACHINE(n, c, d, n::i, n::j)
 			(U_opt_pack_Vs<Ws...>, U_opt_pack_Vs<Xs...>, U_opt_pack_Vs<Ys...>, U_opt_pack_Vs<Zs...>);
 
 		if constexpr (is_trampoline_pair(result)) return machine_trampoline<d>(result.sc, result.hc);

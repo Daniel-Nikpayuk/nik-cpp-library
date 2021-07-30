@@ -31,9 +31,9 @@ private:
 	<
 		// labels:
 
-			index_type loop		= 1,
-			index_type fail		= 2,
-			index_type done		= 3,
+			index_type loop		= 0,
+			index_type fail		= 1,
+			index_type done		= 2,
 
 		// registers:
 
@@ -90,12 +90,9 @@ private:
 		using S_dec		= typename function_module::template S_subtract_by<index_type{1}>;
 		constexpr auto dec	= S_dec::template result<index_type>;
 
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
-
 		return start
 		<
-			register_machine, colist_contr<>, d, i, j,
+			register_machine, colist_contr<>, d,
 			cond_val, func_val, def_val, length, is_zero, dec, Vs...
 		>();
 	}

@@ -34,14 +34,12 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_at()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template stop<n>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -58,15 +56,13 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_right()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template drop_s_segment<n>,
 						machine_module::template pack<>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -89,15 +85,13 @@ private:
 	template<auto d, auto pos, auto... Vs>
 	static constexpr auto f_erase()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template erase<pos>,
 						machine_module::template pack<>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -114,15 +108,13 @@ private:
 	template<auto d, auto pos, auto obj, auto... Vs>
 	static constexpr auto f_insert()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template insert<pos, obj>,
 						machine_module::template pack<>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -139,15 +131,13 @@ private:
 	template<auto d, auto pos, auto obj, auto... Vs>
 	static constexpr auto f_replace()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template replace<pos, obj>,
 						machine_module::template pack<>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -164,8 +154,6 @@ private:
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_left()
 	{
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template move_s_segment__insert_at_h1_back<n>,
@@ -174,7 +162,7 @@ private:
 						machine_module::template pack<>
 					>;
 
-		return machine_module::template start<linear_machine, c, d, i, j, Vs...>();
+		return machine_module::template start<linear_machine, c, d, Vs...>();
 	}
 
 public:
@@ -195,8 +183,6 @@ private:
 
 		if constexpr (length == 0) return V0;
 
-		constexpr auto i	= _one;
-		constexpr auto j	= _zero;
 		constexpr auto c	= machine_module::template label
 					<
 						machine_module::template roll_s_segment__replace_at_s_front<length>,
@@ -204,7 +190,7 @@ private:
 					>;
 
 		return machine_module::template
-			start<linear_machine, c, d, i, j, V0, Vs...>
+			start<linear_machine, c, d, V0, Vs...>
 				(functor_module::template U_pack_Vs<length, uact>);
 	}
 

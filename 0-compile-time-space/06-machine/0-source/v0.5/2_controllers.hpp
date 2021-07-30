@@ -24,8 +24,6 @@
 	// to Turing complete register machines. Any instructions that interpret parameters
 	// differently has a hardcoded machine.
 
-	// define cycle<> instruction as an alias for goto ?
-
 public:
 
 /***********************************************************************************************************************/
@@ -313,6 +311,20 @@ public:
 			MN::call, Name, sizeof...(Vs), Vs...
 		>;
 
+	// recursion:
+
+		template<key_type Note = _zero>
+		static constexpr instr_type recurse = instruction
+		<
+			MN::recurse, Note
+		>;
+
+		template<key_type Note = _zero>
+		static constexpr instr_type trampoline = instruction
+		<
+			MN::trampoline, Note
+		>;
+
 	// reflection:
 
 		template<index_type Length, key_type Note = _zero>
@@ -540,12 +552,6 @@ public:
 
 			static constexpr index_type apply					= 22;
 			static constexpr index_type compel					= 23;
-
-		// constants:
-
-			static constexpr instr_type lift_instr		= instruction<lift, _zero>;
-			static constexpr instr_type stem_instr		= instruction<stem, _zero>;
-			static constexpr instr_type cycle_instr		= instruction<cycle, _zero>;
 	};
 
 	using LN = LinearName;
@@ -816,28 +822,6 @@ public:
 			>;
 		};
 
-	// near linear:
-
-	//	template<na_type N>
-	//	static constexpr np_type n_lift = n_continuation<NP::lift, N>;
-
-		// lift:
-
-		//	constexpr auto nc = controller_module::template call_contr<n::appl(c, i, j)>;
-
-	//	template<na_type P, na_type B, na_type N>
-	//	static constexpr np_type n_stem = n_continuation<NP::stem, P, B, N>;
-
-		// stem:
-
-		//	constexpr auto nc	= controller_module::template skip_contr
-		//				<
-		//					n::cond(c, i, j), n::appl2(c, i, j), n::appl1(c, i, j)
-		//				>;
-
-		// costem
-		// cycle
-
 	// register:
 
 		template<key_type... filler>
@@ -974,13 +958,6 @@ public:
 			<
 				LN::replace, _zero, Pos, Obj
 			>;
-
-	// near linear:
-
-		// lift
-		// stem
-		// costem
-		// cycle
 
 	// register:
 

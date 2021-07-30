@@ -28,106 +28,88 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// near linear (pair) factorial:
-
-/***********************************************************************************************************************/
-
-/*
-	template
-	<
-		// registers:
-
-			index_type n		= 0,
-			index_type p		= 1,
-
-			index_type eq		= 2,
-			index_type sub		= 3,
-			index_type mult		= 4,
-
-			index_type zero		= 5,
-			index_type one		= 6
-	>
-	constexpr auto pair_fact_contr = n_controller
-	<
-		n_stem  < test<eq, n, zero>     , stop<p> , apply<p, mult, n, p> >,
-		n_lift  < apply<n, sub, n, one>                                  >,
-
-		n_cycle
-	>;
-
-	template<auto n, auto d>
-	constexpr auto f_n_factorial()
-	{
-		using n_type = decltype(n);
-
-		constexpr n_type p		= _one;
-		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
-		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
-		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
-		constexpr n_type c_0		= _zero;
-		constexpr n_type c_1		= _one;
-
-		constexpr index_type i		= _zero;
-		constexpr index_type j		= _zero;
-
-		return start
-		<
-			near_linear_machine, pair_fact_contr<>, d, i, j,
-			n, p, eq_op, sub_op, mult_op, c_0, c_1
-		>();
-	}
-
-	template<auto n, depth_type d = 500>
-	constexpr auto n_factorial = f_n_factorial<n, d>();
-*/
-
-/***********************************************************************************************************************/
-
-// perf:
-
-//		printf("%llu\n", n_factorial<utype(5)>);
-
-//			gcc compile time:		gcc run time:
-//			                                
-//			                                120
-//			                                
-//			real	0m0.662s                real	0m0.002s
-//			user	0m0.602s                user	0m0.001s
-//			sys	0m0.060s                sys	0m0.000s
-//			                                
-//			clang compile time:             clang run time:
-//			                                
-//			                                120
-//			                                
-//			real	0m0.776s                real	0m0.001s
-//			user	0m0.702s                user	0m0.001s
-//			sys	0m0.057s                sys	0m0.000s
-
-//		printf("%llu\n", n_factorial<utype(20)>);
-
-//			gcc compile time:		gcc run time:
-//			                                
-//			                                2432902008176640000
-//			                                
-//			real	0m1.066s                real	0m0.002s
-//			user	0m0.938s                user	0m0.001s
-//			sys	0m0.101s                sys	0m0.000s
-//			                                
-//			clang compile time:             clang run time:
-//			                                
-//			                                2432902008176640000
-//			                                
-//			real	0m1.463s                real	0m0.001s
-//			user	0m1.343s                user	0m0.001s
-//			sys	0m0.100s                sys	0m0.000s
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // register (naive) factorial:
 
 /***********************************************************************************************************************/
 
+	template
+	<
+		// labels:
+
+			index_type fact_loop	= 0,
+			index_type after_fact	= 1,
+			index_type base_case	= 2,
+			index_type fact_done	= 3,
+
+		// registers:
+
+			index_type val		= 0,
+			index_type n		= 1,
+			index_type eq		= 2,
+			index_type sub		= 3,
+			index_type mult		= 4,
+			index_type c_1		= 5,
+			index_type cont		= 6
+	>
+	constexpr auto naive_fact_contr = controller
+	<
+		label // fact loop:
+		<
+			test         < eq        , n          , c_0       >,
+			branch       < fact_done                          >,
+			apply        < n         , sub        , n   , c_1 >,
+			recurse      < cont      , after_fact             >,
+			goto_label   < fact_loop                          >
+		>,
+
+		label // after fact:
+		<
+			restore      < n                     >,
+			restore      < cont                  >,
+			apply        < val  , mult , n , val >,
+			goto_using   < cont                  >
+		>,
+
+		label // base case:
+		<
+			replace      < val  , c_1 >,
+			goto_using   < cont       >
+		>,
+
+		label // fact done:
+		<
+			stop         < val    >
+		>
+	>;
+
+/***********************************************************************************************************************/
+
+	template<auto n, auto d>
+	constexpr auto f_naive_factorial()
+	{
+		using n_type = decltype(n);
+
+		constexpr n_type val		= _one;
+		constexpr auto eq_op		= nik_function_S_equal::template result <n_type, n_type>;
+		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
+		constexpr n_type c_1		= _one;
+		constexpr index_type cont	= _four;
+
+		return start
+		<
+			register_machine, naive_fact_contr<>, d,
+			val, n, eq_op, sub_op, mult_op, c_1, cont
+		>();
+	}
+
+	template<auto n, depth_type d = 500>
+	constexpr auto naive_factorial = f_naive_factorial<n, d>();
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+/*
 	template
 	<
 		// labels:
@@ -176,13 +158,15 @@
 
 		label // fact done:
 		<
-			stop       < val    >,
-			reg_size   < _seven >
+			stop         < val    >,
+			reg_size     < _seven >
 		>
 	>;
+*/
 
 /***********************************************************************************************************************/
 
+/*
 	template<auto n, auto d>
 	constexpr auto f_naive_factorial()
 	{
@@ -195,18 +179,16 @@
 		constexpr n_type c_1		= _one;
 		constexpr index_type cont	= _four;
 
-		constexpr index_type i		= _one;
-		constexpr index_type j		= _zero;
-
 		return start
 		<
-			register_machine, naive_fact_contr<>, d, i, j,
+			register_machine, naive_fact_contr<>, d,
 			val, n, eq_op, sub_op, mult_op, c_1, cont
 		>();
 	}
 
 	template<auto n, depth_type d = 500>
 	constexpr auto naive_factorial = f_naive_factorial<n, d>();
+*/
 
 /***********************************************************************************************************************/
 
@@ -300,12 +282,9 @@
 		constexpr n_type c_0		= _zero;
 		constexpr n_type c_1		= _one;
 
-		constexpr index_type i		= _one;
-		constexpr index_type j		= _zero;
-
 		return start
 		<
-			register_machine, pair_fact_contr<>, d, i, j,
+			register_machine, pair_fact_contr<>, d,
 			p, n, eq_op, sub_op, mult_op, c_0, c_1
 		>();
 	}
@@ -487,12 +466,10 @@
 			constexpr n_type c_0		= _zero;
 
 			constexpr index_type d		= 500;
-			constexpr index_type i		= _one;
-			constexpr index_type j		= _zero;
 
 			return start
 			<
-				register_machine, fact_contr<>, d, i, j,
+				register_machine, fact_contr<>, d,
 				p, n, eq_op, mult_op, fact_op, c_0
 			>();
 		}

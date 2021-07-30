@@ -114,12 +114,9 @@
 		constexpr n_type c_2		= _two;
 		constexpr index_type cont	= _five;
 
-		constexpr index_type i		= _one;
-		constexpr index_type j		= _zero;
-
 		return start
 		<
-			register_machine, naive_fib_contr<>, d, i, j,
+			register_machine, naive_fib_contr<>, d,
 			val, n, lt_op, add_op, sub_op, c_1, c_2, cont
 		>();
 	}
@@ -290,12 +287,10 @@
 			constexpr n_type c_1		= _one;
 
 			constexpr index_type d		= 500;
-			constexpr index_type i		= _one;
-			constexpr index_type j		= _zero;
 
 			return start
 			<
-				register_machine, builtin_naive_fib_contr<>, d, i, j,
+				register_machine, builtin_naive_fib_contr<>, d,
 				m, n, eq_op, sub_op, add_op, fib_op, c_0, c_1
 			>();
 		}

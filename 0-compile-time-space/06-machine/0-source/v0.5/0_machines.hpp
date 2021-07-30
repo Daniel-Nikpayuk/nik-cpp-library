@@ -168,9 +168,14 @@ public:
 			static constexpr key_type linear					= 42;
 			static constexpr key_type call						= 43; // <machine>
 
+		// recursion:
+
+			static constexpr key_type recurse					= 44; // <machine>
+			static constexpr key_type trampoline					= 45; // <machine>
+
 		// reflection:
 
-			static constexpr key_type reg_size					= 44;
+			static constexpr key_type reg_size					= 46;
 	};
 
 	using MN = MachineName;

@@ -256,6 +256,16 @@
 		NIK_POLICY auto nik_name(NIK_PREFIX, call)					=
 			NIK_MODULE::template call<Name, Vs...>;
 
+	// recursion:
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, recurse)					=
+			NIK_MODULE::template recurse<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, trampoline) 				=
+			NIK_MODULE::template trampoline<Note...>;
+
 	// reflection:
 
 		template<auto Length, auto... Note>
