@@ -101,13 +101,11 @@ namespace nik
 		dimension // filler
 	};
 
-	enum struct Version : global_size_type
+	struct Version
 	{
-		v_0_1,
-		v_0_5,
-		v_1_0,
-
-		dimension // filler
+		static constexpr const char v_0_1[] = "v.0.1";
+		static constexpr const char v_0_5[] = "v.0.5";
+		static constexpr const char v_1_0[] = "v.1.0";
 	};
 
 	enum struct Vendor : global_size_type
@@ -128,7 +126,7 @@ namespace nik
 		Translation	translation_enum,
 		Module		module_enum,
 		Permission	permission_enum,
-		Version		version_enum,
+		const char*	version_str,
 		Vendor		vendor_enum,
 
 		bool		is_implemented = true

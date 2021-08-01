@@ -72,19 +72,7 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// drop stack block (2^N):
-
-	#define NIK_DEFINE__DROP_S_BLOCK(_n_)										\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::drop_s_block, _n_, filler...>							\
-		{													\
-			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
-			static constexpr auto result(Heaps... Hs)							\
-			{												\
-				return NIK_MACHINE(n, c, d, i, j)(Hs...);						\
-			}												\
-		}
+// stack -> stack:
 
 /***********************************************************************************************************************/
 
@@ -110,6 +98,42 @@
 
 /***********************************************************************************************************************/
 
+// drop stack block (2^N):
+
+	#define NIK_DEFINE__DROP_S_BLOCK(_n_)										\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::drop_s_block, _n_, filler...>							\
+		{													\
+			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
+			static constexpr auto result(Heaps... Hs)							\
+			{												\
+				return NIK_MACHINE(n, c, d, i, j)(Hs...);						\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// drop stack position (optimization):
+
+	#define NIK_DEFINE__DROP_S_POS(_s_, _n_, _c_)									\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::drop_s_pos, _n_, filler...>								\
+		{													\
+			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
+			static constexpr auto result(Heaps... Hs)							\
+			{												\
+				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
+															\
+					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Vs...				\
+															\
+				NIK_END_MACHINE(Hs...);									\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
 // move stack block, insert at stack back (2^N):
 
 	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK(_n_)								\
@@ -123,6 +147,26 @@
 				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
 															\
 					Vs..., NIK_2_ ## _n_ ## _VS							\
+															\
+				NIK_END_MACHINE(Hs...);									\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// move stack position, insert at stack back (optimization):
+
+	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(_s_, _n_, _c_)							\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::move_s_pos__insert_at_s_back, _n_, filler...>					\
+		{													\
+			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
+			static constexpr auto result(Heaps... Hs)							\
+			{												\
+				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
+															\
+					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Vs..., V ## _n_			\
 															\
 				NIK_END_MACHINE(Hs...);									\
 			}												\
@@ -177,6 +221,11 @@
 				NIK_END_MACHINE(H0, Hs...);								\
 			}												\
 		}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// stack -> heap:
 
 /***********************************************************************************************************************/
 
@@ -268,51 +317,6 @@
 		}
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// permutatic:
-
-/***********************************************************************************************************************/
-
-// drop stack position (optimization):
-
-	#define NIK_DEFINE__DROP_S_POS(_s_, _n_, _c_)									\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::drop_s_pos, _n_, filler...>								\
-		{													\
-			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
-			static constexpr auto result(Heaps... Hs)							\
-			{												\
-				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
-															\
-					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Vs...				\
-															\
-				NIK_END_MACHINE(Hs...);									\
-			}												\
-		}
-
-/***********************************************************************************************************************/
-
-// move stack position, insert at stack back (optimization):
-
-	#define NIK_DEFINE__MOVE_S_POS__INSERT_AT_S_BACK(_s_, _n_, _c_)							\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::move_s_pos__insert_at_s_back, _n_, filler...>					\
-		{													\
-			template<NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs, typename... Heaps>		\
-			static constexpr auto result(Heaps... Hs)							\
-			{												\
-				return NIK_BEGIN_MACHINE(n, c, d, i, j)							\
-															\
-					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA  Vs..., V ## _n_			\
-															\
-				NIK_END_MACHINE(Hs...);									\
-			}												\
-		}
-
-/***********************************************************************************************************************/
 
 // copy stack position, insert at heap zero front (optimization):
 
@@ -359,6 +363,11 @@
 				NIK_END_MACHINE(H0, U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);				\
 			}												\
 		}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// heap -> stack:
 
 /***********************************************************************************************************************/
 

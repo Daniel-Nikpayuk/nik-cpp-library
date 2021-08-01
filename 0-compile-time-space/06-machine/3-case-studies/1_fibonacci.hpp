@@ -19,7 +19,6 @@
 
 // fibonacci:
 
-	#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, dynamic, name) // ?
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
@@ -36,88 +35,60 @@
 	<
 		// labels:
 
-			index_type fib_loop		= 0,
-			index_type after_fib_n_1	= 1,
-			index_type after_fib_n_2	= 2,
-			index_type immediate_answer	= 3,
-			index_type fib_done		= 4,
+			index_type loop			= 0,
+			index_type done			= 1,
 
 		// registers:
 
-			index_type val			= 0,
+			index_type m			= 0,
 			index_type n			= 1,
-			index_type less_than		= 2,
-			index_type add			= 3,
-			index_type sub			= 4,
-			index_type c_1			= 5,
-			index_type c_2			= 6,
-			index_type cont			= 7
+			index_type eq			= 2,
+			index_type sub			= 3,
+			index_type add			= 4,
+			index_type c_0			= 5,
+			index_type c_1			= 6
 	>
 	constexpr auto naive_fib_contr = controller
 	<
-		label // fib loop:
+		label // loop:
 		<
-			test         < less_than        , n          , c_2       >,
-			branch       < immediate_answer                          >,
-			save         < cont                                      >,
-			assign_label < cont             , after_fib_n_1          >,
-			save         < n                                         >,
-			apply        < n                , sub        , n   , c_1 >,
-			goto_label   < fib_loop                                  >
+			test         < eq        , n          , c_1       >,
+			branch       < done                               >,
+			test         < eq        , n          , c_0       >,
+			branch       < done                               >,
+			apply        < n         , sub        , n   , c_1 >,
+			recurse      <                                    >,
+			apply        < n         , sub        , n   , c_1 >,
+			recurse      <                                    >,
+			restore      < n         , m                      >,
+			apply        < m         , add        , m   , n   >,
+			goto_label   < done                               >
 		>,
 
-		label // after fib n 1:
+		label // done:
 		<
-			restore      < n                     >,
-			restore      < cont                  >,
-			apply        < n    , sub , n , c_2  >,
-			save         < cont                  >,
-			assign_label < cont , after_fib_n_2  >,
-			save         < val                   >,
-			goto_label   < fib_loop              >
-		>,
-
-		label // after fib n 2:
-		<
-			replace    < n    , val           >,
-			restore    < val                  >,
-			restore    < cont                 >,
-			apply      < val  , add , val , n >,
-			goto_using < cont                 >
-		>,
-
-		label // immediate answer:
-		<
-			replace    < val  , n >,
-			goto_using < cont     >
-		>,
-
-		label // fib done:
-		<
-			stop       < val       >,
-			reg_size   < _eight    >
+			stop       < m                                    >
 		>
 	>;
 
 /***********************************************************************************************************************/
 
 	template<auto n, auto d>
-	constexpr auto f_naive_fibonacci()
+	static constexpr auto f_naive_fibonacci()
 	{
 		using n_type = decltype(n);
 
-		constexpr n_type val		= _one;
-		constexpr auto lt_op		= nik_function_S_less_than::template result<n_type, n_type>;
-		constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
+		constexpr n_type m		= _one;
+		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
 		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
+		constexpr n_type c_0		= _zero;
 		constexpr n_type c_1		= _one;
-		constexpr n_type c_2		= _two;
-		constexpr index_type cont	= _five;
 
 		return start
 		<
 			register_machine, naive_fib_contr<>, d,
-			val, n, lt_op, add_op, sub_op, c_1, c_2, cont
+			m, n, eq_op, sub_op, add_op, c_0, c_1
 		>();
 	}
 
@@ -220,87 +191,6 @@
 		{
 			return _fixed_fib(n, false, Type(0), Type(1));
 		}
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// builtin (naive) fibonacci:
-
-/***********************************************************************************************************************/
-
-	template
-	<
-		// labels:
-
-			index_type fib_loop		= 0,
-			index_type fib_done		= 1,
-
-		// registers:
-
-			index_type m			= 0,
-			index_type n			= 1,
-			index_type eq			= 2,
-			index_type sub			= 3,
-			index_type add			= 4,
-			index_type fib			= 5,
-			index_type c_0			= 6,
-			index_type c_1			= 7
-	>
-	constexpr auto builtin_naive_fib_contr = controller
-	<
-		label // fib loop:
-		<
-			test         < eq        , n          , c_1       >,
-			branch       < fib_done                           >,
-			test         < eq        , n          , c_0       >,
-			branch       < fib_done                           >,
-			apply        < n         , sub        , n   , c_1 >,
-			compel       < m         , fib        , n         >,
-			apply        < n         , sub        , n   , c_1 >,
-			compel       < n         , fib        , n         >,
-			apply        < m         , add        , m   , n   >,
-			goto_label   < fib_done                           >
-		>,
-
-		label // fib done:
-		<
-			stop       < m         >,
-			reg_size   < _eight    >
-		>
-	>;
-
-/***********************************************************************************************************************/
-
-	struct S_builtin_naive_fibonacci
-	{
-		template<auto n>
-		static constexpr auto f_result()
-		{
-			using n_type = decltype(n);
-
-			constexpr n_type m		= _one;
-			constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
-			constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
-			constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
-			constexpr auto fib_op		= U_type_T<S_builtin_naive_fibonacci>;
-			constexpr n_type c_0		= _zero;
-			constexpr n_type c_1		= _one;
-
-			constexpr index_type d		= 500;
-
-			return start
-			<
-				register_machine, builtin_naive_fib_contr<>, d,
-				m, n, eq_op, sub_op, add_op, fib_op, c_0, c_1
-			>();
-		}
-
-		template<auto n>
-		static constexpr auto result = f_result<n>();
-	};
-
-	template<auto n>
-	constexpr auto builtin_naive_fibonacci = S_builtin_naive_fibonacci::template f_result<n>();
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
