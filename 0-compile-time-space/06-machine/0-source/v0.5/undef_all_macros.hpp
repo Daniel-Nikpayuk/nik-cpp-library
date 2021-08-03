@@ -32,8 +32,9 @@
 
 /***********************************************************************************************************************/
 
-	#undef NIK_DEFINE__COMPEL_H1_ALL__MOVE__REPLACE_AT_S_POS
-	#undef NIK_DEFINE__APPLY_H1_ALL__MOVE__REPLACE_AT_S_POS
+	#undef NIK_DEFINE__COMPEL_H0_ALL__MOVE__REPLACE_AT_S_POS
+	#undef NIK_DEFINE__APPLY_H0_ALL__MOVE__REPLACE_AT_S_POS
+	#undef NIK_DEFINE__MOVE_H2_FIRST__REPLACE_AT_S_POS
 	#undef NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS
 	#undef NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS
 
@@ -44,9 +45,11 @@
 
 /***********************************************************************************************************************/
 
-	#undef NIK_DEFINE__COPY_S_POS__INSERT_AT_H1_BACK
+	#undef NIK_DEFINE__COPY_S_POS__INSERT_AT_H2_FRONT
+	#undef NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK
 	#undef NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT
-	#undef NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H1_BACK
+	#undef NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H2_FRONT
+	#undef NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK
 	#undef NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT
@@ -64,7 +67,7 @@
 	#undef NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_S_BACK
 	#undef NIK_DEFINE__DROP_S_POS
 	#undef NIK_DEFINE__DROP_S_BLOCK
-	#undef NIK_DEFINE__SHIFT_I_BLOCK__INSERT_AT_S_BACK
+	#undef NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -76,9 +79,6 @@
 	#undef NIK_MACHINE
 	#undef NIK_END_MACHINE
 	#undef NIK_BEGIN_MACHINE
-	#undef NIK_FIXED_HEAP_ARGS
-	#undef NIK_FIXED_HEAP_SIG_ARGS
-	#undef NIK_FIXED_HEAP_PARAMS
 	#undef NIK_CONTR_PARAMS
 
 /***********************************************************************************************************************/

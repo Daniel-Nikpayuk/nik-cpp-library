@@ -42,29 +42,27 @@
 
 			index_type val		= 0,
 			index_type n		= 1,
-			index_type eq		= 2,
-			index_type sub		= 3,
-			index_type mult		= 4,
-			index_type c_0		= 5,
-			index_type c_1		= 6
+			index_type is_zero	= 2,
+			index_type dec		= 3,
+			index_type mult		= 4
 	>
-	constexpr auto naive_fact_contr = controller
+	constexpr auto naive_factorial_contr = controller
 	<
 		label // loop:
 		<
-			test         < eq        , n          , c_0       >,
-			branch       < done                               >,
-			save         < n                                  >,
-			apply        < n         , sub        , n   , c_1 >,
-			recurse      <                                    >,
-			restore      < val       , n                      >,
-			apply        < val       , mult       , n   , val >,
-			goto_label   < done                               >
+			test    < is_zero , n              >,
+			branch  < done                     >,
+			save    < n                        >,
+			apply   < n       , dec  , n       >,
+			recurse < val                      >,
+			restore < n                        >,
+			apply   < val     , mult , n , val >,
+			stop    < val                      >
 		>,
 
 		label // done:
 		<
-			stop         < val                                >
+			stop    < val                      >
 		>
 	>;
 
@@ -76,16 +74,14 @@
 		using n_type = decltype(n);
 
 		constexpr n_type val		= _one;
-		constexpr auto eq_op		= nik_function_S_equal::template result <n_type, n_type>;
-		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
+		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
 		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
-		constexpr n_type c_0		= _zero;
-		constexpr n_type c_1		= _one;
 
 		return start
 		<
-			register_machine, naive_fact_contr<>, d,
-			val, n, eq_op, sub_op, mult_op, c_0, c_1
+			register_machine, naive_factorial_contr<>, d,
+			val, n, is_zero_op, dec_op, mult_op
 		>();
 	}
 
@@ -139,33 +135,31 @@
 	<
 		// labels:
 
-			index_type fact_loop	= 0,
-			index_type fact_done	= 1,
+			index_type loop		= 0,
+			index_type done		= 1,
 
 		// registers:
 
 			index_type p		= 0,
 			index_type n		= 1,
-			index_type eq		= 2,
-			index_type sub		= 3,
-			index_type mult		= 4,
-			index_type c_0		= 5,
-			index_type c_1		= 6
+			index_type is_zero	= 2,
+			index_type dec		= 3,
+			index_type mult		= 4
 	>
-	constexpr auto pair_fact_contr = controller
+	constexpr auto pair_factorial_contr = controller
 	<
-		label // fact loop:
+		label // loop:
 		<
-			test       < eq        , n        , c_0       >,
-			branch     < fact_done                        >,
-			apply      < p         , mult , p , n         >,
-			apply      < n         , sub      , n   , c_1 >,
-			goto_label < fact_loop                        >
+			test       < is_zero , n            >,
+			branch     < done                   >,
+			apply      < p       , mult , p , n >,
+			apply      < n       , dec      , n >,
+			goto_label < loop                   >
 		>,
 
-		label // fact done:
+		label // done:
 		<
-			stop       < p                                >
+			stop       < p                      >
 		>
 	>;
 
@@ -177,16 +171,14 @@
 		using n_type = decltype(n);
 
 		constexpr n_type p		= _one;
-		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
-		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
+		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
 		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
-		constexpr n_type c_0		= _zero;
-		constexpr n_type c_1		= _one;
 
 		return start
 		<
-			register_machine, pair_fact_contr<>, d,
-			p, n, eq_op, sub_op, mult_op, c_0, c_1
+			register_machine, pair_factorial_contr<>, d,
+			p, n, is_zero_op, dec_op, mult_op
 		>();
 	}
 

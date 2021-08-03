@@ -40,55 +40,53 @@
 
 		// registers:
 
-			index_type m			= 0,
-			index_type n			= 1,
-			index_type eq			= 2,
-			index_type sub			= 3,
-			index_type add			= 4,
-			index_type c_0			= 5,
-			index_type c_1			= 6
+			index_type val			= 0,
+			index_type m			= 1,
+			index_type n			= 2,
+			index_type is_0_or_1		= 3,
+			index_type dec			= 4,
+			index_type add			= 5
 	>
-	constexpr auto naive_fib_contr = controller
+	constexpr auto naive_fibonacci_contr = controller
 	<
 		label // loop:
 		<
-			test         < eq        , n          , c_1       >,
-			branch       < done                               >,
-			test         < eq        , n          , c_0       >,
-			branch       < done                               >,
-			apply        < n         , sub        , n   , c_1 >,
-			recurse      <                                    >,
-			apply        < n         , sub        , n   , c_1 >,
-			recurse      <                                    >,
-			restore      < n         , m                      >,
-			apply        < m         , add        , m   , n   >,
-			goto_label   < done                               >
+			test    < is_0_or_1 , n           >,
+			branch  < done                    >,
+			apply   < n         , dec , n     >,
+			recurse < m                       >,
+			apply   < n         , dec , n     >,
+			recurse < n                       >,
+			apply   < val       , add , m , n >,
+			stop    < val                     >
 		>,
 
 		label // done:
 		<
-			stop       < m                                    >
+			stop    < val                     >
 		>
 	>;
 
 /***********************************************************************************************************************/
+
+	template<typename T>
+	static constexpr bool is_0_or_1_value(T n) { return n == 0 || n == 1; }
 
 	template<auto n, auto d>
 	static constexpr auto f_naive_fibonacci()
 	{
 		using n_type = decltype(n);
 
-		constexpr n_type m		= _one;
-		constexpr auto eq_op		= nik_function_S_equal::template result<n_type, n_type>;
-		constexpr auto sub_op		= nik_function_S_subtract::template result<n_type, n_type>;
+		constexpr n_type val		= _one;
+		constexpr n_type m		= _zero;
+		constexpr auto is_0_or_1_op	= is_0_or_1_value<n_type>;
+		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
 		constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
-		constexpr n_type c_0		= _zero;
-		constexpr n_type c_1		= _one;
 
 		return start
 		<
-			register_machine, naive_fib_contr<>, d,
-			m, n, eq_op, sub_op, add_op, c_0, c_1
+			register_machine, naive_fibonacci_contr<>, d,
+			val, m, n, is_0_or_1_op, dec_op, add_op
 		>();
 	}
 

@@ -110,8 +110,8 @@
 			NIK_MODULE::template align_s_all__insert_at_s_front<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, shift_i_block__insert_at_s_back)		=
-			NIK_MODULE::template shift_i_block__insert_at_s_back<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, shift_r_block__insert_at_s_back)		=
+			NIK_MODULE::template shift_r_block__insert_at_s_back<Note...>;
 
 		template<auto... Note>
 		NIK_POLICY auto nik_name(NIK_PREFIX, map_s_all__op_at_h0_first)			=
@@ -172,16 +172,24 @@
 			NIK_MODULE::template copy_s_block__insert_at_h0_front<Note...>;
 
 		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_block__insert_at_h0_back)		=
+			NIK_MODULE::template copy_s_block__insert_at_h0_back<Note...>;
+
+		template<auto... Note>
 		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h0_front_opt)	=
 			NIK_MODULE::template copy_s_pos__insert_at_h0_front_opt<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_block__insert_at_h1_back)		=
-			NIK_MODULE::template copy_s_block__insert_at_h1_back<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h0_back_opt)		=
+			NIK_MODULE::template copy_s_pos__insert_at_h0_back_opt<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h1_back_opt)		=
-			NIK_MODULE::template copy_s_pos__insert_at_h1_back_opt<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_block__insert_at_h2_front)		=
+			NIK_MODULE::template copy_s_block__insert_at_h2_front<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h2_front_opt)	=
+			NIK_MODULE::template copy_s_pos__insert_at_h2_front_opt<Note...>;
 
 		// heap -> stack:
 
@@ -206,24 +214,44 @@
 			NIK_MODULE::template move_h1_all__value_at_s_front<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h1_all__move__replace_at_s_pos_opt)	=
-			NIK_MODULE::template apply_h1_all__move__replace_at_s_pos_opt<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, move_h2_first__insert_at_s_front)		=
+			NIK_MODULE::template move_h2_first__insert_at_s_front<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h1_all__move__replace_at_s_pos_opt)	=
-			NIK_MODULE::template compel_h1_all__move__replace_at_s_pos_opt<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, move_h2_first__replace_at_s_pos_opt)	=
+			NIK_MODULE::template move_h2_first__replace_at_s_pos_opt<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h0_all__move__insert_at_s_front)	=
+			NIK_MODULE::template apply_h0_all__move__insert_at_s_front<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h0_all__move__replace_at_s_pos_opt)	=
+			NIK_MODULE::template apply_h0_all__move__replace_at_s_pos_opt<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h0_all__move__insert_at_s_front)	=
+			NIK_MODULE::template compel_h0_all__move__insert_at_s_front<Note...>;
+
+		template<auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h0_all__move__replace_at_s_pos_opt)	=
+			NIK_MODULE::template compel_h0_all__move__replace_at_s_pos_opt<Note...>;
 
 		// heap -> heap:
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h1_all__move__insert_at_h0_front)	=
-			NIK_MODULE::template apply_h1_all__move__insert_at_h0_front<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h0_all__move__replace_at_h0_front)	=
+			NIK_MODULE::template apply_h0_all__move__replace_at_h0_front<Note...>;
 
 		template<auto... Note>
-		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h1_all__move__insert_at_h0_front)	=
-			NIK_MODULE::template compel_h1_all__move__insert_at_h0_front<Note...>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h0_all__move__replace_at_h0_front)	=
+			NIK_MODULE::template compel_h0_all__move__replace_at_h0_front<Note...>;
 
 	// interposers:
+
+		template<auto Obj, auto... Note>
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_i_pos__insert_at_h0_front)		=
+			NIK_MODULE::template copy_i_pos__insert_at_h0_front<Obj, Note...>;
 
 		template<auto Pos, auto... Note>
 		NIK_POLICY auto nik_name(NIK_PREFIX, branch)					=
@@ -291,8 +319,8 @@
 		// stack -> stack:
 
 		template<auto Pos>
-		NIK_POLICY auto nik_name(NIK_PREFIX, make_i_segment__insert_at_s_back)		=
-			NIK_MODULE::template make_i_segment__insert_at_s_back<Pos>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, make_r_segment__insert_at_s_back)		=
+			NIK_MODULE::template make_r_segment__insert_at_s_back<Pos>;
 
 		template<auto Pos>
 		NIK_POLICY auto nik_name(NIK_PREFIX, drop_s_segment)				=
@@ -344,8 +372,8 @@
 			NIK_MODULE::template copy_s_pos__insert_at_h0_front<Pos>;
 
 		template<auto Pos>
-		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h1_back)		=
-			NIK_MODULE::template copy_s_pos__insert_at_h1_back<Pos>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, copy_s_pos__insert_at_h0_back)		=
+			NIK_MODULE::template copy_s_pos__insert_at_h0_back<Pos>;
 
 		// heap -> stack:
 
@@ -358,12 +386,12 @@
 			NIK_MODULE::template move_h0_first__replace_at_s_pos<Pos>;
 
 		template<auto Pos>
-		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h1_all__move__replace_at_s_pos)	=
-			NIK_MODULE::template apply_h1_all__move__replace_at_s_pos<Pos>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, apply_h0_all__move__replace_at_s_pos)	=
+			NIK_MODULE::template apply_h0_all__move__replace_at_s_pos<Pos>;
 
 		template<auto Pos>
-		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h1_all__move__replace_at_s_pos)	=
-			NIK_MODULE::template compel_h1_all__move__replace_at_s_pos<Pos>;
+		NIK_POLICY auto nik_name(NIK_PREFIX, compel_h0_all__move__replace_at_s_pos)	=
+			NIK_MODULE::template compel_h0_all__move__replace_at_s_pos<Pos>;
 
 /***********************************************************************************************************************/
 
@@ -431,9 +459,9 @@
 
 	// control:
 
-		template<auto Rec = 0, auto Tram = 1>
+		template<auto Pos>
 		NIK_POLICY auto nik_name(NIK_PREFIX, recurse)					=
-			NIK_MODULE::template recurse<Rec, Tram>;
+			NIK_MODULE::template recurse<Pos>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
