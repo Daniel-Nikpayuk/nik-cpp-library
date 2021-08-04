@@ -273,9 +273,9 @@
 		NIK_POLICY auto nik_name(NIK_PREFIX, control)					=
 			NIK_MODULE::template control<SubName, SubNote, Vs...>;
 
-		template<auto Name, auto... Vs>
-		NIK_POLICY auto nik_name(NIK_PREFIX, call)					=
-			NIK_MODULE::template call<Name, Vs...>;
+		template<auto SubName, auto SubNote, auto... Vs>
+		NIK_POLICY auto nik_name(NIK_PREFIX, user)					=
+			NIK_MODULE::template user<SubName, SubNote, Vs...>;
 
 	// recursors:
 

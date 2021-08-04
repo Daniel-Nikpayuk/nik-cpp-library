@@ -331,7 +331,7 @@ public:
 		template<key_type Name, index_type Note, key_type SubName, key_type SubNote, index_type... Vs> // helper
 		static constexpr instr_type patch_instruction = instruction
 		<
-			CallInstr::patchname(Name, Note), CallInstr::patchnote(Name, Note), SubName, SubNote, Vs...
+			CI::patchname(Name, Note), CI::patchnote(Name, Note), SubName, SubNote, Vs...
 		>;
 
 		template<key_type SubName, key_type SubNote, index_type... Vs>
@@ -346,10 +346,16 @@ public:
 			MN::control, sizeof...(Vs), SubName, SubNote, Vs...
 		>;
 
-		template<key_type Name, index_type... Vs>
-		static constexpr instr_type call = instruction
+	//	template<key_type SubName, key_type SubNote, index_type... Vs>
+	//	static constexpr instr_type user = patch_instruction
+	//	<
+	//		MN::user, sizeof...(Vs), SubName, SubNote, Vs...
+	//	>;
+
+		template<key_type SubName, key_type SubNote, index_type... Vs>
+		static constexpr instr_type user = instruction
 		<
-			MN::call, Name, sizeof...(Vs), Vs...
+			MN::call, MN::user, SubName, SubNote, Vs...
 		>;
 
 	// recursors:
@@ -1128,7 +1134,8 @@ public:
 
 		// recursors:
 
-			static constexpr index_type recurse	= 0;
+			static constexpr index_type user	= 0;
+			static constexpr index_type recurse	= 1;
 	};
 
 	using CN = ControlName;
@@ -1138,6 +1145,50 @@ public:
 // inventory (level 3):
 
 	template<key_type, key_type...> struct control_space;
+
+	// interposers:
+
+		template<key_type... filler>
+		struct control_space<CN::user, filler...>
+		{
+			template
+			<
+				// labels:
+
+					index_type Trampoline,
+					index_type Done,
+
+				// registers:
+
+					index_type Obj,
+					index_type Pos,
+					index_type... Args
+			>
+			static constexpr contr_type result = controller
+			<
+				label // Call
+				<
+					copy_s_pos__insert_at_h0_front  < Obj                         >,
+					copy_s_pos__insert_at_h0_back   < Args                        >...,
+					instruction                     < MN::user   , CT::subroutine >,
+					branch                          < Trampoline                  >,
+					goto_label                      < Done                        >
+				>,
+
+				label // Trampoline
+				<
+					trampoline__insert_at_h0_front  <                             >,
+					branch                          < Trampoline                  >,
+					goto_label                      < Done                        >
+				>,
+
+				label // Done
+				<
+					move_h0_first__replace_at_s_pos < Pos                         >,
+					pass                            <                             >
+				>
+			>;
+		};
 
 	// recursors:
 
@@ -1160,22 +1211,22 @@ public:
 			<
 				label // Recurse
 				<
-					recurse__insert_at_h0_front      <            >,
-					branch                           < Trampoline >,
-					goto_label                       < Done       >
+					recurse__insert_at_h0_front     <            >,
+					branch                          < Trampoline >,
+					goto_label                      < Done       >
 				>,
 
 				label // Trampoline
 				<
-					trampoline__insert_at_h0_front   <            >,
-					branch                           < Trampoline >,
-					goto_label                       < Done       >
+					trampoline__insert_at_h0_front  <            >,
+					branch                          < Trampoline >,
+					goto_label                      < Done       >
 				>,
 
 				label // Done
 				<
-					move_h0_first__replace_at_s_pos  < Pos        >,
-					pass                             <            >
+					move_h0_first__replace_at_s_pos < Pos        >,
+					pass                            <            >
 				>
 			>;
 		};

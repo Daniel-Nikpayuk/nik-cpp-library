@@ -19,6 +19,7 @@
 
 // factorial:
 
+	#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
@@ -27,44 +28,65 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// names:
+
+/***********************************************************************************************************************/
+
+	struct FactorialNames
+	{
+		static constexpr key_type naive		= 0;
+		static constexpr key_type fast		= 1;
+	};
+
+	using FN = FactorialNames;
+
+	template<key_type, key_type...> struct S_user_factorial_contr;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // register (naive) factorial:
 
 /***********************************************************************************************************************/
 
-	template
-	<
-		// labels:
-
-			index_type loop		= 0,
-			index_type done		= 1,
-
-		// registers:
-
-			index_type val		= 0,
-			index_type n		= 1,
-			index_type is_zero	= 2,
-			index_type dec		= 3,
-			index_type mult		= 4
-	>
-	constexpr auto naive_factorial_contr = controller
-	<
-		label // loop:
+	template<>
+	struct S_user_factorial_contr<FN::naive>
+	{
+		template
 		<
-			test    < is_zero , n              >,
-			branch  < done                     >,
-			save    < n                        >,
-			apply   < n       , dec  , n       >,
-			recurse < val                      >,
-			restore < n                        >,
-			apply   < val     , mult , n , val >,
-			stop    < val                      >
-		>,
+			// registers:
 
-		label // done:
-		<
-			stop    < val                      >
+				index_type val		= 0,
+				index_type n		= 1,
+				index_type is_zero	= 2,
+				index_type dec		= 3,
+				index_type mult		= 4,
+
+			// labels:
+
+				index_type loop		= 0,
+				index_type done		= 1
 		>
-	>;
+		static constexpr auto result = controller
+		<
+			label // loop:
+			<
+				test    < is_zero , n              >,
+				branch  < done                     >,
+				save    < n                        >,
+				apply   < n       , dec  , n       >,
+				recurse < val                      >,
+				restore < n                        >,
+				apply   < val     , mult , n , val >,
+				stop    < val                      >
+			>,
+
+			label // done:
+			<
+				stop    < val                      >
+			>
+		>;
+	};
 
 /***********************************************************************************************************************/
 
@@ -73,6 +95,8 @@
 	{
 		using n_type = decltype(n);
 
+		constexpr auto contr		= S_user_factorial_contr<FN::naive>::template result<>;
+
 		constexpr n_type val		= _one;
 		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
 		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
@@ -80,7 +104,7 @@
 
 		return start
 		<
-			register_machine, naive_factorial_contr<>, d,
+			register_machine, contr, d,
 			val, n, is_zero_op, dec_op, mult_op
 		>();
 	}
@@ -131,37 +155,102 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// off by one (user) factorial controller:
+
+/***********************************************************************************************************************/
+
 	template
 	<
-		// labels:
-
-			index_type loop		= 0,
-			index_type done		= 1,
-
 		// registers:
 
-			index_type p		= 0,
+			index_type val		= 0,
 			index_type n		= 1,
 			index_type is_zero	= 2,
 			index_type dec		= 3,
-			index_type mult		= 4
-	>
-	constexpr auto pair_factorial_contr = controller
-	<
-		label // loop:
-		<
-			test       < is_zero , n            >,
-			branch     < done                   >,
-			apply      < p       , mult , p , n >,
-			apply      < n       , dec      , n >,
-			goto_label < loop                   >
-		>,
+			index_type mult		= 4,
+			index_type algo		= 5,
 
+		// labels:
+
+			index_type done		= 0
+	>
+	constexpr auto off_by_one_factorial_contr = controller
+	<
 		label // done:
 		<
-			stop       < p                      >
+			user    < FN::naive, algo , val , val , n , is_zero , dec , mult >,
+			apply   < val      , dec  , val                                  >,
+			stop    < val                                                    >
 		>
 	>;
+
+/***********************************************************************************************************************/
+
+	template<auto n, auto d>
+	constexpr auto f_off_by_one_factorial()
+	{
+		using n_type = decltype(n);
+
+		constexpr auto contr		= off_by_one_factorial_contr<>;
+
+		constexpr n_type val		= _one;
+		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
+		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
+		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
+		constexpr auto algo		= U_pack_Cs<S_user_factorial_contr>;
+
+		return start
+		<
+			register_machine, contr, d,
+			val, n, is_zero_op, dec_op, mult_op, algo
+		>();
+	}
+
+	template<auto n, depth_type d = 500>
+	constexpr auto off_by_one_factorial = f_off_by_one_factorial<n, d>();
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// register (pair) factorial:
+
+/***********************************************************************************************************************/
+
+	template<>
+	struct S_user_factorial_contr<FN::fast>
+	{
+		template
+		<
+			// registers:
+
+				index_type p		= 0,
+				index_type n		= 1,
+				index_type is_zero	= 2,
+				index_type dec		= 3,
+				index_type mult		= 4,
+
+			// labels:
+
+				index_type loop		= 0,
+				index_type done		= 1
+		>
+		static constexpr auto result = controller
+		<
+			label // loop:
+			<
+				test       < is_zero , n            >,
+				branch     < done                   >,
+				apply      < p       , mult , p , n >,
+				apply      < n       , dec      , n >,
+				goto_label < loop                   >
+			>,
+
+			label // done:
+			<
+				stop       < p                      >
+			>
+		>;
+	};
 
 /***********************************************************************************************************************/
 
@@ -170,6 +259,8 @@
 	{
 		using n_type = decltype(n);
 
+		constexpr auto contr		= S_user_factorial_contr<FN::fast>::template result<>;
+
 		constexpr n_type p		= _one;
 		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
 		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
@@ -177,7 +268,7 @@
 
 		return start
 		<
-			register_machine, pair_factorial_contr<>, d,
+			register_machine, contr, d,
 			p, n, is_zero_op, dec_op, mult_op
 		>();
 	}

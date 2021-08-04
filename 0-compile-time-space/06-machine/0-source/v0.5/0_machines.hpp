@@ -175,16 +175,17 @@ public:
 			static constexpr key_type block						= 45;
 			static constexpr key_type linear					= 46;
 			static constexpr key_type control					= 47; // <machine>
-			static constexpr key_type call						= 48; // <machine>
+			static constexpr key_type user						= 48; // <machine>
+			static constexpr key_type call						= 49; // <machine>
 
 		// recursors:
 
-			static constexpr key_type recurse__insert_at_h0_front			= 49; // <machine>
-			static constexpr key_type trampoline__insert_at_h0_front		= 50; // <machine>
+			static constexpr key_type recurse__insert_at_h0_front			= 50; // <machine>
+			static constexpr key_type trampoline__insert_at_h0_front		= 51; // <machine>
 
 		// reflection:
 
-			static constexpr key_type reg_size					= 51;
+			static constexpr key_type reg_size					= 52;
 	};
 
 	using MN = MachineName;
@@ -208,6 +209,7 @@ public:
 	{
 		static constexpr key_type fast			= 0;
 		static constexpr key_type scalable		= 1;
+		static constexpr key_type subroutine		= 2;
 	};
 
 	using CT = CallNote;
@@ -619,11 +621,7 @@ private:
 		>
 		static constexpr auto result(Heap0 H0, Heap1 H1, Heaps... Hs)
 		{
-			return NIK_BEGIN_MACHINE(n, c, d, i, j),
-
-				Vs...
-
-			NIK_END_MACHINE(H0, V0, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(H0, V0, Hs...);
 		}
 	};
 

@@ -78,6 +78,12 @@ public:
 		static constexpr key_type patchname(key_type m, index_type n)	{ return is_opt(n) ? m : MN::call; }
 		static constexpr key_type patchnote(key_type m, index_type n)	{ return is_opt(n) ? CT::fast : m; }
 
+		template<key_type Name, index_type... Args, template<key_type, key_type...> class Space>
+		static constexpr auto make_user_controller(void(*)(template_pack<Space>*))
+		{
+			return Space<Name>::template result<Args...>;
+		}
+
 		template<template<key_type, key_type...> class Space, instr_type I>
 		static constexpr auto opt_make_controller()
 		{
@@ -549,22 +555,18 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Is,
-			auto instr, auto... Ws, typename Heap1, typename Heap2, auto... Vs, typename... Heaps
+			typename Heap0, typename Heap1, typename Heap2, auto instr, auto... Vs, typename... Heaps
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<instr, Ws...>*), Heap1 H1, Heap2 H2, void(*H3)(auto_pack<Vs...>*), Heaps... Hs
+			Heap0 H0, Heap1 H1, Heap2 H2, void(*H3)(auto_pack<instr, Vs...>*), Heaps... Hs
 		)
 		{
 			using ls		= linear_space<instr[CI::subname]>;
 			constexpr auto shift	= CI::subright(instr);
 			constexpr auto nc	= ls::template result<instr[Is+shift]...>;
 
-			return NIK_BEGIN_MACHINE(nn, nc, d, nn::i, nn::j),
-
-				Vs...
-
-			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, H1, H2, Hs...);
+			return NIK_MACHINE(nn, nc, d, nn::i, nn::j)(H0, H1, H2, Hs...);
 		}
 	};
 
@@ -609,22 +611,18 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Is,
-			auto instr, auto... Ws, typename Heap1, typename Heap2, auto... Vs, typename... Heaps
+			typename Heap0, typename Heap1, typename Heap2, auto instr, auto... Vs, typename... Heaps
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<instr, Ws...>*), Heap1 H1, Heap2 H2, void(*H3)(auto_pack<Vs...>*), Heaps... Hs
+			Heap0 H0, Heap1 H1, Heap2 H2, void(*H3)(auto_pack<instr, Vs...>*), Heaps... Hs
 		)
 		{
 			using cs		= control_space<instr[CI::subname]>;
 			constexpr auto shift	= CI::subright(instr);
 			constexpr auto nc	= cs::template result<instr[Is+shift]...>;
 
-			return NIK_BEGIN_MACHINE(nn, nc, d, nn::i, nn::j),
-
-				Vs...
-
-			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, H1, H2, Hs...);
+			return NIK_MACHINE(nn, nc, d, nn::i, nn::j)(H0, H1, H2, Hs...);
 		}
 	};
 
@@ -635,12 +633,79 @@ private:
 
 /***********************************************************************************************************************/
 
+// subroutine (call helper):
+
+	template<key_type... filler>
+	struct machine<MN::user, CT::subroutine, filler...>
+	{
+		using nn = CD;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto space, auto... args, typename Heap1, typename Heap2,
+			auto name, auto... params, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<space, args...>*), Heap1 H1, Heap2 H2,
+			void(*H3)(auto_pack<name, params...>*), Heaps... Hs
+		)
+		{
+			constexpr auto nc	= CI::make_user_controller<name, params...>(space);
+			constexpr auto val	= NIK_BEGIN_MACHINE(nn, nc, d, nn::i, nn::j),
+
+							args...
+
+						NIK_END_MACHINE(U_opt_pack_Vs<>, U_opt_pack_Vs<>, U_opt_pack_Vs<>);
+			constexpr auto is_br	= is_trampoline_pair(val);
+
+			if constexpr (is_br)
+
+				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<is_br>, H1, H2, val.sc, val.hc, Hs...);
+			else
+				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<is_br, val>, H1, H2, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// scalable (call helper):
+
+	template<key_type... filler>
+	struct machine<MN::user, CT::scalable, filler...>
+	{
+		using nn = CD;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto I0, auto... Is,
+			typename Heap0, typename Heap1, typename Heap2, auto instr, auto... Vs, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			Heap0 H0, Heap1 H1, Heap2 H2, void(*H3)(auto_pack<instr, Vs...>*), Heaps... Hs
+		)
+		{
+			constexpr auto shift	= CI::subright(instr);
+			constexpr auto nc	= control_space<CN::user>::template result
+						<
+							1, 2, instr[CI::subnote], instr[I0+shift], instr[Is+shift]...
+						>;
+
+			return NIK_MACHINE(nn, nc, d, nn::i, nn::j)
+				(H0, H1, H2, U_opt_pack_Vs<instr[CI::subname], instr[Is+shift]...>, Hs...);
+		}
+	};
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // call:
 
 /***********************************************************************************************************************/
+
+// linear, control:
 
 	template<key_type Note, key_type... filler>
 	struct machine<MN::call, Note, filler...>
@@ -650,25 +715,24 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, typename Heap1, typename Heap2, typename... Heaps
+			typename Heap0, typename Heap1, typename Heap2, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heap2 H2, Heaps... Hs)
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heaps... Hs)
 		{
 			constexpr auto instr	= n::subinstr(c, i, j);
 			constexpr auto subsize	= CI::subsize(instr);
 			constexpr auto nc	= label
 						<
 							make_r_segment__insert_at_s_back<subsize>,
-							instruction<Note, CT::scalable> // optimization
+							instruction<Note, CT::scalable>
 						>;
 			constexpr auto un	= U_type_T<n>;
 
 			return NIK_BEGIN_MACHINE(nn, nc, d, nn::i, nn::j)
 
-			NIK_END_MACHINE
+			NIK_END_MACHINE // optimized, works because nc does not use H3 onward:
 			(
-				U_opt_pack_Vs<instr, Ws...>, H1, H2,
-				U_opt_pack_Vs<Vs...>, U_opt_pack_Vs<un, c, i, j>, Hs...
+				H0, H1, H2, U_opt_pack_Vs<instr, Vs...>, U_opt_pack_Vs<un, c, i, j>, Hs...
 			);
 		}
 	};

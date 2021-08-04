@@ -33,11 +33,6 @@
 
 	template
 	<
-		// labels:
-
-			index_type loop			= 0,
-			index_type done			= 1,
-
 		// registers:
 
 			index_type val			= 0,
@@ -45,7 +40,12 @@
 			index_type n			= 2,
 			index_type is_0_or_1		= 3,
 			index_type dec			= 4,
-			index_type add			= 5
+			index_type add			= 5,
+
+		// labels:
+
+			index_type loop			= 0,
+			index_type done			= 1
 	>
 	constexpr auto naive_fibonacci_contr = controller
 	<

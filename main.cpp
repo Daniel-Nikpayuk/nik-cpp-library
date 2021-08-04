@@ -41,7 +41,7 @@
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
-//	#include"0-compile-time-space/06-machine/3-case-studies/0_factorial.hpp"
+	#include"0-compile-time-space/06-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/06-machine/3-case-studies/1_fibonacci.hpp"
 //	#include"0-compile-time-space/06-machine/4-testing/0_unit_tests.hpp"
 //	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
@@ -69,6 +69,8 @@
 
 	//	printf("%llu\n", fast_factorial<utype(5)>);	// 1.01s (gcc) / 1.35s (clang)
 	//	printf("%llu\n", fast_factorial<utype(20)>);	// 1.47s (gcc) / 2.00s (clang)
+
+		printf("%llu\n", off_by_one_factorial<utype(5)>);
 	
 	//	printf("%llu\n", fixed_fib(utype(13)));
 	//	printf("%llu\n", naive_fibonacci<utype(5)>);	// 1.43s (gcc) /  2.02s (clang)
