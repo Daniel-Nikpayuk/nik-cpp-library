@@ -124,26 +124,26 @@
 	using nik_name(NIK_PREFIX, SignDenotation)			= typename NIK_MODULE::SignDenotation;
 
 	template<auto m>
-	NIK_POLICY bool nik_name(NIK_PREFIX, sign_is_immutable)		= NIK_MODULE::template sign_is_immutable<m>;
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_immutable)		= NIK_MODULE::template is_sign_immutable<m>;
 
-	template<auto m>
-	NIK_POLICY bool nik_name(NIK_PREFIX, sign_is_variable)		= NIK_MODULE::template sign_is_variable<m>;
-
-	template<auto d>
-	NIK_POLICY bool nik_name(NIK_PREFIX, sign_member_is_reference)	= NIK_MODULE::template sign_member_is_reference<d>;
+	template<auto m>                                                                               
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_variable)		= NIK_MODULE::template is_sign_variable<m>;
 
 	template<auto d>
-	NIK_POLICY bool nik_name(NIK_PREFIX, sign_member_is_dereference) = NIK_MODULE::template sign_member_is_dereference<d>;
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_reference)		= NIK_MODULE::template is_sign_reference<d>;
+
+	template<auto d>                                                                               
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_sign_dereference) 	= NIK_MODULE::template is_sign_dereference<d>;
 
 	//
 
 	template<auto m, auto d>
 	using nik_name(NIK_PREFIX, _sign_attributes)		= typename NIK_MODULE::template _sign_attributes<m, d>;
 
-	using nik_name(NIK_PREFIX, sign_attr_ref)		= typename NIK_MODULE::sign_attr_ref;
-	using nik_name(NIK_PREFIX, sign_attr_deref)		= typename NIK_MODULE::sign_attr_deref;
-	using nik_name(NIK_PREFIX, sign_attr_cref)		= typename NIK_MODULE::sign_attr_cref;
-	using nik_name(NIK_PREFIX, sign_attr_cderef)		= typename NIK_MODULE::sign_attr_cderef;
+	using nik_name(NIK_PREFIX, sign_attr_as_ref)		= typename NIK_MODULE::sign_attr_as_ref;
+	using nik_name(NIK_PREFIX, sign_attr_as_deref)		= typename NIK_MODULE::sign_attr_as_deref;
+	using nik_name(NIK_PREFIX, sign_attr_as_cref)		= typename NIK_MODULE::sign_attr_as_cref;
+	using nik_name(NIK_PREFIX, sign_attr_as_cderef)		= typename NIK_MODULE::sign_attr_as_cderef;
 
 	//
 
@@ -151,65 +151,69 @@
 	using nik_name(NIK_PREFIX, _sign_argument)		= typename NIK_MODULE::template _sign_argument<M, A>;
 
 	template<auto M>
-	using nik_name(NIK_PREFIX, sign_arg_ref)		= typename NIK_MODULE::template sign_arg_ref<M>;
+	using nik_name(NIK_PREFIX, sign_arg_as_ref)		= typename NIK_MODULE::template sign_arg_as_ref<M>;
 
 	template<auto M>
-	using nik_name(NIK_PREFIX, sign_arg_deref)		= typename NIK_MODULE::template sign_arg_deref<M>;
+	using nik_name(NIK_PREFIX, sign_arg_as_deref)		= typename NIK_MODULE::template sign_arg_as_deref<M>;
 
 	template<auto M>
-	using nik_name(NIK_PREFIX, sign_arg_cref)		= typename NIK_MODULE::template sign_arg_cref<M>;
+	using nik_name(NIK_PREFIX, sign_arg_as_cref)		= typename NIK_MODULE::template sign_arg_as_cref<M>;
 
 	template<auto M>
-	using nik_name(NIK_PREFIX, sign_arg_cderef)		= typename NIK_MODULE::template sign_arg_cderef<M>;
+	using nik_name(NIK_PREFIX, sign_arg_as_cderef)		= typename NIK_MODULE::template sign_arg_as_cderef<M>;
 
 	//
 
 	template<typename... As>
-	using nik_name(NIK_PREFIX, _sign_arg_facade)		= typename NIK_MODULE::template _sign_arg_facade<As...>;
+	using nik_name(NIK_PREFIX, _sign_facade)		= typename NIK_MODULE::template _sign_facade<As...>;
 
 	template<auto... Ms>
-	using nik_name(NIK_PREFIX, _sign_member_facade)		= typename NIK_MODULE::template _sign_member_facade<Ms...>;
+	using nik_name(NIK_PREFIX, _selector_facade)		= typename NIK_MODULE::template _selector_facade<Ms...>;
+
+/***********************************************************************************************************************/
+
+// map args to out types:
+
+	template<auto U>
+	NIK_POLICY auto nik_name(NIK_PREFIX, selectors_to_out_types)	= NIK_MODULE::template selectors_to_out_types<U>;
 
 	// member 0:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_0)	= NIK_MODULE::template resolve_member_0<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_0)	= NIK_MODULE::template resolve_selector_0<S, A>;
 
 	// member 1:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_1)	= NIK_MODULE::template resolve_member_1<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_1)	= NIK_MODULE::template resolve_selector_1<S, A>;
 
 	// member 2:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_2)	= NIK_MODULE::template resolve_member_2<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_2)	= NIK_MODULE::template resolve_selector_2<S, A>;
 
 	// member 3:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_3)	= NIK_MODULE::template resolve_member_3<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_3)	= NIK_MODULE::template resolve_selector_3<S, A>;
 
 	// member 4:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_4)	= NIK_MODULE::template resolve_member_4<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_4)	= NIK_MODULE::template resolve_selector_4<S, A>;
 
 	// member 5:
 
 	template<typename S, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member_5)	= NIK_MODULE::template resolve_member_5<S, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector_5)	= NIK_MODULE::template resolve_selector_5<S, A>;
 
 	//
 
 	template<auto M, typename A>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_member)	= NIK_MODULE::template resolve_member<M, A>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_selector)		= NIK_MODULE::template resolve_selector<M, A>;
 
 	template<typename S, typename F>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_facade)	= NIK_MODULE::template resolve_facade<S, F>;
-
-	template<auto M>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_out_types)	= NIK_MODULE::template resolve_out_types<M>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, args_to_selectors)		= NIK_MODULE::template args_to_selectors<S, F>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

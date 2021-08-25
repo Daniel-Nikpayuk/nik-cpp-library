@@ -204,6 +204,21 @@
 	//	printf("%d\n", unary_apply<square, 5>);
 	//	printf("%d\n", binary_apply<times, 5, 7>);
 
+	//
+
+	//	printf("%llu\n", naive_factorial<utype(5)>);	// 1.20s (gcc) / 1.53s (clang)
+	//	printf("%llu\n", naive_factorial<utype(20)>);	// 1.93s (gcc) / 3.12s (clang)
+
+	//	printf("%llu\n", fast_factorial<utype(5)>);	// 1.01s (gcc) / 1.35s (clang)
+	//	printf("%llu\n", fast_factorial<utype(20)>);	// 1.47s (gcc) / 2.00s (clang)
+
+	//	printf("%llu\n", off_by_one_factorial<utype(5)>);
+	
+	//	printf("%llu\n", fixed_fib(utype(13)));
+	//	printf("%llu\n", naive_fibonacci<utype(5)>);	// 1.43s (gcc) /  2.02s (clang)
+	//	printf("%llu\n", naive_fibonacci<utype(13)>);	// 4.14s (gcc) / 11.68s (clang)
+								// looped around: 1.82s (gcc) / 2.33s (clang)
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

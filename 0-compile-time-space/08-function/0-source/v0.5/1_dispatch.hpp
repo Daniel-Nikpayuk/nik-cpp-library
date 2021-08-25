@@ -133,13 +133,13 @@ public:
 private:
 
 	template<typename Type>
-	static constexpr auto f_sign(void(*f)(Type*))
+	static constexpr auto f_sign_type(void(*f)(Type*))
 	{
 		return f;
 	}
 
 	template<typename Type, typename Attr>
-	static constexpr auto f_sign(void(*)(_argument<Type, Attr>*))
+	static constexpr auto f_sign_type(void(*)(_argument<Type, Attr>*))
 	{
 		constexpr auto mutate = Attr::mutate;
 		constexpr auto denote = Attr::denote;
@@ -159,9 +159,9 @@ private:
 public:
 
 	template<typename Arg>
-	using sign = functor_module::template T_type_U
+	using sign_type = functor_module::template T_type_U
 	<
-		f_sign(functor_module::template U_type_T<Arg>)
+		f_sign_type(functor_module::template U_type_T<Arg>)
 	>;
 
 /***********************************************************************************************************************/
@@ -178,7 +178,7 @@ private:
 	{
 		using S_function = functor_module::template T_type_U<UFunc>;
 
-		return S_function::template result<sign<Args>...>;
+		return S_function::template result<sign_type<Args>...>;
 	}
 
 public:

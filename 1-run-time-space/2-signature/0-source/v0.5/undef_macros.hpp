@@ -25,8 +25,8 @@
 
 // resolve member macros:
 
-	#undef NIK_DEFINE_RESOLVE_MEMBER
-	#undef NIK_DEFINE_F_RESOLVE_MEMBER
+	#undef NIK_DEFINE_RESOLVE_SELECTOR
+	#undef NIK_DEFINE_F_RESOLVE_SELECTOR
 
 // accessor macros:
 

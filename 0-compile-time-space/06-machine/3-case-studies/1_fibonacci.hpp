@@ -27,45 +27,62 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+	struct FibonacciNames
+	{
+		static constexpr key_type naive		= 0;
+		static constexpr key_type fast		= 1;
+	};
+
+	using FN = FibonacciNames;
+
+	template<key_type, key_type...> struct S_user_fibonacci_contr;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // register (naive) fibonacci:
 
 /***********************************************************************************************************************/
 
-	template
-	<
-		// registers:
-
-			index_type val			= 0,
-			index_type m			= 1,
-			index_type n			= 2,
-			index_type is_0_or_1		= 3,
-			index_type dec			= 4,
-			index_type add			= 5,
-
-		// labels:
-
-			index_type loop			= 0,
-			index_type done			= 1
-	>
-	constexpr auto naive_fibonacci_contr = controller
-	<
-		label // loop:
+	template<>
+	struct S_user_fibonacci_contr<FN::naive>
+	{
+		template
 		<
-			test    < is_0_or_1 , n           >,
-			branch  < done                    >,
-			apply   < n         , dec , n     >,
-			recurse < m                       >,
-			apply   < n         , dec , n     >,
-			recurse < n                       >,
-			apply   < val       , add , m , n >,
-			stop    < val                     >
-		>,
+			// registers:
 
-		label // done:
-		<
-			stop    < val                     >
+				index_type val			= 0,
+				index_type m			= 1,
+				index_type n			= 2,
+				index_type is_0_or_1		= 3,
+				index_type dec			= 4,
+				index_type add			= 5,
+
+			// labels:
+
+				index_type loop			= 0,
+				index_type done			= 1
 		>
-	>;
+		static constexpr auto result = controller
+		<
+			label // loop:
+			<
+				test    < is_0_or_1 , n           >,
+				branch  < done                    >,
+				apply   < n         , dec , n     >,
+				recurse < m                       >,
+				apply   < n         , dec , n     >,
+				recurse < n                       >,
+				apply   < val       , add , m , n >,
+				stop    < val                     >
+			>,
+
+			label // done:
+			<
+				stop    < val                     >
+			>
+		>;
+	};
 
 /***********************************************************************************************************************/
 
@@ -77,6 +94,8 @@
 	{
 		using n_type = decltype(n);
 
+		constexpr auto contr		= S_user_fibonacci_contr<FN::naive>::template result<>;
+
 		constexpr n_type val		= _one;
 		constexpr n_type m		= _zero;
 		constexpr auto is_0_or_1_op	= is_0_or_1_value<n_type>;
@@ -85,7 +104,7 @@
 
 		return start
 		<
-			register_machine, naive_fibonacci_contr<>, d,
+			register_machine, contr, d,
 			val, m, n, is_0_or_1_op, dec_op, add_op
 		>();
 	}

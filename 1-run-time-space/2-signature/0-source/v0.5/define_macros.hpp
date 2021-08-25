@@ -297,38 +297,38 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// resolve member macros:
+// resolve selector macros:
 
 /***********************************************************************************************************************/
 
-	#define NIK_DEFINE_F_RESOLVE_MEMBER(_num_)									\
+	#define NIK_DEFINE_F_RESOLVE_SELECTOR(_num_)									\
 															\
 		template<typename Attr, typename... Ts>									\
-		static constexpr auto f_resolve_member_ ## _num_(void(*)(signature<Ts...>*))				\
+		static constexpr auto f_resolve_selector_ ## _num_(void(*)(signature<Ts...>*))				\
 		{													\
 			constexpr auto mutate	= Attr::mutate;								\
 			constexpr auto denote	= Attr::denote;								\
 															\
-			if constexpr (sign_is_immutable<mutate>)							\
+			if constexpr (is_sign_immutable<mutate>)							\
 			{												\
 				constexpr auto member = member_ ## _num_ ## _cref<Ts...>;				\
 															\
-				if constexpr (sign_member_is_reference<denote>) return member;				\
+				if constexpr (is_sign_reference<denote>) return member;					\
 				else return do_compose<member, cdereference<out_type<member>>>;				\
 			}												\
 			else												\
 			{												\
 				constexpr auto member = member_ ## _num_ ## _ref<Ts...>;				\
 															\
-				if constexpr (sign_member_is_reference<denote>) return member;				\
+				if constexpr (is_sign_reference<denote>) return member;					\
 				else return do_compose<member, dereference<out_type<member>>>;				\
 			}												\
 		}
 
-	#define NIK_DEFINE_RESOLVE_MEMBER(_num_)									\
+	#define NIK_DEFINE_RESOLVE_SELECTOR(_num_)									\
 															\
 		template<typename Signature, typename Attr>								\
-		static constexpr auto resolve_member_ ## _num_ = f_resolve_member_ ## _num_<Attr>			\
+		static constexpr auto resolve_selector_ ## _num_ = f_resolve_selector_ ## _num_<Attr>			\
 			(functor_module::template U_type_T<Signature>);
 
 /***********************************************************************************************************************/

@@ -73,18 +73,18 @@ public:
 /***********************************************************************************************************************/
 
 	template<SignMutability m>
-	static constexpr bool sign_is_immutable			= function_module::template is_immutable<m>;
+	static constexpr bool is_sign_immutable			= function_module::template is_immutable<m>;
 
 	template<SignMutability m>
-	static constexpr bool sign_is_variable			= function_module::template is_variable<m>;
+	static constexpr bool is_sign_variable			= function_module::template is_variable<m>;
 
 	//
 
 	template<SignDenotation d>
-	static constexpr bool sign_member_is_reference		= (d == SignDenotation::reference);
+	static constexpr bool is_sign_reference			= (d == SignDenotation::reference);
 
 	template<SignDenotation d>
-	static constexpr bool sign_member_is_dereference	= (d == SignDenotation::dereference);
+	static constexpr bool is_sign_dereference		= (d == SignDenotation::dereference);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -102,10 +102,10 @@ public:
 
 	//
 
-	using sign_attr_ref		= _sign_attributes < SignMutability::variable  , SignDenotation::reference   >;
-	using sign_attr_deref		= _sign_attributes < SignMutability::variable  , SignDenotation::dereference >;
-	using sign_attr_cref		= _sign_attributes < SignMutability::immutable , SignDenotation::reference   >;
-	using sign_attr_cderef		= _sign_attributes < SignMutability::immutable , SignDenotation::dereference >;
+	using sign_attr_as_ref		= _sign_attributes < SignMutability::variable  , SignDenotation::reference   >;
+	using sign_attr_as_deref	= _sign_attributes < SignMutability::variable  , SignDenotation::dereference >;
+	using sign_attr_as_cref		= _sign_attributes < SignMutability::immutable , SignDenotation::reference   >;
+	using sign_attr_as_cderef	= _sign_attributes < SignMutability::immutable , SignDenotation::dereference >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -123,10 +123,10 @@ public:
 
 	//
 
-	template<SignMember Member> using sign_arg_ref		= _sign_argument < Member , sign_attr_ref    >;
-	template<SignMember Member> using sign_arg_deref	= _sign_argument < Member , sign_attr_deref  >;
-	template<SignMember Member> using sign_arg_cref		= _sign_argument < Member , sign_attr_cref   >;
-	template<SignMember Member> using sign_arg_cderef	= _sign_argument < Member , sign_attr_cderef >;
+	template<SignMember Member> using sign_arg_as_ref	= _sign_argument < Member , sign_attr_as_ref    >;
+	template<SignMember Member> using sign_arg_as_deref	= _sign_argument < Member , sign_attr_as_deref  >;
+	template<SignMember Member> using sign_arg_as_cref	= _sign_argument < Member , sign_attr_as_cref   >;
+	template<SignMember Member> using sign_arg_as_cderef	= _sign_argument < Member , sign_attr_as_cderef >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -136,10 +136,10 @@ public:
 /***********************************************************************************************************************/
 
 	template<typename... Args>
-	using _sign_arg_facade = typename functor_module::template typename_pack<Args...>;
+	using _sign_facade = typename functor_module::template typename_pack<Args...>;
 
-	template<auto... Members>
-	using _sign_member_facade = typename functor_module::template auto_pack<Members...>;
+	template<auto... Selectors>
+	using _selector_facade = typename functor_module::template auto_pack<Selectors...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -148,89 +148,92 @@ public:
 // dispatchers:
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// resolve member:
+// sign selectors to out types:
+
+private:
+
+	template<auto... Selectors>
+	static constexpr auto f_selectors_to_out_types(void(*)(_selector_facade<Selectors...>*))
+	{
+		return functor_module::template U_pack_Vs<out_type<Selectors>...>;
+	}
+
+public:
+
+	template<auto USelector>
+	static constexpr auto selectors_to_out_types = f_selectors_to_out_types
+							(functor_module::template U_type_T<USelector>);
 
 /***********************************************************************************************************************/
 
 private:
 
-	// members 0-5:
+	// selectors 0-5:
 
-		NIK_DEFINE_F_RESOLVE_MEMBER(0)
-		NIK_DEFINE_F_RESOLVE_MEMBER(1)
-		NIK_DEFINE_F_RESOLVE_MEMBER(2)
-		NIK_DEFINE_F_RESOLVE_MEMBER(3)
-		NIK_DEFINE_F_RESOLVE_MEMBER(4)
-		NIK_DEFINE_F_RESOLVE_MEMBER(5)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(0)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(1)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(2)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(3)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(4)
+		NIK_DEFINE_F_RESOLVE_SELECTOR(5)
 
 public:
 
-	// members 0-5:
+	// selectors 0-5:
 
-		NIK_DEFINE_RESOLVE_MEMBER(0)
-		NIK_DEFINE_RESOLVE_MEMBER(1)
-		NIK_DEFINE_RESOLVE_MEMBER(2)
-		NIK_DEFINE_RESOLVE_MEMBER(3)
-		NIK_DEFINE_RESOLVE_MEMBER(4)
-		NIK_DEFINE_RESOLVE_MEMBER(5)
+		NIK_DEFINE_RESOLVE_SELECTOR(0)
+		NIK_DEFINE_RESOLVE_SELECTOR(1)
+		NIK_DEFINE_RESOLVE_SELECTOR(2)
+		NIK_DEFINE_RESOLVE_SELECTOR(3)
+		NIK_DEFINE_RESOLVE_SELECTOR(4)
+		NIK_DEFINE_RESOLVE_SELECTOR(5)
 
 /***********************************************************************************************************************/
+
+// sign args to selectors:
 
 private:
 
 	template<typename Signature, typename Arg>
-	static constexpr auto f_resolve_member()
+	static constexpr auto f_resolve_selector()
 	{
 		constexpr auto member	= Arg::member;
 		using attributes	= typename Arg::attributes;
 
-		if constexpr      (is_sign_member_0<member>) return resolve_member_0<Signature, attributes>;
-		else if constexpr (is_sign_member_1<member>) return resolve_member_1<Signature, attributes>;
-		else if constexpr (is_sign_member_2<member>) return resolve_member_2<Signature, attributes>;
-		else if constexpr (is_sign_member_3<member>) return resolve_member_3<Signature, attributes>;
-		else if constexpr (is_sign_member_4<member>) return resolve_member_4<Signature, attributes>;
-		else                                         return resolve_member_5<Signature, attributes>;
+		if constexpr      (is_sign_member_0<member>) return resolve_selector_0<Signature, attributes>;
+		else if constexpr (is_sign_member_1<member>) return resolve_selector_1<Signature, attributes>;
+		else if constexpr (is_sign_member_2<member>) return resolve_selector_2<Signature, attributes>;
+		else if constexpr (is_sign_member_3<member>) return resolve_selector_3<Signature, attributes>;
+		else if constexpr (is_sign_member_4<member>) return resolve_selector_4<Signature, attributes>;
+		else                                         return resolve_selector_5<Signature, attributes>;
 	}
 
 public:
 
 	template<typename Signature, typename Arg>
-	static constexpr auto resolve_member = f_resolve_member<Signature, Arg>();
+	static constexpr auto resolve_selector = f_resolve_selector<Signature, Arg>();
 
 /***********************************************************************************************************************/
+
+// sign args to selectors:
 
 private:
 
 	template<typename Signature, typename... Args>
-	static constexpr auto f_resolve_facade(void(*)(_sign_arg_facade<Args...>*))
+	static constexpr auto f_args_to_selectors(void(*)(_sign_facade<Args...>*))
 	{
 		return functor_module::template U_type_T
 		<
-			_sign_member_facade<resolve_member<Signature, Args>...>
+			_selector_facade<resolve_selector<Signature, Args>...>
 		>;
 	}
 
 public:
 
 	template<typename Signature, typename Facade>
-	static constexpr auto resolve_facade = f_resolve_facade<Signature>(functor_module::template U_type_T<Facade>);
-
-/***********************************************************************************************************************/
-
-private:
-
-	template<auto... Members>
-	static constexpr auto f_resolve_out_types(void(*)(_sign_member_facade<Members...>*))
-	{
-		return functor_module::template U_pack_Vs<out_type<Members>...>;
-	}
-
-public:
-
-	template<auto UMem>
-	static constexpr auto resolve_out_types = f_resolve_out_types(functor_module::template U_type_T<UMem>);
+	static constexpr auto args_to_selectors = f_args_to_selectors<Signature>
+							(functor_module::template U_type_T<Facade>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -357,7 +357,7 @@
 // sign:
 
 	template<typename Arg>
-	using nik_name(NIK_PREFIX, sign)				= typename NIK_MODULE::template sign<Arg>;
+	using nik_name(NIK_PREFIX, sign_type)				= typename NIK_MODULE::template sign_type<Arg>;
 
 /***********************************************************************************************************************/
 

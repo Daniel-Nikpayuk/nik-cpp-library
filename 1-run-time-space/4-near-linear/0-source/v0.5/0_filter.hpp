@@ -92,59 +92,6 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// attributes:
-
-/***********************************************************************************************************************/
-
-	enum struct Mutability
-	{
-		immutable,
-		variable,
-
-		dimension // filler
-	};
-
-	enum struct Denotation
-	{
-		reference,
-		dereference,
-
-		dimension // filler
-	};
-
-/***********************************************************************************************************************/
-
-	template<Mutability m>
-	static constexpr bool V_is_immutable			= (m == Mutability::immutable);
-
-	template<Mutability m>
-	static constexpr bool V_is_variable			= (m == Mutability::variable);
-
-	//
-
-	template<Denotation d>
-	static constexpr bool V_is_reference			= (d == Denotation::reference);
-
-	template<Denotation d>
-	static constexpr bool V_is_dereference			= (d == Denotation::dereference);
-
-/***********************************************************************************************************************/
-
-	template<Mutability m, Denotation d>
-	static constexpr bool V_is_immutable_reference		= (V_is_immutable<m> && V_is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool V_is_immutable_dereference	= (V_is_immutable<m> && V_is_dereference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool V_is_variable_reference		= (V_is_variable<m> && V_is_reference<d>);
-
-	template<Mutability m, Denotation d>
-	static constexpr bool V_is_variable_dereference		= (V_is_variable<m> && V_is_dereference<d>);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // interval:
 
 /***********************************************************************************************************************/
@@ -257,6 +204,7 @@ public:
 	template<Axis V>			struct _axis		{ };
 
 	template<typename... Attrs>		struct _attrs		{ };
+	template<typename... Specs>		struct _specs		{ };
 
 	template<auto UFunc, typename Attrs>	struct _value		{ };
 	template<auto UFunc, typename Attrs>	struct _next		{ };
@@ -452,23 +400,23 @@ public:
 
 private:
 
-	template<auto LMem, auto Func, auto... RMems>
-	static constexpr auto f_make_assign(void(*)(_sign_member_facade<RMems...>*))
+	template<auto LSelector, auto Func, auto... RSelectors>
+	static constexpr auto f_make_assign(void(*)(_selector_facade<RSelectors...>*))
 	{
-		return assign<LMem, Func, RMems...>;
+		return assign<LSelector, Func, RSelectors...>;
 	}
 
 	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
 	static constexpr auto f_prepare_assign(void(*)(_attrs<SignAttrs...>*))
 	{
-		using SignFacade			= _sign_arg_facade<_sign_argument<SignMem, SignAttrs>...>;
+		using SignFacade		= _sign_facade<_sign_argument<SignMem, SignAttrs>...>;
 
-		constexpr auto member_ref		= resolve_member<Signature, sign_arg_ref<SignMem>>;
-		constexpr auto member_args		= resolve_facade<Signature, SignFacade>;
-		constexpr auto out_type_args		= resolve_out_types<member_args>;
-		constexpr auto function			= function_module::template resolve<UFunc, out_type_args>;
+		constexpr auto l_selector	= resolve_selector<Signature, sign_arg_as_ref<SignMem>>;
+		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
+		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
+		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
 
-		return f_make_assign<member_ref, function>(member_args);
+		return f_make_assign<l_selector, function>(r_selectors);
 	}
 
 public:
@@ -484,22 +432,22 @@ public:
 
 private:
 
-	template<auto Func, auto... RMems>
-	static constexpr auto f_make_test(void(*)(_sign_member_facade<RMems...>*))
+	template<auto Func, auto... RSelectors>
+	static constexpr auto f_make_test(void(*)(_selector_facade<RSelectors...>*))
 	{
-		return test<Func, RMems...>;
+		return test<Func, RSelectors...>;
 	}
 
 	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
 	static constexpr auto f_prepare_test(void(*)(_attrs<SignAttrs...>*))
 	{
-		using SignFacade			= _sign_arg_facade<_sign_argument<SignMem, SignAttrs>...>;
+		using SignFacade		= _sign_facade<_sign_argument<SignMem, SignAttrs>...>;
 
-		constexpr auto member_args		= resolve_facade<Signature, SignFacade>;
-		constexpr auto out_type_args		= resolve_out_types<member_args>;
-		constexpr auto function			= function_module::template resolve<UFunc, out_type_args>;
+		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
+		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
+		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
 
-		return f_make_test<function>(member_args);
+		return f_make_test<function>(r_selectors);
 	}
 
 public:

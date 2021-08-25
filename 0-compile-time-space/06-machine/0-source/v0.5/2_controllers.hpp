@@ -346,13 +346,7 @@ public:
 			MN::control, sizeof...(Vs), SubName, SubNote, Vs...
 		>;
 
-	//	template<key_type SubName, key_type SubNote, index_type... Vs>
-	//	static constexpr instr_type user = patch_instruction
-	//	<
-	//		MN::user, sizeof...(Vs), SubName, SubNote, Vs...
-	//	>;
-
-		template<key_type SubName, key_type SubNote, index_type... Vs>
+		template<key_type SubName, key_type SubNote, index_type... Vs> // optimize ?
 		static constexpr instr_type user = instruction
 		<
 			MN::call, MN::user, SubName, SubNote, Vs...
