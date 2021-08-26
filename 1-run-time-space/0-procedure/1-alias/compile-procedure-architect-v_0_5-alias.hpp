@@ -320,15 +320,15 @@
 
 /***********************************************************************************************************************/
 
-// test:
+// subapply:
 
 	template<auto op, auto r0, auto... rs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, test)			= NIK_MODULE::template test<op, r0, rs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, subapply)			= NIK_MODULE::template subapply<op, r0, rs...>;
 
-// assign:
+// subassign:
 
 	template<auto l, auto op, auto... rs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, assign)			= NIK_MODULE::template assign<l, op, rs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, subassign)			= NIK_MODULE::template subassign<l, op, rs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

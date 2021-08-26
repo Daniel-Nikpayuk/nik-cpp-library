@@ -197,22 +197,23 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<NLMember... Ms>		struct _map		{ };
+	template<NLMember... Ms>				struct _map		{ };
 
-	template<typename T, SignMember M>	struct _type		{ };
-	template<Interval V>			struct _ival		{ };
-	template<Axis V>			struct _axis		{ };
+	template<typename T>					struct _type		{ };
+	template<Interval V>					struct _ival		{ };
+	template<Axis V>					struct _axis		{ };
 
-	template<typename... Attrs>		struct _attrs		{ };
-	template<typename... Specs>		struct _specs		{ };
+	template<auto... Members>				struct _members		{ };
+	template<typename... Attrs>				struct _attrs		{ };
+	template<typename... Specs>				struct _specs		{ };
 
-	template<auto UFunc, typename Attrs>	struct _value		{ };
-	template<auto UFunc, typename Attrs>	struct _next		{ };
-	template<auto UFunc, typename Attrs>	struct _prev		{ };
-	template<auto UFunc, typename Attrs>	struct _peek		{ };
-	template<auto UFunc, typename Attrs>	struct _test		{ };
-	template<auto UFunc, typename Attrs>	struct _apply		{ };
-	template<auto UFunc, typename Attrs>	struct _assign		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _value		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _next		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _prev		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _peek		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _test		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _apply		{ };
+	template<auto UFunc, typename Mems, typename Attrs>	struct _assign		{ };
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -403,15 +404,18 @@ private:
 	template<auto LSelector, auto Func, auto... RSelectors>
 	static constexpr auto f_make_assign(void(*)(_selector_facade<RSelectors...>*))
 	{
-		return assign<LSelector, Func, RSelectors...>;
+		return subassign<LSelector, Func, RSelectors...>;
 	}
 
-	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
-	static constexpr auto f_prepare_assign(void(*)(_attrs<SignAttrs...>*))
+	template<auto UFunc, typename Signature, auto LMem, auto... RMems, typename... Attrs>
+	static constexpr auto f_prepare_assign(void(*)(_members<LMem, RMems...>*), void(*)(_attrs<Attrs...>*))
 	{
-		using SignFacade		= _sign_facade<_sign_argument<SignMem, SignAttrs>...>;
+		using SignFacade		= _sign_facade
+						<
+							_sign_argument<RMems, Attrs>...
+						>;
 
-		constexpr auto l_selector	= resolve_selector<Signature, sign_arg_as_ref<SignMem>>;
+		constexpr auto l_selector	= resolve_selector<Signature, sign_arg_as_ref<LMem>>;
 		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
 		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
 		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
@@ -421,48 +425,57 @@ private:
 
 public:
 
-	template<auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
-	static constexpr auto make_assign = f_prepare_assign<UFunc, SignMem, Signature>
-						(functor_module::template U_type_T<SignAttrs>);
+	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
+	static constexpr auto make_assign = f_prepare_assign<UFunc, Signature>
+	(
+	 	functor_module::template U_type_T<SignMems>,
+	 	functor_module::template U_type_T<SignAttrs>
+	);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// make test:
+// make apply:
 
 private:
 
 	template<auto Func, auto... RSelectors>
-	static constexpr auto f_make_test(void(*)(_selector_facade<RSelectors...>*))
+	static constexpr auto f_make_apply(void(*)(_selector_facade<RSelectors...>*))
 	{
-		return test<Func, RSelectors...>;
+		return subapply<Func, RSelectors...>;
 	}
 
-	template<auto UFunc, auto SignMem, typename Signature, typename... SignAttrs>
-	static constexpr auto f_prepare_test(void(*)(_attrs<SignAttrs...>*))
+	template<auto UFunc, typename Signature, auto... Mems, typename... Attrs>
+	static constexpr auto f_prepare_apply(void(*)(_members<Mems...>*), void(*)(_attrs<Attrs...>*))
 	{
-		using SignFacade		= _sign_facade<_sign_argument<SignMem, SignAttrs>...>;
+		using SignFacade		= _sign_facade<_sign_argument<Mems, Attrs>...>;
 
 		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
 		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
 		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
 
-		return f_make_test<function>(r_selectors);
+		return f_make_apply<function>(r_selectors);
 	}
 
 public:
 
-	template<auto UFunc, auto SignMem, typename SignAttrs, typename Signature>
-	static constexpr auto make_test = f_prepare_test<UFunc, SignMem, Signature>
-						(functor_module::template U_type_T<SignAttrs>);
+	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
+	static constexpr auto make_apply = f_prepare_apply<UFunc, Signature>
+	(
+	 	functor_module::template U_type_T<SignMems>,
+	 	functor_module::template U_type_T<SignAttrs>
+	);
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// power (members):
+// make test:
 
-	template<typename... MemberSpecs>
-	using _power_map = void;
+	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
+	static constexpr auto make_test = f_prepare_apply<UFunc, Signature>
+	(
+	 	functor_module::template U_type_T<SignMems>,
+	 	functor_module::template U_type_T<SignAttrs>
+	);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

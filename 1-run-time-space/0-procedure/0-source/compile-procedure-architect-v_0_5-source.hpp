@@ -516,20 +516,20 @@ public:
 
 /***********************************************************************************************************************/
 
-// test:
+// subapply:
 
 	template<auto op, auto r0, auto... rs>
-	static constexpr bool test(in_type<r0> x)
+	static constexpr out_type<op> subapply(in_type<r0> x)
 	{
 		return op(r0(x), rs(x)...);
 	}
 
 /***********************************************************************************************************************/
 
-// assign:
+// subassign:
 
 	template<auto l, auto op, auto... rs>
-	static constexpr in_type<l> assign(in_type<l> x)
+	static constexpr in_type<l> subassign(in_type<l> x)
 	{
 		l(x) = op(rs(x)...);
 
