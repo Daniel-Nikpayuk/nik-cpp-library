@@ -517,6 +517,13 @@ public:
 
 private:
 
+		//	0. If bidirectional and last, reverse iterate end.
+		//	1. For each left endpoint, if open, then iterate.
+		//	2. Evaluate the common (closing) loop.
+		//	3. If there exists any right endpoint, which is closed, then act/combine.
+		//	4. If (3), then for each right endpoint, when open, iterate.
+		//	5. If bidirectional and last, iterate end to reset.
+
 	template<typename Spec>
 	static constexpr auto one_cycle_map = opt_do_chain_compose
 	<
