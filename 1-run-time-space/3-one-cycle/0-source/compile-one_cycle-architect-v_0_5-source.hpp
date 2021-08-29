@@ -261,8 +261,8 @@ public:
 
 	template<typename Spec> using end_type_					= typename Spec::end_type;
 
-	template<typename Spec> static constexpr bool is_end_prev_before_	= Spec::is_end_previous_before;
-	template<typename Spec> static constexpr auto end_prev_			= Spec::end_previous;
+	template<typename Spec> static constexpr bool is_end_prev_before_	= Spec::is_end_prev_before;
+	template<typename Spec> static constexpr auto end_prev_			= Spec::end_prev;
 
 	template<typename Spec> static constexpr bool is_end_next_after_	= Spec::is_end_next_after;
 	template<typename Spec> static constexpr auto end_next_			= Spec::end_next;
@@ -473,7 +473,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_repeat = opt_do_chain_compose
+	static constexpr auto one_cycle_repeat_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -502,7 +502,7 @@ public:
 	{
 		auto s = signature_<Spec>(b, c, e);
 
-		return return_value_<Spec>(one_cycle_repeat<Spec>(s));
+		return return_value_<Spec>(one_cycle_repeat_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -525,7 +525,7 @@ private:
 		//	5. If bidirectional and last, iterate end to reset.
 
 	template<typename Spec>
-	static constexpr auto one_cycle_map = opt_do_chain_compose
+	static constexpr auto one_cycle_map_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -560,7 +560,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i, e);
 
-		return return_value_<Spec>(one_cycle_map<Spec>(s));
+		return return_value_<Spec>(one_cycle_map_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -576,7 +576,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_fold = opt_do_chain_compose
+	static constexpr auto one_cycle_fold_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -605,7 +605,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i, e);
 
-		return return_value_<Spec>(one_cycle_fold<Spec>(s));
+		return return_value_<Spec>(one_cycle_fold_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -626,7 +626,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_find_first = opt_do_chain_compose
+	static constexpr auto one_cycle_find_first_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -656,7 +656,7 @@ public:
 	{
 		auto s = signature_<Spec>(e, i, e);
 
-		return return_value_<Spec>(one_cycle_find_first<Spec>(s));
+		return return_value_<Spec>(one_cycle_find_first_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -671,7 +671,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_find_all = opt_do_chain_compose
+	static constexpr auto one_cycle_find_all_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -707,7 +707,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i, e, false);
 
-		return return_value_<Spec>(one_cycle_find_all<Spec>(s));
+		return return_value_<Spec>(one_cycle_find_all_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -723,7 +723,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_zip = opt_do_chain_compose
+	static constexpr auto one_cycle_zip_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -761,7 +761,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i1, i2, e2);
 
-		return return_value_<Spec>(one_cycle_zip<Spec>(s));
+		return return_value_<Spec>(one_cycle_zip_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -777,7 +777,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_fasten = opt_do_chain_compose
+	static constexpr auto one_cycle_fasten_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -817,7 +817,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i1, i2, e2);
 
-		return return_value_<Spec>(one_cycle_fasten<Spec>(s));
+		return return_value_<Spec>(one_cycle_fasten_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
@@ -833,7 +833,7 @@ public:
 private:
 
 	template<typename Spec>
-	static constexpr auto one_cycle_glide = opt_do_chain_compose
+	static constexpr auto one_cycle_glide_ = opt_do_chain_compose
 	<
 		precycle
 		<
@@ -870,7 +870,7 @@ public:
 	{
 		auto s = signature_<Spec>(o, i1, i2, e2);
 
-		return return_value_<Spec>(one_cycle_glide<Spec>(s));
+		return return_value_<Spec>(one_cycle_glide_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/

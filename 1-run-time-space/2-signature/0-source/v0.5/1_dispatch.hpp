@@ -239,3 +239,78 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// higher orders:
+
+/***********************************************************************************************************************/
+
+// resolve sign assign:
+
+private:
+
+	template<auto LSelector, auto Func, auto... RSelectors>
+	static constexpr auto f_make_assign(void(*)(_selector_facade<RSelectors...>*))
+	{
+		return subassign<LSelector, Func, RSelectors...>;
+	}
+
+	template<auto UFunc, typename Signature, typename LArg, typename... RArgs>
+	static constexpr auto f_prepare_assign(void(*)(_sign_facade<LArg, RArgs...>*))
+	{
+		if constexpr (function_module::template is_id_keyword<UFunc>) return UFunc;
+
+		using RSignFacade		= _sign_facade<RArgs...>;
+
+		constexpr auto l_selector	= resolve_selector<Signature, LArg>;
+		constexpr auto r_selectors	= args_to_selectors<Signature, RSignFacade>;
+		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
+		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
+
+		return f_make_assign<l_selector, function>(r_selectors);
+	}
+
+public:
+
+	template<auto UFunc, typename SignArgs, typename Signature>
+	static constexpr auto resolve_assign = f_prepare_assign<UFunc, Signature>
+						(functor_module::template U_type_T<SignArgs>);
+
+/***********************************************************************************************************************/
+
+// resolve sign apply:
+
+private:
+
+	template<auto Func, auto... RSelectors>
+	static constexpr auto f_make_apply(void(*)(_selector_facade<RSelectors...>*))
+	{
+		return subapply<Func, RSelectors...>;
+	}
+
+	template<auto UFunc, typename SignArgs, typename Signature>
+	static constexpr auto f_prepare_apply()
+	{
+		if constexpr (function_module::template is_id_keyword<UFunc>) return UFunc;
+
+		constexpr auto r_selectors	= args_to_selectors<Signature, SignArgs>;
+		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
+		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
+
+		return f_make_apply<function>(r_selectors);
+	}
+
+public:
+
+	template<auto UFunc, typename SignArgs, typename Signature>
+	static constexpr auto resolve_apply = f_prepare_apply<UFunc, SignArgs, Signature>();
+
+/***********************************************************************************************************************/
+
+// resolve sign test:
+
+	template<auto UFunc, typename SignArgs, typename Signature>
+	static constexpr auto resolve_test = f_prepare_apply<UFunc, SignArgs, Signature>();
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+

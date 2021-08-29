@@ -42,6 +42,7 @@ namespace nik
 		#include nik_import(../../.., compile, procedure, architect, v_0_5, clang, static, name)
 
 		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
+		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
 		using signature_module	= nik_module(compile, signature, architect, v_0_5, clang);
 
 		#include"v0.5/0_filter.hpp"

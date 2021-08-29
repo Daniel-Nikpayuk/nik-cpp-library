@@ -27,6 +27,11 @@ public:
 
 	template<typename...> class signature;
 
+	// prevents name clashes:
+
+	template<typename... Ts>
+	using resolve_signature = signature<Ts...>;
+
 /***********************************************************************************************************************/
 
 // accessors:

@@ -68,19 +68,17 @@ public:
 	<
 		typename Type ,
 		Interval Ival ,
-		auto NextFunc , typename NextMems , typename NextAttrs ,
-		auto ApplFunc , typename ApplMems , typename ApplAttrs ,
-		auto RetFunc  , typename RetMems  , typename RetAttrs
+		auto NextFunc , typename NextArgs ,
+		auto RetFunc  , typename RetArgs
 	>
 	class _members_specification
 	<
-		_map   < NLMember::out                        >,
+		_map   < NLMember::out            >,
 
-		_type  < Type                                 >,
-		_ival  < Ival                                 >,
-		_next  < NextFunc      , NextMems , NextAttrs >,
-		_apply < ApplFunc      , ApplMems , ApplAttrs >,
-		_apply < RetFunc       , RetMems  , RetAttrs  >
+		_type  < Type                     >,
+		_ival  < Ival                     >,
+		_next  < NextFunc      , NextArgs >,
+		_apply < RetFunc       , RetArgs  >
 	>
 	{
 		public:
@@ -88,32 +86,20 @@ public:
 			using name				= _map<NLMember::out>;
 			using type				= Type;
 
-			template<typename Signature>
-			static constexpr auto next_assign	= make_assign
-								<
-									NextFunc, NextMems,
-									NextAttrs, Signature
-								>;
+			static constexpr auto loop_break	= function_module::U_id;
 
 			template<typename Signature>
-			static constexpr auto loop_break	= make_apply
-								<
-									ApplFunc, ApplMems,
-									ApplAttrs, Signature
-								>;
+			static constexpr auto next_assign	= resolve_assign<NextFunc, NextArgs, Signature>;
 
 			template<typename Signature>
-			static constexpr auto return_function	= make_apply
-								<
-									RetFunc, RetMems,
-									RetAttrs, Signature
-								>;
+			static constexpr auto return_function	= resolve_apply<RetFunc, RetArgs, Signature>;
 
 			static constexpr bool is_left_open	= V_is_left_open<Ival>;
 			static constexpr bool is_right_open	= V_is_right_open<Ival>;
 			static constexpr bool is_right_closed	= V_is_right_closed<Ival>;
 	};
 
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // in:
@@ -122,21 +108,19 @@ public:
 	<
 		typename Type ,
 		Interval Ival ,
-		auto ValFunc  , typename ValMems  , typename ValAttrs  ,
-		auto NextFunc , typename NextMems , typename NextAttrs ,
-		auto Axis     ,
-		auto PeekFunc , typename PeekMems , typename PeekAttrs
+		auto ValFunc  , typename ValArgs  ,
+		auto NextFunc , typename NextArgs ,
+		auto Axis
 	>
 	class _members_specification
 	<
-		_map   < NLMember::in                        >,
+		_map   < NLMember::in            >,
 
-		_type  < Type                                >,
-		_ival  < Ival                                >,
-		_value < ValFunc      , ValMems  , ValAttrs  >,
-		_next  < NextFunc     , NextMems , NextAttrs >,
-		_axis  < Axis                                >,
-		_peek  < PeekFunc     , PeekMems , PeekAttrs >
+		_type  < Type                    >,
+		_ival  < Ival                    >,
+		_value < ValFunc      , ValArgs  >,
+		_next  < NextFunc     , NextArgs >,
+		_axis  < Axis                    >
 	>
 	{
 		public:
@@ -145,34 +129,20 @@ public:
 			using type				= Type;
 
 			template<typename Signature>
-			static constexpr auto value_assign	= make_assign
-								<
-									ValFunc, ValMems,
-									ValAttrs, Signature
-								>;
+			static constexpr auto value_assign	= resolve_assign<ValFunc, ValArgs, Signature>;
 
 			template<typename Signature>
-			static constexpr auto next_assign	= make_assign
-								<
-									NextFunc, NextMems,
-									NextAttrs, Signature
-								>;
-
-			template<typename Signature>
-			static constexpr auto peek_test		= make_test
-								<
-									PeekFunc, PeekMems,
-									PeekAttrs, Signature
-								>;
+			static constexpr auto next_assign	= resolve_assign<NextFunc, NextArgs, Signature>;
 
 			static constexpr bool is_left_open	= V_is_left_open<Ival>;
 			static constexpr bool is_right_open	= V_is_right_open<Ival>;
 			static constexpr bool is_right_closed	= V_is_right_closed<Ival>;
 
-			static constexpr bool is_unidir		= V_is_unidirectional<Axis>;
+			static constexpr bool is_unidirectional = V_is_unidirectional<Axis>;
 			static constexpr bool is_bidirectional	= V_is_bidirectional<Axis>;
 	};
 
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // end:
@@ -180,16 +150,16 @@ public:
 	template
 	<
 		typename Type ,
-		auto NextFunc , typename NextMems , typename NextAttrs ,
-		auto PrevFunc , typename PrevMems , typename PrevAttrs
+		auto NextFunc , typename NextArgs ,
+		auto PrevFunc , typename PrevArgs
 	>
 	class _members_specification
 	<
-		_map   < NLMember::end                        >,
+		_map  < NLMember::end            >,
 
-		_type  < Type                                 >,
-		_next  < NextFunc      , NextMems , NextAttrs >,
-		_prev  < PrevFunc      , PrevMems , PrevAttrs >
+		_type < Type                     >,
+		_next < NextFunc      , NextArgs >,
+		_prev < PrevFunc      , PrevArgs >
 	>
 	{
 		public:
@@ -198,58 +168,80 @@ public:
 			using type				= Type;
 
 			template<typename Signature>
-			static constexpr auto next_assign	= make_assign
-								<
-									NextFunc, NextMems,
-									NextAttrs, Signature
-								>;
+			static constexpr auto next_assign	= resolve_assign<NextFunc, NextArgs, Signature>;
 
 			template<typename Signature>
-			static constexpr auto prev_assign	= make_assign
-								<
-									PrevFunc, PrevMems,
-									PrevAttrs, Signature
-								>;
+			static constexpr auto prev_assign	= resolve_assign<PrevFunc, PrevArgs, Signature>;
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// in, end (loop test):
+// in, end (loop pred, loop peek):
 
 	template
 	<
-		typename InSpec , typename EndSpec  ,
-		auto LoopPred   , typename LoopMems , typename LoopAttrs
+		typename OutSpec , typename InSpec   ,
+		auto LoopPred    , typename LoopArgs ,
+		auto PeekPred
 	>
 	class _members_specification
 	<
-		_map   < NLMember::in , NLMember::end             >,
+		_map   < NLMember::in , NLMember::end >,
 
-		_specs < InSpec       , EndSpec                   >,
-		_test  < LoopPred     , LoopMems      , LoopAttrs >
+		_specs < OutSpec      , InSpec        >,
+		_test  < LoopPred     , LoopArgs      >,
+		_peek  < PeekPred                     >
 	>
 	{
 		private:
 
-			template<typename OutInSpec, typename Signature>
-			static constexpr auto LoopTest		= make_loop_test
-								<
-									OutInSpec::is_uni_last,
-									InSpec::template peek_test<Signature>
-								>;
+			static constexpr bool is_last			= OutSpec::is_right_closed   && InSpec::is_right_open;
+			static constexpr bool is_uni_last		=  InSpec::is_unidirectional && is_last;
+
+			static constexpr auto LoopTest			= boolean_module::template V_if_then_else_VxV
+									<
+										is_uni_last, PeekPred, LoopPred
+									>;
 
 		public:
 
-			using name				= _map<NLMember::out, NLMember::in, NLMember::end>;
+			using name					= _map<NLMember::in, NLMember::end>;
 
-			template<typename OutInSpec, typename Signature>
-			static constexpr auto loop_test		= make_test
-								<
-									LoopTest<OutInSpec, Signature>,
-								       	LoopMems, LoopAttrs, Signature
-								>;
+			template<typename Signature>
+			static constexpr auto loop_test			= resolve_test<LoopTest, LoopArgs, Signature>;
+
+			static constexpr bool is_end_prev_before	=  InSpec::is_bidirectional && is_last;
+			static constexpr bool is_end_next_after		=  InSpec::is_bidirectional && is_last;
 	};
 
+/***********************************************************************************************************************/
+
+	template
+	<
+		auto LoopPred , typename LoopArgs ,
+		auto PeekPred
+	>
+	class _members_specification
+	<
+		_map  < NLMember::in , NLMember::end >,
+
+		_test < LoopPred     , LoopArgs      >,
+		_peek < PeekPred                     >
+	>
+	{
+		public:
+
+			template<typename OutSpec, typename InSpec>
+			using result = _map_in_end
+			<
+				_specs  < OutSpec  , InSpec   >,
+				_test   < LoopPred , LoopArgs >,
+				_peek   < PeekPred            >
+			>;
+	};
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // out, in (map assign):
@@ -257,53 +249,64 @@ public:
 	template
 	<
 		typename OutSpec , typename InSpec  ,
-		auto MapFunc     , typename MapMems , typename MapAttrs
+		auto MapFunc     , typename MapArgs
 	>
 	class _members_specification
 	<
-		_map    < NLMember::out , NLMember::in            >,
+		_map    < NLMember::out , NLMember::in >,
 
-		_specs  < OutSpec       , InSpec                  >,
-		_assign < MapFunc       , MapMems      , MapAttrs >
+		_specs  < OutSpec       , InSpec       >,
+		_assign < MapFunc       , MapArgs      >
 	>
 	{
-		private:
-
-			static constexpr bool is_last			= OutSpec::is_right_closed && InSpec::is_right_open;
-
 		public:
 
-			using name					= _map<NLMember::end>;
+			using name					= _map<NLMember::out, NLMember::in>;
 
 			template<typename Signature>
-			static constexpr auto map_assign		= make_assign
-									<
-										MapFunc, MapMems,
-										MapAttrs, Signature
-									>;
-
-			static constexpr bool is_uni_last		=  InSpec::is_unidir        && is_last;
+			static constexpr auto map_assign		= resolve_assign<MapFunc, MapArgs, Signature>;
 
 			static constexpr bool is_out_next_after		= OutSpec::is_right_open    &&  InSpec::is_right_closed;
 			static constexpr bool is_in_next_after		=  InSpec::is_right_open    && OutSpec::is_right_closed;
-
-			static constexpr bool is_end_previous_before	=  InSpec::is_bidirectional && is_last;
-			static constexpr bool is_end_next_after		=  InSpec::is_bidirectional && is_last;
-
-			static constexpr bool is_map_assign_after	= OutSpec::is_right_closed || InSpec::is_right_closed;
+			static constexpr bool is_map_assign_after	= OutSpec::is_right_closed  ||  InSpec::is_right_closed;
 	};
 
+/***********************************************************************************************************************/
+
+	template
+	<
+		auto MapFunc , typename MapArgs
+	>
+	class _members_specification
+	<
+		_map    < NLMember::out , NLMember::in >,
+
+		_assign < MapFunc       , MapArgs      >
+	>
+	{
+		public:
+
+			template<typename OutSpec, typename InSpec>
+			using result = _map_out_in
+			<
+				_specs  < OutSpec , InSpec  >,
+				_assign < MapFunc , MapArgs >
+			>;
+	};
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // specification:
 
 	template
 	<
-		typename OutSpec  ,
-		typename InSpec   ,
-		typename EndSpec  ,
+		typename OutSpec   ,
+		typename InSpec    ,
+		typename EndSpec   ,
 
-		typename AlgoSpec
+		typename InEndSpec ,
+		typename OutInSpec
 	>
 	class map_specification
 	{
@@ -314,7 +317,7 @@ public:
 			using end_type					= typename EndSpec::type;
 			using return_type				= out_type;
 
-			using signature					= make_signature
+			using signature					= resolve_signature
 									<
 										out_type ,
 										in_type  ,
@@ -323,48 +326,42 @@ public:
 
 		private:
 
-			using OutInSpec					= _map_out_in
-									<
-										_specs<OutSpec, InSpec>
-									>;
-			using InEndSpec					= _map_in_end
-									<
-										_specs<InSpec, EndSpec>
-									>;
+			using in_end_spec				= typename InEndSpec::template result<OutSpec, InSpec>;
+			using out_in_spec				= typename OutInSpec::template result<OutSpec, InSpec>;
 
 		public:
 
 			static constexpr auto out_next			= OutSpec::template next_assign<signature>;
 			static constexpr bool is_out_next_before	= OutSpec::is_left_open;
-			static constexpr bool is_out_next_after		= OutInSpec::is_out_next_after;
+			static constexpr bool is_out_next_after		= out_in_spec::is_out_next_after;
 
 			//
 
 			static constexpr auto in_next			= InSpec::template next_assign<signature>;
 			static constexpr bool is_in_next_before		= InSpec::is_left_open;
-			static constexpr bool is_in_next_after		= OutInSpec::is_in_next_after;
+			static constexpr bool is_in_next_after		= out_in_spec::is_in_next_after;
 
 			//
 
 			static constexpr auto end_next			= EndSpec::template next_assign<signature>;
-			static constexpr bool is_end_next_after		= OutInSpec::is_end_next_after; // *
+			static constexpr bool is_end_next_after		= in_end_spec::is_end_next_after;
 
-			static constexpr auto end_previous		= EndSpec::template prev_assign<signature>;
-			static constexpr bool is_end_previous_before	= OutInSpec::is_end_previous_before; // *
-
-			//
-
-			static constexpr auto loop_predicate		= InEndSpec::template loop_test<signature>; // *
-			static constexpr auto loop_break		= OutSpec::template loop_break<signature>; // *
+			static constexpr auto end_prev			= EndSpec::template prev_assign<signature>;
+			static constexpr bool is_end_prev_before	= in_end_spec::is_end_prev_before;
 
 			//
 
-			static constexpr auto act_function		= OutInSpec::template map_assign<signature>; // *
-			static constexpr bool is_act_function_after	= OutInSpec::is_map_assign_after; // *
+			static constexpr auto loop_predicate		= in_end_spec::template loop_test<signature>;
+			static constexpr auto loop_break		= OutSpec::loop_break;
 
 			//
 
-			static constexpr auto return_value		= OutSpec::template return_function<signature>; // *
+			static constexpr auto act_function		= out_in_spec::template map_assign<signature>;
+			static constexpr bool is_act_function_after	= out_in_spec::is_map_assign_after;
+
+			//
+
+			static constexpr auto return_value		= OutSpec::template return_function<signature>;
 	};
 
 /***********************************************************************************************************************/
@@ -374,108 +371,75 @@ public:
 
 /***********************************************************************************************************************/
 
-/*
-	// new:
-
 	template
 	<
 		typename Type,
-		auto map_function,
+		auto MapFunc,
 
+		typename OutType	= Type*,
 		auto OutIval		= Interval::closing,
-		auto OutDir		= Direction::forward,
+		auto OutNext		= increment,
+		typename OutNextArgs	= increment_arg<SignMember::member_0>,
+		auto OutRet		= select,
+		typename OutRetArgs	= select_arg<SignMember::member_0>,
 
+		typename InType		= Type*,
 		auto InIval		= Interval::closing,
-		auto InDir		= Direction::forward,
-		auto InRDir		= Direction::backward,
-		auto InAxis		= Axis::bidirectional
+		auto ValFunc		= ignore,
+		typename ValFuncArgs	= ignore_arg,
+		auto InNext		= increment,
+		typename InNextArgs	= increment_arg<SignMember::member_1>,
+		auto InAxis		= Axis::bidirectional,
+
+		typename EndType	= Type*,
+		auto EndNext		= increment,
+		typename EndNextArgs	= increment_arg<SignMember::member_2>,
+		auto EndPrev		= decrement,
+		typename EndPrevArgs	= decrement_arg<SignMember::member_2>,
+
+		auto LoopPred		= is_end,
+		typename LoopPredArgs	= is_end_args<SignMember::member_1, SignMember::member_2>,
+		auto PeekPred		= is_peek_end,
+
+		typename MapFuncArgs	= map_args<SignMember::member_0, SignMember::member_1>
 	>
-	using map_spec = map_specification
+	using default_map_spec = map_specification
 	<
-		_out
+		_map_out
 		<
-			_type   < OutType                     >,
-			_ival   < OutInterval                 >,
-			_next   < OutNext     , OutNextArgs   >
+			_type   < OutType                 >,
+			_ival   < OutIval                 >,
+			_next   < OutNext  , OutNextArgs  >,
+			_apply  < OutRet   , OutRetArgs   >
 		>,
 
-		_in
+		_map_in
 		<
-			_type   < InType                      >,
-			_ival   < InInterval                  >,
-			_value  < ValFunc     , ValFuncArgs   >,
-			_next   < InNext      , InNextArgs    >,
-			_axis   < InAxis                      >,
-			_peek   < InPeek      , InPeekArgs    >
+			_type   < InType                  >,
+			_ival   < InIval                  >,
+			_value  < ValFunc  , ValFuncArgs  >,
+			_next   < InNext   , InNextArgs   >,
+			_axis   < InAxis                  >
 		>,
 
-		_end
+		_map_end
 		<
-			_type   < EndType                     >,
-			_next   < EndNext     , EndNextArgs   >,
-			_prev   < EndPrev     , EndPrevArgs   >
+			_type   < EndType                 >,
+			_next   < EndNext  , EndNextArgs  >,
+			_prev   < EndPrev  , EndPrevArgs  >
 		>,
 
-		_algo
+		_map_in_end
 		<
-			_test   < LoopPred    , LoopPredArgs  >,
-			_apply  < LoopBreak                   >
-			_assign < MapFunc     , MapArgs       >
+			_test   < LoopPred , LoopPredArgs >,
+			_peek   < PeekPred                >
+		>,
+
+		_map_out_in
+		<
+			_assign < MapFunc  , MapFuncArgs  >
 		>
 	>;
-*/
-
-/*
-	// old:
-
-	template
-	<
-		typename Type,
-		auto map_function,
-
-		auto OutIval		= Interval::closing,
-		auto OutDir		= Direction::forward,
-
-		auto InIval		= Interval::closing,
-		auto InDir		= Direction::forward,
-		auto InRDir		= Direction::backward,
-		auto InAxis		= Axis::bidirectional
-	>
-	using map_spec			= map_specification
-	<
-		_out
-		<
-			_type		< Type*		>,
-			_attr		< rw_iterator	>,
-			_ival		< OutIval	>,
-			_next		< OutDir	>
-		>,
-
-		_in
-		<
-			_type		< Type*		>,
-			_attr		< rw_iterator	>,
-			_ival		< InIval	>,
-			_axis		< InAxis	>,
-			_value		< _id_		>,
-			_next		< InDir		>,
-			_peek		< InDir		>
-		>,
-
-		_end
-		<
-			_type		< Type*		>,
-			_attr		< rw_iterator	>,
-			_next		< InDir		>,
-			_prev		< InRDir	>
-		>,
-
-		_function
-		<
-			_act_f		< map_function	>
-		>
-	>;
-*/
 
 /***********************************************************************************************************************/
 

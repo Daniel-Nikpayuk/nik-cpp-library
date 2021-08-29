@@ -28,6 +28,9 @@
 	template<typename... Ts>
 	using nik_name(NIK_PREFIX, signature) = typename NIK_MODULE::template signature<Ts...>;
 
+	template<typename... Ts>
+	using nik_name(NIK_PREFIX, resolve_signature) = typename NIK_MODULE::template resolve_signature<Ts...>;
+
 // accessors:
 
 	// member 0:
@@ -214,6 +217,19 @@
 
 	template<typename S, typename F>
 	NIK_POLICY auto nik_name(NIK_PREFIX, args_to_selectors)		= NIK_MODULE::template args_to_selectors<S, F>;
+
+/***********************************************************************************************************************/
+
+// higher orders:
+
+	template<typename UF, typename SA, typename S>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_assign)		= NIK_MODULE::template resolve_assign<UF, SA, S>;
+
+	template<typename UF, typename SA, typename S>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_apply)		= NIK_MODULE::template resolve_apply<UF, SA, S>;
+
+	template<typename UF, typename SA, typename S>
+	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_test)		= NIK_MODULE::template resolve_test<UF, SA, S>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -197,23 +197,23 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<NLMember... Ms>				struct _map		{ };
+	template<NLMember... Ms>			struct _map		{ };
 
-	template<typename T>					struct _type		{ };
-	template<Interval V>					struct _ival		{ };
-	template<Axis V>					struct _axis		{ };
+	template<typename T>				struct _type		{ };
+	template<Interval V>				struct _ival		{ };
+	template<Axis V>				struct _axis		{ };
+	template<auto UFunc>				struct _peek		{ };
 
-	template<auto... Members>				struct _members		{ };
-	template<typename... Attrs>				struct _attrs		{ };
-	template<typename... Specs>				struct _specs		{ };
+	template<auto... Members>			struct _members		{ };
+	template<typename... Attrs>			struct _attrs		{ };
+	template<typename... Specs>			struct _specs		{ };
 
-	template<auto UFunc, typename Mems, typename Attrs>	struct _value		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _next		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _prev		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _peek		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _test		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _apply		{ };
-	template<auto UFunc, typename Mems, typename Attrs>	struct _assign		{ };
+	template<auto UFunc, typename Args>		struct _value		{ };
+	template<auto UFunc, typename Args>		struct _next		{ };
+	template<auto UFunc, typename Args>		struct _prev		{ };
+	template<auto UFunc, typename Args>		struct _test		{ };
+	template<auto UFunc, typename Args>		struct _apply		{ };
+	template<auto UFunc, typename Args>		struct _assign		{ };
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -286,22 +286,6 @@ public:
 	3. For the right endpoint, if closed, then act/combine.
 */
 
-	// before:
-
-	//	template<Interval i, auto next_f>
-	//	static constexpr auto interval_before_loop = boolean_before_loop
-	//	<
-	//		V_is_left_open<i>, next_f
-	//	>;
-
-	// after:
-
-	//	template<Interval i, auto act_combine_f>
-	//	static constexpr auto interval_after_loop = boolean_after_loop
-	//	<
-	//		V_is_right_closed<i>, act_combine_f
-	//	>;
-
 /***********************************************************************************************************************/
 
 // binary:
@@ -334,19 +318,6 @@ public:
 	4. If (3), then for each right endpoint, when open, iterate.
 */
 
-	//	template<Interval ival1, Interval ival2>
-	//	static constexpr bool or_right_closed		= (V_is_right_closed<ival1> || V_is_right_closed<ival2>);
-
-	//	template<Interval ival, bool meet>
-	//	static constexpr bool right_open_and		= (V_is_right_open<ival> && meet);
-
-/***********************************************************************************************************************/
-
-// trinary:
-
-	//	template<Interval ival, bool meet>
-	//	static constexpr bool right_closed_or		= (V_is_right_closed<ival> || meet);
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
@@ -354,142 +325,91 @@ public:
 
 /***********************************************************************************************************************/
 
-//	template<auto, auto U> using return_add_by		= S_value_V<add_by<T_type_U<U>,  1>>;
-//	template<auto, auto U> using return_subtract_by		= S_value_V<add_by<T_type_U<U>, -1>>;
-
-//	template<auto f, typename Type>
-//	static constexpr auto iterate = V_colist_Bs
-//	<
-//		f, _na_,		f, U_type_T<Type>,
-
-//		S_is_forward,		return_add_by,
-//		S_is_backward,		return_subtract_by,
-//		otherwise,		return_function
-//	>;
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// axis:
+// common configurations:
 
 /***********************************************************************************************************************/
-
-	// is_bidirectional // ?
-
-	// is_last // ?
-
-/***********************************************************************************************************************/
-
-	// out_f
-
-	// in_f
-
-	// end_f
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// make signature (prevents name clashes):
-
-	template<typename... Ts>
-	using make_signature = typename signature_module::template signature<Ts...>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// make assign:
 
 private:
 
-	template<auto LSelector, auto Func, auto... RSelectors>
-	static constexpr auto f_make_assign(void(*)(_selector_facade<RSelectors...>*))
-	{
-		return subassign<LSelector, Func, RSelectors...>;
-	}
-
-	template<auto UFunc, typename Signature, auto LMem, auto... RMems, typename... Attrs>
-	static constexpr auto f_prepare_assign(void(*)(_members<LMem, RMems...>*), void(*)(_attrs<Attrs...>*))
-	{
-		using SignFacade		= _sign_facade
-						<
-							_sign_argument<RMems, Attrs>...
-						>;
-
-		constexpr auto l_selector	= resolve_selector<Signature, sign_arg_as_ref<LMem>>;
-		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
-		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
-		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
-
-		return f_make_assign<l_selector, function>(r_selectors);
-	}
+	using uchar = unsigned char;
+	using schar = signed char;
 
 public:
 
-	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
-	static constexpr auto make_assign = f_prepare_assign<UFunc, Signature>
-	(
-	 	functor_module::template U_type_T<SignMems>,
-	 	functor_module::template U_type_T<SignAttrs>
-	);
+// next:
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+	static constexpr auto increment = function_module::template U_add_by<uchar{1}>;
 
-// make apply:
+	template<auto sign_member_x>
+	using increment_arg = _sign_facade
+	<
+		sign_arg_as_ref<sign_member_x>,
+		sign_arg_as_cref<sign_member_x>
+	>;
 
-private:
+// prev:
 
-	template<auto Func, auto... RSelectors>
-	static constexpr auto f_make_apply(void(*)(_selector_facade<RSelectors...>*))
+	static constexpr auto decrement = function_module::template U_add_by<schar{-1}>;
+
+	template<auto sign_member_x>
+	using decrement_arg = _sign_facade
+	<
+		sign_arg_as_ref<sign_member_x>,
+		sign_arg_as_cref<sign_member_x>
+	>;
+
+// is end:
+
+	static constexpr auto is_end = function_module::U_equal;
+
+	template<auto sign_member_x, auto sign_member_y>
+	using is_end_args = _sign_facade
+	<
+		sign_arg_as_cref<sign_member_x>,
+		sign_arg_as_cref<sign_member_y>
+	>;
+
+// is peek end:
+
+	struct S_is_peek_end
 	{
-		return subapply<Func, RSelectors...>;
-	}
+		template<typename T, typename U>
+		static constexpr bool result(T v1, U v2) { return ((v1+1) == v2); }
+	};
 
-	template<auto UFunc, typename Signature, auto... Mems, typename... Attrs>
-	static constexpr auto f_prepare_apply(void(*)(_members<Mems...>*), void(*)(_attrs<Attrs...>*))
-	{
-		using SignFacade		= _sign_facade<_sign_argument<Mems, Attrs>...>;
+	static constexpr auto U_is_peek_end = functor_module::template U_type_T<S_is_peek_end>;
+	static constexpr auto is_peek_end = U_is_peek_end;
 
-		constexpr auto r_selectors	= args_to_selectors<Signature, SignFacade>;
-		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
-		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
+// value:
 
-		return f_make_apply<function>(r_selectors);
-	}
+	static constexpr auto ignore = function_module::U_id;
 
-public:
+	using ignore_arg = _sign_facade<void>;
 
-	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
-	static constexpr auto make_apply = f_prepare_apply<UFunc, Signature>
-	(
-	 	functor_module::template U_type_T<SignMems>,
-	 	functor_module::template U_type_T<SignAttrs>
-	);
+// return:
 
-/***********************************************************************************************************************/
+	static constexpr auto select = function_module::U_id;
 
-// make test:
-
-	template<auto UFunc, typename SignMems, typename SignAttrs, typename Signature>
-	static constexpr auto make_test = f_prepare_apply<UFunc, Signature>
-	(
-	 	functor_module::template U_type_T<SignMems>,
-	 	functor_module::template U_type_T<SignAttrs>
-	);
+	template<auto sign_member_x>
+	using select_arg = _sign_facade
+	<
+		sign_arg_as_ref<sign_member_x>,
+		sign_arg_as_cref<sign_member_x>
+	>;
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// make loop test:
+// map:
 
-	template<bool is_uni_last, auto peek>
-	static constexpr auto f_prepare_loop_test()
-	{
-		return peek;
-	}
-
-	template<bool is_uni_last, auto peek>
-	static constexpr auto make_loop_test = f_prepare_loop_test<is_uni_last, peek>();
+	template<auto sign_member_x, auto sign_member_y>
+	using map_args = _sign_facade
+	<
+		sign_arg_as_deref<sign_member_x>,
+		sign_arg_as_cderef<sign_member_y>
+	>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

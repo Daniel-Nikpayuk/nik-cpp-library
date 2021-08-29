@@ -43,8 +43,8 @@ namespace nik
 		#include nik_import(../../.., compile, signature, architect, v_0_5, gcc, static, name)
 
 		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, gcc);
 		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
-		using signature_module	= nik_module(compile, signature, architect, v_0_5, gcc);
 
 		#include"v0.5/0_filter.hpp"
 	//	#include"v0.5/1_repeat.hpp"
