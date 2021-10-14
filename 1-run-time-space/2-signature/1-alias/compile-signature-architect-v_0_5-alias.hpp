@@ -222,13 +222,13 @@
 
 // higher orders:
 
-	template<typename UF, typename SA, typename S>
+	template<auto UF, typename SA, typename S>
 	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_assign)		= NIK_MODULE::template resolve_assign<UF, SA, S>;
 
-	template<typename UF, typename SA, typename S>
+	template<auto UF, typename SA, typename S>
 	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_apply)		= NIK_MODULE::template resolve_apply<UF, SA, S>;
 
-	template<typename UF, typename SA, typename S>
+	template<auto UF, typename SA, typename S>
 	NIK_POLICY auto nik_name(NIK_PREFIX, resolve_test)		= NIK_MODULE::template resolve_test<UF, SA, S>;
 
 /***********************************************************************************************************************/

@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_FUNCTOR_ARCHITECT_V_0_5_CLANG_HPP
-#define NIK_INTERPRET_FUNCTOR_ARCHITECT_V_0_5_CLANG_HPP
+#ifndef NIK_INTERPRET_CACHE_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_INTERPRET_CACHE_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -36,13 +36,60 @@
 
 namespace nik
 {
-	nik_begin_module(interpret, functor, architect, v_0_5, clang)
+	nik_begin_module(interpret, cache, architect, v_0_5, gcc)
 
-		#include"interpret-functor-architect-v_0_5-source.hpp"
+		#include"interpret-cache-architect-v_0_5-source.hpp"
 
-		friend nik_module(interpret, machine, architect, v_0_5, clang);
+		friend nik_module(interpret, machine, architect, v_0_5, gcc);
 
-	nik_end_module(interpret, functor, architect, v_0_5, clang)
+	nik_end_module(interpret, cache, architect, v_0_5, gcc)
+
+	// get type map:
+
+		template<typename T>
+		constexpr auto nik_module(interpret, cache, architect, v_0_5, gcc)::get_type_map<T&> =
+			nik_module(interpret, cache, architect, v_0_5, gcc)::template type_map<T&>;
+
+	// is typename pack:
+
+		template<typename... Ts>
+		constexpr bool nik_module(interpret, cache, architect, v_0_5, gcc)::V_is_typename_pack_T
+		<
+			nik_module(interpret, cache, architect, v_0_5, gcc)::typename_pack<Ts...>
+
+		> = true;
+
+	// is auto pack:
+
+		template<auto... Vs>
+		constexpr bool nik_module(interpret, cache, architect, v_0_5, gcc)::V_is_auto_pack_T
+		<
+			nik_module(interpret, cache, architect, v_0_5, gcc)::auto_pack<Vs...>
+
+		> = true;
+
+	// is typename template pack:
+
+		template<template<typename...> class... As>
+		constexpr bool nik_module(interpret, cache, architect, v_0_5, gcc)::V_is_typename_template_pack_T
+		<
+			nik_module(interpret, cache, architect, v_0_5, gcc)::typename_template_pack<As...>
+
+		> = true;
+
+	// is auto template pack:
+
+		template<template<auto...> class... Bs>
+		constexpr bool nik_module(interpret, cache, architect, v_0_5, gcc)::V_is_auto_template_pack_T
+		<
+			nik_module(interpret, cache, architect, v_0_5, gcc)::auto_template_pack<Bs...>
+
+		> = true;
+
+	// identity type:
+
+		template<typename T>
+		constexpr bool nik_module(interpret, cache, architect, v_0_5, gcc)::V_equal_TxT<T,T> = true;
 }
 
 /***********************************************************************************************************************/

@@ -55,7 +55,7 @@ private:
 public:
 
 	template<typename T>
-	static constexpr bool V_is_array_T = V_is_array_U(functor_module::template U_type_T<T>);
+	static constexpr bool V_is_array_T = V_is_array_U(cache_module::template U_type_T<T>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

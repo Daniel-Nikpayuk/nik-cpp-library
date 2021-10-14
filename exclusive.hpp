@@ -64,7 +64,7 @@ namespace nik
 	{
 	// interpret:
 
-		functor,
+		cache,
 		constant,
 
 		boolean,
@@ -199,9 +199,9 @@ namespace nik
 /***********************************************************************************************************************/
 
 
-	#define nik_functor()												\
+	#define nik_cache()												\
 															\
-		00-functor
+		00-cache
 
 	#define nik_constant()												\
 															\

@@ -19,8 +19,6 @@
 
 // map source:
 
-public:
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -401,7 +399,7 @@ public:
 		typename LoopPredArgs	= is_end_args<SignMember::member_1, SignMember::member_2>,
 		auto PeekPred		= is_peek_end,
 
-		typename MapFuncArgs	= map_args<SignMember::member_0, SignMember::member_1>
+		typename MapFuncArgs	= default_map_args<SignMember::member_0, SignMember::member_1>
 	>
 	using default_map_spec = map_specification
 	<
@@ -443,54 +441,75 @@ public:
 
 /***********************************************************************************************************************/
 
-/*
 	template
 	<
 		typename Type,
-		auto map_function,
+		auto MapFunc,
 
+		typename OutType	= Type*,
 		auto OutIval		= Interval::closing,
-		auto OutDir		= Direction::forward,
+		auto OutNext		= increment,
+		typename OutNextArgs	= increment_arg<SignMember::member_0>,
+		auto OutRet		= select,
+		typename OutRetArgs	= select_arg<SignMember::member_0>,
 
+		typename InType		= Type,
 		auto InIval		= Interval::closing,
-		auto InDir		= Direction::forward,
-		auto InRDir		= Direction::backward
+		auto ValFunc		= ignore,
+		typename ValFuncArgs	= ignore_arg,
+		auto InNext		= increment,
+		typename InNextArgs	= increment_arg<SignMember::member_1>,
+		auto InAxis		= Axis::bidirectional,
+
+		typename EndType	= Type,
+		auto EndNext		= increment,
+		typename EndNextArgs	= increment_arg<SignMember::member_2>,
+		auto EndPrev		= decrement,
+		typename EndPrevArgs	= decrement_arg<SignMember::member_2>,
+
+		auto LoopPred		= is_end,
+		typename LoopPredArgs	= is_end_args<SignMember::member_1, SignMember::member_2>,
+		auto PeekPred		= is_peek_end,
+
+		typename MapFuncArgs	= range_map_args<SignMember::member_0, SignMember::member_1>
 	>
-	using range_map_spec		= map_specification
+	using range_map_spec = map_specification
 	<
-		_out
+		_map_out
 		<
-			_type		< Type*			>,
-			_attr		< rw_iterator		>,
-			_ival		< OutIval		>,
-			_next		< OutDir		>
+			_type   < OutType                 >,
+			_ival   < OutIval                 >,
+			_next   < OutNext  , OutNextArgs  >,
+			_apply  < OutRet   , OutRetArgs   >
 		>,
 
-		_in
+		_map_in
 		<
-			_type		< Type			>,
-			_attr		< rw_range		>,
-			_ival		< InIval		>,
-			_axis		< Axis::bidirectional	>,
-			_value		< _id_			>,
-			_next		< InDir			>,
-			_peek		< InDir			>
+			_type   < InType                  >,
+			_ival   < InIval                  >,
+			_value  < ValFunc  , ValFuncArgs  >,
+			_next   < InNext   , InNextArgs   >,
+			_axis   < InAxis                  >
 		>,
 
-		_end
+		_map_end
 		<
-			_type		< Type			>,
-			_attr		< rw_range		>,
-			_next		< InDir			>,
-			_prev		< InRDir		>
+			_type   < EndType                 >,
+			_next   < EndNext  , EndNextArgs  >,
+			_prev   < EndPrev  , EndPrevArgs  >
 		>,
 
-		_function
+		_map_in_end
 		<
-			_act_f		< map_function		>
+			_test   < LoopPred , LoopPredArgs >,
+			_peek   < PeekPred                >
+		>,
+
+		_map_out_in
+		<
+			_assign < MapFunc  , MapFuncArgs  >
 		>
 	>;
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -115,7 +115,7 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename... Args> using _facade	= functor_module::template typename_pack<Args...>;
+	template<typename... Args> using _facade	= cache_module::template typename_pack<Args...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -133,9 +133,9 @@ public:
 private:
 
 	template<typename Type>
-	static constexpr auto f_sign_type(void(*f)(Type*))
+	static constexpr auto f_sign_type(Type v) // Type == void(*)(T*) or void(*)(T&)
 	{
-		return f;
+		return v;
 	}
 
 	template<typename Type, typename Attr>
@@ -146,22 +146,22 @@ private:
 
 		if constexpr (is_immutable<mutate>)
 		{
-			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<Type const>;
-			else					return functor_module::template U_type_T<Type const &>;
+			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type const>;
+			else					return cache_module::template U_type_T<Type const &>;
 		}
 		else
 		{
-			if constexpr (is_by_value<denote>)	return functor_module::template U_type_T<Type>;
-			else					return functor_module::template U_type_T<Type &>;
+			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type>;
+			else					return cache_module::template U_type_T<Type &>;
 		}
 	}
 
 public:
 
 	template<typename Arg>
-	using sign_type = functor_module::template T_type_U
+	using sign_type = cache_module::template T_type_U
 	<
-		f_sign_type(functor_module::template U_type_T<Arg>)
+		f_sign_type(cache_module::template U_type_T<Arg>)
 	>;
 
 /***********************************************************************************************************************/
@@ -176,7 +176,7 @@ private:
 	template<auto UFunc, typename... Args>
 	static constexpr auto f_resolve(void(*)(_facade<Args...>*))
 	{
-		using S_function = functor_module::template T_type_U<UFunc>;
+		using S_function = typename cache_module::template T_type_U<UFunc>;
 
 		return S_function::template result<sign_type<Args>...>;
 	}
@@ -184,7 +184,7 @@ private:
 public:
 
 	template<auto ufunction, typename Facade>
-	static constexpr auto resolve = f_resolve<ufunction>(functor_module::template U_type_T<Facade>);
+	static constexpr auto resolve = f_resolve<ufunction>(cache_module::template U_type_T<Facade>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -18,7 +18,6 @@
 ************************************************************************************************************************/
 
 #include<cstdio>
-#include<utility>
 
 /***********************************************************************************************************************/
 
@@ -28,7 +27,7 @@
 
 // compile time space:
 
-//	#include nik_import(., interpret, functor, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
@@ -55,14 +54,84 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
+	using cache_module		= nik_module(interpret, cache, architect, v_0_5, gcc);
+//	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
+//	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
+//	using near_linear_module	= nik_module(compile, near_linear, architect, v_0_5, gcc);
+
 /***********************************************************************************************************************/
 
-	using utype = unsigned long long;
+	using u_type		= unsigned long long;
+	using s_type		= signed long long;
+	using size_type		= s_type;
 
 /***********************************************************************************************************************/
+
+// array:
+
+/*
+	template<typename Type, size_type n = 20>
+	struct array
+	{
+		size_type array_length;
+		Type array_begin[n];
+		Type *array_end;
+
+		array() : array_length(n), array_end(array_begin + array_length) { }
+
+		size_type length()			{ return array_length; }
+
+		Type * begin() 				{ return array_begin; }
+		Type * end() 				{ return array_end; }
+
+		Type & operator [] (size_type k)	{ return array_begin[k]; }
+	};
+*/
+
+/***********************************************************************************************************************/
+
+// (independent) print array:
+
+/*
+	template<typename InIter>
+	constexpr void print_sarray(InIter i, InIter e)
+	{
+		printf("%s", "\n");
+
+		while (i != e) printf("%lld, ", *i++);
+
+		printf("%s", "\n");
+	}
+*/
+
+/***********************************************************************************************************************/
+
+/*
+	void simple_map_test()
+	{
+		using spec = near_linear_module::template range_map_spec
+		<
+			s_type, function_module::U_id
+		>;
+
+		array<s_type> arr;
+
+		one_cycle_module::map<spec>(arr.begin(), s_type{0}, s_type{0});//arr.length());
+
+		print_sarray(arr.begin(), arr.end());
+	}
+*/
+
+/***********************************************************************************************************************/
+
+	int square(int x) { return x*x; }
 
 	int main(int argc, char *argv[])
 	{
+		printf("%s\n", cache_module::template V_is_typename_pack_T<int> ? "true" : "false");
+		printf("%s\n", cache_module::template V_is_typename_pack_T<cache_module::template typename_pack<int>> ? "true" : "false");
+	//	printf("%d\n", function_module::template apply<function_module::F_add>(5, 7));
+
 		return 0;
 	}
 

@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, functor, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, cache, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,7 +38,7 @@ namespace nik
 {
 	nik_begin_module(interpret, array, architect, v_0_5, clang)
 
-		using functor_module = nik_module(interpret, functor, architect, v_0_5, clang);
+		using cache_module = nik_module(interpret, cache, architect, v_0_5, clang);
 
 		#include"interpret-array-architect-v_0_5-source.hpp"
 

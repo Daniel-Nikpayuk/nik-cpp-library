@@ -38,7 +38,7 @@ private:
 public:
 
 	template<typename T>
-	static constexpr bool V_is_reference_T = V_is_reference_U(functor_module::template U_type_T<T>);
+	static constexpr bool V_is_reference_T = V_is_reference_U(cache_module::template U_type_T<T>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

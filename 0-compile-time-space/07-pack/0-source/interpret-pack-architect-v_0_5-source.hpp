@@ -191,7 +191,7 @@ private:
 
 		return machine_module::template
 			start<linear_machine, c, d, V0, Vs...>
-				(functor_module::template U_pack_Vs<length, uact>);
+				(cache_module::template U_pack_Vs<length, uact>);
 	}
 
 public:

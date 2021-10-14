@@ -19,6 +19,11 @@
 
 // space source:
 
+	// Function templates assume the ability to deduce the output type (auto).
+	// The alternative explicit description of both input and output types,
+	// which would lead to chains of type descriptions when composing such
+	// templates.
+
 public:
 
 /***********************************************************************************************************************/
@@ -34,13 +39,13 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_id
+	struct E_id
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v; }
+		static constexpr auto result(T v)			{ return v; }
 	};
 
-	static constexpr auto U_id = functor_module::template U_type_T<S_id>;
+	static constexpr auto F_id = cache_module::template U_type_T<E_id>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -50,13 +55,13 @@ public:
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_constant
+	struct E_constant_V
 	{
 		static constexpr auto result()				{ return V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_constant = functor_module::template U_type_T<S_constant<V>>;
+	static constexpr auto F_constant_V = cache_module::template U_type_T<E_constant_V<V>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -65,113 +70,113 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_add
+	struct E_add
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 + v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 + v2; }
 	};
 
-	static constexpr auto U_add = functor_module::template U_type_T<S_add>;
+	static constexpr auto F_add = cache_module::template U_type_T<E_add>;
 
 /***********************************************************************************************************************/
 
-	struct S_subtract
+	struct E_subtract
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 - v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 - v2; }
 	};
 
-	static constexpr auto U_subtract = functor_module::template U_type_T<S_subtract>;
+	static constexpr auto F_subtract = cache_module::template U_type_T<E_subtract>;
 
 /***********************************************************************************************************************/
 
-	struct S_multiply
+	struct E_multiply
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 * v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 * v2; }
 	};
 
-	static constexpr auto U_multiply = functor_module::template U_type_T<S_multiply>;
+	static constexpr auto F_multiply = cache_module::template U_type_T<E_multiply>;
 
 /***********************************************************************************************************************/
 
-	struct S_divide
+	struct E_divide
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 / v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 / v2; }
 	};
 
-	static constexpr auto U_divide = functor_module::template U_type_T<S_divide>;
+	static constexpr auto F_divide = cache_module::template U_type_T<E_divide>;
 
 /***********************************************************************************************************************/
 
-	struct S_modulo
+	struct E_modulo
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 % v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 % v2; }
 	};
 
-	static constexpr auto U_modulo = functor_module::template U_type_T<S_modulo>;
+	static constexpr auto F_modulo = cache_module::template U_type_T<E_modulo>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_add_by
+	struct E_add_by_V
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v + V; }
+		static constexpr auto result(T v)			{ return v + V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_add_by = functor_module::template U_type_T<S_add_by<V>>;
+	static constexpr auto F_add_by_V = cache_module::template U_type_T<E_add_by_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_subtract_by
+	struct E_subtract_by_V
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v - V; }
+		static constexpr auto result(T v)			{ return v - V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_subtract_by = functor_module::template U_type_T<S_subtract_by<V>>;
+	static constexpr auto F_subtract_by_V = cache_module::template U_type_T<E_subtract_by_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_multiply_by
+	struct E_multiply_by_V
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v * V; }
+		static constexpr auto result(T v)			{ return v * V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_multiply_by = functor_module::template U_type_T<S_multiply_by<V>>;
+	static constexpr auto F_multiply_by_V = cache_module::template U_type_T<E_multiply_by_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_divide_by
+	struct E_divide_by_V
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v / V; }
+		static constexpr auto result(T v)			{ return v / V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_divide_by = functor_module::template U_type_T<S_divide_by<V>>;
+	static constexpr auto F_divide_by_V = cache_module::template U_type_T<E_divide_by_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_modulo_by
+	struct E_modulo_by_V
 	{
 		template<typename T>
-		static constexpr T result(T v)				{ return v % V; }
+		static constexpr auto result(T v)			{ return v % V; }
 	};
 
 	template<auto V>
-	static constexpr auto U_modulo_by = functor_module::template U_type_T<S_modulo_by<V>>;
+	static constexpr auto F_modulo_by_V = cache_module::template U_type_T<E_modulo_by_V<V>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -180,23 +185,23 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_max
+	struct E_max
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 > v2 ? v1 : v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 > v2 ? v1 : v2; }
 	};
 
-	static constexpr auto U_max = functor_module::template U_type_T<S_max>;
+	static constexpr auto F_max = cache_module::template U_type_T<E_max>;
 
 /***********************************************************************************************************************/
 
-	struct S_min
+	struct E_min
 	{
-		template<typename T, typename U>
-		static constexpr T result(T v1, U v2)			{ return v1 < v2 ? v1 : v2; }
+		template<typename T1, typename T2>
+		static constexpr auto result(T1 v1, T2 v2)		{ return v1 < v2 ? v1 : v2; }
 	};
 
-	static constexpr auto U_min = functor_module::template U_type_T<S_min>;
+	static constexpr auto F_min = cache_module::template U_type_T<E_min>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -205,135 +210,135 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_equal
+	struct E_equal
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 == v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 == v2); }
 	};
 
-	static constexpr auto U_equal = functor_module::template U_type_T<S_equal>;
+	static constexpr auto F_equal = cache_module::template U_type_T<E_equal>;
 
 /***********************************************************************************************************************/
 
-	struct S_not_equal
+	struct E_not_equal
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 != v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 != v2); }
 	};
 
-	static constexpr auto U_not_equal = functor_module::template U_type_T<S_not_equal>;
+	static constexpr auto F_not_equal = cache_module::template U_type_T<E_not_equal>;
 
 /***********************************************************************************************************************/
 
-	struct S_less_than
+	struct E_less_than
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 < v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 < v2); }
 	};
 
-	static constexpr auto U_less_than = functor_module::template U_type_T<S_less_than>;
+	static constexpr auto F_less_than = cache_module::template U_type_T<E_less_than>;
 
 /***********************************************************************************************************************/
 
-	struct S_less_than_or_equal
+	struct E_less_than_or_equal
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 <= v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 <= v2); }
 	};
 
-	static constexpr auto U_less_than_or_equal = functor_module::template U_type_T<S_less_than_or_equal>;
+	static constexpr auto F_less_than_or_equal = cache_module::template U_type_T<E_less_than_or_equal>;
 
 /***********************************************************************************************************************/
 
-	struct S_greater_than
+	struct E_greater_than
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 > v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 > v2); }
 	};
 
-	static constexpr auto U_greater_than = functor_module::template U_type_T<S_greater_than>;
+	static constexpr auto F_greater_than = cache_module::template U_type_T<E_greater_than>;
 
 /***********************************************************************************************************************/
 
-	struct S_greater_than_or_equal
+	struct E_greater_than_or_equal
 	{
-		template<typename T, typename U>
-		static constexpr bool result(T v1, U v2)		{ return (v1 >= v2); }
+		template<typename T1, typename T2>
+		static constexpr bool result(T1 v1, T2 v2)		{ return (v1 >= v2); }
 	};
 
-	static constexpr auto U_greater_than_or_equal = functor_module::template U_type_T<S_greater_than_or_equal>;
+	static constexpr auto F_greater_than_or_equal = cache_module::template U_type_T<E_greater_than_or_equal>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_is_value
+	struct E_is_value_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v == V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_is_value = functor_module::template U_type_T<S_is_value<V>>;
+	static constexpr auto F_is_value_V = cache_module::template U_type_T<E_is_value_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_not_value
+	struct E_not_value_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v != V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_not_value = functor_module::template U_type_T<S_not_value<V>>;
+	static constexpr auto F_not_value_V = cache_module::template U_type_T<E_not_value_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_is_less_than
+	struct E_is_less_than_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v < V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_is_less_than = functor_module::template U_type_T<S_is_less_than<V>>;
+	static constexpr auto F_is_less_than_V = cache_module::template U_type_T<E_is_less_than_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_is_less_than_or_equal
+	struct E_is_less_than_or_equal_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v <= V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_is_less_than_or_equal = functor_module::template U_type_T<S_is_less_than_or_equal<V>>;
+	static constexpr auto F_is_less_than_or_equal_V = cache_module::template U_type_T<E_is_less_than_or_equal_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_is_greater_than
+	struct E_is_greater_than_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v > V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_is_greater_than = functor_module::template U_type_T<S_is_greater_than<V>>;
+	static constexpr auto F_is_greater_than_V = cache_module::template U_type_T<E_is_greater_than_V<V>>;
 
 /***********************************************************************************************************************/
 
 	template<auto V>
-	struct S_is_greater_than_or_equal
+	struct E_is_greater_than_or_equal_V
 	{
 		template<typename T>
 		static constexpr bool result(T v)			{ return (v >= V); }
 	};
 
 	template<auto V>
-	static constexpr auto U_is_greater_than_or_equal = functor_module::template U_type_T<S_is_greater_than_or_equal<V>>;
+	static constexpr auto F_is_greater_than_or_equal_V = cache_module::template U_type_T<E_is_greater_than_or_equal_V<V>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -342,48 +347,48 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_conjunction
+	struct E_conjunction
 	{
 		static constexpr bool result(bool b1, bool b2)		{ return b1 && b2; }
 	};
 
-	static constexpr auto U_conjunction = functor_module::template U_type_T<S_conjunction>;
+	static constexpr auto F_conjunction = cache_module::template U_type_T<E_conjunction>;
 
 /***********************************************************************************************************************/
 
-	struct S_disjunction
+	struct E_disjunction
 	{
 		static constexpr bool result(bool b1, bool b2)		{ return b1 || b2; }
 	};
 
-	static constexpr auto U_disjunction = functor_module::template U_type_T<S_disjunction>;
+	static constexpr auto F_disjunction = cache_module::template U_type_T<E_disjunction>;
 
 /***********************************************************************************************************************/
 
-	struct S_implication
+	struct E_implication
 	{
 		static constexpr bool result(bool b1, bool b2)		{ return b1 || !b2; }
 	};
 
-	static constexpr auto U_implication = functor_module::template U_type_T<S_implication>;
+	static constexpr auto F_implication = cache_module::template U_type_T<E_implication>;
 
 /***********************************************************************************************************************/
 
-	struct S_equivalence
+	struct E_equivalence
 	{
 		static constexpr bool result(bool b1, bool b2)		{ return (b1 || !b2) && (!b1 || b2); }
 	};
 
-	static constexpr auto U_equivalence = functor_module::template U_type_T<S_equivalence>;
+	static constexpr auto F_equivalence = cache_module::template U_type_T<E_equivalence>;
 
 /***********************************************************************************************************************/
 
-	struct S_negation
+	struct E_negation
 	{
 		static constexpr bool result(bool b)			{ return !b; }
 	};
 
-	static constexpr auto U_negation = functor_module::template U_type_T<S_negation>;
+	static constexpr auto F_negation = cache_module::template U_type_T<E_negation>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -392,23 +397,23 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_dereference
+	struct E_dereference
 	{
 		template<typename T>
 		static constexpr auto & result(T & v)			{ return *v; }
 	};
 
-	static constexpr auto U_dereference = functor_module::template U_type_T<S_dereference>;
+	static constexpr auto F_dereference = cache_module::template U_type_T<E_dereference>;
 
 /***********************************************************************************************************************/
 
-	struct S_cdereference
+	struct E_cdereference
 	{
 		template<typename T>
 		static constexpr const auto & result(const T & v)	{ return *v; }
 	};
 
-	static constexpr auto U_cdereference = functor_module::template U_type_T<S_cdereference>;
+	static constexpr auto F_cdereference = cache_module::template U_type_T<E_cdereference>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -419,13 +424,24 @@ public:
 
 // apply:
 
-	template<auto uf, typename T>
-	static constexpr auto apply(T v)
+	struct E_apply
 	{
-		using SF = functor_module::template T_type_U<uf>;
+		template<auto uf, typename... Ts>
+		static constexpr auto result(Ts... vs)
+		{
+			using SF = cache_module::template T_type_U<uf>;
 
-		return SF::template result<T>(v);
+			return SF::template result<Ts...>(vs...);
+		}
 	};
+
+	static constexpr auto F_apply = cache_module::template U_type_T<E_apply>;
+
+	template<auto uf, typename... Ts>
+	static constexpr auto apply(Ts... vs)
+	{
+		return E_apply::template result<uf, Ts...>(vs...);
+	}
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -440,16 +456,16 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_is_id_keyword
+	struct G_is_id_keyword
 	{
 		template<auto f>
-		static constexpr bool result = functor_module::template V_equal_VxV<f, U_id>;
+		static constexpr bool result = cache_module::template V_equal_VxV<f, F_id>;
 	};
 
-	static constexpr auto U_is_id_keyword = functor_module::template U_type_T<S_is_id_keyword>;
+	static constexpr auto H_is_id_keyword = cache_module::template U_type_T<G_is_id_keyword>;
 
 	template<auto f>
-	static constexpr bool is_id_keyword = S_is_id_keyword::template result<f>;
+	static constexpr bool is_id_keyword = G_is_id_keyword::template result<f>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -461,7 +477,7 @@ public:
 private:
 
 	template<typename SF1, typename SF2>
-	struct S_postcomposition
+	struct E_postcomposition_TxT
 	{
 		template<typename... Ts>
 		static constexpr auto result(Ts... vs)
@@ -474,23 +490,23 @@ private:
 
 public:
 
-	struct S_postcompose
+	struct G_postcompose
 	{
 		template<auto uf, auto ug>
-		static constexpr auto result = functor_module::template U_type_T
+		static constexpr auto result = cache_module::template U_type_T
 		<
-			S_postcomposition
+			E_postcomposition_TxT
 			<
-				functor_module::template T_type_U<uf>,
-				functor_module::template T_type_U<ug>
+				cache_module::template T_type_U<uf>,
+				cache_module::template T_type_U<ug>
 			>
 		>;
 	};
 
-	static constexpr auto U_postcompose = functor_module::template U_type_T<S_postcompose>;
+	static constexpr auto H_postcompose = cache_module::template U_type_T<G_postcompose>;
 
 	template<auto uf, auto ug>
-	static constexpr auto postcompose = S_postcompose::template result<uf, ug>;
+	static constexpr auto postcompose = G_postcompose::template result<uf, ug>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -499,23 +515,23 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct S_precompose
+	struct G_precompose
 	{
 		template<auto uf, auto ug>
-		static constexpr auto result = S_postcompose::template result<ug, uf>;
+		static constexpr auto result = G_postcompose::template result<ug, uf>;
 	};
 
-	static constexpr auto U_precompose = functor_module::template U_type_T<S_precompose>;
+	static constexpr auto H_precompose = cache_module::template U_type_T<G_precompose>;
 
 	template<auto uf, auto ug>
-	static constexpr auto precompose = S_precompose::template result<uf, ug>;
+	static constexpr auto precompose = G_precompose::template result<uf, ug>;
 
 /***********************************************************************************************************************/
 
 // chain precompose:
 
 	template<auto uf0, auto... ufs>
-	static constexpr auto chain_precompose = pack_module::template roll<500, U_precompose, uf0, ufs...>;
+	static constexpr auto chain_precompose = pack_module::template roll<500, H_precompose, uf0, ufs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -526,13 +542,13 @@ public:
 
 // opt postcompose:
 
-	struct S_opt_postcompose
+	struct G_opt_postcompose
 	{
 		template<auto uf, auto ug>
 		static constexpr auto f_result()
 		{
-			if constexpr      (is_id_keyword<uf, U_id>)	return ug;
-			else if constexpr (is_id_keyword<ug, U_id>)	return uf;
+			if constexpr      (is_id_keyword<uf, F_id>)	return ug;
+			else if constexpr (is_id_keyword<ug, F_id>)	return uf;
 			else						return postcompose<uf, ug>;
 		};
 
@@ -540,32 +556,32 @@ public:
 		static constexpr auto result = f_result<uf, ug>();
 	};
 
-	static constexpr auto U_opt_postcompose = functor_module::template U_type_T<S_opt_postcompose>;
+	static constexpr auto H_opt_postcompose = cache_module::template U_type_T<G_opt_postcompose>;
 
 	template<auto uf, auto ug>
-	static constexpr auto opt_postcompose = S_opt_postcompose::template f_result<uf, ug>();
+	static constexpr auto opt_postcompose = G_opt_postcompose::template f_result<uf, ug>();
 
 /***********************************************************************************************************************/
 
 // opt precompose:
 
-	struct S_opt_precompose
+	struct G_opt_precompose
 	{
 		template<auto uf, auto ug>
-		static constexpr auto result = S_opt_postcompose::template f_result<ug, uf>();
+		static constexpr auto result = G_opt_postcompose::template f_result<ug, uf>();
 	};
 
-	static constexpr auto U_opt_precompose = functor_module::template U_type_T<S_opt_precompose>;
+	static constexpr auto H_opt_precompose = cache_module::template U_type_T<G_opt_precompose>;
 
-	template<auto uf, auto ug>	// S_opt_postcompose, not S_opt_precompose
-	static constexpr auto opt_precompose = S_opt_postcompose::template f_result<ug, uf>();
+	template<auto uf, auto ug>	// G_opt_postcompose, not G_opt_precompose
+	static constexpr auto opt_precompose = G_opt_postcompose::template f_result<ug, uf>();
 
 /***********************************************************************************************************************/
 
 // opt chain precompose:
 
 	template<auto uf0, auto... ufs>
-	static constexpr auto opt_chain_precompose = pack_module::template roll<500, U_opt_precompose, uf0, ufs...>;
+	static constexpr auto opt_chain_precompose = pack_module::template roll<500, H_opt_precompose, uf0, ufs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

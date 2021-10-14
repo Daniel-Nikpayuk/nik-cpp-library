@@ -57,7 +57,7 @@ public:
 	// VxV -> T:
 
 	template<bool is_br, auto ante, auto conse>
-	using T_if_then_else_VxV = typename functor_module::template T_type_U
+	using T_if_then_else_VxV = typename cache_module::template T_type_U
 	<
 		S_if_then_else<is_br>::template f_result<ante, conse>()
 	>;

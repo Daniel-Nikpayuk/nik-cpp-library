@@ -85,24 +85,24 @@ public:
 
 // builtin types:
 
-	static constexpr auto U_void			= functor_module::template U_type_T<void>;
-	static constexpr auto U_char			= functor_module::template U_type_T<char>;
-	static constexpr auto U_char_ptr		= functor_module::template U_type_T<char*>;
+	static constexpr auto U_void			= cache_module::template U_type_T<void>;
+	static constexpr auto U_char			= cache_module::template U_type_T<char>;
+	static constexpr auto U_char_ptr		= cache_module::template U_type_T<char*>;
 
-	static constexpr auto U_unsigned_char		= functor_module::template U_type_T<unsigned char>;
-	static constexpr auto U_signed_char		= functor_module::template U_type_T<signed char>;
+	static constexpr auto U_unsigned_char		= cache_module::template U_type_T<unsigned char>;
+	static constexpr auto U_signed_char		= cache_module::template U_type_T<signed char>;
 
-	static constexpr auto U_unsigned_short		= functor_module::template U_type_T<unsigned short>;
-	static constexpr auto U_signed_short		= functor_module::template U_type_T<signed short>;
+	static constexpr auto U_unsigned_short		= cache_module::template U_type_T<unsigned short>;
+	static constexpr auto U_signed_short		= cache_module::template U_type_T<signed short>;
 
-	static constexpr auto U_unsigned_int		= functor_module::template U_type_T<unsigned int>;
-	static constexpr auto U_signed_int		= functor_module::template U_type_T<signed int>;
+	static constexpr auto U_unsigned_int		= cache_module::template U_type_T<unsigned int>;
+	static constexpr auto U_signed_int		= cache_module::template U_type_T<signed int>;
 
-	static constexpr auto U_unsigned_long		= functor_module::template U_type_T<unsigned long>;
-	static constexpr auto U_signed_long		= functor_module::template U_type_T<signed long>;
+	static constexpr auto U_unsigned_long		= cache_module::template U_type_T<unsigned long>;
+	static constexpr auto U_signed_long		= cache_module::template U_type_T<signed long>;
 
-	static constexpr auto U_unsigned_long_long	= functor_module::template U_type_T<unsigned long long>;
-	static constexpr auto U_signed_long_long	= functor_module::template U_type_T<signed long long>;
+	static constexpr auto U_unsigned_long_long	= cache_module::template U_type_T<unsigned long long>;
+	static constexpr auto U_signed_long_long	= cache_module::template U_type_T<signed long long>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

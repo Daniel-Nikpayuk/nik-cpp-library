@@ -17,17 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// typename auto source:
-
-/*
-	S   - variadic_value				(typename)
-	T   - type					(typename)
-	U   - type_map					(constexpr auto)
-	V   - value					(constexpr auto)
-
-	B   - template<typename...> class
-	C   - template<auto...> class
-*/
+// cache alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -37,37 +27,16 @@
 
 /***********************************************************************************************************************/
 
-// typename to auto (functor):
-
-private:
-
-	template<typename T>			// Unsafe to use directly,
-	static constexpr void type_map(T) { }	// as T cannot equal void.
-						// use U_type_T instead:
+// typename to auto (cache):
 
 	template<typename T>
-	struct get_type_map
-	{
-		static constexpr auto value = type_map<T*>;
-	};
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_type_T)		= NIK_MODULE::template U_type_T<T>;
 
 	template<typename T>
-	struct get_type_map<T&>
-	{
-		static constexpr auto value = type_map<T&>;
-	};
+	using nik_name(NIK_PREFIX, T_decltype_T)		= typename NIK_MODULE::template T_decltype_T<T>;
 
-public:
-
-	template<typename T>						// This implementation was chosen
-	static constexpr auto U_type_T = get_type_map<T>::value;	// as it simplifies the special
-									// case when T == void.
-
-	template<typename T>				// T_decltype(_type)_T:
-	using T_decltype_T				= decltype(U_type_T<T>);
-
-	template<auto V>				// U_(type_)decltype_V:
-	static constexpr auto U_decltype_V	 	= U_type_T<decltype(V)>;
+	template<auto V>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_decltype_V) 	= NIK_MODULE::template U_decltype_V<V>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -79,57 +48,16 @@ public:
 
 // auto to typename recovery:
 
-private:
-
-	template<typename> struct pattern_match_map_type;
-
 	template<typename T>
-	struct pattern_match_map_type<void(*)(T*)>
-	{
-		using pretype = T;
-	};
-
-	template<typename T>
-	struct pattern_match_map_type<void(*const)(T*)>
-	{
-		using pretype = T;
-	};
-
-	template<typename T>
-	struct pattern_match_map_type<void(*)(T&)>
-	{
-		using pretype = T&;
-	};
-
-	template<typename T>
-	struct pattern_match_map_type<void(*const)(T&)>
-	{
-		using pretype = T&;
-	};
-
-public:
-
-		// Use the fast version when possible.
-		// (when T has an empty constructor/destructor)
-
-	template<typename T>
-	using T_pretype_T = typename pattern_match_map_type<T>::pretype;
+	using nik_name(NIK_PREFIX, T_pretype_T)			= typename NIK_MODULE::template T_pretype_T<T>;
 
 	template<auto TMap>
-	using T_type_U = typename pattern_match_map_type<decltype(TMap)>::pretype;
+	using nik_name(NIK_PREFIX, T_type_U)			= typename NIK_MODULE::template T_type_U<TMap>;
 
-private:
-
-	template<typename T>
-	static constexpr T type_map_to_init_type(void(*)(T*))
-	{
-		return { };
-	}
-
-public:
+	//
 
 	template<auto TMap>
-	using T_fast_type_U = decltype(type_map_to_init_type(TMap));	// Does not work with type references.
+	using nik_name(NIK_PREFIX, T_fast_type_U)		= typename NIK_MODULE::template T_fast_type_U<TMap>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -141,87 +69,80 @@ public:
 
 // auto:
 
-	template<auto...> struct auto_pack				{ };
+	template<auto... Vs>
+	using nik_name(NIK_PREFIX, auto_pack)			= typename NIK_MODULE::template auto_pack<Vs...>;
 
 	template<auto... Vs>
-	static constexpr auto U_pack_Vs = U_type_T<auto_pack<Vs...>>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_pack_Vs)		= NIK_MODULE::template U_pack_Vs<Vs...>;
 
 /***********************************************************************************************************************/
 
 // is auto pack:
 
-private:
-
 	template<typename T>
-	static constexpr bool V_is_auto_pack_U(void(*)(T))			// Unsafe to use directly,
-		{ return false; }
-
-	template<auto... Vs>
-	static constexpr bool V_is_auto_pack_U(void(*)(auto_pack<Vs...>*))	// Use the following instead:
-		{ return true; }
-
-public:
-
-	template<typename T>
-	static constexpr bool V_is_auto_pack_T = V_is_auto_pack_U(U_type_T<T>);
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_auto_pack_T)	= NIK_MODULE::template V_is_auto_pack_T<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // typename:
 
-	template<typename...> struct typename_pack			{ };
+	template<typename... Ts>
+	using nik_name(NIK_PREFIX, typename_pack)		= typename NIK_MODULE::template typename_pack<Ts...>;
 
 	template<typename... Ts>
-	static constexpr auto U_pack_Ts = U_type_T<typename_pack<Ts...>>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_pack_Ts)		= NIK_MODULE::template U_pack_Ts<Ts...>;
 
 /***********************************************************************************************************************/
 
 // is typename pack:
 
-private:
-
 	template<typename T>
-	static constexpr bool V_is_typename_pack_U(void(*)(T))				// Unsafe to use directly,
-		{ return false; }
-
-	template<typename... Ts>
-	static constexpr bool V_is_typename_pack_U(void(*)(typename_pack<Ts...>*))	// Use the following instead:
-		{ return true; }
-
-public:
-
-	template<typename T>
-	static constexpr bool V_is_typename_pack_T = V_is_typename_pack_U(U_type_T<T>);
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_typename_pack_T)	= NIK_MODULE::template V_is_typename_pack_T<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// template:
+// typename template:
 
-	template<template<auto...> class...> struct template_pack	{ };
+	template<template<typename...> class... As>
+	using nik_name(NIK_PREFIX, typename_template_pack)	= typename NIK_MODULE::template typename_template_pack<As...>;
 
-	template<template<auto...> class... Cs>
-	static constexpr auto U_pack_Cs = U_type_T<template_pack<Cs...>>;
+	template<template<typename...> class... As>
+	using nik_name(NIK_PREFIX, C_pack_As)			= typename NIK_MODULE::template C_pack_As<As...>;
+
+	template<template<typename...> class... As>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_pack_As)		= NIK_MODULE::template U_pack_As<As...>;
 
 /***********************************************************************************************************************/
 
-// is template pack:
-
-private:
+// is typename template pack:
 
 	template<typename T>
-	static constexpr bool V_is_template_pack_U(void(*)(T))				// Unsafe to use directly,
-		{ return false; }
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_typename_template_pack_T) =
+		NIK_MODULE::template V_is_typename_template_pack_T<T>;
 
-	template<template<auto...> class... Cs>
-	static constexpr bool V_is_template_pack_U(void(*)(template_pack<Cs...>*))	// Use the following instead:
-		{ return true; }
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-public:
+// auto template:
+
+	template<template<auto...> class... Bs>
+	using nik_name(NIK_PREFIX, auto_template_pack)		= typename NIK_MODULE::template auto_template_pack<Bs...>;
+
+	template<template<auto...> class... Bs>
+	using nik_name(NIK_PREFIX, D_pack_Bs)			= typename NIK_MODULE::template D_pack_Bs<Bs...>;
+
+	template<template<auto...> class... Bs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_pack_Bs)		= NIK_MODULE::template U_pack_Bs<Bs...>;
+
+/***********************************************************************************************************************/
+
+// is auto template pack:
 
 	template<typename T>
-	static constexpr bool V_is_template_pack_T = V_is_template_pack_U(U_type_T<T>);
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_auto_template_pack_T) =
+		NIK_MODULE::template V_is_auto_template_pack_T<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -231,39 +152,27 @@ public:
 
 /***********************************************************************************************************************/
 
-private:
+	template<typename T1, typename T2>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_equal_TxT)	= NIK_MODULE::template V_equal_TxT<T1, T2>;
 
 	template<typename T1, typename T2>
-	static constexpr bool V_is_equal_UxU(void(*)(T1), void(*)(T2))	// Unsafe to use directly,
-		{ return false; }
-
-	template<typename T>
-	static constexpr bool V_is_equal_UxU(void(*)(T), void(*)(T))	// Use the following instead:
-		{ return true; }
-
-public:
-
-	template<auto TMap1, auto TMap2>
-	static constexpr bool V_equal_UxU = V_is_equal_UxU(TMap1, TMap2);
-
-	template<auto TMap1, auto TMap2>
-	static constexpr bool V_not_equal_UxU = ! V_is_equal_UxU(TMap1, TMap2);
-
-	//
-
-	template<typename T1, typename T2>
-	static constexpr bool V_equal_TxT = V_is_equal_UxU(U_type_T<T1>, U_type_T<T2>);
-
-	template<typename T1, typename T2>
-	static constexpr bool V_not_equal_TxT = ! V_is_equal_UxU(U_type_T<T1>, U_type_T<T2>);
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_not_equal_TxT)	= NIK_MODULE::template V_not_equal_TxT<T1, T2>;
 
 	//
 
 	template<auto V1, auto V2>
-	static constexpr bool V_equal_VxV = V_is_equal_UxU(U_pack_Vs<V1>, U_pack_Vs<V2>);	// optimized
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_equal_VxV)	= NIK_MODULE::template V_equal_VxV<V1, V2>;
 
 	template<auto V1, auto V2>
-	static constexpr bool V_not_equal_VxV = ! V_is_equal_UxU(U_pack_Vs<V1>, U_pack_Vs<V2>);	// optimized
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_not_equal_VxV)	= NIK_MODULE::template V_not_equal_VxV<V1, V2>;
+
+	//
+
+	template<auto U1, auto U2>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_equal_UxU)	= NIK_MODULE::template V_equal_UxU<U1, U2>;
+
+	template<auto U1, auto U2>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_not_equal_UxU)	= NIK_MODULE::template V_not_equal_UxU<U1, U2>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -272,8 +181,11 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename T> static constexpr bool V_equals_void		= V_equal_TxT<T, void>;
-	template<typename T> static constexpr bool V_equals_char_ptr		= V_equal_TxT<T, char*>;
+	template<typename T>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_equals_void)	= NIK_MODULE::template V_equals_void<T>;
+
+	template<typename T>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_equals_char_ptr)	= NIK_MODULE::template V_equals_char_ptr<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

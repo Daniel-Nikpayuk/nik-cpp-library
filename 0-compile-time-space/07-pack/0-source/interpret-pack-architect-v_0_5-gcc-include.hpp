@@ -40,7 +40,7 @@ namespace nik
 
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 
-		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
 		using machine_module	= nik_module(interpret, machine, architect, v_0_5, gcc);
 
 		using linear_machine	= typename machine_module::LD;

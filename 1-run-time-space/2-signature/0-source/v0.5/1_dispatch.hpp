@@ -156,14 +156,13 @@ private:
 	template<auto... Selectors>
 	static constexpr auto f_selectors_to_out_types(void(*)(_selector_facade<Selectors...>*))
 	{
-		return functor_module::template U_pack_Vs<out_type<Selectors>...>;
+		return functor_module::template U_pack_Ts<out_type<Selectors>...>;
 	}
 
 public:
 
-	template<auto USelector>
-	static constexpr auto selectors_to_out_types = f_selectors_to_out_types
-							(functor_module::template U_type_T<USelector>);
+	template<auto USelectors>
+	static constexpr auto selectors_to_out_types = f_selectors_to_out_types(USelectors);
 
 /***********************************************************************************************************************/
 
@@ -263,7 +262,10 @@ private:
 		constexpr auto l_selector	= resolve_selector<Signature, LArg>;
 		constexpr auto r_selectors	= args_to_selectors<Signature, RSignFacade>;
 		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
-		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
+		constexpr auto function		= function_module::template resolve // ?
+						<
+							UFunc, functor_module::template T_type_U<r_out_types>
+						>;
 
 		return f_make_assign<l_selector, function>(r_selectors);
 	}
@@ -293,7 +295,10 @@ private:
 
 		constexpr auto r_selectors	= args_to_selectors<Signature, SignArgs>;
 		constexpr auto r_out_types	= selectors_to_out_types<r_selectors>;
-		constexpr auto function		= function_module::template resolve<UFunc, r_out_types>;
+		constexpr auto function		= function_module::template resolve
+						<
+							UFunc, functor_module::template T_type_U<r_out_types>
+						>;
 
 		return f_make_apply<function>(r_selectors);
 	}

@@ -558,9 +558,10 @@ public:
 	template<typename Spec>
 	static constexpr return_type_<Spec> map(out_type_<Spec> o, in_type_<Spec> i, end_type_<Spec> e)
 	{
-		auto s = signature_<Spec>(o, i, e);
+	//	auto s = signature_<Spec>(o, i, e);
 
-		return return_value_<Spec>(one_cycle_map_<Spec>(s));
+		return o;
+	//	return return_value_<Spec>(one_cycle_map_<Spec>(s));
 	}
 
 /***********************************************************************************************************************/
