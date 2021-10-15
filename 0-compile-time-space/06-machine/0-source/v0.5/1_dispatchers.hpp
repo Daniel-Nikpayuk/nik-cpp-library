@@ -79,7 +79,7 @@ public:
 		static constexpr key_type patchnote(key_type m, index_type n)	{ return is_opt(n) ? CT::fast : m; }
 
 		template<key_type Name, index_type... Args, template<key_type, key_type...> class Space>
-		static constexpr auto make_user_controller(void(*)(template_pack<Space>*))
+		static constexpr auto make_user_controller(void(*)(auto_template_pack<Space>*))
 		{
 			return Space<Name>::template result<Args...>;
 		}

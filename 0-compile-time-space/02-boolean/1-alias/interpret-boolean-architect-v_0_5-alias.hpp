@@ -25,6 +25,12 @@
 
 // conditionals:
 
+	// TxT -> T:
+
+	template<bool is_br, typename Ante, typename Conse>
+	using nik_name(NIK_PREFIX, T_if_then_else_TxT) =
+		typename NIK_MODULE::template T_if_then_else_TxT<is_br, Ante, Conse>;
+
 	// VxV -> V:
 
 	template<bool is_br, auto ante, auto conse>
@@ -36,12 +42,6 @@
 	template<bool is_br, auto ante, auto conse>
 	using nik_name(NIK_PREFIX, T_if_then_else_VxV) =
 		typename NIK_MODULE::template T_if_then_else_VxV<is_br, ante, conse>;
-
-	// TxT -> T:
-
-	template<bool is_br, typename Ante, typename Conse>
-	using nik_name(NIK_PREFIX, T_if_then_else_TxT) =
-		typename NIK_MODULE::template T_if_then_else_TxT<is_br, Ante, Conse>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

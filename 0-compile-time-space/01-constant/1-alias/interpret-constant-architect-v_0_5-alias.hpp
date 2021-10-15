@@ -25,18 +25,15 @@
 
 // keywords:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, _na_)			= NIK_MODULE::_na_;
-
 	using nik_name(NIK_PREFIX, _nt_)				= typename NIK_MODULE::_nt_;
 
-	template<auto... Vs>
-	using nik_name(NIK_PREFIX, _NA_)				= typename NIK_MODULE::template _NA_<Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, _na_)			= NIK_MODULE::_na_;
 
 	template<typename... Ts>
-	using nik_name(NIK_PREFIX, _NT_)				= typename NIK_MODULE::template _NT_<Ts...>;
+	using nik_name(NIK_PREFIX, _NA_)				= typename NIK_MODULE::template _NA_<Ts...>;
 
-	template<template<auto...> class... Cs>
-	using nik_name(NIK_PREFIX, _NC_)				= typename NIK_MODULE::template _NC_<Cs...>;
+	template<auto... Vs>
+	using nik_name(NIK_PREFIX, _NB_)				= typename NIK_MODULE::template _NB_<Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

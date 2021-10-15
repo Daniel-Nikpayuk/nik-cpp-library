@@ -44,18 +44,13 @@ public:
 
 private:
 
-	template<typename T>
-	static constexpr bool V_is_array_U(void(*)(T))		// Unsafe to use directly,
-		{ return false; }
-
-	template<typename T, global_size_type N>
-	static constexpr bool V_is_array_U(void(*)(T(*)[N]))	// Use the following instead:
-		{ return true; }
+	template<typename T>				// This works because as a variable template it has
+	static constexpr bool is_array = false;		// a partial specialize defined outside of this module.
 
 public:
 
 	template<typename T>
-	static constexpr bool V_is_array_T = V_is_array_U(cache_module::template U_type_T<T>);
+	static constexpr bool V_is_array_T = is_array<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

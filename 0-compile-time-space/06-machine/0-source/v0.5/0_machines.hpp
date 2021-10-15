@@ -848,12 +848,12 @@ private:
 	template<key_type... filler>
 	struct machine<MN::compel_h0_all__move__insert_at_s_front, _zero, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto act, auto... args, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto... Vs, auto uact, auto... args, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<uact, args...>*), Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
-				T_type_U<act>::template result<args...>, Vs...
+				T_type_U<uact>::template result<args...>, Vs...
 			
 			NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);
 		}
@@ -898,10 +898,10 @@ private:
 	template<key_type... filler>
 	struct machine<MN::compel_h0_all__move__replace_at_h0_front, _zero, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto act, auto... args, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto... Vs, auto uact, auto... args, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<uact, args...>*), Heaps... Hs)
 		{
-			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<T_type_U<act>::template result<args...>>, Hs...);
+			return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<T_type_U<uact>::template result<args...>>, Hs...);
 		}
 	};
 

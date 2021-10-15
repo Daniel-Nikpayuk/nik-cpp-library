@@ -27,18 +27,15 @@ public:
 
 // keywords:
 
-	static constexpr void _na_()			{ }	// (not an auto)
-
 	struct _nt_					{ };	// (not a typename)
 
-	template<auto...>
-	using _NA_					= _nt_;	// (not an auto template)
+	static constexpr void _na_()			{ }	// (not an auto)
 
 	template<typename...>
-	using _NT_					= _nt_;	// (not a typename template)
+	using _NA_					= _nt_;	// (not a typename template)
 
-	template<template<auto...> class...>
-	using _NC_					= _nt_;	// (not a typename template)
+	template<auto...>
+	using _NB_					= _nt_;	// (not an auto template)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

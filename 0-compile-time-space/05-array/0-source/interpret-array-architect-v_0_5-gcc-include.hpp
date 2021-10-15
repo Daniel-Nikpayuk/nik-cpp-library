@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, cache, architect, v_0_5, gcc)
+	// none.
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,11 +38,14 @@ namespace nik
 {
 	nik_begin_module(interpret, array, architect, v_0_5, gcc)
 
-		using cache_module = nik_module(interpret, cache, architect, v_0_5, gcc);
-
 		#include"interpret-array-architect-v_0_5-source.hpp"
 
 	nik_end_module(interpret, array, architect, v_0_5, gcc)
+
+	// is array:
+
+		template<typename T, global_size_type N>
+		constexpr bool nik_module(interpret, array, architect, v_0_5, gcc)::is_array<T(*)[N]> = true;
 }
 
 /***********************************************************************************************************************/

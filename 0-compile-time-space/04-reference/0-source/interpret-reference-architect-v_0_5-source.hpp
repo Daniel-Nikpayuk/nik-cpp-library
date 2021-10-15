@@ -27,18 +27,13 @@
 
 private:
 
-	template<typename T>
-	static constexpr bool V_is_reference_U(void(*)(T))	// Unsafe to use directly,
-		{ return false; }
-
-	template<typename T>
-	static constexpr bool V_is_reference_U(void(*)(T&))	// Use the following instead:
-		{ return true; }
+	template<typename T>				// This works because as a variable template it has
+	static constexpr bool is_reference = false;	// a partial specialize defined outside of this module.
 
 public:
 
 	template<typename T>
-	static constexpr bool V_is_reference_T = V_is_reference_U(cache_module::template U_type_T<T>);
+	static constexpr bool V_is_reference_T = is_reference<T>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

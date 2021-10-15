@@ -29,184 +29,188 @@
 
 // identity:
 
-	using nik_name(NIK_PREFIX, T_id__F)				= typename NIK_MODULE::T_id__F;
+	using nik_name(NIK_PREFIX, F_id)				= typename NIK_MODULE::F_id;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_id__F)			= NIK_MODULE::U_id__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_id)			= NIK_MODULE::J_id;
 
 // constants:
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_constant__F)			= typename NIK_MODULE::template T_constant__F<V>;
+	using nik_name(NIK_PREFIX, F_constant_V)			= typename NIK_MODULE::template F_constant_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_constant__F)		= NIK_MODULE::template U_constant__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_constant_V)		= NIK_MODULE::template J_constant_V<V>;
 
 // arithmetic operators:
 
-	using nik_name(NIK_PREFIX, T_add__F)				= typename NIK_MODULE::T_add__F;
+	using nik_name(NIK_PREFIX, F_add)				= typename NIK_MODULE::F_add;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_add__F)			= NIK_MODULE::U_add__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_add)			= NIK_MODULE::J_add;
 
-	using nik_name(NIK_PREFIX, T_subtract__F)			= typename NIK_MODULE::T_subtract__F;
+	using nik_name(NIK_PREFIX, F_subtract)				= typename NIK_MODULE::F_subtract;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_subtract__F)		= NIK_MODULE::U_subtract__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_subtract)		= NIK_MODULE::J_subtract;
 
-	using nik_name(NIK_PREFIX, T_multiply__F)			= typename NIK_MODULE::T_multiply__F;
+	using nik_name(NIK_PREFIX, F_multiply)				= typename NIK_MODULE::F_multiply;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_multiply__F)		= NIK_MODULE::U_multiply__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_multiply)		= NIK_MODULE::J_multiply;
 
-	using nik_name(NIK_PREFIX, T_divide__F)				= typename NIK_MODULE::T_divide__F;
+	using nik_name(NIK_PREFIX, F_divide)				= typename NIK_MODULE::F_divide;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_divide__F)		= NIK_MODULE::U_divide__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_divide)			= NIK_MODULE::J_divide;
 
-	using nik_name(NIK_PREFIX, T_modulo__F)				= typename NIK_MODULE::T_modulo__F;
+	using nik_name(NIK_PREFIX, F_modulo)				= typename NIK_MODULE::F_modulo;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_modulo__F)		= NIK_MODULE::U_modulo__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_modulo)			= NIK_MODULE::J_modulo;
 
 	//
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_add_by__F)				= typename NIK_MODULE::template T_add_by__F<V>;
+	using nik_name(NIK_PREFIX, F_add_by_V)				= typename NIK_MODULE::template F_add_by_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_add_by__F)		= NIK_MODULE::template U_add_by__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_add_by_V)		= NIK_MODULE::template J_add_by_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_subtract_by__F)			= typename NIK_MODULE::template T_subtract_by__F<V>;
+	using nik_name(NIK_PREFIX, F_subtract_by_V)			= typename NIK_MODULE::template F_subtract_by_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_subtract_by__F)		= NIK_MODULE::template U_subtract_by__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_subtract_by_V)		= NIK_MODULE::template J_subtract_by_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_multiply_by__F)			= typename NIK_MODULE::template T_multiply_by__F<V>;
+	using nik_name(NIK_PREFIX, F_multiply_by_V)			= typename NIK_MODULE::template F_multiply_by_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_multiply_by__F)		= NIK_MODULE::template U_multiply_by__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_multiply_by_V)		= NIK_MODULE::template J_multiply_by_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_divide_by__F)			= typename NIK_MODULE::template T_divide_by__F<V>;
+	using nik_name(NIK_PREFIX, F_divide_by_V)			= typename NIK_MODULE::template F_divide_by_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_divide_by__F)		= NIK_MODULE::template U_divide_by__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_divide_by_V)		= NIK_MODULE::template J_divide_by_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_modulo_by__F)			= typename NIK_MODULE::template T_modulo_by__F<V>;
+	using nik_name(NIK_PREFIX, F_modulo_by_V)			= typename NIK_MODULE::template F_modulo_by_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_modulo_by__F)		= NIK_MODULE::template U_modulo_by__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_modulo_by_V)		= NIK_MODULE::template J_modulo_by_V<V>;
 
 // comparative operators:
 
-	using nik_name(NIK_PREFIX, T_max__F)				= typename NIK_MODULE::T_max__F;
+	using nik_name(NIK_PREFIX, F_max)				= typename NIK_MODULE::F_max;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_max__F)			= NIK_MODULE::U_max__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_max)			= NIK_MODULE::J_max;
 
-	using nik_name(NIK_PREFIX, T_min__F)				= typename NIK_MODULE::T_min__F;
+	using nik_name(NIK_PREFIX, F_min)				= typename NIK_MODULE::F_min;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_min__F)			= NIK_MODULE::U_min__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_min)			= NIK_MODULE::J_min;
 
 // predicates:
 
-	using nik_name(NIK_PREFIX, T_equal__F)				= typename NIK_MODULE::T_equal__F;
+	using nik_name(NIK_PREFIX, F_equal)				= typename NIK_MODULE::F_equal;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_equal__F)		= NIK_MODULE::U_equal__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_equal)			= NIK_MODULE::J_equal;
 
-	using nik_name(NIK_PREFIX, T_not_equal__F)			= typename NIK_MODULE::T_not_equal__F;
+	using nik_name(NIK_PREFIX, F_not_equal)				= typename NIK_MODULE::F_not_equal;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_not_equal__F)		= NIK_MODULE::U_not_equal__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_not_equal)		= NIK_MODULE::J_not_equal;
 
-	using nik_name(NIK_PREFIX, T_less_than__F)			= typename NIK_MODULE::T_less_than__F;
+	using nik_name(NIK_PREFIX, F_less_than)				= typename NIK_MODULE::F_less_than;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_less_than__F)		= NIK_MODULE::U_less_than__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_less_than)		= NIK_MODULE::J_less_than;
 
-	using nik_name(NIK_PREFIX, T_less_than_or_equal__F)		= typename NIK_MODULE::T_less_than_or_equal__F;
+	using nik_name(NIK_PREFIX, F_less_than_or_equal)		= typename NIK_MODULE::F_less_than_or_equal;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_less_than_or_equal__F)	= NIK_MODULE::U_less_than_or_equal__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_less_than_or_equal)	= NIK_MODULE::J_less_than_or_equal;
 
-	using nik_name(NIK_PREFIX, T_greater_than__F)			= typename NIK_MODULE::T_greater_than__F;
+	using nik_name(NIK_PREFIX, F_greater_than)			= typename NIK_MODULE::F_greater_than;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_greater_than__F)		= NIK_MODULE::U_greater_than__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_greater_than)		= NIK_MODULE::J_greater_than;
 
-	using nik_name(NIK_PREFIX, T_greater_than_or_equal__F)		= typename NIK_MODULE::T_greater_than_or_equal__F;
+	using nik_name(NIK_PREFIX, F_greater_than_or_equal)		= typename NIK_MODULE::F_greater_than_or_equal;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_greater_than_or_equal__F) = NIK_MODULE::U_greater_than_or_equal__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_greater_than_or_equal)	= NIK_MODULE::J_greater_than_or_equal;
 
 	//
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_is_value__F)			= typename NIK_MODULE::template T_is_value__F<V>;
+	using nik_name(NIK_PREFIX, F_is_value_V)			= typename NIK_MODULE::template F_is_value_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_value__F)		= NIK_MODULE::template U_is_value__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_is_value_V)		= NIK_MODULE::template J_is_value_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_not_value__F)			= typename NIK_MODULE::template T_not_value__F<V>;
+	using nik_name(NIK_PREFIX, F_not_value_V)			= typename NIK_MODULE::template F_not_value_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_not_value__F)		= NIK_MODULE::template U_not_value__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_not_value_V)		= NIK_MODULE::template J_not_value_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_is_less_than__F)			= typename NIK_MODULE::template T_is_less_than__F<V>;
+	using nik_name(NIK_PREFIX, F_is_less_than_V)			= typename NIK_MODULE::template F_is_less_than_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_less_than__F)		= NIK_MODULE::template U_is_less_than__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_is_less_than_V)		= NIK_MODULE::template J_is_less_than_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_is_less_than_or_equal__F)		= typename NIK_MODULE::template T_is_less_than_or_equal__F<V>;
+	using nik_name(NIK_PREFIX, F_is_less_than_or_equal_V)		= typename NIK_MODULE::template F_is_less_than_or_equal_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_less_than_or_equal__F) = NIK_MODULE::template U_is_less_than_or_equal__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_is_less_than_or_equal_V)	= NIK_MODULE::template J_is_less_than_or_equal_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_is_greater_than__F)		= typename NIK_MODULE::template T_is_greater_than__F<V>;
+	using nik_name(NIK_PREFIX, F_is_greater_than_V)			= typename NIK_MODULE::template F_is_greater_than_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_greater_than__F)	= NIK_MODULE::template U_is_greater_than__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_is_greater_than_V)	= NIK_MODULE::template J_is_greater_than_V<V>;
 
 	template<auto V>
-	using nik_name(NIK_PREFIX, T_is_greater_than_or_equal__F)	= typename NIK_MODULE::template T_is_greater_than_or_equal__F<V>;
+	using nik_name(NIK_PREFIX, F_is_greater_than_or_equal_V)	= typename NIK_MODULE::template F_is_greater_than_or_equal_V<V>;
 
 	template<auto V>
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_greater_than_or_equal__F) = NIK_MODULE::template U_is_greater_than_or_equal__F<V>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_is_greater_than_or_equal_V) = NIK_MODULE::template J_is_greater_than_or_equal_V<V>;
 
 // boolean operators:
 
-	using nik_name(NIK_PREFIX, T_conjunction__F)			= typename NIK_MODULE::T_conjunction__F;
+	using nik_name(NIK_PREFIX, F_conjunction)			= typename NIK_MODULE::F_conjunction;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_conjunction__F)		= NIK_MODULE::U_conjunction__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_conjunction)		= NIK_MODULE::J_conjunction;
 
-	using nik_name(NIK_PREFIX, T_disjunction__F)			= typename NIK_MODULE::T_disjunction__F;
+	using nik_name(NIK_PREFIX, F_disjunction)			= typename NIK_MODULE::F_disjunction;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_disjunction__F)		= NIK_MODULE::U_disjunction__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_disjunction)		= NIK_MODULE::J_disjunction;
 
-	using nik_name(NIK_PREFIX, T_implication__F)			= typename NIK_MODULE::T_implication__F;
+	using nik_name(NIK_PREFIX, F_implication)			= typename NIK_MODULE::F_implication;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_implication__F)		= NIK_MODULE::U_implication__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_implication)		= NIK_MODULE::J_implication;
 
-	using nik_name(NIK_PREFIX, T_equivalence__F)			= typename NIK_MODULE::T_equivalence__F;
+	using nik_name(NIK_PREFIX, F_equivalence)			= typename NIK_MODULE::F_equivalence;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_equivalence__F)		= NIK_MODULE::U_equivalence__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_equivalence)		= NIK_MODULE::J_equivalence;
 
-	using nik_name(NIK_PREFIX, T_negation__F)			= typename NIK_MODULE::T_negation__F;
+	using nik_name(NIK_PREFIX, F_negation)				= typename NIK_MODULE::F_negation;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_negation__F)		= NIK_MODULE::U_negation__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_negation)		= NIK_MODULE::J_negation;
 
 // dereference operators:
 
-	using nik_name(NIK_PREFIX, T_dereference__F)			= typename NIK_MODULE::T_dereference__F;
+	using nik_name(NIK_PREFIX, F_dereference)			= typename NIK_MODULE::F_dereference;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_dereference__F)		= NIK_MODULE::U_dereference__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_dereference)		= NIK_MODULE::J_dereference;
 
-	using nik_name(NIK_PREFIX, T_cdereference__F)			= typename NIK_MODULE::T_cdereference__F;
+	using nik_name(NIK_PREFIX, F_cdereference)			= typename NIK_MODULE::F_cdereference;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_cdereference__F)		= NIK_MODULE::U_cdereference__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_cdereference)		= NIK_MODULE::J_cdereference;
 
 // evaluation operators:
 
-	template<auto uf, typename T>
-	inline NIK_POLICY auto nik_name(NIK_PREFIX, apply)(T v)
+	using nik_name(NIK_PREFIX, F_apply)				= typename NIK_MODULE::F_apply;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_apply)			= NIK_MODULE::J_apply;
+
+	template<auto uf, typename... Ts>
+	inline NIK_POLICY auto nik_name(NIK_PREFIX, apply)(Ts... vs)
 	{
-		return NIK_MODULE::template apply<uf, T>(v);
+		return NIK_MODULE::template apply<uf, Ts...>(vs...);
 	}
 
 /***********************************************************************************************************************/
@@ -219,9 +223,9 @@
 
 // keywords:
 
-	using nik_name(NIK_PREFIX, T_is_id_keyword__F)			= typename NIK_MODULE::T_is_id_keyword__F;
+	using nik_name(NIK_PREFIX, E_is_id_keyword)			= typename NIK_MODULE::E_is_id_keyword;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_is_id_keyword__F)	= NIK_MODULE::U_is_id_keyword__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, I_is_id_keyword)		= NIK_MODULE::I_is_id_keyword;
 
 	template<auto f>
 	NIK_POLICY auto nik_name(NIK_PREFIX, is_id_keyword)		= NIK_MODULE::template is_id_keyword<f>;
@@ -230,16 +234,16 @@
 
 // composition operators:
 
-	using nik_name(NIK_PREFIX, T_postcompose__F)			= typename NIK_MODULE::T_postcompose__F;
+	using nik_name(NIK_PREFIX, E_postcompose)			= typename NIK_MODULE::E_postcompose;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_postcompose__F)		= NIK_MODULE::U_postcompose__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, I_postcompose)		= NIK_MODULE::I_postcompose;
 
 	template<auto uf1, auto uf2>
 	NIK_POLICY auto nik_name(NIK_PREFIX, postcompose)		= NIK_MODULE::template postcompose<uf1, uf2>;
 
-	using nik_name(NIK_PREFIX, T_precompose__F)			= typename NIK_MODULE::T_precompose__F;
+	using nik_name(NIK_PREFIX, E_precompose)			= typename NIK_MODULE::E_precompose;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_precompose__F)		= NIK_MODULE::U_precompose__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, I_precompose)		= NIK_MODULE::I_precompose;
 
 	template<auto uf1, auto uf2>
 	NIK_POLICY auto nik_name(NIK_PREFIX, precompose)		= NIK_MODULE::template precompose<uf1, uf2>;
@@ -251,16 +255,16 @@
 
 // optimized composition operators:
 
-	using nik_name(NIK_PREFIX, T_opt_postcompose__F)		= typename NIK_MODULE::T_opt_postcompose__F;
+	using nik_name(NIK_PREFIX, E_opt_postcompose)			= typename NIK_MODULE::E_opt_postcompose;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_opt_postcompose__F)	= NIK_MODULE::U_opt_postcompose__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, I_opt_postcompose)		= NIK_MODULE::I_opt_postcompose;
 
 	template<auto uf1, auto uf2>
 	NIK_POLICY auto nik_name(NIK_PREFIX, opt_postcompose)		= NIK_MODULE::template opt_postcompose<uf1, uf2>;
 
-	using nik_name(NIK_PREFIX, T_opt_precompose__F)			= typename NIK_MODULE::T_opt_precompose__F;
+	using nik_name(NIK_PREFIX, E_opt_precompose)			= typename NIK_MODULE::E_opt_precompose;
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, U_opt_precompose__F)	= NIK_MODULE::U_opt_precompose__F;
+	NIK_POLICY auto nik_name(NIK_PREFIX, I_opt_precompose)		= NIK_MODULE::I_opt_precompose;
 
 	template<auto uf1, auto uf2>
 	NIK_POLICY auto nik_name(NIK_PREFIX, opt_precompose)		= NIK_MODULE::template opt_precompose<uf1, uf2>;

@@ -35,7 +35,7 @@
 //	#include nik_import(., interpret, array, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
@@ -54,8 +54,6 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
-	using cache_module		= nik_module(interpret, cache, architect, v_0_5, gcc);
-//	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
 //	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
 //	using near_linear_module	= nik_module(compile, near_linear, architect, v_0_5, gcc);
 
@@ -128,9 +126,7 @@
 
 	int main(int argc, char *argv[])
 	{
-		printf("%s\n", cache_module::template V_is_typename_pack_T<int> ? "true" : "false");
-		printf("%s\n", cache_module::template V_is_typename_pack_T<cache_module::template typename_pack<int>> ? "true" : "false");
-	//	printf("%d\n", function_module::template apply<function_module::F_add>(5, 7));
+		printf("%d\n", apply<J_add>(5, 9));
 
 		return 0;
 	}

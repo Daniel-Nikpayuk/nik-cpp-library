@@ -19,12 +19,25 @@
 
 // factorial:
 
-	#include nik_import(../../.., interpret, functor, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(../../.., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
-	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// functions (local):
+
+	template<typename T, auto V>
+	constexpr auto is_value(T v) { return (v == V); }
+
+	template<typename T, auto V>
+	constexpr auto subtract_by(T v) { return v-V; }
+
+	template<typename T1, typename T2>
+	constexpr auto multiply(T1 v1, T2 v2) { return v1*v2; }
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
@@ -98,9 +111,9 @@
 		constexpr auto contr		= S_user_factorial_contr<FN::naive>::template result<>;
 
 		constexpr n_type val		= _one;
-		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
-		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
-		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
+		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
+		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto mult_op		= multiply<n_type, n_type>;
 
 		return start
 		<
@@ -194,10 +207,10 @@
 		constexpr auto contr		= off_by_one_factorial_contr<>;
 
 		constexpr n_type val		= _one;
-		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
-		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
-		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
-		constexpr auto algo		= U_pack_Cs<S_user_factorial_contr>;
+		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
+		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto mult_op		= multiply<n_type, n_type>;
+		constexpr auto algo		= U_pack_Bs<S_user_factorial_contr>;
 
 		return start
 		<
@@ -262,9 +275,9 @@
 		constexpr auto contr		= S_user_factorial_contr<FN::fast>::template result<>;
 
 		constexpr n_type p		= _one;
-		constexpr auto is_zero_op	= nik_function_S_is_value<n_type{_zero}>::template result<n_type>;
-		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
-		constexpr auto mult_op		= nik_function_S_multiply::template result<n_type, n_type>;
+		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
+		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto mult_op		= multiply<n_type, n_type>;
 
 		return start
 		<

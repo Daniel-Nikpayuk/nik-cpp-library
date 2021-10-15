@@ -511,15 +511,15 @@
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto act, auto... args, typename... Heaps						\
+				auto uact, auto... args, typename... Heaps						\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<act, args...>*), Heaps... Hs)			\
+			static constexpr auto result(void(*H0)(auto_pack<uact, args...>*), Heaps... Hs)			\
 			{												\
 				return NIK_BEGIN_MACHINE(n, c, d, i, j),						\
 															\
 					NIK_ ## _n_ ## _FAST_VS  NIK_ ## _c_ ## _COMMA					\
 															\
-					T_type_U<act>::template result<args...>, Vs...					\
+					T_type_U<uact>::template result<args...>, Vs...					\
 															\
 				NIK_END_MACHINE(U_opt_pack_Vs<>, Hs...);						\
 			}												\

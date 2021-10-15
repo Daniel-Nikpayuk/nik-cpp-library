@@ -28,44 +28,41 @@
 private:
 
 	template<bool True, bool...>
-	struct S_if_then_else
+	struct T_if_then_else
 	{
-		template<auto ante, auto conse>
-		static constexpr auto f_result() { return ante; }
-
 		template<typename Ante, typename Conse>
 		using result = Ante;
 	};
 
 	template<bool... filler>
-	struct S_if_then_else<false, filler...>
+	struct T_if_then_else<false, filler...>
 	{
-		template<auto ante, auto conse>
-		static constexpr auto f_result() { return conse; }
-
 		template<typename Ante, typename Conse>
 		using result = Conse;
 	};
 
+	template<bool True, auto ante, auto conse>	// This works because as a variable template it has
+	static constexpr auto V_if_then_else = ante;	// a partial specialize defined outside of this module.
+
 public:
+
+	// TxT -> T:
+
+	template<bool is_br, typename Ante, typename Conse>
+	using T_if_then_else_TxT = typename T_if_then_else<is_br>::template result<Ante, Conse>;
 
 	// VxV -> V:
 
 	template<bool is_br, auto ante, auto conse>
-	static constexpr auto V_if_then_else_VxV = S_if_then_else<is_br>::template f_result<ante, conse>();
+	static constexpr auto V_if_then_else_VxV = V_if_then_else<is_br, ante, conse>;
 
 	// VxV -> T:
 
 	template<bool is_br, auto ante, auto conse>
 	using T_if_then_else_VxV = typename cache_module::template T_type_U
 	<
-		S_if_then_else<is_br>::template f_result<ante, conse>()
+		V_if_then_else<is_br, ante, conse>
 	>;
-
-	// TxT -> T:
-
-	template<bool is_br, typename Ante, typename Conse>
-	using T_if_then_else_TxT = typename S_if_then_else<is_br>::template result<Ante, Conse>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

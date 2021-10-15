@@ -21,11 +21,22 @@
 
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
-	#include nik_import(../../.., interpret, function, architect, v_0_5, gcc, dynamic, title)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// functions (local):
+
+	template<typename T, auto V>
+	constexpr auto subtract_by(T v) { return v-V; }
+
+	template<typename T1, typename T2>
+	constexpr auto add(T1 v1, T2 v2) { return v1+v2; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 
 	struct FibonacciNames
 	{
@@ -99,8 +110,8 @@
 		constexpr n_type val		= _one;
 		constexpr n_type m		= _zero;
 		constexpr auto is_0_or_1_op	= is_0_or_1_value<n_type>;
-		constexpr auto dec_op		= nik_function_S_subtract_by<n_type{_one}>::template result<n_type>;
-		constexpr auto add_op		= nik_function_S_add::template result<n_type, n_type>;
+		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto add_op		= add<n_type, n_type>;
 
 		return start
 		<

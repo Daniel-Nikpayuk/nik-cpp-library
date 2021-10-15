@@ -43,6 +43,12 @@ namespace nik
 		#include"interpret-boolean-architect-v_0_5-source.hpp"
 
 	nik_end_module(interpret, boolean, architect, v_0_5, clang)
+
+	// if then else:
+
+		template<auto ante, auto conse>
+		constexpr auto nik_module(interpret, boolean, architect, v_0_5, clang)::
+			V_if_then_else<false, ante, conse> = conse;
 }
 
 /***********************************************************************************************************************/
