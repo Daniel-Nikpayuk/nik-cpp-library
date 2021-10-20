@@ -19,6 +19,10 @@
 
 // dispatch source:
 
+	// Simplify attr_by_ variations.
+	// Create an algebra to toggle
+	// into the other variations.
+
 public:
 
 /***********************************************************************************************************************/
@@ -52,19 +56,13 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<Mutability m>
-	static constexpr bool is_immutable			= (m == Mutability::immutable);
-
-	template<Mutability m>
-	static constexpr bool is_variable			= (m == Mutability::variable);
+	template<Mutability m> static constexpr bool is_immutable		= (m == Mutability::immutable);
+	template<Mutability m> static constexpr bool is_variable		= (m == Mutability::variable);
 
 	//
 
-	template<Denotation d>
-	static constexpr bool is_by_value			= (d == Denotation::by_value);
-
-	template<Denotation d>
-	static constexpr bool is_by_reference			= (d == Denotation::by_reference);
+	template<Denotation d> static constexpr bool is_by_value		= (d == Denotation::by_value);
+	template<Denotation d> static constexpr bool is_by_reference		= (d == Denotation::by_reference);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -73,19 +71,26 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<Mutability Mutate, Denotation Denote>
-	struct _attributes
-	{
-		static constexpr Mutability mutate = Mutate;
-		static constexpr Denotation denote = Denote;
-	};
+	static constexpr auto attr_by_val		= cons < Mutability::variable  , Denotation::by_value     >;
+	static constexpr auto attr_by_ref		= cons < Mutability::variable  , Denotation::by_reference >;
+	static constexpr auto attr_by_cval		= cons < Mutability::immutable , Denotation::by_value     >;
+	static constexpr auto attr_by_cref		= cons < Mutability::immutable , Denotation::by_reference >;
+
+/***********************************************************************************************************************/
+
+	template<auto p> static constexpr bool attr_is_immutable	= (car<p> == Mutability::immutable);
+	template<auto p> static constexpr bool attr_is_variable		= (car<p> == Mutability::variable);
+
+	template<auto p> static constexpr bool attr_is_by_value		= (cdr<p> == Denotation::by_value);
+	template<auto p> static constexpr bool attr_is_by_reference	= (cdr<p> == Denotation::by_reference);
 
 	//
 
-	using attr_by_val	= _attributes < Mutability::variable  , Denotation::by_value     >;
-	using attr_by_ref	= _attributes < Mutability::variable  , Denotation::by_reference >;
-	using attr_by_cval	= _attributes < Mutability::immutable , Denotation::by_value     >;
-	using attr_by_cref	= _attributes < Mutability::immutable , Denotation::by_reference >;
+	template<auto p> static constexpr auto attr_to_immutable	= cons<Mutability::immutable, cdr<p>>;
+	template<auto p> static constexpr auto attr_to_variable		= cons<Mutability::variable, cdr<p>>;
+
+	template<auto p> static constexpr auto attr_to_by_value		= cons<car<p>, Denotation::by_value>;
+	template<auto p> static constexpr auto attr_to_by_reference	= cons<car<p>, Denotation::by_reference>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -94,11 +99,11 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<typename Type, typename Attr>
+	template<typename Type, auto Attr>
 	struct _argument
 	{
-		using type		= Type;
-		using attributes	= Attr;
+		using type				= Type;
+		static constexpr auto attributes	= Attr;
 	};
 
 	//
@@ -126,43 +131,89 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// modify: ?
+
 // sign:
 
 /***********************************************************************************************************************/
 
 private:
 
-	template<typename Type>
-	static constexpr auto f_sign_type(Type v) // Type == void(*)(T*) or void(*)(T&)
-	{
-		return v;
-	}
+//	template<typename AttrByVal>
+//	struct modify_type
+//	{
+//		template<typename T>
+//		using result = T;
+//	};
 
-	template<typename Type, typename Attr>
-	static constexpr auto f_sign_type(void(*)(_argument<Type, Attr>*))
-	{
-		constexpr auto mutate = Attr::mutate;
-		constexpr auto denote = Attr::denote;
+//	template<typename>
+//	struct modify_type<attr_by_ref>
+//	{
+//		template<typename T>
+//		using result = T &;
+//	};
 
-		if constexpr (is_immutable<mutate>)
-		{
-			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type const>;
-			else					return cache_module::template U_type_T<Type const &>;
-		}
-		else
-		{
-			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type>;
-			else					return cache_module::template U_type_T<Type &>;
-		}
-	}
+//	template<typename>
+//	struct modify_type<attr_by_cval>
+//	{
+//		template<typename T>
+//		using result = T const &;
+//	};
+
+//	template<typename>
+//	struct modify_type<attr_by_cref>
+//	{
+//		template<typename T>
+//		using result = T const &;
+//	};
+
+	//
+
+//	template<typename Type>
+//	static constexpr auto f_sign_type(Type v) // Type == void(*)(T*) or void(*)(T&)
+//	{
+//		return v;
+//	}
+
+//	template<typename Type, typename Attr>
+//	static constexpr auto f_sign_type(void(*)(_argument<Type, Attr>*))
+//	{
+//		constexpr auto mutate = Attr::mutate;
+//		constexpr auto denote = Attr::denote;
+
+//		if constexpr (is_immutable<mutate>)
+//		{
+//			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type const>;
+//			else					return cache_module::template U_type_T<Type const &>;
+//		}
+//		else
+//		{
+//			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type>;
+//			else					return cache_module::template U_type_T<Type &>;
+//		}
+//	}
 
 public:
 
-	template<typename Arg>
-	using sign_type = cache_module::template T_type_U
-	<
-		f_sign_type(cache_module::template U_type_T<Arg>)
-	>;
+	// arg type cast ?
+
+//	template<typename Arg>
+//	using sign_type = cache_module::template T_type_U
+//	<
+//		f_sign_type(cache_module::template U_type_T<Arg>)
+//	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// specialize:
+
+/***********************************************************************************************************************/
+
+public:
+
+//	template<auto J, typename... ArgTs>
+//	static constexpr auto specialize = cache_module::template T_type_U<J>::template result<arg_type<ArgTs>...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -173,18 +224,22 @@ public:
 
 private:
 
-	template<auto UFunc, typename... Args>
-	static constexpr auto f_resolve(void(*)(_facade<Args...>*))
-	{
-		using S_function = typename cache_module::template T_type_U<UFunc>;
+//	template<auto J, typename... Args>
+//	static constexpr auto f_resolve(void(*)(_facade<Args...>*))
+//	{
+//		using F = typename cache_module::template T_type_U<J>;
 
-		return S_function::template result<sign_type<Args>...>;
-	}
+//		return F::template result<arg_type<Args>...>;
+//	}
 
 public:
 
-	template<auto ufunction, typename Facade>
-	static constexpr auto resolve = f_resolve<ufunction>(cache_module::template U_type_T<Facade>);
+	// Have two variations analogous to "pack" and "list": arg types and facade ? Maybe generic list.
+
+	// Also: "specialize" instead of "resolve" ? Or specialize for lists and resolve for packs ?
+
+//	template<auto J, typename Facade>
+//	static constexpr auto resolve = f_resolve<J>(cache_module::template U_type_T<Facade>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

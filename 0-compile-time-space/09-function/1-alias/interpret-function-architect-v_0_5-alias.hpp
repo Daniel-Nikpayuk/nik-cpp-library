@@ -191,26 +191,24 @@
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, J_negation)		= NIK_MODULE::J_negation;
 
-// dereference operators:
+// dereference operator:
 
 	using nik_name(NIK_PREFIX, F_dereference)			= typename NIK_MODULE::F_dereference;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, J_dereference)		= NIK_MODULE::J_dereference;
 
-	using nik_name(NIK_PREFIX, F_cdereference)			= typename NIK_MODULE::F_cdereference;
+// evaluation operator:
 
-	NIK_POLICY auto nik_name(NIK_PREFIX, J_cdereference)		= NIK_MODULE::J_cdereference;
+	template<auto J>
+	using nik_name(NIK_PREFIX, F_apply_J)				= typename NIK_MODULE::template F_apply_J<J>;
 
-// evaluation operators:
+	template<auto J>
+	NIK_POLICY auto nik_name(NIK_PREFIX, J_apply_J)			= NIK_MODULE::template J_apply_J<J>;
 
-	using nik_name(NIK_PREFIX, F_apply)				= typename NIK_MODULE::F_apply;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, J_apply)			= NIK_MODULE::J_apply;
-
-	template<auto uf, typename... Ts>
+	template<auto J, typename... Ts>
 	inline NIK_POLICY auto nik_name(NIK_PREFIX, apply)(Ts... vs)
 	{
-		return NIK_MODULE::template apply<uf, Ts...>(vs...);
+		return NIK_MODULE::template apply<J, Ts...>(vs...);
 	}
 
 /***********************************************************************************************************************/
@@ -227,8 +225,8 @@
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, I_is_id_keyword)		= NIK_MODULE::I_is_id_keyword;
 
-	template<auto f>
-	NIK_POLICY auto nik_name(NIK_PREFIX, is_id_keyword)		= NIK_MODULE::template is_id_keyword<f>;
+	template<auto J>
+	NIK_POLICY auto nik_name(NIK_PREFIX, is_id_keyword)		= NIK_MODULE::template is_id_keyword<J>;
 
 /***********************************************************************************************************************/
 
@@ -238,18 +236,18 @@
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, I_postcompose)		= NIK_MODULE::I_postcompose;
 
-	template<auto uf1, auto uf2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, postcompose)		= NIK_MODULE::template postcompose<uf1, uf2>;
+	template<auto J1, auto J2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, postcompose)		= NIK_MODULE::template postcompose<J1, J2>;
 
 	using nik_name(NIK_PREFIX, E_precompose)			= typename NIK_MODULE::E_precompose;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, I_precompose)		= NIK_MODULE::I_precompose;
 
-	template<auto uf1, auto uf2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, precompose)		= NIK_MODULE::template precompose<uf1, uf2>;
+	template<auto J1, auto J2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, precompose)		= NIK_MODULE::template precompose<J1, J2>;
 
-	template<auto uf0, auto... ufs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, chain_precompose)		= NIK_MODULE::template chain_precompose<uf0, ufs...>;
+	template<auto J0, auto... Js>
+	NIK_POLICY auto nik_name(NIK_PREFIX, chain_precompose)		= NIK_MODULE::template chain_precompose<J0, Js...>;
 
 /***********************************************************************************************************************/
 
@@ -259,18 +257,18 @@
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, I_opt_postcompose)		= NIK_MODULE::I_opt_postcompose;
 
-	template<auto uf1, auto uf2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, opt_postcompose)		= NIK_MODULE::template opt_postcompose<uf1, uf2>;
+	template<auto J1, auto J2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_postcompose)		= NIK_MODULE::template opt_postcompose<J1, J2>;
 
 	using nik_name(NIK_PREFIX, E_opt_precompose)			= typename NIK_MODULE::E_opt_precompose;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, I_opt_precompose)		= NIK_MODULE::I_opt_precompose;
 
-	template<auto uf1, auto uf2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, opt_precompose)		= NIK_MODULE::template opt_precompose<uf1, uf2>;
+	template<auto J1, auto J2>
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_precompose)		= NIK_MODULE::template opt_precompose<J1, J2>;
 
-	template<auto uf0, auto... ufs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, opt_chain_precompose)	= NIK_MODULE::template opt_chain_precompose<uf0, ufs...>;
+	template<auto J0, auto... Js>
+	NIK_POLICY auto nik_name(NIK_PREFIX, opt_chain_precompose)	= NIK_MODULE::template opt_chain_precompose<J0, Js...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -313,15 +311,15 @@
 
 /***********************************************************************************************************************/
 
-	template<auto m, auto d>
-	using nik_name(NIK_PREFIX, _attributes)				= typename NIK_MODULE::template _attributes<m, d>;
+//	template<auto m, auto d>
+//	using nik_name(NIK_PREFIX, _attributes)				= typename NIK_MODULE::template _attributes<m, d>;
 
 	//
 
-	using nik_name(NIK_PREFIX, attr_by_val)				= typename NIK_MODULE::attr_by_val;
-	using nik_name(NIK_PREFIX, attr_by_ref)				= typename NIK_MODULE::attr_by_ref;
-	using nik_name(NIK_PREFIX, attr_by_cval)			= typename NIK_MODULE::attr_by_cval;
-	using nik_name(NIK_PREFIX, attr_by_cref)			= typename NIK_MODULE::attr_by_cref;
+//	using nik_name(NIK_PREFIX, attr_by_val)				= typename NIK_MODULE::attr_by_val;
+//	using nik_name(NIK_PREFIX, attr_by_ref)				= typename NIK_MODULE::attr_by_ref;
+//	using nik_name(NIK_PREFIX, attr_by_cval)			= typename NIK_MODULE::attr_by_cval;
+//	using nik_name(NIK_PREFIX, attr_by_cref)			= typename NIK_MODULE::attr_by_cref;
 
 /***********************************************************************************************************************/
 
@@ -329,22 +327,22 @@
 
 /***********************************************************************************************************************/
 
-	template<typename T, typename A>
-	using nik_name(NIK_PREFIX, _argument)				= typename NIK_MODULE::template _argument<T, A>;
+//	template<typename T, typename A>
+//	using nik_name(NIK_PREFIX, _argument)				= typename NIK_MODULE::template _argument<T, A>;
 
 	//
 
-	template<typename T>
-	using nik_name(NIK_PREFIX, arg_by_val)				= typename NIK_MODULE::template arg_by_val<T>;
+//	template<typename T>
+//	using nik_name(NIK_PREFIX, arg_by_val)				= typename NIK_MODULE::template arg_by_val<T>;
 
-	template<typename T>
-	using nik_name(NIK_PREFIX, arg_by_ref)				= typename NIK_MODULE::template arg_by_ref<T>;
+//	template<typename T>
+//	using nik_name(NIK_PREFIX, arg_by_ref)				= typename NIK_MODULE::template arg_by_ref<T>;
 
-	template<typename T>
-	using nik_name(NIK_PREFIX, arg_by_cval)				= typename NIK_MODULE::template arg_by_cval<T>;
+//	template<typename T>
+//	using nik_name(NIK_PREFIX, arg_by_cval)				= typename NIK_MODULE::template arg_by_cval<T>;
 
-	template<typename T>
-	using nik_name(NIK_PREFIX, arg_by_cref)				= typename NIK_MODULE::template arg_by_cref<T>;
+//	template<typename T>
+//	using nik_name(NIK_PREFIX, arg_by_cref)				= typename NIK_MODULE::template arg_by_cref<T>;
 
 /***********************************************************************************************************************/
 
@@ -352,22 +350,29 @@
 
 /***********************************************************************************************************************/
 
-	template<typename... Args>
-	using nik_name(NIK_PREFIX, _facade)				= typename NIK_MODULE::template _facade<Args...>;
+//	template<typename... Args>
+//	using nik_name(NIK_PREFIX, _facade)				= typename NIK_MODULE::template _facade<Args...>;
 
 /***********************************************************************************************************************/
 
 // sign:
 
-	template<typename Arg>
-	using nik_name(NIK_PREFIX, sign_type)				= typename NIK_MODULE::template sign_type<Arg>;
+//	template<typename Arg>
+//	using nik_name(NIK_PREFIX, sign_type)				= typename NIK_MODULE::template sign_type<Arg>;
+
+/***********************************************************************************************************************/
+
+// specialize:
+
+//	template<auto ufunc, typename Facade>
+//	NIK_POLICY auto nik_name(NIK_PREFIX, specialize)		= NIK_MODULE::template specialize<ufunc, Facade>;
 
 /***********************************************************************************************************************/
 
 // resolve:
 
-	template<auto ufunc, typename Facade>
-	NIK_POLICY auto nik_name(NIK_PREFIX, resolve)			= NIK_MODULE::template resolve<ufunc, Facade>;
+//	template<auto ufunc, typename Facade>
+//	NIK_POLICY auto nik_name(NIK_PREFIX, resolve)			= NIK_MODULE::template resolve<ufunc, Facade>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

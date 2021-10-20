@@ -29,6 +29,7 @@
 
 //	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, pair, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pointer, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, reference, architect, v_0_5, gcc, dynamic, name)
@@ -39,10 +40,10 @@
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
-//	#include"0-compile-time-space/06-machine/3-case-studies/0_factorial.hpp"
-//	#include"0-compile-time-space/06-machine/3-case-studies/1_fibonacci.hpp"
-//	#include"0-compile-time-space/06-machine/4-testing/0_unit_tests.hpp"
-//	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
+//	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
+//	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
+//	#include"0-compile-time-space/07-machine/4-testing/0_unit_tests.hpp"
+//	#include"0-compile-time-space/10-list/2-testing/unit_lists.hpp"
 
 // run time space:
 
@@ -54,6 +55,7 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
+	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
 //	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
 //	using near_linear_module	= nik_module(compile, near_linear, architect, v_0_5, gcc);
 
@@ -126,7 +128,11 @@
 
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", apply<J_add>(5, 9));
+		constexpr auto attr = function_module::template attr_to_variable<function_module::attr_by_cval>;
+		printf("%s\n", function_module::template attr_is_immutable<attr> ? "true" : "false");
+		printf("%s\n", function_module::template attr_is_variable<attr> ? "true" : "false");
+
+	//	printf("%d\n", apply<J_add>(5, 7));
 
 		return 0;
 	}

@@ -67,6 +67,7 @@ namespace nik
 		cache,
 		constant,
 
+		pair,
 		boolean,
 
 		pointer,
@@ -207,41 +208,45 @@ namespace nik
 															\
 		01-constant
 
+	#define nik_pair()												\
+															\
+		02-pair
+
 	#define nik_boolean()												\
 															\
-		02-boolean
+		03-boolean
 
 	#define nik_pointer()												\
 															\
-		03-pointer
+		04-pointer
 
 	#define nik_reference()												\
 															\
-		04-reference
+		05-reference
 
 	#define nik_array()												\
 															\
-		05-array
+		06-array
 
 	#define nik_machine()												\
 															\
-		06-machine
+		07-machine
 
 	#define nik_pack()												\
 															\
-		07-pack
+		08-pack
 
 	#define nik_function()												\
 															\
-		08-function
+		09-function
 
 	#define nik_list()												\
 															\
-		09-list
+		10-list
 
 	#define nik_colist()												\
 															\
-		10-colist
+		11-colist
 
 
 /***********************************************************************************************************************/

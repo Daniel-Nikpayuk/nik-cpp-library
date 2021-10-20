@@ -188,7 +188,7 @@ public:
 	struct F_max
 	{
 		template<typename T1, typename T2>
-		static constexpr auto result(T1 v1, T2 v2)		{ return v1 > v2 ? v1 : v2; }
+		static constexpr auto result(T1 v1, T2 v2)		{ return (v1 > v2) ? v1 : v2; }
 	};
 
 	static constexpr auto J_max = cache_module::template U_type_T<F_max>;
@@ -198,7 +198,7 @@ public:
 	struct F_min
 	{
 		template<typename T1, typename T2>
-		static constexpr auto result(T1 v1, T2 v2)		{ return v1 < v2 ? v1 : v2; }
+		static constexpr auto result(T1 v1, T2 v2)		{ return (v1 < v2) ? v1 : v2; }
 	};
 
 	static constexpr auto J_min = cache_module::template U_type_T<F_min>;
@@ -393,7 +393,7 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// dereference operators:
+// dereference operator:
 
 /***********************************************************************************************************************/
 
@@ -406,41 +406,38 @@ public:
 	static constexpr auto J_dereference = cache_module::template U_type_T<F_dereference>;
 
 /***********************************************************************************************************************/
-
-	struct F_cdereference
-	{
-		template<typename T>
-		static constexpr const auto & result(const T & v)	{ return *v; }
-	};
-
-	static constexpr auto J_cdereference = cache_module::template U_type_T<F_cdereference>;
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// evaluation operators:
+// evaluation operator:
+
+	// It could be argued that a function template apply operator is redundant and unnecessary
+	// given that it could be factored as the function template resolve (specialization) operator
+	// followed by the procedural apply operator, but because function template apply allows for
+	// argument type deduction it is in fact semantically distinct and worth defining here.
 
 /***********************************************************************************************************************/
 
 // apply:
 
-	struct F_apply
+	template<auto J>
+	struct F_apply_J
 	{
-		template<auto uf, typename... Ts>
+		template<typename... Ts>
 		static constexpr auto result(Ts... vs)
 		{
-			using SF = cache_module::template T_type_U<uf>;
+			using F = cache_module::template T_type_U<J>;
 
-			return SF::template result<Ts...>(vs...);
+			return F::template result<Ts...>(vs...);
 		}
 	};
 
-	static constexpr auto J_apply = cache_module::template U_type_T<F_apply>;
+	template<auto J>
+	static constexpr auto J_apply_J = cache_module::template U_type_T<F_apply_J<J>>;
 
-	template<auto uf, typename... Ts>
+	template<auto J, typename... Ts>
 	static constexpr auto apply(Ts... vs)
 	{
-		return F_apply::template result<uf, Ts...>(vs...);
+		return F_apply_J<J>::template result<Ts...>(vs...);
 	}
 
 /***********************************************************************************************************************/
@@ -458,14 +455,14 @@ public:
 
 	struct E_is_id_keyword
 	{
-		template<auto f>
-		static constexpr bool result = cache_module::template V_equal_VxV<f, J_id>;
+		template<auto J>
+		static constexpr bool result = cache_module::template V_equal_VxV<J, J_id>;
 	};
 
 	static constexpr auto I_is_id_keyword = cache_module::template U_type_T<E_is_id_keyword>;
 
-	template<auto f>
-	static constexpr bool is_id_keyword = E_is_id_keyword::template result<f>;
+	template<auto J>
+	static constexpr bool is_id_keyword = E_is_id_keyword::template result<J>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -476,15 +473,15 @@ public:
 
 private:
 
-	template<typename SF1, typename SF2>
+	template<typename F1, typename F2>
 	struct F_postcomposition_TxT
 	{
 		template<typename... Ts>
 		static constexpr auto result(Ts... vs)
 		{
-			using mid_type = decltype(SF2::template result<Ts...>(vs...));
+			using mid_type = decltype(F2::template result<Ts...>(vs...));
 
-			return SF1::template result<mid_type>(SF2::template result<Ts...>(vs...));
+			return F1::template result<mid_type>(F2::template result<Ts...>(vs...));
 		}
 	};
 
@@ -492,21 +489,21 @@ public:
 
 	struct E_postcompose
 	{
-		template<auto uf, auto ug>
+		template<auto J1, auto J2>
 		static constexpr auto result = cache_module::template U_type_T
 		<
 			F_postcomposition_TxT
 			<
-				cache_module::template T_type_U<uf>,
-				cache_module::template T_type_U<ug>
+				cache_module::template T_type_U<J1>,
+				cache_module::template T_type_U<J2>
 			>
 		>;
 	};
 
 	static constexpr auto I_postcompose = cache_module::template U_type_T<E_postcompose>;
 
-	template<auto uf, auto ug>
-	static constexpr auto postcompose = E_postcompose::template result<uf, ug>;
+	template<auto J1, auto J2>
+	static constexpr auto postcompose = E_postcompose::template result<J1, J2>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -517,21 +514,21 @@ public:
 
 	struct E_precompose
 	{
-		template<auto uf, auto ug>
-		static constexpr auto result = E_postcompose::template result<ug, uf>;
+		template<auto J1, auto J2>
+		static constexpr auto result = E_postcompose::template result<J2, J1>;
 	};
 
 	static constexpr auto I_precompose = cache_module::template U_type_T<E_precompose>;
 
-	template<auto uf, auto ug>
-	static constexpr auto precompose = E_precompose::template result<uf, ug>;
+	template<auto J1, auto J2>
+	static constexpr auto precompose = E_precompose::template result<J1, J2>;
 
 /***********************************************************************************************************************/
 
 // chain precompose:
 
-	template<auto uf0, auto... ufs>
-	static constexpr auto chain_precompose = pack_module::template roll<500, I_precompose, uf0, ufs...>;
+	template<auto J0, auto... Js>
+	static constexpr auto chain_precompose = pack_module::template roll<500, I_precompose, J0, Js...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -544,22 +541,22 @@ public:
 
 	struct E_opt_postcompose
 	{
-		template<auto uf, auto ug>
+		template<auto J1, auto J2>
 		static constexpr auto f_result()
 		{
-			if constexpr      (is_id_keyword<uf, J_id>)	return ug;
-			else if constexpr (is_id_keyword<ug, J_id>)	return uf;
-			else						return postcompose<uf, ug>;
+			if constexpr      (is_id_keyword<J1, J_id>)	return J2;
+			else if constexpr (is_id_keyword<J2, J_id>)	return J1;
+			else						return postcompose<J1, J2>;
 		};
 
-		template<auto uf, auto ug>
-		static constexpr auto result = f_result<uf, ug>();
+		template<auto J1, auto J2>
+		static constexpr auto result = f_result<J1, J2>();
 	};
 
 	static constexpr auto I_opt_postcompose = cache_module::template U_type_T<E_opt_postcompose>;
 
-	template<auto uf, auto ug>
-	static constexpr auto opt_postcompose = E_opt_postcompose::template f_result<uf, ug>();
+	template<auto J1, auto J2>
+	static constexpr auto opt_postcompose = E_opt_postcompose::template f_result<J1, J2>();
 
 /***********************************************************************************************************************/
 
@@ -567,21 +564,21 @@ public:
 
 	struct E_opt_precompose
 	{
-		template<auto uf, auto ug>
-		static constexpr auto result = E_opt_postcompose::template f_result<ug, uf>();
+		template<auto J1, auto J2>
+		static constexpr auto result = E_opt_postcompose::template f_result<J2, J1>();
 	};
 
 	static constexpr auto I_opt_precompose = cache_module::template U_type_T<E_opt_precompose>;
 
-	template<auto uf, auto ug>	// E_opt_postcompose, not E_opt_precompose
-	static constexpr auto opt_precompose = E_opt_postcompose::template f_result<ug, uf>();
+	template<auto J1, auto J2>	// E_opt_postcompose, not E_opt_precompose
+	static constexpr auto opt_precompose = E_opt_postcompose::template f_result<J2, J1>();
 
 /***********************************************************************************************************************/
 
 // opt chain precompose:
 
-	template<auto uf0, auto... ufs>
-	static constexpr auto opt_chain_precompose = pack_module::template roll<500, I_opt_precompose, uf0, ufs...>;
+	template<auto J0, auto... Js>
+	static constexpr auto opt_chain_precompose = pack_module::template roll<500, I_opt_precompose, J0, Js...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, cache, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, pair, architect, v_0_5, clang)
 	#include nik_source(../../.., interpret, pack, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
@@ -39,7 +39,10 @@ namespace nik
 {
 	nik_begin_module(interpret, function, architect, v_0_5, clang)
 
+		#include nik_import(../../.., interpret, pair, architect, v_0_5, clang, static, name)
+
 		using cache_module	= nik_module(interpret, cache, architect, v_0_5, clang);
+		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
 
 		#include"v0.5/0_space.hpp"
