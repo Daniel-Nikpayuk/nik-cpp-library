@@ -23,6 +23,72 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// predicates:
+
+private:
+
+	template<typename T>				// This works because as a variable template it has
+	static constexpr bool is_list = false;		// a partial specialize defined outside of this module.
+
+public:
+
+	template<typename T>
+	static constexpr bool V_is_list_T = is_list<T>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// specifiers:
+
+public:
+
+	enum struct List
+	{
+		map_list,
+		rename_list,
+
+		dimension // filler
+	};
+
+	//
+
+	template<List l> static constexpr bool is_map_list		= (l == List::map_list);
+	template<List l> static constexpr bool is_rename_list		= (l == List::rename_list);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// modify:
+
+private:
+
+	template<typename, List> struct modify;
+
+	template<template<typename...> class ListName, typename... Ts>
+	struct modify<ListName<Ts...>, List::map_list>
+	{
+		template<template<typename> class A>
+		using type	= ListName<A<Ts>...>;
+	};
+
+	template<template<typename...> class ListName, typename... Ts>
+	struct modify<ListName<Ts...>, List::rename_list>
+	{
+		template<template<typename> class A>
+		using type	= A<Ts...>;
+	};
+
+public:
+
+	template<typename T, List l, template<typename...> class A>
+	using T_list_modify_TxVxA = typename modify<T, l>::template type<A>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // at:
 
 private:
@@ -36,7 +102,7 @@ private:
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto at = f_at<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto at = f_at<depth, pos>(cache_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -53,7 +119,7 @@ private:
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto left = f_left<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto left = f_left<depth, pos>(cache_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -70,7 +136,7 @@ private:
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto right = f_right<depth, pos>(functor_module::template U_type_T<List>);
+	static constexpr auto right = f_right<depth, pos>(cache_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -81,13 +147,13 @@ private:
 	template<template<auto...> class ListName, auto... Vs>
 	static constexpr auto f_name(void(*)(ListName<Vs...>*))
 	{
-		return functor_module::template U_pack_Cs<ListName>;
+		return cache_module::template U_pack_Bs<ListName>;
 	}
 
 public:
 
 	template<typename List>
-	static constexpr auto name = f_name(functor_module::template U_type_T<List>);
+	static constexpr auto name = f_name(cache_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 
@@ -103,22 +169,22 @@ private:
 	>
 	static constexpr auto f_catenate
 	(
-		void(*)(template_pack<OutList>*),
+		void(*)(cache_module::template auto_template_pack<OutList>*),
 		void(*)(InList1<Vs...>*),
 		void(*)(InList2<Ws...>*)
 	)
 	{
-		return functor_module::template U_type_T<OutList<Vs..., Ws...>>;
+		return cache_module::template U_type_T<OutList<Vs..., Ws...>>;
 	}
 
 public:
 
 	template<typename InList1, typename InList2, typename OutList = InList1>
-	static constexpr auto catenate	= f_right
+	static constexpr auto catenate	= f_catenate
 					(
 						name<OutList>,
-						functor_module::template U_type_T<InList1>,
-						functor_module::template U_type_T<InList2>
+						cache_module::template U_type_T<InList1>,
+						cache_module::template U_type_T<InList2>
 					);
 
 /***********************************************************************************************************************/

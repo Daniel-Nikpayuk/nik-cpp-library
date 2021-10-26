@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_LIST_ARCHITECT_V_0_5_CLANG_HPP
-#define NIK_INTERPRET_LIST_ARCHITECT_V_0_5_CLANG_HPP
+#ifndef NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_GCC_HPP
+#define NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_GCC_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,7 +26,9 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, function, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, pair, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, reference, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, pack, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -36,21 +38,22 @@
 
 namespace nik
 {
-	nik_begin_module(interpret, list, architect, v_0_5, clang)
+	nik_begin_module(interpret, function, architect, v_0_5, gcc)
 
-		using functor_module	= nik_module(interpret, functor, architect, v_0_5, clang);
-		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
-		using function_module	= nik_module(interpret, function, architect, v_0_5, clang);
+		#include nik_import(../../.., interpret, pair, architect, v_0_5, gcc, static, name)
 
-		template<template<auto...> class... Cs>
-		using template_pack	= typename functor_module::template template_pack<Cs...>;
+		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
+		using constant_module	= nik_module(interpret, constant, architect, v_0_5, gcc);
+		using reference_module	= nik_module(interpret, reference, architect, v_0_5, gcc);
+		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
 
-		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::index_type;
-		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::depth_type;
+		using Constant		= typename constant_module::Constant;
+		using Reference		= typename reference_module::Reference;
 
-		#include"interpret-list-architect-v_0_5-source.hpp"
+		#include"v0.5/0_dispatch.hpp"
+		#include"v0.5/1_space.hpp"
 
-	nik_end_module(interpret, list, architect, v_0_5, clang)
+	nik_end_module(interpret, function, architect, v_0_5, gcc)
 }
 
 /***********************************************************************************************************************/

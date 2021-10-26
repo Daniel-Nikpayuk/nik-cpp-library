@@ -747,6 +747,10 @@ private:
 
 // pair:
 
+		// Do not refactor using the pair module. Although this definition is redundant,
+		// trampolining requires a distinct keyword so that there's no confusion with an
+		// actual returned pair.
+
 	template<typename StackCache, typename HeapCache>
 	struct trampoline_pair
 	{

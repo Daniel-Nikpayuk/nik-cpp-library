@@ -19,155 +19,172 @@
 
 // dispatch source:
 
-	// Simplify attr_by_ variations.
-	// Create an algebra to toggle
-	// into the other variations.
-
 public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// enumeration filters (level 0):
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// attributes:
+// attributes (level 0):
 
 /***********************************************************************************************************************/
 
-	enum struct Mutability
+	struct Argument
 	{
-		immutable,
-		variable,
-
-		dimension // filler
-	};
-
-	enum struct Denotation
-	{
-		by_value,
-		by_reference,
-
-		dimension // filler
+		static constexpr auto to_val		= cons < Constant::from_const , Reference::from_reference >;
+		static constexpr auto to_ref		= cons < Constant::from_const , Reference::to_reference   >;
+		static constexpr auto to_cval		= cons < Constant::to_const   , Reference::from_reference >;
+		static constexpr auto to_cref		= cons < Constant::to_const   , Reference::to_reference   >;
 	};
 
 /***********************************************************************************************************************/
 
-	template<Mutability m> static constexpr bool is_immutable		= (m == Mutability::immutable);
-	template<Mutability m> static constexpr bool is_variable		= (m == Mutability::variable);
+	template<auto p> static constexpr bool arg_is_to_const		= constant_module::template is_to_const<car<p>>;
+	template<auto p> static constexpr bool arg_is_from_const	= constant_module::template is_from_const<car<p>>;
+
+	template<auto p> static constexpr bool arg_is_to_reference	= reference_module::template is_to_reference<cdr<p>>;
+	template<auto p> static constexpr bool arg_is_from_reference	= reference_module::template is_from_reference<cdr<p>>;
 
 	//
 
-	template<Denotation d> static constexpr bool is_by_value		= (d == Denotation::by_value);
-	template<Denotation d> static constexpr bool is_by_reference		= (d == Denotation::by_reference);
+	template<auto p> static constexpr bool arg_is_to_val	= cache_module::template V_equal_VxV<p, Argument::to_val>;
+	template<auto p> static constexpr bool arg_is_to_ref	= cache_module::template V_equal_VxV<p, Argument::to_ref>;
+	template<auto p> static constexpr bool arg_is_to_cval	= cache_module::template V_equal_VxV<p, Argument::to_cval>;
+	template<auto p> static constexpr bool arg_is_to_cref	= cache_module::template V_equal_VxV<p, Argument::to_cref>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// modify:
+
+private:
+
+	template<typename, auto> struct modify;
+
+	// to val:
+
+		template<typename T>
+		struct modify<T, Argument::to_val>
+		{
+			using type	= T;
+		};
+
+		template<typename T>
+		struct modify<T&, Argument::to_val>
+		{
+			using type	= T;
+		};
+
+		template<typename T>
+		struct modify<T const, Argument::to_val>
+		{
+			using type	= T;
+		};
+
+		template<typename T>
+		struct modify<T const &, Argument::to_val>
+		{
+			using type	= T;
+		};
+
+	// to ref:
+
+		template<typename T>
+		struct modify<T, Argument::to_ref>
+		{
+			using type	= T&;
+		};
+
+		template<typename T>
+		struct modify<T&, Argument::to_ref>
+		{
+			using type	= T&;
+		};
+
+		template<typename T>
+		struct modify<T const, Argument::to_ref>
+		{
+			using type	= T&;
+		};
+
+		template<typename T>
+		struct modify<T const &, Argument::to_ref>
+		{
+			using type	= T&;
+		};
+
+	// to cval:
+
+		template<typename T>
+		struct modify<T, Argument::to_cval>
+		{
+			using type	= T const;
+		};
+
+		template<typename T>
+		struct modify<T&, Argument::to_cval>
+		{
+			using type	= T const;
+		};
+
+		template<typename T>
+		struct modify<T const, Argument::to_cval>
+		{
+			using type	= T const;
+		};
+
+		template<typename T>
+		struct modify<T const &, Argument::to_cval>
+		{
+			using type	= T const;
+		};
+
+	// to cref:
+
+		template<typename T>
+		struct modify<T, Argument::to_cref>
+		{
+			using type	= T const &;
+		};
+
+		template<typename T>
+		struct modify<T&, Argument::to_cref>
+		{
+			using type	= T const &;
+		};
+
+		template<typename T>
+		struct modify<T const, Argument::to_cref>
+		{
+			using type	= T const &;
+		};
+
+		template<typename T>
+		struct modify<T const &, Argument::to_cref>
+		{
+			using type	= T const &;
+		};
+
+public:
+
+	template<typename T, auto a>
+	using T_function_modify_TxV = typename modify<T, a>::type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// attribute filters (level 1):
+// facade filters (level 3): // does this fit better within the list module modifiers ?
 
 /***********************************************************************************************************************/
 
-	static constexpr auto attr_by_val		= cons < Mutability::variable  , Denotation::by_value     >;
-	static constexpr auto attr_by_ref		= cons < Mutability::variable  , Denotation::by_reference >;
-	static constexpr auto attr_by_cval		= cons < Mutability::immutable , Denotation::by_value     >;
-	static constexpr auto attr_by_cref		= cons < Mutability::immutable , Denotation::by_reference >;
-
-/***********************************************************************************************************************/
-
-	template<auto p> static constexpr bool attr_is_immutable	= (car<p> == Mutability::immutable);
-	template<auto p> static constexpr bool attr_is_variable		= (car<p> == Mutability::variable);
-
-	template<auto p> static constexpr bool attr_is_by_value		= (cdr<p> == Denotation::by_value);
-	template<auto p> static constexpr bool attr_is_by_reference	= (cdr<p> == Denotation::by_reference);
-
-	//
-
-	template<auto p> static constexpr auto attr_to_immutable	= cons<Mutability::immutable, cdr<p>>;
-	template<auto p> static constexpr auto attr_to_variable		= cons<Mutability::variable, cdr<p>>;
-
-	template<auto p> static constexpr auto attr_to_by_value		= cons<car<p>, Denotation::by_value>;
-	template<auto p> static constexpr auto attr_to_by_reference	= cons<car<p>, Denotation::by_reference>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// member argument filters (level 2):
-
-/***********************************************************************************************************************/
-
-	template<typename Type, auto Attr>
-	struct _argument
-	{
-		using type				= Type;
-		static constexpr auto attributes	= Attr;
-	};
-
-	//
-
-	template<typename Type> using arg_by_val	= _argument<Type, attr_by_val>;
-	template<typename Type> using arg_by_ref	= _argument<Type, attr_by_ref>;
-	template<typename Type> using arg_by_cval	= _argument<Type, attr_by_cval>;
-	template<typename Type> using arg_by_cref	= _argument<Type, attr_by_cref>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// facade filters (level 3):
-
-/***********************************************************************************************************************/
-
-	template<typename... Args> using _facade	= cache_module::template typename_pack<Args...>;
+	template<auto... Args> using _facade			= cache_module::template auto_pack<Args...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // dispatchers:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// modify: ?
-
-// sign:
-
-/***********************************************************************************************************************/
-
-private:
-
-//	template<typename AttrByVal>
-//	struct modify_type
-//	{
-//		template<typename T>
-//		using result = T;
-//	};
-
-//	template<typename>
-//	struct modify_type<attr_by_ref>
-//	{
-//		template<typename T>
-//		using result = T &;
-//	};
-
-//	template<typename>
-//	struct modify_type<attr_by_cval>
-//	{
-//		template<typename T>
-//		using result = T const &;
-//	};
-
-//	template<typename>
-//	struct modify_type<attr_by_cref>
-//	{
-//		template<typename T>
-//		using result = T const &;
-//	};
-
-	//
 
 //	template<typename Type>
 //	static constexpr auto f_sign_type(Type v) // Type == void(*)(T*) or void(*)(T&)

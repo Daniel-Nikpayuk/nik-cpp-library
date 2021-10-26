@@ -77,8 +77,8 @@ namespace nik
 		machine,
 		pack,
 
-		function,
 		list,
+		function,
 		colist,
 
 	// compile:
@@ -236,13 +236,13 @@ namespace nik
 															\
 		08-pack
 
-	#define nik_function()												\
-															\
-		09-function
-
 	#define nik_list()												\
 															\
-		10-list
+		09-list
+
+	#define nik_function()												\
+															\
+		10-function
 
 	#define nik_colist()												\
 															\

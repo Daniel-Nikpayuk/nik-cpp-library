@@ -25,6 +25,82 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// predicates:
+
+private:
+
+	template<typename T>				// This works because as a variable template it has
+	static constexpr bool is_constant = false;	// a partial specialize defined outside of this module.
+
+public:
+
+	template<typename T>
+	static constexpr bool V_is_constant_T = is_constant<T>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// specifiers:
+
+public:
+
+	enum struct Constant
+	{
+		to_const,
+		from_const,
+
+		dimension // filler
+	};
+
+	//
+
+	template<Constant c> static constexpr bool is_to_const		= (c == Constant::to_const);
+	template<Constant c> static constexpr bool is_from_const	= (c == Constant::from_const);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// modify:
+
+private:
+
+	template<typename, Constant> struct modify;
+
+	template<typename T>
+	struct modify<T, Constant::to_const>
+	{
+		using type	= T const;
+	};
+
+	template<typename T>
+	struct modify<T const, Constant::to_const>
+	{
+		using type	= T const;
+	};
+
+	template<typename T>
+	struct modify<T, Constant::from_const>
+	{
+		using type	= T;
+	};
+
+	template<typename T>
+	struct modify<T const, Constant::from_const>
+	{
+		using type	= T;
+	};
+
+public:
+
+	template<typename T, Constant c>
+	using T_const_modify_TxV = typename modify<T, c>::type;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // keywords:
 
 	struct _nt_					{ };	// (not a typename)

@@ -39,12 +39,66 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// reflection:
+// specifiers:
 
-	// not yet implemented.
+public:
 
-	//	template<typename T>
-	//	using deref_type = decltype(**(T*)nullptr);
+	enum struct Pointer
+	{
+		to_pointer,
+		from_pointer,
+
+		dimension // filler
+	};
+
+	//
+
+	template<Pointer p> static constexpr bool is_to_pointer			= (p == Pointer::to_pointer);
+	template<Pointer p> static constexpr bool is_from_pointer		= (p == Pointer::from_pointer);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// modify:
+
+private:
+
+	template<typename, Pointer> struct modify;
+
+	template<typename T>
+	struct modify<T, Pointer::to_pointer>
+	{
+		using type	= T*;
+	};
+
+	template<typename T>
+	struct modify<T*, Pointer::to_pointer>
+	{
+		using type	= T*;
+	};
+
+	template<typename T>
+	struct modify<T, Pointer::from_pointer>
+	{
+		using type	= T;
+	};
+
+	template<typename T>
+	struct modify<T*, Pointer::from_pointer>
+	{
+		using type	= T;
+
+		// alternative implementation (reflection):
+
+		//	template<typename T>
+		//	using deref_type = decltype(**(T*)nullptr);
+	};
+
+public:
+
+	template<typename T, Pointer p>
+	using T_pointer_modify_TxV = typename modify<T, p>::type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

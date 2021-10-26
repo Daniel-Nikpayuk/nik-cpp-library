@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_GCC_HPP
-#define NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_GCC_HPP
+#ifndef NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,8 +26,9 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, pair, architect, v_0_5, gcc)
-	#include nik_source(../../.., interpret, pack, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, pair, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, reference, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, pack, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -37,18 +38,19 @@
 
 namespace nik
 {
-	nik_begin_module(interpret, function, architect, v_0_5, gcc)
+	nik_begin_module(interpret, function, architect, v_0_5, clang)
 
-		#include nik_import(../../.., interpret, pair, architect, v_0_5, gcc, static, name)
+		#include nik_import(../../.., interpret, pair, architect, v_0_5, clang, static, name)
 
-		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
-		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, gcc);
-		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
+		using cache_module	= nik_module(interpret, cache, architect, v_0_5, clang);
+		using constant_module	= nik_module(interpret, constant, architect, v_0_5, clang);
+		using reference_module	= nik_module(interpret, reference, architect, v_0_5, clang);
+		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
 
-		#include"v0.5/0_space.hpp"
-		#include"v0.5/1_dispatch.hpp"
+		#include"v0.5/0_dispatch.hpp"
+		#include"v0.5/1_space.hpp"
 
-	nik_end_module(interpret, function, architect, v_0_5, gcc)
+	nik_end_module(interpret, function, architect, v_0_5, clang)
 }
 
 /***********************************************************************************************************************/

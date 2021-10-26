@@ -26,7 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, function, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, pack, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -38,12 +38,8 @@ namespace nik
 {
 	nik_begin_module(interpret, list, architect, v_0_5, gcc)
 
-		using functor_module	= nik_module(interpret, functor, architect, v_0_5, gcc);
+		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
-		using function_module	= nik_module(interpret, function, architect, v_0_5, gcc);
-
-		template<template<auto...> class... Cs>
-		using template_pack	= typename functor_module::template template_pack<Cs...>;
 
 		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, gcc)::index_type;
 		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, gcc)::depth_type;
@@ -51,6 +47,14 @@ namespace nik
 		#include"interpret-list-architect-v_0_5-source.hpp"
 
 	nik_end_module(interpret, list, architect, v_0_5, gcc)
+
+	// is list:
+
+		template<template<typename...> class L, typename... Ts>
+		constexpr bool nik_module(interpret, list, architect, v_0_5, gcc)::is_list<L<Ts...>> = true;
+
+		template<template<auto...> class L, auto... Vs>
+		constexpr bool nik_module(interpret, list, architect, v_0_5, gcc)::is_list<L<Vs...>> = true;
 }
 
 /***********************************************************************************************************************/

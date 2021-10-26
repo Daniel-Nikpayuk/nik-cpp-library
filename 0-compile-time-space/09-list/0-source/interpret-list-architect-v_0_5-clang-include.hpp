@@ -17,8 +17,8 @@
 **
 ************************************************************************************************************************/
 
-#ifndef NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_CLANG_HPP
-#define NIK_INTERPRET_FUNCTION_ARCHITECT_V_0_5_CLANG_HPP
+#ifndef NIK_INTERPRET_LIST_ARCHITECT_V_0_5_CLANG_HPP
+#define NIK_INTERPRET_LIST_ARCHITECT_V_0_5_CLANG_HPP
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -26,7 +26,6 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, pair, architect, v_0_5, clang)
 	#include nik_source(../../.., interpret, pack, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
@@ -37,18 +36,25 @@
 
 namespace nik
 {
-	nik_begin_module(interpret, function, architect, v_0_5, clang)
-
-		#include nik_import(../../.., interpret, pair, architect, v_0_5, clang, static, name)
+	nik_begin_module(interpret, list, architect, v_0_5, clang)
 
 		using cache_module	= nik_module(interpret, cache, architect, v_0_5, clang);
-		using boolean_module	= nik_module(interpret, boolean, architect, v_0_5, clang);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
 
-		#include"v0.5/0_space.hpp"
-		#include"v0.5/1_dispatch.hpp"
+		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::index_type;
+		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::depth_type;
 
-	nik_end_module(interpret, function, architect, v_0_5, clang)
+		#include"interpret-list-architect-v_0_5-source.hpp"
+
+	nik_end_module(interpret, list, architect, v_0_5, clang)
+
+	// is list:
+
+		template<template<typename...> class L, typename... Ts>
+		constexpr bool nik_module(interpret, list, architect, v_0_5, clang)::is_list<L<Ts...>> = true;
+
+		template<template<auto...> class L, auto... Vs>
+		constexpr bool nik_module(interpret, list, architect, v_0_5, clang)::is_list<L<Vs...>> = true;
 }
 
 /***********************************************************************************************************************/

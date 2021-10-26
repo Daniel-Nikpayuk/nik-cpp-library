@@ -43,6 +43,9 @@ namespace nik
 		#include"interpret-constant-architect-v_0_5-source.hpp"
 
 	nik_end_module(interpret, constant, architect, v_0_5, clang)
+
+		template<typename T>
+		constexpr bool nik_module(interpret, constant, architect, v_0_5, clang)::is_constant<T const> = true;
 }
 
 /***********************************************************************************************************************/

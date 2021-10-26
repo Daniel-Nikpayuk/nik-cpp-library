@@ -84,11 +84,11 @@ private:
 	{
 		constexpr auto length	= sizeof...(Vs);
 
-		using S_is_zero		= typename function_module::template S_is_value<index_type{0}>;
-		constexpr auto is_zero	= S_is_zero::template result<index_type>;
+		using F_is_zero		= typename function_module::template F_is_value_V<index_type{0}>;
+		constexpr auto is_zero	= F_is_zero::template result<index_type>;
 
-		using S_dec		= typename function_module::template S_subtract_by<index_type{1}>;
-		constexpr auto dec	= S_dec::template result<index_type>;
+		using F_dec		= typename function_module::template F_subtract_by<index_type{1}>;
+		constexpr auto dec	= F_dec::template result<index_type>;
 
 		return start
 		<

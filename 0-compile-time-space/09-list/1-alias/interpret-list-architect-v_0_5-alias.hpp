@@ -23,6 +23,34 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// predicates:
+
+	template<typename T>
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_list_T)		= NIK_MODULE::template V_is_list_T<T>;
+
+/***********************************************************************************************************************/
+
+// specifiers:
+
+	using nik_name(NIK_PREFIX, List)				= typename NIK_MODULE::List;
+
+	template<auto V>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_map_list)		= NIK_MODULE::template is_map_list<V>;
+
+	template<auto V>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_rename_list)		= NIK_MODULE::template is_rename_list<V>;
+
+/***********************************************************************************************************************/
+
+// modify:
+
+	template<typename T, auto V, template<typename...> class A>
+	using nik_name(NIK_PREFIX, T_list_modify_TxVxA)	= typename NIK_MODULE::template T_list_modify_TxVxA<T, V, A>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // at:
 
 	template<typename List, auto pos, auto depth = 500>

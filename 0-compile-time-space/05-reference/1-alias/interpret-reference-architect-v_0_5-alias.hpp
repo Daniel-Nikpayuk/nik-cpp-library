@@ -26,7 +26,26 @@
 // predicates:
 
 	template<typename T>
-	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_reference_T) = NIK_MODULE::template V_is_reference_T<T>;
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_reference_T)		= NIK_MODULE::template V_is_reference_T<T>;
+
+/***********************************************************************************************************************/
+
+// specifiers:
+
+	using nik_name(NIK_PREFIX, Reference)				= typename NIK_MODULE::Reference;
+
+	template<auto V>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_to_reference)		= NIK_MODULE::template is_to_reference<V>;
+
+	template<auto V>
+	NIK_POLICY bool nik_name(NIK_PREFIX, is_from_reference)		= NIK_MODULE::template is_from_reference<V>;
+
+/***********************************************************************************************************************/
+
+// modify:
+
+	template<typename T, auto V>
+	using nik_name(NIK_PREFIX, T_reference_modify_TxV)	= typename NIK_MODULE::template T_reference_modify_TxV<T, V>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

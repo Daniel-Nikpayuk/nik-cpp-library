@@ -39,3 +39,63 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// specifiers:
+
+public:
+
+	enum struct Reference
+	{
+		to_reference,
+		from_reference,
+
+		dimension // filler
+	};
+
+	//
+
+	template<Reference r> static constexpr bool is_to_reference		= (r == Reference::to_reference);
+	template<Reference r> static constexpr bool is_from_reference		= (r == Reference::from_reference);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// modify:
+
+private:
+
+	template<typename, Reference> struct modify;
+
+	template<typename T>
+	struct modify<T, Reference::to_reference>
+	{
+		using type	= T&;
+	};
+
+	template<typename T>
+	struct modify<T&, Reference::to_reference>
+	{
+		using type	= T&;
+	};
+
+	template<typename T>
+	struct modify<T, Reference::from_reference>
+	{
+		using type	= T;
+	};
+
+	template<typename T>
+	struct modify<T&, Reference::from_reference>
+	{
+		using type	= T;
+	};
+
+public:
+
+	template<typename T, Reference r>
+	using T_reference_modify_TxV = typename modify<T, r>::type;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
