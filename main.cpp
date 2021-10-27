@@ -27,7 +27,7 @@
 
 // compile time space:
 
-//	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pair, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
@@ -124,7 +124,7 @@
 
 /***********************************************************************************************************************/
 
-	int square(int x) { return x*x; }
+	constexpr int square(int x) { return x*x; }
 
 	int main(int argc, char *argv[])
 	{

@@ -25,7 +25,7 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// attributes (level 0):
+// attributes:
 
 /***********************************************************************************************************************/
 
@@ -169,56 +169,13 @@ private:
 public:
 
 	template<typename T, auto a>
-	using T_function_modify_TxV = typename modify<T, a>::type;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// facade filters (level 3): // does this fit better within the list module modifiers ?
-
-/***********************************************************************************************************************/
-
-	template<auto... Args> using _facade			= cache_module::template auto_pack<Args...>;
+	using T_arg_modify_TxV = typename modify<T, a>::type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // dispatchers:
-
-//	template<typename Type>
-//	static constexpr auto f_sign_type(Type v) // Type == void(*)(T*) or void(*)(T&)
-//	{
-//		return v;
-//	}
-
-//	template<typename Type, typename Attr>
-//	static constexpr auto f_sign_type(void(*)(_argument<Type, Attr>*))
-//	{
-//		constexpr auto mutate = Attr::mutate;
-//		constexpr auto denote = Attr::denote;
-
-//		if constexpr (is_immutable<mutate>)
-//		{
-//			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type const>;
-//			else					return cache_module::template U_type_T<Type const &>;
-//		}
-//		else
-//		{
-//			if constexpr (is_by_value<denote>)	return cache_module::template U_type_T<Type>;
-//			else					return cache_module::template U_type_T<Type &>;
-//		}
-//	}
-
-public:
-
-	// arg type cast ?
-
-//	template<typename Arg>
-//	using sign_type = cache_module::template T_type_U
-//	<
-//		f_sign_type(cache_module::template U_type_T<Arg>)
-//	>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -229,8 +186,8 @@ public:
 
 public:
 
-//	template<auto J, typename... ArgTs>
-//	static constexpr auto specialize = cache_module::template T_type_U<J>::template result<arg_type<ArgTs>...>;
+	template<auto J, typename... Ts>
+	static constexpr auto specialize = cache_module::T_type_U<J>::template result<Ts...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -241,22 +198,16 @@ public:
 
 private:
 
-//	template<auto J, typename... Args>
-//	static constexpr auto f_resolve(void(*)(_facade<Args...>*))
-//	{
-//		using F = typename cache_module::template T_type_U<J>;
-
-//		return F::template result<arg_type<Args>...>;
-//	}
+	template<auto J, template<typename...> class ListName, typename... Ts>
+	static constexpr auto f_resolve(void(*)(ListName<Ts...>*))
+	{
+		return cache_module::T_type_U<J>::template result<Ts...>;
+	}
 
 public:
 
-	// Have two variations analogous to "pack" and "list": arg types and facade ? Maybe generic list.
-
-	// Also: "specialize" instead of "resolve" ? Or specialize for lists and resolve for packs ?
-
-//	template<auto J, typename Facade>
-//	static constexpr auto resolve = f_resolve<J>(cache_module::template U_type_T<Facade>);
+	template<auto J, typename List>
+	static constexpr auto resolve = f_resolve<J>(cache_module::template U_type_T<List>);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

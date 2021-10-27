@@ -45,7 +45,7 @@ public:
 
 	enum struct List
 	{
-		map_list,
+		modify_list,
 		rename_list,
 
 		dimension // filler
@@ -53,7 +53,7 @@ public:
 
 	//
 
-	template<List l> static constexpr bool is_map_list		= (l == List::map_list);
+	template<List l> static constexpr bool is_modify_list		= (l == List::modify_list);
 	template<List l> static constexpr bool is_rename_list		= (l == List::rename_list);
 
 /***********************************************************************************************************************/
@@ -66,11 +66,18 @@ private:
 
 	template<typename, List> struct modify;
 
-	template<template<typename...> class ListName, typename... Ts>
-	struct modify<ListName<Ts...>, List::map_list>
+	template
+	<
+		template<typename...> class TListName, typename... Ts,
+		template<auto...> class VListName, auto... Vs
+	>
+	struct modify<TListName<Ts...>, List::modify_list, VListName<Vs...>>
 	{
-		template<template<typename> class A>
-		using type	= ListName<A<Ts>...>;
+		template<template<typename, auto> class M>
+		using type = TListName
+		<
+			M<Ts, Vs>...
+		>;
 	};
 
 	template<template<typename...> class ListName, typename... Ts>
