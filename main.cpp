@@ -124,10 +124,169 @@
 
 /***********************************************************************************************************************/
 
+// original catenate:
+
+/*
+	// pattern match:
+
+		template<typename> struct pattern_match_list;
+
+		template<template<auto...> class ListName, auto... Values>
+		struct pattern_match_list<ListName<Values...>>
+		{
+			template
+			<
+				template
+				<
+					template<auto...> class, typename, auto...
+
+				> class Continuation, typename Type, auto... Args
+			>
+			using induct = Continuation<ListName, Type, Args..., Values...>;
+		};
+
+		//
+
+		template<auto...> struct value_list		  { };
+
+	// cons:
+
+		template<template<auto...> class ListName, typename _NA_, auto... Values>
+		using cons_cont = ListName<Values...>;
+
+		template<typename... Types>
+		using cons = typename pattern_match_list<value_list<>>::template induct
+		<
+			cons_cont, void, U_type_T<Types>...
+		>;
+
+	// catenate:
+
+		template<template<auto...> class ListName, typename List2, auto... Values>
+		using catenate_cont = typename pattern_match_list<List2>::template induct
+		<
+			cons_cont, void, Values...
+		>;
+
+		template<typename List1, typename List2>
+		using catenate = typename pattern_match_list<List1>::template induct
+		<
+			catenate_cont, List2
+		>;
+*/
+
+/***********************************************************************************************************************/
+
+// alternate catenate:
+
+/*
+	struct list
+	{
+		template
+		<
+			typename Continuation, typename Type, auto... Ws,
+			template<auto...> class ListName, auto... Vs
+		>
+		static constexpr auto induct(void(*)(ListName<Vs...>*))
+		{
+			return Continuation::template result<ListName, Type, Ws..., Vs...>;
+		}
+	};
+
+	struct cons_cont
+	{
+		template<template<auto...> class ListName, typename _NA_, auto... Vs>
+		static constexpr auto result = U_type_T<ListName<Vs...>>;
+	};
+
+	struct catenate_cont
+	{
+		template<template<auto...> class ListName, typename List2, auto... Vs>
+		static constexpr auto result = list::template induct<cons_cont, void, Vs...>(U_type_T<List2>);
+	};
+
+	template<typename List1, typename List2>
+	constexpr auto U_catenate_TxT = list::template induct<catenate_cont, List2>(U_type_T<List1>);
+*/
+
+/***********************************************************************************************************************/
+
+/*
+	template<typename> struct pattern_match_auto_list;
+
+	template<template<auto...> class ListName, auto... Vs>
+	struct pattern_match_auto_list<ListName<Vs...>>
+	{
+		template
+		<
+			template
+			<
+				template<auto...> class, typename, auto...
+
+			> class Continuation, typename Type, auto... Args
+		>
+		static constexpr auto induct()
+		{
+			return Continuation<ListName, Type, Args..., Values...>;
+		}
+	};
+
+	template<typename List1, typename List2>
+	constexpr auto U_catenate_TxT = pattern_match_auto_list<List1>::template induct
+	<
+		catenate_cont, List2
+	>;
+*/
+
+/***********************************************************************************************************************/
+
+// multi catenate:
+
+	template<typename> struct pattern_match_list;
+
+	template<template<auto...> class ListName, auto... Vs>
+	struct pattern_match_list<ListName<Vs...>>
+	{
+		template<typename Continuation, auto... Ws, typename... Ts>
+		static constexpr auto induct(Ts... As)
+		{
+			return Continuation::template result<ListName, Ws..., Vs...>(As...);
+		}
+	};
+
+	struct cons_cont
+	{
+		template<template<auto...> class ListName, auto... Vs>
+		static constexpr auto result()
+		{
+			return U_type_T<ListName<Vs...>>;
+		}
+	};
+
+	struct catenate_cont
+	{
+		template<template<auto...> class ListName, auto... Vs, typename L2, typename... Ls>
+		static constexpr auto result(void(*)(L2*), Ls... As)
+		{
+			if constexpr (sizeof...(Ls) == 0)
+
+				return pattern_match_list<L2>::template induct<cons_cont, Vs...>();
+			else
+				return pattern_match_list<L2>::template induct<catenate_cont, Vs...>(As...);
+		}
+	};
+
+	template<typename L1, typename L2, typename... Ls>
+	constexpr auto U_catenate_TxT = pattern_match_list<L1>::template induct<catenate_cont>(U_type_T<L2>, U_type_T<Ls>...);
+
+/***********************************************************************************************************************/
+
 	constexpr int square(int x) { return x*x; }
 
 	int main(int argc, char *argv[])
 	{
+		printf("%d\n", U_catenate_TxT<auto_pack<1, 2>, auto_pack<3, 4>, auto_pack<5, 6>>);
+
 	//	constexpr auto attr = function_module::template attr_to_variable<function_module::attr_by_cval>;
 	//	printf("%s\n", function_module::template attr_is_immutable<attr> ? "true" : "false");
 	//	printf("%s\n", function_module::template attr_is_variable<attr> ? "true" : "false");
