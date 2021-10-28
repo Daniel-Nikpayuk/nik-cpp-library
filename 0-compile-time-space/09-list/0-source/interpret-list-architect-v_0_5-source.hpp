@@ -39,58 +39,48 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// specifiers:
+// pattern match:
+
+	// redesign (extend) to be more robust against nesting depth,
+	// possibly extending to include greater expressivity similar
+	// to the compile time register machine design.
 
 public:
 
-	enum struct List
-	{
-		modify_list,
-		rename_list,
+	template<typename> struct pattern_match_list;
 
-		dimension // filler
+	template<template<auto...> class ListName, auto... Vs>
+	struct pattern_match_list<ListName<Vs...>>
+	{
+		template<typename Cont, auto... Ws, typename... Ts>
+		static constexpr auto push_back(Ts... As)
+		{
+			return Cont::template result<ListName, Ws..., Vs...>(As...);
+		}
+
+		template<typename Cont, auto... Ws, typename Op, typename... Ts>
+		static constexpr auto zip(void(*op)(Op*), Ts... As)
+		{
+			return Cont::template result<ListName, Op::template result<Ws, Vs>...>(op, As...);
+		}
 	};
 
-	//
-
-	template<List l> static constexpr bool is_modify_list		= (l == List::modify_list);
-	template<List l> static constexpr bool is_rename_list		= (l == List::rename_list);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// modify:
+// cons:
 
 private:
 
-	template<typename, List> struct modify;
-
-	template
-	<
-		template<typename...> class TListName, typename... Ts,
-		template<auto...> class VListName, auto... Vs
-	>
-	struct modify<TListName<Ts...>, List::modify_list, VListName<Vs...>>
+	struct cons_cont
 	{
-		template<template<typename, auto> class M>
-		using type = TListName
-		<
-			M<Ts, Vs>...
-		>;
-	};
-
-	template<template<typename...> class ListName, typename... Ts>
-	struct modify<ListName<Ts...>, List::rename_list>
-	{
-		template<template<typename> class A>
-		using type	= A<Ts...>;
+		template<template<auto...> class ListName, auto... Vs, typename... Ts>
+		static constexpr auto result(Ts... As)
+		{
+			return cache_module::template U_type_T<ListName<Vs...>>;
+		}
 	};
 
 public:
-
-	template<typename T, List l, template<typename...> class A>
-	using T_list_modify_TxVxA = typename modify<T, l>::template type<A>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -168,31 +158,24 @@ public:
 
 private:
 
-	template
-	<
-		template<auto...> class OutList,
-		template<auto...> class InList1, auto... Vs,
-		template<auto...> class InList2, auto... Ws
-	>
-	static constexpr auto f_catenate
-	(
-		void(*)(cache_module::template auto_template_pack<OutList>*),
-		void(*)(InList1<Vs...>*),
-		void(*)(InList2<Ws...>*)
-	)
+	struct catenate_cont
 	{
-		return cache_module::template U_type_T<OutList<Vs..., Ws...>>;
-	}
+		template<template<auto...> class ListName, auto... Ws, typename L, typename... Ts>
+		static constexpr auto result(void(*)(L*), Ts... As)
+		{
+			if constexpr (sizeof...(Ts) == 0)
+
+				return pattern_match_list<L>::template push_back<cons_cont, Ws...>();
+			else
+				return pattern_match_list<L>::template push_back<catenate_cont, Ws...>(As...);
+		}
+	};
 
 public:
 
-	template<typename InList1, typename InList2, typename OutList = InList1>
-	static constexpr auto catenate	= f_catenate
-					(
-						name<OutList>,
-						cache_module::template U_type_T<InList1>,
-						cache_module::template U_type_T<InList2>
-					);
+	template<typename L1, typename L2, typename... Ls>
+	static constexpr auto U_catenate_TxTxTs = pattern_match_list<L1>::template
+		push_back<catenate_cont>(cache_module::template U_type_T<L2>, cache_module::template U_type_T<Ls>...);
 
 /***********************************************************************************************************************/
 
@@ -201,6 +184,28 @@ public:
 /***********************************************************************************************************************/
 
 // zip:
+
+private:
+
+	struct zip_cont
+	{
+		template<template<auto...> class ListName, auto... Ws, typename Op, typename L, typename... Ts>
+		static constexpr auto result(Op op, void(*)(L*), Ts... As)
+		{
+			if constexpr (sizeof...(Ts) == 0)
+
+				return pattern_match_list<L>::template zip<cons_cont, Ws...>(op);
+			else
+				return pattern_match_list<L>::template zip<zip_cont, Ws...>(op, As...);
+		}
+	};
+
+public:
+
+	template<typename Op, typename L1, typename L2, typename... Ls>
+	static constexpr auto U_zip_TxTxTs = pattern_match_list<L1>::template
+		push_back<zip_cont>(cache_module::template U_type_T<Op>,
+					cache_module::template U_type_T<L2>, cache_module::template U_type_T<Ls>...);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
