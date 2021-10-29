@@ -30,25 +30,11 @@
 
 /***********************************************************************************************************************/
 
-// specifiers:
+// pattern match:
 
-	using nik_name(NIK_PREFIX, List)				= typename NIK_MODULE::List;
+	template<typename T>
+	using nik_name(NIK_PREFIX, pattern_match_list)		= typename NIK_MODULE::template pattern_match_list<T>;
 
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_map_list)		= NIK_MODULE::template is_map_list<V>;
-
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_rename_list)		= NIK_MODULE::template is_rename_list<V>;
-
-/***********************************************************************************************************************/
-
-// modify:
-
-	template<typename T, auto V, template<typename...> class A>
-	using nik_name(NIK_PREFIX, T_list_modify_TxVxA)	= typename NIK_MODULE::template T_list_modify_TxVxA<T, V, A>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // at:
@@ -81,8 +67,15 @@
 
 // catenate:
 
-	template<typename InList1, typename InList2, typename OutList = InList1>
-	NIK_POLICY auto nik_name(NIK_PREFIX, catenate)	= NIK_MODULE::template catenate<InList1, InList2, OutList>;
+	template<typename L1, typename L2, typename... Ls>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_catenate_TxTxTs)	= NIK_MODULE::template U_catenate_TxTxTs<L1, L2, Ls...>;
+
+/***********************************************************************************************************************/
+
+// zip:
+
+	template<typename Op, typename L1, typename L2, typename... Ls>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_zip_TxTxTxTs)	= NIK_MODULE::template U_zip_TxTxTxTs<Op, L1, L2, Ls...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

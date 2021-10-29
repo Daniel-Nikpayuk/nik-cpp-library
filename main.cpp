@@ -36,14 +36,14 @@
 //	#include nik_import(., interpret, array, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pack, architect, v_0_5, gcc, dynamic, name)
-//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, list, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
 //	#include"0-compile-time-space/07-machine/4-testing/0_unit_tests.hpp"
-//	#include"0-compile-time-space/10-list/2-testing/unit_lists.hpp"
+//	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
 // run time space:
 

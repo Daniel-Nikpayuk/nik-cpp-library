@@ -28,7 +28,7 @@
 
 	#include nik_source(../../.., interpret, pair, architect, v_0_5, gcc)
 	#include nik_source(../../.., interpret, reference, architect, v_0_5, gcc)
-	#include nik_source(../../.., interpret, pack, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, list, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

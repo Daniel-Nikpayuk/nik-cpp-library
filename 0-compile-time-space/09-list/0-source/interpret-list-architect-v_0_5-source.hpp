@@ -90,16 +90,19 @@ public:
 
 private:
 
-	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_at(void(*)(ListName<Vs...>*))
+	struct at_cont
 	{
-		return pack_module::template at<d, pos, Vs...>;
-	}
+		template<template<auto...> class ListName, auto d, auto pos, auto... Vs, typename... Ts>
+		static constexpr auto result(Ts... As)
+		{
+			return pack_module::template at<d, pos, Vs...>;
+		}
+	};
 
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto at = f_at<depth, pos>(cache_module::template U_type_T<List>);
+	static constexpr auto at = pattern_match_list<List>::template push_back<at_cont, depth, pos>();
 
 /***********************************************************************************************************************/
 
@@ -107,16 +110,19 @@ public:
 
 private:
 
-	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_left(void(*)(ListName<Vs...>*))
+	struct left_cont
 	{
-		return pack_module::template left<d, pos, Vs...>;
-	}
+		template<template<auto...> class ListName, auto d, auto pos, auto... Vs, typename... Ts>
+		static constexpr auto result(Ts... As)
+		{
+			return pack_module::template left<d, pos, Vs...>;
+		}
+	};
 
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto left = f_left<depth, pos>(cache_module::template U_type_T<List>);
+	static constexpr auto left = pattern_match_list<List>::template push_back<left_cont, depth, pos>();
 
 /***********************************************************************************************************************/
 
@@ -124,16 +130,19 @@ public:
 
 private:
 
-	template<auto d, auto pos, template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_right(void(*)(ListName<Vs...>*))
+	struct right_cont
 	{
-		return pack_module::template right<d, pos, Vs...>;
-	}
+		template<template<auto...> class ListName, auto d, auto pos, auto... Vs, typename... Ts>
+		static constexpr auto result(Ts... As)
+		{
+			return pack_module::template right<d, pos, Vs...>;
+		}
+	};
 
 public:
 
 	template<typename List, index_type pos, depth_type depth = 500>
-	static constexpr auto right = f_right<depth, pos>(cache_module::template U_type_T<List>);
+	static constexpr auto right = pattern_match_list<List>::template push_back<right_cont, depth, pos>();
 
 /***********************************************************************************************************************/
 
@@ -141,16 +150,19 @@ public:
 
 private:
 
-	template<template<auto...> class ListName, auto... Vs>
-	static constexpr auto f_name(void(*)(ListName<Vs...>*))
+	struct name_cont
 	{
-		return cache_module::template U_pack_Bs<ListName>;
-	}
+		template<template<auto...> class ListName, auto... Vs, typename... Ts>
+		static constexpr auto result(Ts... As)
+		{
+			return cache_module::template U_pack_Bs<ListName>;
+		}
+	};
 
 public:
 
 	template<typename List>
-	static constexpr auto name = f_name(cache_module::template U_type_T<List>);
+	static constexpr auto name = pattern_match_list<List>::template push_back<name_cont>();
 
 /***********************************************************************************************************************/
 
@@ -174,8 +186,11 @@ private:
 public:
 
 	template<typename L1, typename L2, typename... Ls>
-	static constexpr auto U_catenate_TxTxTs = pattern_match_list<L1>::template
-		push_back<catenate_cont>(cache_module::template U_type_T<L2>, cache_module::template U_type_T<Ls>...);
+	static constexpr auto U_catenate_TxTxTs = pattern_match_list<L1>::template push_back<catenate_cont>
+	(
+		cache_module::template U_type_T<L2>,
+		cache_module::template U_type_T<Ls>...
+	);
 
 /***********************************************************************************************************************/
 
@@ -203,9 +218,12 @@ private:
 public:
 
 	template<typename Op, typename L1, typename L2, typename... Ls>
-	static constexpr auto U_zip_TxTxTs = pattern_match_list<L1>::template
-		push_back<zip_cont>(cache_module::template U_type_T<Op>,
-					cache_module::template U_type_T<L2>, cache_module::template U_type_T<Ls>...);
+	static constexpr auto U_zip_TxTxTxTs = pattern_match_list<L1>::template push_back<zip_cont>
+	(
+		cache_module::template U_type_T<Op>,
+		cache_module::template U_type_T<L2>,
+		cache_module::template U_type_T<Ls>...
+	);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
