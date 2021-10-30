@@ -41,6 +41,7 @@ namespace nik
 		using cache_module	= nik_module(interpret, cache, architect, v_0_5, clang);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, clang);
 
+		using key_type		= typename nik_module(interpret, constant, architect, v_0_5, clang)::key_type;
 		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::index_type;
 		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, clang)::depth_type;
 
