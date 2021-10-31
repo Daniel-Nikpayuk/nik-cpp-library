@@ -839,14 +839,14 @@ private:
 // trampoline:
 
 	template<auto d, auto un, auto c, auto i, auto j, auto... Vs, auto... Hs>
-	static constexpr auto machine_trampoline(void(*)(auto_pack<un, c, i, j, Vs...>*), void(*)(auto_pack<Hs...>*))
+	static constexpr auto trampoline(void(*)(auto_pack<un, c, i, j, Vs...>*), void(*)(auto_pack<Hs...>*))
 	{
 		static_assert(bool(d), "machine trampolining nesting depth exceeded.");
 
 		using n			= T_type_U<un>;
 		constexpr auto result	= NIK_MACHINE(n, c, d, i, j)(Hs...);
 
-		if constexpr (is_trampoline_pair(result)) return machine_trampoline<d-1>(result.sc, result.hc);
+		if constexpr (is_trampoline_pair(result)) return trampoline<d-1>(result.sc, result.hc);
 		else                                      return result;
 	}
 
@@ -867,7 +867,7 @@ public:
 		constexpr auto result = NIK_MACHINE(n, c, d, n::i, n::j)
 					(U_opt_pack_Vs<Ws...>, U_opt_pack_Vs<Xs...>, U_opt_pack_Vs<Ys...>);
 
-		if constexpr (is_trampoline_pair(result)) return machine_trampoline<d>(result.sc, result.hc);
+		if constexpr (is_trampoline_pair(result)) return trampoline<d>(result.sc, result.hc);
 		else                                      return result;
 	}
 

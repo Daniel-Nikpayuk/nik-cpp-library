@@ -38,12 +38,14 @@ namespace nik
 {
 	nik_begin_module(interpret, list, architect, v_0_5, gcc)
 
+		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
+
 		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
+		using machine_module	= nik_module(interpret, machine, architect, v_0_5, gcc);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
 
-		using key_type		= typename nik_module(interpret, constant, architect, v_0_5, gcc)::key_type;
-		using index_type	= typename nik_module(interpret, constant, architect, v_0_5, gcc)::index_type;
-		using depth_type	= typename nik_module(interpret, constant, architect, v_0_5, gcc)::depth_type;
+		using instr_type	= typename nik_module(interpret, machine, architect, v_0_5, gcc)::instr_type;
+		using contr_type	= typename nik_module(interpret, machine, architect, v_0_5, gcc)::label_type;
 
 		#include"interpret-list-architect-v_0_5-source.hpp"
 
