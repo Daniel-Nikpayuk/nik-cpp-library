@@ -38,9 +38,9 @@ namespace nik
 {
 	nik_begin_module(interpret, list, architect, v_0_5, gcc)
 
+		#include nik_import(../../.., interpret, cache, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 
-		using cache_module	= nik_module(interpret, cache, architect, v_0_5, gcc);
 		using machine_module	= nik_module(interpret, machine, architect, v_0_5, gcc);
 		using pack_module	= nik_module(interpret, pack, architect, v_0_5, gcc);
 
@@ -52,9 +52,6 @@ namespace nik
 	nik_end_module(interpret, list, architect, v_0_5, gcc)
 
 	// is list:
-
-		template<template<typename...> class L, typename... Ts>
-		constexpr bool nik_module(interpret, list, architect, v_0_5, gcc)::is_list<L<Ts...>> = true;
 
 		template<template<auto...> class L, auto... Vs>
 		constexpr bool nik_module(interpret, list, architect, v_0_5, gcc)::is_list<L<Vs...>> = true;

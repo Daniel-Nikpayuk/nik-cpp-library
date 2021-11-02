@@ -67,35 +67,42 @@ public:
 
 	// iterators:
 
-		static constexpr key_type next_induct_name(contr_type c, depth_type d, index_type i)
-		{
-			if (d == 0)	return IN::pause;
-			else 		return c[i+1][_one];
-		}
-
-		static constexpr key_type next_cont_name(contr_type c, depth_type d, index_type i)
-		{
-			if (d == 0)	return CN::pause;
-			else 		return c[i+1][_one];
-		}
-
 		static constexpr depth_type next_depth(depth_type d)
 		{
-			if (d > 0)	return d-1;
-			else 		return d;
+			if (d > 0) return d-1;
+			else       return d;
 		}
 
-		static constexpr index_type next_index(contr_type, depth_type d, index_type i)
+		static constexpr index_type next_index(contr_type c, depth_type d, index_type i)
 		{
-			if (d == 0)	return i;
-			else 		return i+1;
+			if (d == 0)            return i;
+			else if (i == c[0][0]) return _one;
+			else                   return i+1;
+		}
+
+		static constexpr key_type next_induct_name(contr_type c, depth_type d, index_type i)
+		{
+			if (d == 0) return IN::pause;
+			else        return c[next_index(c, d, i)][_one];
+		}
+
+		static constexpr key_type next_cont_name(contr_type c, depth_type d, index_type i, bool is_last)
+		{
+			if (d == 0) return CN::pause;
+			else
+			{
+				index_type ni = next_index(c, d, i);
+
+				if (is_last) return c[ni][_one];
+				else         return c[ni][_two];
+			}
 		}
 	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// :
+// machines:
 
 private:
 
@@ -103,35 +110,106 @@ private:
 	template<typename>		struct pattern_match_list;
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// trampolining:
+
+/***********************************************************************************************************************/
+
+// triple:
+
+private:
+
+	template<typename StackCache, typename HeapCache, typename MachCache>
+	struct trampoline_triple
+	{
+		StackCache sc;
+		HeapCache hc;
+		MachCache mc;
+
+		constexpr trampoline_triple(const StackCache & _sc, const HeapCache & _hc, const MachCache & _mc) :
+				sc(_sc), hc(_hc), mc(_mc) { }
+	};
+
+	template<typename T>
+	static constexpr bool is_trampoline_triple(T) { return false; }
+
+	template<typename StackCache, typename HeapCache, typename MachCache>
+	static constexpr bool is_trampoline_triple(trampoline_triple<StackCache, HeapCache, MachCache>) { return true; }
+
+/***********************************************************************************************************************/
 
 // trampoline:
 
 public:
 
-/*
-	template<auto d, auto un, auto c, auto i, auto... Vs, auto... As>
-	static constexpr auto trampoline(void(*)(auto_pack<un, c, i, Vs...>*), void(*)(auto_pack<As...>*))
+	// induction:
+
+	template<auto d, auto un, auto c, auto i, auto... Vs, template<auto...> class ListName, auto... Ws, auto... As>
+	static constexpr auto trampoline
+	(
+		void(*)(auto_pack<un, c, i, Vs...>*),
+		void(*)(ListName<Ws...>*),
+		void(*)(auto_pack<As...>*)
+	)
 	{
 		static_assert(bool(d), "list trampolining nesting depth exceeded.");
 
 		using n			= T_type_U<un>;
-		constexpr auto result	= NIK_MACHINE(n, c, d, i, j)(Hs...);
+		constexpr auto result	= pattern_match_list<ListName<Ws...>>::template induct
+		<
+			n::next_induct_name(c, d, i)
 
-		if constexpr (is_trampoline_pair(result)) return trampoline<d-1>(result.sc, result.hc);
-		else                                      return result;
+		>::template result
+		<
+			n, c,
+
+			n::next_depth(d),
+			n::next_index(c, d, i),
+
+			Vs...
+
+		>(As...);
+
+		if constexpr (is_trampoline_triple(result)) return trampoline<d-1>(result.sc, result.hc, result.mc);
+		else                                        return result;
 	}
-*/
+
+	// continuation:
+
+	template<auto d, auto un, auto c, auto i, auto... Vs, template<auto...> class ListName, auto... As>
+	static constexpr auto trampoline
+	(
+		void(*)(auto_pack<un, c, i, Vs...>*),
+		void(*)(auto_template_pack<ListName>*),
+		void(*)(auto_pack<As...>*)
+	)
+	{
+		static_assert(bool(d), "list trampolining nesting depth exceeded.");
+
+		using n			= T_type_U<un>;
+		constexpr auto result	= continuation
+		<
+			n::next_cont_name(c, d, i, (sizeof...(As) == 0))
+
+		>::template result
+		<
+			n, c,
+
+			n::next_depth(d),
+			n::next_index(c, d, i),
+
+			ListName, Vs...
+
+		>(As...);
+
+		if constexpr (is_trampoline_triple(result)) return trampoline<d-1>(result.sc, result.hc, result.mc);
+		else                                        return result;
+	}
 
 /***********************************************************************************************************************/
 
 // start:
-
-/*
-	static constexpr auto catenate_contr = list_controller
-	<
-		induct       < IN::push_back          >,
-		cont_if_last < CN::cons, CN::catenate >
-	>;
 
 	template<typename n, auto c, auto d, auto... Vs, typename L, typename... Ts>
 	static constexpr auto start(void(*)(L*), Ts... As)
@@ -149,12 +227,11 @@ public:
 
 			Vs...
 
-		>(As...);
+		>(U_type_T<T_pretype_T<Ts>>...);
 
-		if constexpr (is_trampoline_pair(result)) return list_trampoline<d>(result.sc, result.hc);
-		else                                      return result;
+		if constexpr (is_trampoline_triple(result)) return trampoline<d>(result.sc, result.hc, result.mc);
+		else                                        return result;
 	}
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -186,6 +263,19 @@ private:
 	{
 		template<key_type, key_type...> struct induct;
 
+		template<key_type... filler>
+		struct induct<IN::pause, filler...>
+		{
+			template<typename n, auto c, auto d, auto i, auto... Vs, typename... Ts>
+			static constexpr auto result(Ts... As)
+			{
+				constexpr auto sc = U_pack_Vs<U_type_T<n>, c, i, Vs...>;
+				constexpr auto hc = U_pack_Vs<U_type_T<ListName<Ws...>>, U_type_T<T_pretype_T<Ts>>...>;
+
+				return trampoline_pair(sc, hc);
+			}
+		};
+
 		// 2^0:
 
 		template<key_type... filler>
@@ -196,7 +286,7 @@ private:
 			{
 				return continuation
 				<
-					n::next_cont_name(c, d, i)
+					n::next_cont_name(c, d, i, (sizeof...(Ts) == 0))
 
 				>::template result
 				<
@@ -219,7 +309,7 @@ private:
 			{
 				return continuation
 				<
-					n::next_cont_name(c, d, i)
+					n::next_cont_name(c, d, i, (sizeof...(Ts) == 0))
 
 				>::template result
 				<
@@ -242,7 +332,7 @@ private:
 			{
 				return continuation
 				<
-					n::next_cont_name(c, d, i)
+					n::next_cont_name(c, d, i, (sizeof...(Ts) == 0))
 
 				>::template result
 				<
@@ -279,6 +369,29 @@ public:
 
 /***********************************************************************************************************************/
 
+// pause:
+
+private:
+
+	template<key_type... filler>
+	struct continuation<CN::pause, filler...>
+	{
+		template
+		<
+			typename n, auto c, auto d, auto i,
+			template<auto...> class ListName, auto... Vs, typename... Ts
+		>
+		static constexpr auto result(Ts... As)
+		{
+			constexpr auto sc = U_pack_Vs<U_type_T<n>, c, i, U_pack_Bs<ListName>, Vs...>;
+			constexpr auto hc = U_pack_Vs<U_type_T<T_pretype_T<Ts>>...>;
+
+			return trampoline_pair(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // cons:
 
 private:
@@ -293,7 +406,7 @@ private:
 		>
 		static constexpr auto result(Ts... As)
 		{
-			return cache_module::template U_type_T<ListName<Vs...>>;
+			return U_type_T<ListName<Vs...>>;
 		}
 	};
 
@@ -392,7 +505,7 @@ private:
 		>
 		static constexpr auto result(Ts... As)
 		{
-			return cache_module::template U_pack_Bs<ListName>;
+			return U_pack_Bs<ListName>;
 		}
 	};
 
@@ -461,10 +574,16 @@ public:
 	template<typename L1, typename L2, typename... Ls>
 	static constexpr auto U_catenate_TxTxTs = pattern_match_list<L1>::template push_back<catenate_cont>
 	(
-		cache_module::template U_type_T<L2>,
-		cache_module::template U_type_T<Ls>...
+		U_type_T<L2>,
+		U_type_T<Ls>...
 	);
 */
+
+	template<typename L1, typename L2, typename... Ls>
+	static constexpr auto U_catenate_TxTxTs = start<LD, catenate_contr, 500>
+	(
+		U_type_T<L1>, U_type_T<L2>, U_type_T<Ls>...
+	);
 
 /***********************************************************************************************************************/
 
@@ -524,9 +643,9 @@ public:
 	template<typename Op, typename L1, typename L2, typename... Ls>
 	static constexpr auto U_zip_TxTxTxTs = pattern_match_list<L1>::template push_back<zip_cont>
 	(
-		cache_module::template U_type_T<Op>,
-		cache_module::template U_type_T<L2>,
-		cache_module::template U_type_T<Ls>...
+		U_type_T<Op>,
+		U_type_T<L2>,
+		U_type_T<Ls>...
 	);
 */
 

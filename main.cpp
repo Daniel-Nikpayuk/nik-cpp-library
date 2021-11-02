@@ -27,7 +27,7 @@
 
 // compile time space:
 
-//	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pair, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
@@ -55,6 +55,7 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
+	using list_module		= nik_module(interpret, list, architect, v_0_5, gcc);
 //	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
 //	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
 //	using near_linear_module	= nik_module(compile, near_linear, architect, v_0_5, gcc);
@@ -126,6 +127,8 @@
 
 	int main(int argc, char *argv[])
 	{
+		printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>>);
+
 	//	constexpr auto attr = function_module::template attr_to_variable<function_module::attr_by_cval>;
 	//	printf("%s\n", function_module::template attr_is_immutable<attr> ? "true" : "false");
 	//	printf("%s\n", function_module::template attr_is_variable<attr> ? "true" : "false");
