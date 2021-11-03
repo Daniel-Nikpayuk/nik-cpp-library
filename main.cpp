@@ -127,7 +127,7 @@
 
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>>);
+	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 
 	//	constexpr auto attr = function_module::template attr_to_variable<function_module::attr_by_cval>;
 	//	printf("%s\n", function_module::template attr_is_immutable<attr> ? "true" : "false");
