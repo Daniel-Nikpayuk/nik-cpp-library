@@ -39,9 +39,13 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// machine names:
+// names:
 
 public:
+
+/***********************************************************************************************************************/
+
+// machine names:
 
 	struct MN
 	{
@@ -52,6 +56,17 @@ public:
 		static constexpr key_type right		= 4;
 		static constexpr key_type name		= 5;
 		static constexpr key_type unpack	= 6;
+	};
+
+/***********************************************************************************************************************/
+
+// inductor names:
+
+	struct IN
+	{
+		static constexpr key_type push_front	= 0;
+		static constexpr key_type push_back	= 1;
+		static constexpr key_type zip		= 2;
 	};
 
 /***********************************************************************************************************************/
@@ -206,6 +221,37 @@ public:
 
 private:
 
+	template<key_type... filler>
+	struct machine<MN::unpack, IN::push_front, filler...>
+	{
+		template<typename n, auto c, auto d, auto i, auto j, auto... Vs, typename T0, typename T1, typename... Ts>
+		static constexpr auto result(T0 A0, T1, Ts... As)
+		{
+			return pattern_match_list<T_pretype_T<T1>>::template push_front<n, c, d, i, j, Vs...>(A0, As...);
+		}
+	};
+
+	template<key_type... filler>
+	struct machine<MN::unpack, IN::push_back, filler...>
+	{
+		template<typename n, auto c, auto d, auto i, auto j, auto... Vs, typename T0, typename T1, typename... Ts>
+		static constexpr auto result(T0 A0, T1, Ts... As)
+		{
+			return pattern_match_list<T_pretype_T<T1>>::template push_back<n, c, d, i, j, Vs...>(A0, As...);
+		}
+	};
+
+	template<key_type... filler>
+	struct machine<MN::unpack, IN::zip, filler...>
+	{
+		template<typename n, auto c, auto d, auto i, auto j, auto... Vs, typename T0, typename T1, typename... Ts>
+		static constexpr auto result(T0 A0, T1, Ts... As)
+		{
+			return pattern_match_list<T_pretype_T<T1>>::template zip<n, c, d, i, j, Vs...>(A0, As...);
+		}
+	};
+
+/*
 	template<key_type Note, key_type... filler>
 	struct machine<MN::unpack, Note, filler...>
 	{
@@ -230,21 +276,7 @@ private:
 			>(A0, As...);
 		}
 	};
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// inductor names:
-
-public:
-
-	struct IN
-	{
-		static constexpr key_type push_front	= 0;
-		static constexpr key_type push_back	= 1;
-		static constexpr key_type zip		= 2;
-	};
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -258,6 +290,86 @@ private:
 
 /***********************************************************************************************************************/
 
+	template<template<auto...> class ListName, auto... Ws>
+	struct pattern_match_list<ListName<Ws...>>
+	{
+		template
+		<
+			typename n, auto c, auto d, auto i, auto j, auto... Vs,
+			template<auto...> class... LNs, typename... Ts
+		>
+		static constexpr auto push_front(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		{
+			return machine
+			<
+				n::next_name(c, d, i, j),
+				n::next_note(c, d, i, j)
+
+			>::template result
+			<
+				n, c,
+
+				n::next_unpack_depth(d),
+				n::next_index1(c, d, i, j),
+				n::next_index2(c, d, i, j),
+
+				Ws..., Vs...
+
+			>(U_pack_Bs<ListName, LNs...>, As...);
+		}
+
+		template
+		<
+			typename n, auto c, auto d, auto i, auto j, auto... Vs,
+			template<auto...> class... LNs, typename... Ts
+		>
+		static constexpr auto push_back(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		{
+			return machine
+			<
+				n::next_name(c, d, i, j),
+				n::next_note(c, d, i, j)
+
+			>::template result
+			<
+				n, c,
+
+				n::next_unpack_depth(d),
+				n::next_index1(c, d, i, j),
+				n::next_index2(c, d, i, j),
+
+				Vs..., Ws...
+
+			>(U_pack_Bs<ListName, LNs...>, As...);
+		}
+
+		template
+		<
+			typename n, auto c, auto d, auto i, auto j, auto Op, auto... Vs,
+			template<auto...> class... LNs, typename... Ts
+		>
+		static constexpr auto zip(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		{
+			return machine
+			<
+				n::next_name(c, d, i, j),
+				n::next_note(c, d, i, j)
+
+			>::template result
+			<
+				n, c,
+
+				n::next_unpack_depth(d),
+				n::next_index1(c, d, i, j),
+				n::next_index2(c, d, i, j),
+
+				Op, T_type_U<Op>::template result<Vs, Ws>...
+
+			>(U_pack_Bs<ListName, LNs...>, As...);
+		}
+	};
+
+/*
 	template<template<auto...> class ListName, auto... Ws>
 	struct pattern_match_list<ListName<Ws...>>
 	{
@@ -350,6 +462,7 @@ private:
 			}
 		};
 	};
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

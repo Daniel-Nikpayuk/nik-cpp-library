@@ -27,7 +27,7 @@
 
 // compile time space:
 
-	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
+//	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pair, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
@@ -55,7 +55,7 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
-	using list_module		= nik_module(interpret, list, architect, v_0_5, gcc);
+//	using list_module		= nik_module(interpret, list, architect, v_0_5, gcc);
 //	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
 //	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
 //	using near_linear_module	= nik_module(compile, near_linear, architect, v_0_5, gcc);

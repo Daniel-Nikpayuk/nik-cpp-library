@@ -28,7 +28,7 @@
 
 	#define NIK_CONTR_PARAMS											\
 															\
-		typename n, auto c, auto d, auto i, auto j								\
+		auto n, auto c, auto d, auto i, auto j									\
 
 /***********************************************************************************************************************/
 
@@ -36,16 +36,16 @@
 															\
 		machine													\
 		<													\
-			_n_::next_name(_c_, _d_, _i_, _j_),								\
-			_n_::next_note(_c_, _d_, _i_, _j_)								\
+			T_type_U<_n_>::next_name(_c_, _d_, _i_, _j_),							\
+			T_type_U<_n_>::next_note(_c_, _d_, _i_, _j_)							\
 															\
 		>::template result											\
 		<													\
 			_n_, _c_,											\
 															\
-			_n_::next_depth(_d_),										\
-			_n_::next_index1(_c_, _d_, _i_, _j_),								\
-			_n_::next_index2(_c_, _d_, _i_, _j_)
+			T_type_U<_n_>::next_depth(_d_),									\
+			T_type_U<_n_>::next_index1(_c_, _d_, _i_, _j_),							\
+			T_type_U<_n_>::next_index2(_c_, _d_, _i_, _j_)
 
 	#define NIK_END_MACHINE 											\
 															\
