@@ -32,9 +32,9 @@
 
 /***********************************************************************************************************************/
 
-	#define NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_)								\
+	#define NIK_BEGIN_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_)							\
 															\
-		machine													\
+		_m_													\
 		<													\
 			T_type_U<_n_>::next_name(_c_, _d_, _i_, _j_),							\
 			T_type_U<_n_>::next_note(_c_, _d_, _i_, _j_)							\
@@ -47,13 +47,27 @@
 			T_type_U<_n_>::next_index1(_c_, _d_, _i_, _j_),							\
 			T_type_U<_n_>::next_index2(_c_, _d_, _i_, _j_)
 
-	#define NIK_END_MACHINE 											\
+	#define NIK_END_AUTOMATA 											\
 															\
 		>
 
+	#define NIK_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_, _v_)								\
+															\
+		NIK_BEGIN_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_),  _v_...  NIK_END_AUTOMATA
+
+/***********************************************************************************************************************/
+
+	#define NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_)								\
+															\
+		NIK_BEGIN_AUTOMATA(machine, _n_, _c_, _d_, _i_, _j_)
+
+	#define NIK_END_MACHINE 											\
+															\
+		NIK_END_AUTOMATA
+
 	#define NIK_MACHINE(_n_, _c_, _d_, _i_, _j_)									\
 															\
-		NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_),  Vs...  NIK_END_MACHINE
+		NIK_AUTOMATA(machine, _n_, _c_, _d_, _i_, _j_, Vs)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -82,30 +82,31 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// names:
+// interposition:
 
 /***********************************************************************************************************************/
 
-	// I would prefer to implement these as enums, but I don't know how
-	// to get gcc/clang to pattern match the register machine when I do.
+// loadable:
 
-	struct MachineName
+		// Do not refactor using other templated structs. Although this definition is potentially redundant,
+		// loadability requires a distinct keyword so that there's no confusion with any other returned value.
+
+	template<typename StackCache, typename HeapCache>
+	struct loadable
 	{
-		// halters:
+		StackCache sc;
+		HeapCache hc;
 
-			static constexpr key_type pause						=  0;
-			static constexpr key_type compel					=  1;
-			static constexpr key_type load						=  2;
-
-			static constexpr key_type first						=  3;
+		constexpr loadable(const StackCache & _sc, const HeapCache & _hc) : sc(_sc), hc(_hc) { }
 	};
 
-	using MN = MachineName;
+	//
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+	template<typename T>
+	static constexpr bool is_loadable(T) { return false; }
 
-// trampolining:
+	template<typename MachineCache, typename StackCache, typename HeapCache>
+	static constexpr bool is_loadable(loadable<StackCache, HeapCache>) { return true; }
 
 /***********************************************************************************************************************/
 
@@ -149,6 +150,46 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// names:
+
+/***********************************************************************************************************************/
+
+	// I would prefer to implement these as enums, but I don't know how
+	// to get gcc/clang to pattern match the register machine when I do.
+
+	struct MachineName
+	{
+		// halters:
+
+			static constexpr key_type pause						=  0;
+			static constexpr key_type stack						=  1;
+			static constexpr key_type heaps						=  2;
+
+			static constexpr key_type first						=  3;
+			static constexpr key_type rest						=  4;
+
+		// debuggers:
+
+			static constexpr key_type depth						=  5;
+			static constexpr key_type dump						=  6;
+
+		// passers:
+
+			// callers:
+
+			static constexpr key_type load						=  7;
+			static constexpr key_type compel					=  8;
+
+			// stack -> stack:
+
+			static constexpr key_type drop_s_block					=  9; // <halters>
+	};
+
+	using MN = MachineName;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // halters:
 
 /***********************************************************************************************************************/
@@ -170,6 +211,34 @@ private:
 
 /***********************************************************************************************************************/
 
+// stack:
+
+	template<key_type... filler>
+	struct machine<MN::stack, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			return U_opt_pack_Vs<Vs...>;
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// heaps:
+
+	template<key_type... filler>
+	struct machine<MN::heaps, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			return U_opt_pack_Vs<U_type_T<T_pretype_T<Heaps>>...>;
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // first:
 
 	template<key_type... filler>
@@ -184,7 +253,79 @@ private:
 
 /***********************************************************************************************************************/
 
-// compel:
+// rest:
+
+	template<key_type... filler>
+	struct machine<MN::rest, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			return U_opt_pack_Vs<Vs...>;
+		}
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// debuggers:
+
+/***********************************************************************************************************************/
+
+// depth:
+
+	template<key_type... filler>
+	struct machine<MN::depth, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			return d;
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// dump:
+
+	template<key_type... filler>
+	struct machine<MN::dump, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			constexpr auto sc = U_opt_pack_Vs<n, c, i, j, Vs...>;
+			constexpr auto hc = U_opt_pack_Vs<U_type_T<T_pretype_T<Heaps>>...>;
+
+			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// interposition:
+
+/***********************************************************************************************************************/
+
+// load:
+
+	template<key_type... filler>
+	struct machine<MN::load, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto us, auto uh, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<us, uh, Ws...>*), Heaps... Hs)
+		{
+			constexpr auto sc = T_type_U<us>::template result<n, d, c, i, j, Vs...>(H0, Hs...);
+			constexpr auto hc = T_type_U<uh>::template result<n, d, c, i, j, Vs...>(H0, Hs...);
+
+			return NIK_MACHINE(n, d, c, i, j)(U_opt_pack_Vs<Ws...>, sc, hc, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// compel (trampoline apply):
 
 	template<key_type... filler>
 	struct machine<MN::compel, _zero, filler...>
@@ -204,22 +345,7 @@ private:
 			Heaps... Hs
 		)
 		{
-			constexpr auto value = name
-			<
-				T_type_U<nn>::next_name(nc, d, ni, nj),
-				T_type_U<nn>::next_note(nc, d, ni, nj)
-
-			>::template result
-			<
-				nn, nc,
-
-				T_type_U<nn>::next_depth(d),
-				T_type_U<nn>::next_index1(nc, d, ni, nj),
-				T_type_U<nn>::next_index2(nc, d, ni, nj),
-
-				nVs...
-
-			>(nHs...);
+			constexpr auto value = NIK_AUTOMATA(name, nn, nc, d, ni, nj, nVs)(nHs...);
 
 			if constexpr (T_type_U<n>::next_name(c, d, i, j) == MN::pause)
 
@@ -233,24 +359,56 @@ private:
 
 				>(value.mc, value.sc, value.hc, Hs...);
 
-			else return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<value>, Hs...);
+			else if constexpr (is_loadable(value))
+
+				return NIK_MACHINE(n, c, d, i, j)(value.sc, value.hc, Hs...);
+
+			else
+				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<value>, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// load:
+// passers (stack -> stack):
+
+/***********************************************************************************************************************/
+
+// drop stack block (2^N):
+
+	NIK_DEFINE__DROP_S_BLOCK(0);
+	NIK_DEFINE__DROP_S_BLOCK(1);
+	NIK_DEFINE__DROP_S_BLOCK(2);
+	NIK_DEFINE__DROP_S_BLOCK(3);
+	NIK_DEFINE__DROP_S_BLOCK(4);
+	NIK_DEFINE__DROP_S_BLOCK(5);
+	NIK_DEFINE__DROP_S_BLOCK(6);
+	NIK_DEFINE__DROP_S_BLOCK(7);
+	NIK_DEFINE__DROP_S_BLOCK(8);
+	NIK_DEFINE__DROP_S_BLOCK(9);
+
+/***********************************************************************************************************************/
+
+// start:
+
+public:
 
 /*
-	template<key_type... filler>
-	struct machine<MN::load, _zero, filler...>
+	template<typename n, auto c, auto d, auto... Vs, auto... Ws, auto... Xs, auto... Ys>
+	static constexpr auto start
+	(
+		void(*H0)(auto_pack<Ws...>*) = U_opt_pack_Vs<>,
+		void(*H1)(auto_pack<Xs...>*) = U_opt_pack_Vs<>,
+		void(*H2)(auto_pack<Ys...>*) = U_opt_pack_Vs<>
+	)
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
-		static constexpr auto result(Heaps... Hs)
-		{
-			return U_opt_pack_Vs<Vs...>;
-		}
-	};
+		constexpr auto result = NIK_MACHINE(n, c, d, n::i, n::j)
+					(U_opt_pack_Vs<Ws...>, U_opt_pack_Vs<Xs...>, U_opt_pack_Vs<Ys...>);
+
+		if constexpr (is_trampoline_pair(result)) return trampoline<d>(result.sc, result.hc);
+		else                                      return result;
+	}
 */
 
 /***********************************************************************************************************************/
