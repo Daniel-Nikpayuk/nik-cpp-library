@@ -55,6 +55,7 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
+	using machine_module		= nik_module(interpret, machine, architect, v_0_5, gcc);
 //	using list_module		= nik_module(interpret, list, architect, v_0_5, gcc);
 //	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
 //	using one_cycle_module		= nik_module(compile, one_cycle, architect, v_0_5, gcc);
@@ -125,8 +126,24 @@
 
 /***********************************************************************************************************************/
 
+	struct test_stop : public machine_module::template linear_program<>
+	{
+		static constexpr auto controller = machine_module::template label
+		<
+			machine_module::template load_block<machine_module::BN::stop, 5>,
+			machine_module::template compel<>,
+			machine_module::template result<>
+		>;
+	};
+
+/***********************************************************************************************************************/
+
 	int main(int argc, char *argv[])
 	{
+		constexpr auto val = machine_module::template start<test_stop, 0, 1, 2, 3, 4, 7>();
+
+		printf("%d\n", val);
+
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 
 	//	constexpr auto attr = function_module::template attr_to_variable<function_module::attr_by_cval>;

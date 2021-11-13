@@ -32,9 +32,9 @@
 
 /***********************************************************************************************************************/
 
-	#define NIK_BEGIN_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_)							\
+	#define NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_)								\
 															\
-		_m_													\
+		machine													\
 		<													\
 			T_type_U<_n_>::next_name(_c_, _d_, _i_, _j_),							\
 			T_type_U<_n_>::next_note(_c_, _d_, _i_, _j_)							\
@@ -47,27 +47,13 @@
 			T_type_U<_n_>::next_index1(_c_, _d_, _i_, _j_),							\
 			T_type_U<_n_>::next_index2(_c_, _d_, _i_, _j_)
 
-	#define NIK_END_AUTOMATA 											\
+	#define NIK_END_MACHINE 											\
 															\
 		>
 
-	#define NIK_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_, _v_)								\
+	#define NIK_MACHINE(_n_, _c_, _d_, _i_, _j_, _v_)								\
 															\
-		NIK_BEGIN_AUTOMATA(_m_, _n_, _c_, _d_, _i_, _j_),  _v_...  NIK_END_AUTOMATA
-
-/***********************************************************************************************************************/
-
-	#define NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_)								\
-															\
-		NIK_BEGIN_AUTOMATA(machine, _n_, _c_, _d_, _i_, _j_)
-
-	#define NIK_END_MACHINE 											\
-															\
-		NIK_END_AUTOMATA
-
-	#define NIK_MACHINE(_n_, _c_, _d_, _i_, _j_)									\
-															\
-		NIK_AUTOMATA(machine, _n_, _c_, _d_, _i_, _j_, Vs)
+		NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_),  _v_...  NIK_END_MACHINE
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -108,7 +94,7 @@
 			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
 			static constexpr auto result(Heaps... Hs)							\
 			{												\
-				return NIK_MACHINE(n, c, d, i, j)(Hs...);						\
+				return NIK_MACHINE(n, c, d, i, j, Vs)(Hs...);						\
 			}												\
 		}
 
@@ -243,7 +229,8 @@
 			>												\
 			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
 			{												\
-				return NIK_MACHINE(n, c, d, i, j)(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, Hs...);	\
+				return NIK_MACHINE(n, c, d, i, j, Vs)							\
+					(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, Hs...);				\
 			}												\
 		}
 
@@ -263,7 +250,7 @@
 			>												\
 			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
 			{												\
-				return NIK_MACHINE(n, c, d, i, j)							\
+				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 					(H0, U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
 			}												\
 		}
