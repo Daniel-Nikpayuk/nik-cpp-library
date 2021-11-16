@@ -17,7 +17,7 @@
 **
 ************************************************************************************************************************/
 
-// dispatchers source:
+// programs source:
 
 	// nesting depth policy:
 
@@ -36,6 +36,8 @@
 /***********************************************************************************************************************/
 
 // interposition:
+
+/***********************************************************************************************************************/
 
 public:
 
@@ -92,7 +94,6 @@ public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
 // machine names:
 
@@ -106,29 +107,57 @@ public:
 		// interposers:
 
 			static constexpr key_type pause						=  0;
-			static constexpr key_type load						=  1;
-			static constexpr key_type restack					=  2;
-			static constexpr key_type compel					=  3;
+			static constexpr key_type sleep						=  1;
+
+			static constexpr key_type branch					=  2; // <machine>
+			static constexpr key_type go_to						=  3; // <machine>
+
+			static constexpr key_type shift_r_block__insert_at_s_back		=  4; // <machine>
+			static constexpr key_type load						=  5;
+			static constexpr key_type restack					=  6;
+			static constexpr key_type call						=  7;
 
 		// halters:
 
-			static constexpr key_type result					=  4;
-			static constexpr key_type first						=  5;
-			static constexpr key_type rest						=  6;
+			static constexpr key_type result					=  8;
+			static constexpr key_type first						=  9;
+			static constexpr key_type rest						= 10;
 
 		// debuggers:
 
-			static constexpr key_type depth						=  7;
-			static constexpr key_type dump						=  8;
+			static constexpr key_type depth						= 11;
+			static constexpr key_type dump						= 12;
 
-			static constexpr key_type stack						=  9;
-			static constexpr key_type heaps						= 10;
+			static constexpr key_type stack						= 13;
+			static constexpr key_type heaps						= 14;
 
 		// passers:
 
 			// stack -> stack:
 
-			static constexpr key_type drop_s_block					= 11; // <halters>
+			static constexpr key_type drop_s_block					= 15; // <halters>
+			static constexpr key_type drop_s_pos					= 16; // opt, <mutators>
+
+			static constexpr key_type fold_s_block__op_at_h0_first			= 17; // <near linear>
+			static constexpr key_type roll_s_block__act_at_h0_first			= 18; // <near linear>
+
+			// stack -> heap:
+
+			static constexpr key_type move_s_block__insert_at_h0_front		= 19; // <mutators>
+			static constexpr key_type move_s_block__insert_at_h1_back		= 20; // <mutators>
+
+			static constexpr key_type copy_s_block__insert_at_h0_front		= 21; // <mutators>
+			static constexpr key_type copy_s_block__insert_at_h0_back		= 22; // <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h0_front		= 23; // opt, <mutators>
+			static constexpr key_type copy_s_pos__insert_at_h0_back			= 24; // opt, <mutators>
+
+			// heap -> stack:
+
+			static constexpr key_type move_h0_first__insert_at_s_front		= 25; // <mutators>
+			static constexpr key_type move_h0_first__insert_at_s_pos		= 26; // opt, <mutators>
+			static constexpr key_type move_h0_first__replace_at_s_pos		= 27; // opt, <mutators>
+
+			static constexpr key_type move_h1_all__insert_at_s_front		= 28; // <mutators>
 	};
 
 	using MN = MachineName;
@@ -136,7 +165,7 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// controller names:
+// routine names:
 
 /***********************************************************************************************************************/
 
@@ -147,6 +176,22 @@ public:
 		// halters:
 
 			static constexpr key_type stop			= 0;
+
+		// passers:
+
+			// stack -> stack:
+
+			static constexpr key_type make_r_segment__insert_at_s_back		= 1; // <machine>
+
+			static constexpr key_type drop_s_segment				= 2; // <list>
+
+			static constexpr key_type fold_s_segment__replace_at_s_front		= 3; // <machine>
+			static constexpr key_type roll_s_segment__replace_at_s_front		= 4; // <machine>
+
+			// stack -> heap:
+
+			static constexpr key_type move_s_segment__insert_at_h0_front		= 5; // <mutators>
+			static constexpr key_type move_s_segment__insert_at_h1_back		= 6; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -157,12 +202,60 @@ public:
 
 	struct LinearName
 	{
-			static constexpr key_type go_to_label		= 0;
+	// (level 1)
+
+		// passers:
+
+			// stack -> stack:
+
+			static constexpr index_type drop_s_pos					=  0; // <mutators>, opt
+			static constexpr index_type move_s_pos__insert_at_s_back		=  1; // <near linear>, opt
+
+			// stack -> heap:
+
+			static constexpr index_type copy_s_pos__insert_at_h0_front		=  2; // <mutators>, opt
+			static constexpr index_type copy_s_pos__insert_at_h0_back		=  3; // <mutators>, opt
+
+			static constexpr index_type copy_s_pos__insert_at_h2_front		=  4; // <mutators>, opt
+
+			// heap -> stack:
+
+			static constexpr index_type move_h0_first__insert_at_s_pos		=  5; // <mutators>, opt
+			static constexpr index_type move_h0_first__replace_at_s_pos		=  6; // <mutators>, opt
+
+			static constexpr index_type move_h2_first__replace_at_s_pos		=  7; // <mutators>, opt
+
+			static constexpr index_type apply_h0_all__move__replace_at_s_pos	=  8; // <machine>, opt
+
+			static constexpr index_type compel_h0_all__move__replace_at_s_pos	=  9; // <machine>, opt
+
+	// (level 2)
+
+		// mutators:
+
+			static constexpr index_type erase					= 10;
+			static constexpr index_type insert					= 11;
+			static constexpr index_type replace					= 12;
+
+		// control:
+
+			static constexpr index_type go_to					= 13;
+			static constexpr index_type go_to_label					= 14;
+
+			static constexpr index_type assign_label				= 15;
+
+			static constexpr index_type save					= 16;
+			static constexpr index_type restore					= 17;
+
+			static constexpr index_type test					= 18;
+			static constexpr index_type check					= 19;
+
+			static constexpr index_type apply					= 20;
+			static constexpr index_type compel					= 21;
 	};
 
 	using LN = LinearName;
 
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
@@ -278,15 +371,31 @@ public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// (block) programs:
+
+	// Optimized to use a single instruction as the controller.
+
+	// Block programs are intended *only* to be called by linear, turing, or user programs. 
+	// Their register indices coincide with their controller indices, and as such they are
+	// required to accept no additional register index values when resolving their respective
+	// controllers. This also means that there are no default controller indices provided here.
+
 /***********************************************************************************************************************/
 
-// dispatchers:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-	struct BD
+	template<key_type...>
+	struct block_program
 	{
+		static constexpr depth_type depth	= 500;
+
+		// loaders:
+
+		static constexpr auto subname(label_type l, index_type, index_type j)
+			{ return l[j][MI::subname]; }
+
+		static constexpr index_type subpos(label_type l, index_type, index_type j)
+			{ return l[j][MI::offset]; }
+
 		static constexpr index_type max_note(index_type n)
 		{
 			return	(n >= _2_9) ? 9 :
@@ -314,9 +423,7 @@ public:
 				(n >= _2_0) ? _2_0 : 0 ;
 		}
 
-	// iterators:
-
-		// optimized to use a single instruction as the controller.
+		// dispatchers:
 
 		static constexpr key_type next_name(instr_type c, depth_type d, index_type i, index_type j)
 		{
@@ -350,16 +457,26 @@ public:
 		}
 	};
 
-	static constexpr auto U_BD = U_type_T<BD>;
+	static constexpr auto U_block_program = U_type_T<block_program<>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// linear:
+// (linear) programs:
 
-	struct LD
+	// Optimized to use a single label as the controller.
+
+/***********************************************************************************************************************/
+
+	template<key_type...>
+	struct linear_program
 	{
-	// loading:
+		static constexpr depth_type depth	= 500;
+
+		static constexpr index_type initial_i	= _one;
+		static constexpr index_type initial_j	= _zero;
+
+		// loaders:
 
 		static constexpr auto subname(label_type l, index_type, index_type j)
 			{ return l[j][MI::subname]; }
@@ -376,7 +493,7 @@ public:
 		static constexpr index_type val(label_type l, index_type, index_type j)
 			{ return l[j][MI::pos]; }
 
-		// optimized to use a single label as the controller.
+		// dispatchers:
 
 		static constexpr key_type next_name(label_type l, depth_type d, index_type, index_type j)
 		{
@@ -408,16 +525,24 @@ public:
 		}
 	};
 
-	static constexpr auto U_LD = U_type_T<LD>;
+	static constexpr auto U_linear_program = U_type_T<linear_program<>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // turing:
 
-	struct TD
+/***********************************************************************************************************************/
+
+	template<key_type...>
+	struct turing_program
 	{
-	// block:
+		static constexpr depth_type depth	= 500;
+
+		static constexpr index_type initial_i	= _one;
+		static constexpr index_type initial_j	= _zero;
+
+		// loaders:
 
 		static constexpr auto subname(contr_type c, index_type i, index_type j)
 			{ return c[i][j][MI::subname]; }
@@ -425,28 +550,16 @@ public:
 		static constexpr index_type subpos(contr_type c, index_type i, index_type j)
 			{ return c[i][j][MI::offset]; }
 
-	// linear:
-
 		static constexpr index_type subnote(contr_type c, index_type i, index_type j)
 			{ return c[i][j][MI::subnote]; }
 
 		static constexpr instr_type subinstr(contr_type c, index_type i, index_type j)
 			{ return c[i][j]; }
 
-	// interposers:
-
 		static constexpr index_type val(contr_type c, index_type i, index_type j)
 			{ return c[i][j][MI::pos]; }
 
-	// depth:
-
-		static constexpr depth_type next_depth(depth_type d)
-		{
-			if (d > 0)	return d-1;
-			else 		return d;
-		}
-
-	// basic indices:
+		// basic indices:
 
 		static constexpr index_type basic_next_index1(contr_type c, index_type i, index_type j)
 		{
@@ -460,7 +573,33 @@ public:
 									// j != last : return j+1.
 		}
 
-	// index1:
+		// dispatchers:
+
+		static constexpr key_type next_name(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return MN::pause;
+
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
+
+			return c[ni][nj][MI::name];
+		}
+
+		static constexpr key_type next_note(contr_type c, depth_type d, index_type i, index_type j)
+		{
+			if (d == 0) return _zero;
+
+			index_type ni = next_index1(c, d, i, j);
+			index_type nj = next_index2(c, d, i, j);
+
+			return c[ni][nj][MI::note];
+		}
+
+		static constexpr depth_type next_depth(depth_type d)
+		{
+			if (d > 0)	return d-1;
+			else 		return d;
+		}
 
 		static constexpr index_type next_index1(contr_type c, depth_type d, index_type i, index_type j)
 		{
@@ -480,8 +619,6 @@ public:
 			return ni;
 		}
 
-	// index2:
-
 		static constexpr index_type next_index2(contr_type c, depth_type d, index_type i, index_type j)
 		{
 			if (d == 0) return j;
@@ -499,33 +636,9 @@ public:
 
 			return nj;
 		}
-
-	// name:
-
-		static constexpr key_type next_name(contr_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return MN::pause;
-
-			index_type ni = next_index1(c, d, i, j);
-			index_type nj = next_index2(c, d, i, j);
-
-			return c[ni][nj][MI::name];
-		}
-
-	// note:
-
-		static constexpr key_type next_note(contr_type c, depth_type d, index_type i, index_type j)
-		{
-			if (d == 0) return _zero;
-
-			index_type ni = next_index1(c, d, i, j);
-			index_type nj = next_index2(c, d, i, j);
-
-			return c[ni][nj][MI::note];
-		}
 	};
 
-	static constexpr auto U_TD = U_type_T<TD>;
+	static constexpr auto U_turing_program = U_type_T<turing_program<>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

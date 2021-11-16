@@ -131,7 +131,7 @@
 		static constexpr auto controller = machine_module::template label
 		<
 			machine_module::template load_block<machine_module::BN::stop, 5>,
-			machine_module::template compel<>,
+			machine_module::template call<>,
 			machine_module::template result<>
 		>;
 	};
