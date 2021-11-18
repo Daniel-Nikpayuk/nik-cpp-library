@@ -85,9 +85,65 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// machines:
+// interposition:
 
 private:
+
+	static constexpr auto null = U_opt_pack_Vs<>;
+
+/***********************************************************************************************************************/
+
+// machination:
+
+		// Do not refactor using other templated structs. Although this definition is potentially redundant,
+		// trampolining requires a distinct keyword so that there's no confusion with any other returned value.
+
+	template<typename StackCache, typename HeapCache>
+	struct machination
+	{
+		StackCache sc;
+		HeapCache hc;
+
+		constexpr machination(const StackCache & _sc, const HeapCache & _hc) : sc(_sc), hc(_hc) { }
+	};
+
+	//
+
+	template<typename T>
+	static constexpr bool is_machination(T) { return false; }
+
+	template<typename StackCache, typename HeapCache>
+	static constexpr bool is_machination(const machination<StackCache, HeapCache> &) { return true; }
+
+/***********************************************************************************************************************/
+
+// loadable:
+
+		// Do not refactor using other templated structs. Although this definition is potentially redundant,
+		// loadability requires a distinct keyword so that there's no confusion with any other returned value.
+
+	template<typename StackCache, typename HeapCache>
+	struct loadable
+	{
+		StackCache sc;
+		HeapCache hc;
+
+		constexpr loadable(const StackCache & _sc, const HeapCache & _hc) : sc(_sc), hc(_hc) { }
+	};
+
+	//
+
+	template<typename T>
+	static constexpr bool is_loadable(T) { return false; }
+
+	template<typename StackCache, typename HeapCache>
+	static constexpr bool is_loadable(const loadable<StackCache, HeapCache> &) { return true; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machines:
 
 	template<key_type, key_type, key_type...> struct machine;
 
@@ -115,67 +171,17 @@ private:
 
 /***********************************************************************************************************************/
 
-// sleep:
+// upload (block):
 
 	template<key_type... filler>
-	struct machine<MN::sleep, _zero, filler...>
+	struct machine<MN::upload, MT::block, filler...>
 	{
-		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
-		static constexpr auto result(Heaps... Hs)
-		{
-			constexpr auto sc = U_opt_pack_Vs<n, c, i, j, Vs...>;
-			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
+		// instructions:
 
-			return loadable(sc, hc);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// branch:
-
-	template<key_type... filler>
-	struct machine<MN::branch, _zero, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			bool is_br, auto... Ws, typename... Heaps
-		>
-		static constexpr auto result(void(*H0)(auto_pack<is_br, Ws...>*), Heaps... Hs)
-		{
-			using p			= T_type_U<n>;
-
-			constexpr auto ni	= is_br ? p::val(c, i, j) : i;
-			constexpr auto nj	= is_br ? _zero : j;
-
-			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// shift range block, insert at stack back (2^N):
-
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(0);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(1);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(2);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(3);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(4);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(5);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(6);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(7);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(8);
-	NIK_DEFINE__SHIFT_R_BLOCK__INSERT_AT_S_BACK(9);
-
-/***********************************************************************************************************************/
-
-// load (block):
-
-	template<key_type... filler>
-	struct machine<MN::load, MT::block, filler...>
-	{
-		using bp = block_program<>;
+			static constexpr index_type upload_name		= 3;
+			static constexpr index_type upload_mem		= 4;
+			static constexpr index_type upload_loc		= 5;
+			static constexpr index_type upload_pos		= 6;
 
 		template
 		<
@@ -184,9 +190,19 @@ private:
 		>
 		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
 		{
-			constexpr auto nc	= block_program<bp::subname(c, i, j)>::controller;
-			constexpr auto pos	= bp::subpos(c, i, j);
-			constexpr auto nj	= bp::max_index2(pos);
+			using tn		= T_type_U<n>;
+
+			constexpr auto nc	= block_program
+						<
+							tn::value(c, i, j, upload_name)
+
+						>::template controller
+						<
+							tn::value(c, i, j, upload_mem),
+							tn::value(c, i, j, upload_loc)
+						>;
+			constexpr auto pos	= tn::value(c, i, j, upload_pos);
+			constexpr auto nj	= T_BP::max_index2(pos);
 			constexpr auto ni	= pos + nj;
 
 			constexpr auto nH2	= U_opt_pack_Vs<U_block_program, nc, ni, nj, Vs...>;
@@ -198,10 +214,52 @@ private:
 
 /***********************************************************************************************************************/
 
-// restack:
+// sideload (block):
 
 	template<key_type... filler>
-	struct machine<MN::restack, _zero, filler...>
+	struct machine<MN::sideload, MT::block, filler...>
+	{
+		// instructions:
+
+			static constexpr index_type upload_name		= 3;
+			static constexpr index_type upload_mem		= 4;
+			static constexpr index_type upload_loc		= 5;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto pos, auto... Ws, typename Heap1, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<pos, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+
+			constexpr auto nc	= block_program
+						<
+							tn::value(c, i, j, upload_name)
+
+						>::template controller
+						<
+							tn::value(c, i, j, upload_mem),
+							tn::value(c, i, j, upload_loc)
+						>;
+			constexpr auto nj	= T_BP::max_index2(pos);
+			constexpr auto ni	= pos + nj;
+
+			constexpr auto nH0	= U_opt_pack_Vs<Ws...>;
+			constexpr auto nH2	= U_opt_pack_Vs<U_block_program, nc, ni, nj, Vs...>;
+			constexpr auto nH3	= U_pre_pack_Ts<decltype(nH0), Heap1, Heap2, Heap3, Heaps...>;
+
+			return NIK_MACHINE(n, c, d, i, j, Vs)(nH0, H1, nH2, nH3, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// reload:
+
+	template<key_type... filler>
+	struct machine<MN::reload, _zero, filler...>
 	{
 		template
 		<
@@ -236,27 +294,52 @@ private:
 
 /***********************************************************************************************************************/
 
+// pass:
+
+	template<key_type... filler>
+	struct machine<MN::pass, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			constexpr auto sc = U_opt_pack_Vs<n, c, i, j, Vs...>;
+			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
+
+			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // call (trampoline apply):
 
 	template<key_type... filler>
 	struct machine<MN::call, _zero, filler...>
 	{
+		// instructions:
+
+			static constexpr index_type call_mem		= 3;
+			static constexpr index_type call_loc		= 4;
+
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, typename Heap1,
+			auto... Ws, auto... Xs,
 			auto nn, auto nc, auto ni, auto nj, auto... nVs,
 			auto... nHs, typename... Heaps
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<Ws...>*), Heap1 H1,
+			void(*H0)(auto_pack<Ws...>*),
+			void(*H1)(auto_pack<Xs...>*),
 			void(*H2)(auto_pack<nn, nc, ni, nj, nVs...>*),
 			void(*H3)(auto_pack<nHs...>*), Heaps... Hs
 		)
 		{
+			using tn		= T_type_U<n>;
+
 			constexpr auto val	= NIK_MACHINE(nn, nc, d, ni, nj, nVs)(nHs...);
-			constexpr auto nd	= T_type_U<n>::next_depth(d);
+			constexpr auto nd	= tn::next_depth(d);
 
 			if constexpr (nd == d)
 
@@ -270,9 +353,106 @@ private:
 
 				return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
 
-			else
-				return NIK_MACHINE(n, c, d, i, j, Vs)
-					(U_opt_pack_Vs<val, Ws...>, H1, U_opt_pack_Vs<>, U_opt_pack_Vs<>, Hs...);
+			else if constexpr (tn::value(c, i, j, call_mem) == MM::stack)
+			{
+				if constexpr (tn::value(c, i, j, call_loc) == MM::front)
+
+					return NIK_BEGIN_MACHINE(n, c, d, i, j),
+
+					       val, Vs...
+
+					NIK_END_MACHINE(H0, H1, null, null, Hs...);
+				else
+					return NIK_BEGIN_MACHINE(n, c, d, i, j),
+
+					       Vs..., val
+
+					NIK_END_MACHINE(H0, H1, null, null, Hs...);
+			}
+			else if constexpr (tn::value(c, i, j, call_mem) == MM::heap_zero)
+			{
+				if constexpr (tn::value(c, i, j, call_loc) == MM::front)
+
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<val, Ws...>, H1, null, null, Hs...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<Ws..., val>, H1, null, null, Hs...);
+			}
+			else if constexpr (tn::value(c, i, j, call_mem) == MM::heap_one)
+			{
+				if constexpr (tn::value(c, i, j, call_loc) == MM::front)
+
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(H0, U_opt_pack_Vs<val, Xs...>, null, null, Hs...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(H0, U_opt_pack_Vs<Xs..., val>, null, null, Hs...);
+			}
+			else return val;
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// download:
+
+	template<key_type... filler>
+	struct machine<MN::download, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1,
+			auto nn, auto nc, auto ni, auto nj, auto... nVs,
+			auto nH0, auto nH1, auto nH2, auto nH3, auto... nHs, typename... Heaps
+		>
+		static constexpr auto result
+		(
+			Heap0 H0, Heap1 H1,
+			void(*H2)(auto_pack<nn, nc, ni, nj, nVs...>*),
+			void(*H3)(auto_pack<nH0, nH1, nH2, nH3, nHs...>*), Heaps... Hs
+		)
+		{
+			return NIK_MACHINE(n, c, d, i, j, nVs)(nH0, nH1, nH2, nH3, nHs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// shift range block (2^N):
+
+	NIK_DEFINE__SHIFT_R_BLOCK(0);
+	NIK_DEFINE__SHIFT_R_BLOCK(1);
+	NIK_DEFINE__SHIFT_R_BLOCK(2);
+	NIK_DEFINE__SHIFT_R_BLOCK(3);
+	NIK_DEFINE__SHIFT_R_BLOCK(4);
+	NIK_DEFINE__SHIFT_R_BLOCK(5);
+	NIK_DEFINE__SHIFT_R_BLOCK(6);
+	NIK_DEFINE__SHIFT_R_BLOCK(7);
+	NIK_DEFINE__SHIFT_R_BLOCK(8);
+	NIK_DEFINE__SHIFT_R_BLOCK(9);
+
+/***********************************************************************************************************************/
+
+// branch:
+
+	template<key_type... filler>
+	struct machine<MN::branch, _zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			bool is_br, auto... Ws, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<is_br, Ws...>*), Heaps... Hs)
+		{
+			using p			= T_type_U<n>;
+
+			constexpr auto ni	= is_br ? p::val(c, i, j) : i;
+			constexpr auto nj	= is_br ? _zero : j;
+
+			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
 		}
 	};
 
@@ -280,20 +460,6 @@ private:
 /***********************************************************************************************************************/
 
 // halters:
-
-/***********************************************************************************************************************/
-
-// result:
-
-	template<key_type... filler>
-	struct machine<MN::result, _zero, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto W0, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
-		{
-			return W0;
-		}
-	};
 
 /***********************************************************************************************************************/
 
@@ -390,7 +556,7 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// passers (stack -> stack):
+// passers:
 
 /***********************************************************************************************************************/
 
@@ -409,219 +575,66 @@ private:
 
 /***********************************************************************************************************************/
 
-// drop stack position (optimization):
+// move stack block (2^N):
 
-	NIK_DEFINE__DROP_S_POS(1, 0, 0);
-	NIK_DEFINE__DROP_S_POS(2, 1, 1);
-	NIK_DEFINE__DROP_S_POS(3, 2, 1);
-	NIK_DEFINE__DROP_S_POS(4, 3, 1);
-	NIK_DEFINE__DROP_S_POS(5, 4, 1);
-	NIK_DEFINE__DROP_S_POS(6, 5, 1);
-	NIK_DEFINE__DROP_S_POS(7, 6, 1);
-	NIK_DEFINE__DROP_S_POS(8, 7, 1);
+	NIK_DEFINE__MOVE_S_BLOCK(0);
+	NIK_DEFINE__MOVE_S_BLOCK(1);
+	NIK_DEFINE__MOVE_S_BLOCK(2);
+	NIK_DEFINE__MOVE_S_BLOCK(3);
+	NIK_DEFINE__MOVE_S_BLOCK(4);
+	NIK_DEFINE__MOVE_S_BLOCK(5);
+	NIK_DEFINE__MOVE_S_BLOCK(6);
+	NIK_DEFINE__MOVE_S_BLOCK(7);
+	NIK_DEFINE__MOVE_S_BLOCK(8);
+	NIK_DEFINE__MOVE_S_BLOCK(9);
 
 /***********************************************************************************************************************/
 
-// fold stack block, op at heap zero first (2^N):
-
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(0);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(1);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(2);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(3);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(4);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(5);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(6);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(7);
-	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(8);
-
-#ifdef GCC_IMPLEMENTATION
-
-//	NIK_DEFINE__FOLD_S_BLOCK__OP_AT_H0_FIRST(9);
-
-#endif // GCC_IMPLEMENTATION
-
-		// clang: bracket nesting level defaults to a maximum of 256
+// move heap one all:
 
 	template<key_type... filler>
-	struct machine<MN::fold_s_block__op_at_h0_first, _nine, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto V, NIK_2_9_AUTO_VS, auto... Vs,
-			auto op, auto... Ws, typename... Heaps
-		>
-		static constexpr auto result(void(*H0)(auto_pack<op, Ws...>*), Heaps... Hs)
-		{
-			constexpr auto val = NIK_2_8_OPS  V,  NIK_2_8_OP_VS;
-
-			return NIK_BEGIN_MACHINE(n, c, d, i, j),
-
-				NIK_2_8_OPS  val,  NIK_UPPER_512_OP_VS, Vs...
-
-			NIK_END_MACHINE(H0, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// roll stack block, act at heap zero first (2^N):
-
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(0);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(1);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(2);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(3);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(4);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(5);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(6);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(7);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(8);
-	NIK_DEFINE__ROLL_S_BLOCK__ACT_AT_H0_FIRST(9);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// passers (stack -> heap):
-
-/***********************************************************************************************************************/
-
-// move stack block, insert at heap zero front (2^N):
-
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(0);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(1);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(2);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(3);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(4);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(5);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(6);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(7);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(8);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H0_FRONT(9);
-
-/***********************************************************************************************************************/
-
-// move stack block, insert at heap one back (2^N):
-
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(0);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(1);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(2);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(3);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(4);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(5);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(6);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(7);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(8);
-	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(9);
-
-/***********************************************************************************************************************/
-
-// copy stack block, insert at heap zero front (2^N):
-
-	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_FRONT(0);
-
-/***********************************************************************************************************************/
-
-// copy stack block, insert at heap zero back (2^N):
-
-	NIK_DEFINE__COPY_S_BLOCK__INSERT_AT_H0_BACK(0);
-
-/***********************************************************************************************************************/
-
-// copy stack position, insert at heap zero front (optimization):
-
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(1, 0);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(2, 1);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(3, 2);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(4, 3);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(5, 4);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(6, 5);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(7, 6);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_FRONT(8, 7);
-
-/***********************************************************************************************************************/
-
-// copy stack position, insert at heap zero back (optimization):
-
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(1, 0);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(2, 1);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(3, 2);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(4, 3);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(5, 4);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(6, 5);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(7, 6);
-	NIK_DEFINE__COPY_S_POS__INSERT_AT_H0_BACK(8, 7);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// passers (heap -> stack):
-
-/***********************************************************************************************************************/
-
-// move heap zero first, insert at stack front:
-
-	template<key_type... filler>
-	struct machine<MN::move_h0_first__insert_at_s_front, _zero, filler...>
+	struct machine<MN::move_h1_all, _zero, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto W0, auto... Ws, typename... Heaps
+			auto... Ws, auto... Xs, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<Ws...>*),
+			void(*H1)(auto_pack<Xs...>*),
+			Heaps... Hs
+		)
 		{
-			return NIK_BEGIN_MACHINE(n, c, d, i, j),
+			using tn			= T_type_U<n>;
+			constexpr key_type memonic	= tn::mem(c, i, j);
+			constexpr key_type locator	= tn::loc(c, i, j);
 
-				W0, Vs...
+			if constexpr (memonic == MM::stack)
+			{
+				if constexpr (locator == MM::front)
 
-			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, Hs...);
-		}
-	};
+					return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
-/***********************************************************************************************************************/
+						Xs..., Vs...
 
-// move heap zero first, insert at stack position (optimization):
+					NIK_END_MACHINE(H0, null, Hs...);
+				else
+					return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(0, 0);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(1, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(2, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(3, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(4, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(5, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(6, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__INSERT_AT_S_POS(7, 1);
+						Vs..., Xs...
 
-/***********************************************************************************************************************/
+					NIK_END_MACHINE(H0, null, Hs...);
+			}
+			else // if constexpr (memonic == MM::heap_zero)
+			{
+				if constexpr (locator == MM::front)
 
-// move heap zero first, replace at stack position (optimization):
-
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(1, 0, 0);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(2, 1, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(3, 2, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(4, 3, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(5, 4, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(6, 5, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(7, 6, 1);
-	NIK_DEFINE__MOVE_H0_FIRST__REPLACE_AT_S_POS(8, 7, 1);
-
-/***********************************************************************************************************************/
-
-// move heap one all, insert at stack front:
-
-	template<key_type... filler>
-	struct machine<MN::move_h1_all__insert_at_s_front, _zero, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			typename Heap0, auto... Ws, typename... Heaps
-		>
-		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)
-		{
-			return NIK_BEGIN_MACHINE(n, c, d, i, j),
-
-				Ws..., Vs...
-
-			NIK_END_MACHINE(H0, U_opt_pack_Vs<>, Hs...);
+					return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<Xs..., Ws...>, null, Hs...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<Ws..., Xs...>, null, Hs...);
+			}
 		}
 	};
 
@@ -631,42 +644,29 @@ private:
 
 public:
 
-	template<typename program, auto... Vs, auto... Ws, auto... Xs, auto... Ys, auto... Zs>
-	static constexpr auto start
-	(
-		void(*H0)(auto_pack<Ws...>*) = U_opt_pack_Vs<>,
-		void(*H1)(auto_pack<Xs...>*) = U_opt_pack_Vs<>,
-		void(*H2)(auto_pack<Ys...>*) = U_opt_pack_Vs<>,
-		void(*H3)(auto_pack<Zs...>*) = U_opt_pack_Vs<>
-	)
+	template<typename program, index_type... Inds, auto... Regs>
+	static constexpr auto start(void(*)(auto_pack<Regs...>*) = null)
 	{
-		using lp		= linear_program<>;
-
-		constexpr auto oH0	= U_opt_pack_Vs<Ws...>;
-		constexpr auto oH1	= U_opt_pack_Vs<Xs...>;
-		constexpr auto oH2	= U_opt_pack_Vs<Ys...>;
-		constexpr auto oH3	= U_opt_pack_Vs<Zs...>;
-
-		constexpr auto nH3	= U_opt_pack_Vs<oH0, oH1, oH2, oH3>;
+		constexpr auto nH3	= U_opt_pack_Vs<null, null, null, null>;
 		constexpr auto nH2	= U_opt_pack_Vs
 		<
 			U_type_T<program>,
-			program::controller,
+			program::template controller<Inds...>,
 			program::initial_i,
 			program::initial_j,
 
-			Vs...
+			Regs...
 		>;
 
 		return machine<MN::call, _zero>::template result
 		<
 			U_linear_program,
-			label<result<>>,
+			label<first<>>,
 			program::depth,
-			lp::initial_i,
-			lp::initial_j
+			T_LP::initial_i,
+			T_LP::initial_j
 
-		>(oH0, oH1, nH2, nH3);
+		>(null, null, nH2, nH3);
 	}
 
 /***********************************************************************************************************************/
