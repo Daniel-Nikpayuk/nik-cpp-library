@@ -89,7 +89,8 @@
 
 private:
 
-	static constexpr auto null = U_opt_pack_Vs<>;
+	static constexpr auto null	= U_opt_pack_Vs<>;
+	using null_type			= decltype(null);
 
 /***********************************************************************************************************************/
 
@@ -171,17 +172,58 @@ private:
 
 /***********************************************************************************************************************/
 
-// upload (block):
+// pose (block):
 
 	template<key_type... filler>
-	struct machine<MN::upload, MT::block, filler...>
+	struct machine<MN::pose, MT::block, filler...>
 	{
 		// instructions:
 
-			static constexpr index_type upload_name		= 3;
-			static constexpr index_type upload_mem		= 4;
-			static constexpr index_type upload_loc		= 5;
-			static constexpr index_type upload_pos		= 6;
+			static constexpr index_type pose_name		= 3;
+			static constexpr index_type pose_mem		= 4;
+			static constexpr index_type pose_loc		= 5;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, auto pos, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<pos>*), Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+
+			constexpr auto nc	= block_program
+						<
+							tn::value(c, i, j, pose_name)
+
+						>::template controller
+						<
+							tn::value(c, i, j, pose_mem),
+							tn::value(c, i, j, pose_loc)
+						>;
+			constexpr auto nj	= T_BP::max_index2(pos);
+			constexpr auto ni	= pos + nj;
+
+			constexpr auto nH2	= U_opt_pack_Vs<U_block_program, nc, ni, nj, Vs...>;
+			constexpr auto nH3	= U_pre_pack_Ts<Heap0, null_type, Heap2, Heap3, Heaps...>;
+
+			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, null, nH2, nH3, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// load (block):
+
+	template<key_type... filler>
+	struct machine<MN::load, MT::block, filler...>
+	{
+		// instructions:
+
+			static constexpr index_type load_name		= 3;
+			static constexpr index_type load_mem		= 4;
+			static constexpr index_type load_loc		= 5;
+			static constexpr index_type load_pos		= 6;
 
 		template
 		<
@@ -194,14 +236,14 @@ private:
 
 			constexpr auto nc	= block_program
 						<
-							tn::value(c, i, j, upload_name)
+							tn::value(c, i, j, load_name)
 
 						>::template controller
 						<
-							tn::value(c, i, j, upload_mem),
-							tn::value(c, i, j, upload_loc)
+							tn::value(c, i, j, load_mem),
+							tn::value(c, i, j, load_loc)
 						>;
-			constexpr auto pos	= tn::value(c, i, j, upload_pos);
+			constexpr auto pos	= tn::value(c, i, j, load_pos);
 			constexpr auto nj	= T_BP::max_index2(pos);
 			constexpr auto ni	= pos + nj;
 
@@ -209,48 +251,6 @@ private:
 			constexpr auto nH3	= U_pre_pack_Ts<Heap0, Heap1, Heap2, Heap3, Heaps...>;
 
 			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, nH2, nH3, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// sideload (block):
-
-	template<key_type... filler>
-	struct machine<MN::sideload, MT::block, filler...>
-	{
-		// instructions:
-
-			static constexpr index_type upload_name		= 3;
-			static constexpr index_type upload_mem		= 4;
-			static constexpr index_type upload_loc		= 5;
-
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto pos, auto... Ws, typename Heap1, typename Heap2, typename Heap3, typename... Heaps
-		>
-		static constexpr auto result(void(*H0)(auto_pack<pos, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
-		{
-			using tn		= T_type_U<n>;
-
-			constexpr auto nc	= block_program
-						<
-							tn::value(c, i, j, upload_name)
-
-						>::template controller
-						<
-							tn::value(c, i, j, upload_mem),
-							tn::value(c, i, j, upload_loc)
-						>;
-			constexpr auto nj	= T_BP::max_index2(pos);
-			constexpr auto ni	= pos + nj;
-
-			constexpr auto nH0	= U_opt_pack_Vs<Ws...>;
-			constexpr auto nH2	= U_opt_pack_Vs<U_block_program, nc, ni, nj, Vs...>;
-			constexpr auto nH3	= U_pre_pack_Ts<decltype(nH0), Heap1, Heap2, Heap3, Heaps...>;
-
-			return NIK_MACHINE(n, c, d, i, j, Vs)(nH0, H1, nH2, nH3, Hs...);
 		}
 	};
 
@@ -289,23 +289,6 @@ private:
 
 				nHs...
 			);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// pass:
-
-	template<key_type... filler>
-	struct machine<MN::pass, _zero, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
-		static constexpr auto result(Heaps... Hs)
-		{
-			constexpr auto sc = U_opt_pack_Vs<n, c, i, j, Vs...>;
-			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
-
-			return loadable(sc, hc);
 		}
 	};
 
@@ -395,10 +378,10 @@ private:
 
 /***********************************************************************************************************************/
 
-// download:
+// ship:
 
 	template<key_type... filler>
-	struct machine<MN::download, _zero, filler...>
+	struct machine<MN::ship, _zero, filler...>
 	{
 		template
 		<
@@ -420,18 +403,35 @@ private:
 
 /***********************************************************************************************************************/
 
-// shift range block (2^N):
+// pass:
 
-	NIK_DEFINE__SHIFT_R_BLOCK(0);
-	NIK_DEFINE__SHIFT_R_BLOCK(1);
-	NIK_DEFINE__SHIFT_R_BLOCK(2);
-	NIK_DEFINE__SHIFT_R_BLOCK(3);
-	NIK_DEFINE__SHIFT_R_BLOCK(4);
-	NIK_DEFINE__SHIFT_R_BLOCK(5);
-	NIK_DEFINE__SHIFT_R_BLOCK(6);
-	NIK_DEFINE__SHIFT_R_BLOCK(7);
-	NIK_DEFINE__SHIFT_R_BLOCK(8);
-	NIK_DEFINE__SHIFT_R_BLOCK(9);
+	template<key_type... filler>
+	struct machine<MN::pass, _zero, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			constexpr auto sc = U_opt_pack_Vs<n, c, i, j, Vs...>;
+			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
+
+			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// unpack instruction block (2^N):
+
+//	NIK_DEFINE__UNPACK_I_BLOCK(0);
+//	NIK_DEFINE__UNPACK_I_BLOCK(1);
+//	NIK_DEFINE__UNPACK_I_BLOCK(2);
+//	NIK_DEFINE__UNPACK_I_BLOCK(3);
+//	NIK_DEFINE__UNPACK_I_BLOCK(4);
+//	NIK_DEFINE__UNPACK_I_BLOCK(5);
+//	NIK_DEFINE__UNPACK_I_BLOCK(6);
+//	NIK_DEFINE__UNPACK_I_BLOCK(7);
+//	NIK_DEFINE__UNPACK_I_BLOCK(8);
+//	NIK_DEFINE__UNPACK_I_BLOCK(9);
 
 /***********************************************************************************************************************/
 
@@ -644,29 +644,24 @@ private:
 
 public:
 
-	template<typename program, index_type... Inds, auto... Regs>
-	static constexpr auto start(void(*)(auto_pack<Regs...>*) = null)
+	template<typename program, auto... Vs, index_type... Is>
+	static constexpr auto start(void(*)(auto_pack<Is...>*) = null)
 	{
+		constexpr auto n	= U_linear_program;
+		constexpr auto c	= label<call<>>;
+		constexpr auto d	= program::depth;
+		constexpr auto i	= T_LP::initial_i;
+		constexpr auto j	= T_LP::initial_j;
+
+		constexpr auto nn	= U_type_T<program>;
+		constexpr auto nc	= program::template controller<Is...>;
+		constexpr auto ni	= program::initial_i;
+		constexpr auto nj	= program::initial_j;
+
 		constexpr auto nH3	= U_opt_pack_Vs<null, null, null, null>;
-		constexpr auto nH2	= U_opt_pack_Vs
-		<
-			U_type_T<program>,
-			program::template controller<Inds...>,
-			program::initial_i,
-			program::initial_j,
+		constexpr auto nH2	= U_opt_pack_Vs<nn, nc, ni, nj, Vs...>;
 
-			Regs...
-		>;
-
-		return machine<MN::call, _zero>::template result
-		<
-			U_linear_program,
-			label<first<>>,
-			program::depth,
-			T_LP::initial_i,
-			T_LP::initial_j
-
-		>(null, null, nH2, nH3);
+		return NIK_BEGIN_MACHINE(n, c, d, i, j) NIK_END_MACHINE(null, null, nH2, nH3);
 	}
 
 /***********************************************************************************************************************/

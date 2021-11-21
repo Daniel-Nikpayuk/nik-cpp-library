@@ -130,24 +130,24 @@
 
 	struct at_prog : public machine_module::template linear_program<>
 	{
-		template<auto Reg>
+		template<auto Pos>
 		static constexpr auto controller = machine_module::template label
 		<
-			machine_module::template upload__drop_s_segment<Reg>,
+			machine_module::template load__drop_s_segment<Pos>,
 			machine_module::template call<>,
-			machine_module::template download<>,
+			machine_module::template ship<>,
 			machine_module::template first<>
 		>;
 	};
 
-	template<auto Pos, auto... Vs>
-	constexpr auto pack_at = machine_module::template start<at_prog, Pos, Vs...>(U_pack_Vs<0>);
+	template<unsigned short Pos, auto... Vs>
+	constexpr auto pack_at = machine_module::template start<at_prog, Vs...>(U_pack_Vs<Pos>);
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-	//	printf("%d\n", pack_at<5,  0, 1, 2, 3, 4, 7>); // prints: 7
+		printf("%d\n", pack_at<5,  0, 1, 2, 3, 4, 7>); // prints: 7
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

@@ -46,67 +46,67 @@ public:
 	>;
 
 	template<key_type Note, key_type Subname, index_type... Args>
-	static constexpr instr_type upload = instruction
+	static constexpr instr_type pose = instruction
 	<
-		MN::upload, Note, Subname, Args...
-	>;
-
-		// specifies block instructions:
-
-		template<key_type Subname, key_type Mem, key_type Loc, index_type Pos>
-		static constexpr instr_type upload_block = instruction
-		<
-			MN::upload, MT::block, Subname, Mem, Loc, Pos
-		>;
-
-		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type upload_linear = instruction
-		<
-			MN::upload, MT::linear, Subname, Subnote, Args...
-		>;
-
-		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type upload_turing = instruction
-		<
-			MN::upload, MT::turing, Subname, Subnote, Args...
-		>;
-
-		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type upload_user = instruction
-		<
-			MN::upload, MT::user, Subname, Subnote, Args...
-		>;
-
-	template<key_type Note, key_type Subname, index_type... Args>
-	static constexpr instr_type sideload = instruction
-	<
-		MN::sideload, Note, Subname, Args...
+		MN::pose, Note, Subname, Args...
 	>;
 
 		// specifies block instructions:
 
 		template<key_type Subname, key_type Mem, key_type Loc>
-		static constexpr instr_type sideload_block = instruction
+		static constexpr instr_type pose_block = pose
 		<
-			MN::sideload, MT::block, Subname, Mem, Loc
+			MT::block, Subname, Mem, Loc
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type sideload_linear = instruction
+		static constexpr instr_type pose_linear = pose
 		<
-			MN::sideload, MT::linear, Subname, Subnote, Args...
+			MT::linear, Subname, Subnote, Args...
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type sideload_turing = instruction
+		static constexpr instr_type pose_turing = pose
 		<
-			MN::sideload, MT::turing, Subname, Subnote, Args...
+			MT::turing, Subname, Subnote, Args...
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type sideload_user = instruction
+		static constexpr instr_type pose_user = pose
 		<
-			MN::sideload, MT::user, Subname, Subnote, Args...
+			MT::user, Subname, Subnote, Args...
+		>;
+
+	template<key_type Note, key_type Subname, index_type... Args>
+	static constexpr instr_type load = instruction
+	<
+		MN::load, Note, Subname, Args...
+	>;
+
+		// specifies block instructions:
+
+		template<key_type Subname, key_type Mem, key_type Loc, index_type Pos>
+		static constexpr instr_type load_block = load
+		<
+			MT::block, Subname, Mem, Loc, Pos
+		>;
+
+		template<key_type Subname, key_type Subnote, index_type... Args>
+		static constexpr instr_type load_linear = load
+		<
+			MT::linear, Subname, Subnote, Args...
+		>;
+
+		template<key_type Subname, key_type Subnote, index_type... Args>
+		static constexpr instr_type load_turing = load
+		<
+			MT::turing, Subname, Subnote, Args...
+		>;
+
+		template<key_type Subname, key_type Subnote, index_type... Args>
+		static constexpr instr_type load_user = load
+		<
+			MT::user, Subname, Subnote, Args...
 		>;
 
 	template<key_type Note = _zero>
@@ -115,6 +115,18 @@ public:
 		MN::reload, Note
 	>;
 
+	template<key_type Note = _zero, key_type Mem = MM::na, key_type Loc = MM::na>
+	static constexpr instr_type call = instruction
+	<
+		MN::call, Note, Mem, Loc
+	>;
+
+		template<key_type Note = _zero>
+		static constexpr instr_type call__insert_at_s_front = call
+		<
+			Note, MM::stack, MM::front
+		>;
+
 	template<key_type Note = _zero>
 	static constexpr instr_type pass = instruction
 	<
@@ -122,15 +134,9 @@ public:
 	>;
 
 	template<key_type Note = _zero>
-	static constexpr instr_type call = instruction
+	static constexpr instr_type ship = instruction
 	<
-		MN::call, Note
-	>;
-
-	template<key_type Note = _zero>
-	static constexpr instr_type download = instruction
-	<
-		MN::download, Note
+		MN::ship, Note
 	>;
 
 	template<key_type Note = _zero>
@@ -188,15 +194,15 @@ public:
 // passers:
 
 	template<key_type Note = _zero>
+	static constexpr instr_type unpack_i_block = instruction
+	<
+		MN::unpack_i_block, Note
+	>;
+
+	template<key_type Note = _zero>
 	static constexpr instr_type drop_s_block = instruction
 	<
 		MN::drop_s_block, Note
-	>;
-
-	template<key_type Mem, key_type Loc, key_type Note = _zero>
-	static constexpr instr_type shift_r_block = instruction
-	<
-		MN::shift_r_block, Note, Mem, Loc
 	>;
 
 	template<key_type Mem, key_type Loc, key_type Note = _zero>
@@ -233,14 +239,43 @@ public:
 // :
 
 	template<key_type... filler>
-	struct block_program<BN::drop_s_segment, filler...> : public block_program<filler...>
+	struct block_program<BN::unpack_i_segment, filler...> : public block_program<filler...>
 	{
-		template<index_type... Args>
-		static constexpr instr_type controller = instruction<MN::drop_s_block, MN::pass, Args...>;
+		template<key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::unpack_i_block, MN::pass, Mem, Loc>;
 	};
 
+		template<index_type = _zero>
+		static constexpr instr_type pose__unpack_i_segment = pose_block
+		<
+			BN::unpack_i_segment, MM::heap_zero, MM::back
+		>;
+
 		template<index_type Pos>
-		static constexpr instr_type upload__drop_s_segment = upload_block
+		static constexpr instr_type load__unpack_i_segment = load_block
+		<
+			BN::unpack_i_segment, MM::heap_zero, MM::back, Pos
+		>;
+
+/***********************************************************************************************************************/
+
+// :
+
+	template<key_type... filler>
+	struct block_program<BN::drop_s_segment, filler...> : public block_program<filler...>
+	{
+		template<key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::drop_s_block, MN::pass, Mem, Loc>;
+	};
+
+		template<index_type = _zero>
+		static constexpr instr_type pose__drop_s_segment = pose_block
+		<
+			BN::drop_s_segment, MM::not_applicable, MM::not_applicable
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type load__drop_s_segment = load_block
 		<
 			BN::drop_s_segment, MM::not_applicable, MM::not_applicable, Pos
 		>;
@@ -250,31 +285,20 @@ public:
 // :
 
 	template<key_type... filler>
-	struct block_program<BN::make_r_segment, filler...> : public block_program<filler...>
-	{
-		template<index_type... Args>
-		static constexpr instr_type controller = instruction<MN::shift_r_block, MN::pass, Args...>;
-	};
-
-		template<key_type Mem, key_type Loc, index_type Pos>
-		static constexpr instr_type upload__make_r_segment = upload_block
-		<
-			BN::make_r_segment, Mem, Loc, Pos
-		>;
-
-/***********************************************************************************************************************/
-
-// :
-
-	template<key_type... filler>
 	struct block_program<BN::move_s_segment, filler...> : public block_program<filler...>
 	{
-		template<index_type... Args>
-		static constexpr instr_type controller = instruction<MN::move_s_block, MN::pass, Args...>;
+		template<key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::move_s_block, MN::pass, Mem, Loc>;
 	};
 
+		template<key_type Mem, key_type Loc>
+		static constexpr instr_type pose__move_s_segment = pose_block
+		<
+			BN::move_s_segment, Mem, Loc
+		>;
+
 		template<key_type Mem, key_type Loc, index_type Pos>
-		static constexpr instr_type upload__move_s_segment = upload_block
+		static constexpr instr_type load__move_s_segment = load_block
 		<
 			BN::move_s_segment, Mem, Loc, Pos
 		>;

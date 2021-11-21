@@ -60,12 +60,12 @@ public:
 
 			static constexpr key_type pause			=  0;
 
-			static constexpr key_type upload		=  1;
-			static constexpr key_type sideload		=  2;
+			static constexpr key_type pose			=  1;
+			static constexpr key_type load			=  2;
 			static constexpr key_type reload		=  3;
-			static constexpr key_type pass			=  4;
-			static constexpr key_type call			=  5;
-			static constexpr key_type download		=  6;
+			static constexpr key_type call			=  4;
+			static constexpr key_type pass			=  5;
+			static constexpr key_type ship			=  6;
 
 			static constexpr key_type branch		=  7; // <machine>
 			static constexpr key_type go_to			=  8; // <machine>
@@ -85,8 +85,8 @@ public:
 
 		// passers:
 
-			static constexpr key_type drop_s_block		= 15; // <halters>
-			static constexpr key_type shift_r_block		= 16; // <machine>
+			static constexpr key_type unpack_i_block	= 15; // <machine>
+			static constexpr key_type drop_s_block		= 16; // <halters>
 
 			static constexpr key_type move_s_block		= 17; // <mutators>
 			static constexpr key_type move_s_all		= 18; // <mutators>
@@ -127,6 +127,8 @@ public:
 	struct MachineMode
 	{
 			static constexpr key_type not_applicable	= 0;
+			static constexpr key_type na			= not_applicable;	// convenience for
+												// default params.
 
 		// memonics:
 
@@ -242,7 +244,7 @@ public:
 
 		// passers:
 
-			static constexpr key_type make_r_segment	= 1; // <machine>
+			static constexpr key_type unpack_i_segment	= 1; // <machine>
 
 			static constexpr key_type drop_s_segment	= 2; // <list>
 
@@ -298,7 +300,8 @@ public:
 			{
 				if (d == 0)	return MN::pause;	// assumes i >= j, next i := i - j
 				else if (i > j)	return c[MI::name];	// implies next i > 0
-				else 		return MI::last(c);	// otherwise next i == 0
+				else 		return c[MI::note];	// otherwise next i == 0
+			//	else 		return MI::last(c);	// otherwise next i == 0
 			}
 
 			static constexpr key_type next_note(instr_type c, depth_type d, index_type i, index_type j)

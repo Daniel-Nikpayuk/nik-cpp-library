@@ -58,80 +58,26 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// shift range block (2^N):
+// unpack instruction block (2^N):
 
-	#define NIK_DEFINE__SHIFT_R_BLOCK(_n_)										\
+	#define NIK_DEFINE__UNPACK_I_BLOCK(_n_)										\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::shift_r_block, _n_, filler...>							\
+		struct machine<MN::unpack_i_block, _n_, filler...>							\
 		{													\
-			template											\
-			<												\
-				NIK_CONTR_PARAMS, auto... Vs,								\
-				auto... Ws, auto... Xs, typename... Heaps						\
-			>												\
-			static constexpr auto result									\
-			(												\
-				void(*H0)(auto_pack<Ws...>*),								\
-				void(*H1)(auto_pack<Xs...>*),								\
-				Heaps... Hs										\
-			)												\
+			static constexpr index_type offset = 5;								\
+															\
+			template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>				\
+			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
 			{												\
 				using tn			= T_type_U<n>;						\
-				constexpr key_type memonic	= tn::mem(c, i, j);					\
-				constexpr key_type locator	= tn::loc(c, i, j);					\
 				constexpr index_type offset	= sizeof...(Vs);					\
 															\
-				if constexpr (memonic == MM::stack)							\
-				{											\
-					if constexpr (locator == MM::back)						\
-															\
-						return NIK_BEGIN_MACHINE(n, c, d, i, j),				\
-															\
-							Vs..., NIK_2_ ## _n_ ## _INDICES(offset)			\
-															\
-						NIK_END_MACHINE(H0, H1, Hs...);						\
-					else										\
-						return NIK_BEGIN_MACHINE(n, c, d, i, j),				\
-															\
-							NIK_2_ ## _n_ ## _INDICES(offset), Vs...			\
-															\
-						NIK_END_MACHINE(H0, H1, Hs...);						\
-				}											\
-				else if constexpr (memonic == MM::heap_one)						\
-				{											\
-					if constexpr (locator == MM::back)						\
-															\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-						(									\
-							H0,								\
-							U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _INDICES(offset)>,	\
-							Hs...								\
-						);									\
-					else										\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-						(									\
-							H0,								\
-							U_opt_pack_Vs<NIK_2_ ## _n_ ## _INDICES(offset), Xs...>,	\
-							Hs...								\
-						);									\
-				}											\
-				else /* if constexpr (memonic == MM::heap_zero) */					\
-				{											\
-					if constexpr (locator == MM::back)						\
-															\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-						(									\
-							U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _INDICES(offset)>,	\
-							H1, Hs...							\
-						);									\
-					else										\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-						(									\
-							U_opt_pack_Vs<NIK_2_ ## _n_ ## _INDICES(offset), Ws...>,	\
-							H1, Hs...							\
-						);									\
-				}											\
+				return NIK_MACHINE(n, c, d, i, j, Vs)							\
+				(											\
+					U_opt_pack_Vs<NIK_2_ ## _n_ ## _INDICES(offset), Ws...>,			\
+					H1, Hs...									\
+				);											\
 			}												\
 		}
 
