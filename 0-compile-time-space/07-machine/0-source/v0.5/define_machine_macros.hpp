@@ -58,25 +58,29 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// unpack instruction block (2^N):
+// unpack instruction block, insert at heap one back (2^N):
 
-	#define NIK_DEFINE__UNPACK_I_BLOCK(_n_)										\
+	#define NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::unpack_i_block, _n_, filler...>							\
+		struct machine<MN::unpack_i_block__insert_at_h1_back, _n_, filler...>					\
 		{													\
-			static constexpr index_type offset = 5;								\
-															\
-			template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>				\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
+			template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, auto... Ws, typename... Heaps>		\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
 			{												\
 				using tn			= T_type_U<n>;						\
-				constexpr index_type offset	= sizeof...(Vs);					\
+				constexpr auto ins		= tn::instr(c, i, j);					\
+				constexpr auto offset		= MI::length(ins) - i;					\
 															\
 				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 				(											\
-					U_opt_pack_Vs<NIK_2_ ## _n_ ## _INDICES(offset), Ws...>,			\
-					H1, Hs...									\
+					H0,										\
+					U_opt_pack_Vs									\
+					<										\
+						Ws...,									\
+						NIK_2_ ## _n_ ## _ARRAY_BLOCK(ins, offset)				\
+					>,										\
+					Hs...										\
 				);											\
 			}												\
 		}

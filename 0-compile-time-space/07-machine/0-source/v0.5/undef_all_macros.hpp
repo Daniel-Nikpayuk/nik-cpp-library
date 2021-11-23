@@ -30,7 +30,7 @@
 
 	#undef NIK_DEFINE__MOVE_S_BLOCK
 	#undef NIK_DEFINE__DROP_S_BLOCK
-	#undef NIK_DEFINE__UNPACK_I_BLOCK
+	#undef NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -182,16 +182,16 @@
 
 // block indices:
 
-	#undef NIK_2_9_INDICES
-	#undef NIK_2_8_INDICES
-	#undef NIK_2_7_INDICES
-	#undef NIK_2_6_INDICES
-	#undef NIK_2_5_INDICES
-	#undef NIK_2_4_INDICES
-	#undef NIK_2_3_INDICES
-	#undef NIK_2_2_INDICES
-	#undef NIK_2_1_INDICES
-	#undef NIK_2_0_INDICES
+	#undef NIK_2_9_ARRAY_BLOCK
+	#undef NIK_2_8_ARRAY_BLOCK
+	#undef NIK_2_7_ARRAY_BLOCK
+	#undef NIK_2_6_ARRAY_BLOCK
+	#undef NIK_2_5_ARRAY_BLOCK
+	#undef NIK_2_4_ARRAY_BLOCK
+	#undef NIK_2_3_ARRAY_BLOCK
+	#undef NIK_2_2_ARRAY_BLOCK
+	#undef NIK_2_1_ARRAY_BLOCK
+	#undef NIK_2_0_ARRAY_BLOCK
 
 /***********************************************************************************************************************/
 
@@ -257,16 +257,16 @@
 
 // upper indices:
 
-	#undef NIK_UPPER_512_INDICES
-	#undef NIK_UPPER_256_INDICES
-	#undef NIK_UPPER_128_INDICES
-	#undef NIK_UPPER_64_INDICES
-	#undef NIK_UPPER_32_INDICES
-	#undef NIK_UPPER_16_INDICES
-	#undef NIK_UPPER_8_INDICES
-	#undef NIK_UPPER_4_INDICES
-	#undef NIK_UPPER_2_INDICES
-	#undef NIK_UPPER_1_INDICES
+	#undef NIK_UPPER_512_ARRAY_BLOCK
+	#undef NIK_UPPER_256_ARRAY_BLOCK
+	#undef NIK_UPPER_128_ARRAY_BLOCK
+	#undef NIK_UPPER_64_ARRAY_BLOCK
+	#undef NIK_UPPER_32_ARRAY_BLOCK
+	#undef NIK_UPPER_16_ARRAY_BLOCK
+	#undef NIK_UPPER_8_ARRAY_BLOCK
+	#undef NIK_UPPER_4_ARRAY_BLOCK
+	#undef NIK_UPPER_2_ARRAY_BLOCK
+	#undef NIK_UPPER_1_ARRAY_BLOCK
 
 /***********************************************************************************************************************/
 

@@ -180,8 +180,9 @@ private:
 		// instructions:
 
 			static constexpr index_type pose_name		= 3;
-			static constexpr index_type pose_mem		= 4;
-			static constexpr index_type pose_loc		= 5;
+			static constexpr index_type pose_note		= 4;
+			static constexpr index_type pose_mem		= 5;
+			static constexpr index_type pose_loc		= 6;
 
 		template
 		<
@@ -198,6 +199,7 @@ private:
 
 						>::template controller
 						<
+							tn::value(c, i, j, pose_note),
 							tn::value(c, i, j, pose_mem),
 							tn::value(c, i, j, pose_loc)
 						>;
@@ -221,9 +223,10 @@ private:
 		// instructions:
 
 			static constexpr index_type load_name		= 3;
-			static constexpr index_type load_mem		= 4;
-			static constexpr index_type load_loc		= 5;
-			static constexpr index_type load_pos		= 6;
+			static constexpr index_type load_note		= 4;
+			static constexpr index_type load_mem		= 5;
+			static constexpr index_type load_loc		= 6;
+			static constexpr index_type load_pos		= 7;
 
 		template
 		<
@@ -240,6 +243,7 @@ private:
 
 						>::template controller
 						<
+							tn::value(c, i, j, load_note),
 							tn::value(c, i, j, load_mem),
 							tn::value(c, i, j, load_loc)
 						>;
@@ -422,16 +426,16 @@ private:
 
 // unpack instruction block (2^N):
 
-//	NIK_DEFINE__UNPACK_I_BLOCK(0);
-//	NIK_DEFINE__UNPACK_I_BLOCK(1);
-//	NIK_DEFINE__UNPACK_I_BLOCK(2);
-//	NIK_DEFINE__UNPACK_I_BLOCK(3);
-//	NIK_DEFINE__UNPACK_I_BLOCK(4);
-//	NIK_DEFINE__UNPACK_I_BLOCK(5);
-//	NIK_DEFINE__UNPACK_I_BLOCK(6);
-//	NIK_DEFINE__UNPACK_I_BLOCK(7);
-//	NIK_DEFINE__UNPACK_I_BLOCK(8);
-//	NIK_DEFINE__UNPACK_I_BLOCK(9);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(0);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(1);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(2);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(3);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(4);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(5);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(6);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(7);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(8);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(9);
 
 /***********************************************************************************************************************/
 

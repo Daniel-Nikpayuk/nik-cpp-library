@@ -58,44 +58,44 @@ public:
 	{
 		// interposers:
 
-			static constexpr key_type pause			=  0;
+			static constexpr key_type pause					=  0;
 
-			static constexpr key_type pose			=  1;
-			static constexpr key_type load			=  2;
-			static constexpr key_type reload		=  3;
-			static constexpr key_type call			=  4;
-			static constexpr key_type pass			=  5;
-			static constexpr key_type ship			=  6;
+			static constexpr key_type pose					=  1;
+			static constexpr key_type load					=  2;
+			static constexpr key_type reload				=  3;
+			static constexpr key_type call					=  4;
+			static constexpr key_type pass					=  5;
+			static constexpr key_type ship					=  6;
 
-			static constexpr key_type branch		=  7; // <machine>
-			static constexpr key_type go_to			=  8; // <machine>
+			static constexpr key_type branch				=  7; // <machine>
+			static constexpr key_type go_to					=  8; // <machine>
 
 		// halters:
 
-			static constexpr key_type first			=  9;
-			static constexpr key_type rest			= 10;
+			static constexpr key_type first					=  9;
+			static constexpr key_type rest					= 10;
 
 		// debuggers:
 
-			static constexpr key_type depth			= 11;
-			static constexpr key_type dump			= 12;
+			static constexpr key_type depth					= 11;
+			static constexpr key_type dump					= 12;
 
-			static constexpr key_type stack			= 13;
-			static constexpr key_type heaps			= 14;
+			static constexpr key_type stack					= 13;
+			static constexpr key_type heaps					= 14;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block	= 15; // <machine>
-			static constexpr key_type drop_s_block		= 16; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back	= 15; // <machine>
+			static constexpr key_type drop_s_block				= 16; // <halters>
 
-			static constexpr key_type move_s_block		= 17; // <mutators>
-			static constexpr key_type move_s_all		= 18; // <mutators>
+			static constexpr key_type move_s_block				= 17; // <mutators>
+			static constexpr key_type move_s_all				= 18; // <mutators>
 
-			static constexpr key_type move_h0_all		= 19; // <mutators>
-			static constexpr key_type move_h1_all		= 20; // <mutators>
+			static constexpr key_type move_h0_all				= 19; // <mutators>
+			static constexpr key_type move_h1_all				= 20; // <mutators>
 
-			static constexpr key_type apply_h0_all		= 21; // <machine>
-			static constexpr key_type compel_h0_all		= 22; // <machine>
+			static constexpr key_type apply_h0_all				= 21; // <machine>
+			static constexpr key_type compel_h0_all				= 22; // <machine>
 	};
 
 	using MN = MachineName;
@@ -240,15 +240,13 @@ public:
 	{
 		// halters:
 
-			static constexpr key_type at			= 0;
-
 		// passers:
 
-			static constexpr key_type unpack_i_segment	= 1; // <machine>
+			static constexpr key_type unpack_i_segment__insert_at_h1_back		= 0; // <machine>
 
-			static constexpr key_type drop_s_segment	= 2; // <list>
+			static constexpr key_type drop_s_segment				= 1; // <list>
 
-			static constexpr key_type move_s_segment	= 3; // <mutators>
+			static constexpr key_type move_s_segment				= 2; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -301,7 +299,6 @@ public:
 				if (d == 0)	return MN::pause;	// assumes i >= j, next i := i - j
 				else if (i > j)	return c[MI::name];	// implies next i > 0
 				else 		return c[MI::note];	// otherwise next i == 0
-			//	else 		return MI::last(c);	// otherwise next i == 0
 			}
 
 			static constexpr key_type next_note(instr_type c, depth_type d, index_type i, index_type j)
@@ -347,19 +344,23 @@ public:
 	{
 	// (level 1)
 
+		// halters:
+
+			static constexpr index_type at			=  0;
+
 		// passers:
 
 	// (level 2)
 
 		// mutators:
 
-			static constexpr index_type erase		=  0;
-			static constexpr index_type insert		=  1;
-			static constexpr index_type replace		=  2;
+			static constexpr index_type erase		=  1;
+			static constexpr index_type insert		=  2;
+			static constexpr index_type replace		=  3;
 
 		// control:
 
-			static constexpr index_type go_to_label		=  3;
+			static constexpr index_type go_to_label		=  4;
 	};
 
 	using LN = LinearName;

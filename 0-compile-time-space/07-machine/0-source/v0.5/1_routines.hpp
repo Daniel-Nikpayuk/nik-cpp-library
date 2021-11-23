@@ -77,18 +77,18 @@ public:
 			MT::user, Subname, Subnote, Args...
 		>;
 
-	template<key_type Note, key_type Subname, index_type... Args>
+	template<key_type Note, key_type Subname, key_type Subnote, index_type... Args>
 	static constexpr instr_type load = instruction
 	<
-		MN::load, Note, Subname, Args...
+		MN::load, Note, Subname, Subnote, Args...
 	>;
 
 		// specifies block instructions:
 
-		template<key_type Subname, key_type Mem, key_type Loc, index_type Pos>
+		template<key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type Pos>
 		static constexpr instr_type load_block = load
 		<
-			MT::block, Subname, Mem, Loc, Pos
+			MT::block, Subname, Subnote, Mem, Loc, Pos
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
@@ -193,24 +193,6 @@ public:
 
 // passers:
 
-	template<key_type Note = _zero>
-	static constexpr instr_type unpack_i_block = instruction
-	<
-		MN::unpack_i_block, Note
-	>;
-
-	template<key_type Note = _zero>
-	static constexpr instr_type drop_s_block = instruction
-	<
-		MN::drop_s_block, Note
-	>;
-
-	template<key_type Mem, key_type Loc, key_type Note = _zero>
-	static constexpr instr_type move_s_block = instruction
-	<
-		MN::move_s_block, Note, Mem, Loc
-	>;
-
 	template<key_type Mem, key_type Loc, key_type Note = _zero>
 	static constexpr instr_type move_h0_all = instruction
 	<
@@ -239,22 +221,25 @@ public:
 // :
 
 	template<key_type... filler>
-	struct block_program<BN::unpack_i_segment, filler...> : public block_program<filler...>
+	struct block_program<BN::unpack_i_segment__insert_at_h1_back, filler...> : public block_program<filler...>
 	{
-		template<key_type Mem, key_type Loc>
-		static constexpr instr_type controller = instruction<MN::unpack_i_block, MN::pass, Mem, Loc>;
+		template<key_type Note, key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction
+		<
+			MN::unpack_i_block__insert_at_h1_back, Note, Mem, Loc
+		>;
 	};
 
-		template<index_type = _zero>
-		static constexpr instr_type pose__unpack_i_segment = pose_block
+		template<key_type Note = MN::pass>
+		static constexpr instr_type pose__unpack_i_segment__insert_at_h1_back = pose_block
 		<
-			BN::unpack_i_segment, MM::heap_zero, MM::back
+			BN::unpack_i_segment__insert_at_h1_back, Note, MM::heap_zero, MM::back
 		>;
 
-		template<index_type Pos>
-		static constexpr instr_type load__unpack_i_segment = load_block
+		template<index_type Size, key_type Note = MN::pass>
+		static constexpr instr_type load__unpack_i_segment__insert_at_h1_back = load_block
 		<
-			BN::unpack_i_segment, MM::heap_zero, MM::back, Pos
+			BN::unpack_i_segment__insert_at_h1_back, Note, MM::heap_zero, MM::back, Size
 		>;
 
 /***********************************************************************************************************************/
@@ -264,20 +249,20 @@ public:
 	template<key_type... filler>
 	struct block_program<BN::drop_s_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Mem, key_type Loc>
-		static constexpr instr_type controller = instruction<MN::drop_s_block, MN::pass, Mem, Loc>;
+		template<key_type Note, key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::drop_s_block, Note, Mem, Loc>;
 	};
 
-		template<index_type = _zero>
+		template<key_type Note = MN::pass>
 		static constexpr instr_type pose__drop_s_segment = pose_block
 		<
-			BN::drop_s_segment, MM::not_applicable, MM::not_applicable
+			BN::drop_s_segment, Note, MM::not_applicable, MM::not_applicable
 		>;
 
-		template<index_type Pos>
+		template<index_type Pos, key_type Note = MN::pass>
 		static constexpr instr_type load__drop_s_segment = load_block
 		<
-			BN::drop_s_segment, MM::not_applicable, MM::not_applicable, Pos
+			BN::drop_s_segment, Note, MM::not_applicable, MM::not_applicable, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -287,20 +272,20 @@ public:
 	template<key_type... filler>
 	struct block_program<BN::move_s_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Mem, key_type Loc>
-		static constexpr instr_type controller = instruction<MN::move_s_block, MN::pass, Mem, Loc>;
+		template<key_type Note, key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::move_s_block, Note, Mem, Loc>;
 	};
 
-		template<key_type Mem, key_type Loc>
+		template<key_type Mem, key_type Loc, key_type Note = MN::pass>
 		static constexpr instr_type pose__move_s_segment = pose_block
 		<
-			BN::move_s_segment, Mem, Loc
+			BN::move_s_segment, Note, Mem, Loc
 		>;
 
-		template<key_type Mem, key_type Loc, index_type Pos>
+		template<key_type Mem, key_type Loc, index_type Pos, key_type Note = MN::pass>
 		static constexpr instr_type load__move_s_segment = load_block
 		<
-			BN::move_s_segment, Mem, Loc, Pos
+			BN::move_s_segment, Note, Mem, Loc, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -308,6 +293,26 @@ public:
 /***********************************************************************************************************************/
 
 // linear:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// halters:
+
+/***********************************************************************************************************************/
+
+	template<key_type... filler>
+	struct linear_program<LN::at, filler...> : public linear_program<>
+	{
+		template<key_type Note, index_type Pos>
+		static constexpr auto controller = label
+		<
+			load__drop_s_segment<Pos, Note>,
+			call<>,
+			ship<>,
+			first<>
+		>;
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
