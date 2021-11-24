@@ -130,21 +130,12 @@
 
 	using index_type = unsigned short;
 
-	struct at_prog : public machine_module::template linear_program<>
-	{
-
-		template<auto Note, auto Pos>
-		static constexpr auto controller = machine_module::template label
-		<
-			machine_module::template load__drop_s_segment<Pos, Note>,
-			machine_module::template call<>,
-			machine_module::template ship<>,
-			machine_module::template first<>
-		>;
-	};
-
 	template<index_type Pos, auto... Vs>
-	constexpr auto pack_at = machine_module::template start<at_prog, Vs...>(U_pack_Vs<index_type{5}, Pos>);
+	constexpr auto pack_at = machine_module::template start
+	<
+		machine_module::linear_program_at, Vs...
+
+	>(U_pack_Vs<Pos>);
 
 /***********************************************************************************************************************/
 

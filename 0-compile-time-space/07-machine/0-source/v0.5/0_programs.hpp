@@ -111,8 +111,7 @@ public:
 	{
 		static constexpr key_type block				= 0;
 		static constexpr key_type linear			= 1;
-		static constexpr key_type turing			= 2;
-		static constexpr key_type user				= 3;
+		static constexpr key_type user				= 2;
 	};
 
 	using MT = MachineNote;
@@ -229,7 +228,7 @@ public:
 
 	// Optimized to use a single instruction as the controller.
 
-	// Block programs are intended *only* to be called by linear, turing, or user programs. 
+	// Block programs are intended *only* to be called by linear, or user programs. 
 	// Their instruction indices coincide with their machine modifiers.
 
 /***********************************************************************************************************************/
@@ -250,6 +249,18 @@ public:
 	};
 
 	using BN = BlockName;
+
+/***********************************************************************************************************************/
+
+// instructions:
+
+	struct BlockInstr : public MachineInstr
+	{
+		static constexpr index_type cont_name			= 2;
+		static constexpr index_type cont_note			= 3;
+	};
+
+	using BI							= BlockInstr;
 
 /***********************************************************************************************************************/
 
@@ -296,15 +307,16 @@ public:
 
 			static constexpr key_type next_name(instr_type c, depth_type d, index_type i, index_type j)
 			{
-				if (d == 0)	return MN::pause;	// assumes i >= j, next i := i - j
-				else if (i > j)	return c[MI::name];	// implies next i > 0
-				else 		return c[MI::note];	// otherwise next i == 0
+				if (d == 0)	return MN::pause;		// assumes i >= j, next i := i - j
+				else if (i > j)	return c[BI::name];		// implies next i > 0
+				else 		return c[BI::cont_name];	// otherwise next i == 0
 			}
 
 			static constexpr key_type next_note(instr_type c, depth_type d, index_type i, index_type j)
 			{
 				if (d == 0)	return _zero;
-				else		return max_note(i - j);
+				else if (i > j)	return max_note(i - j);
+				else		return c[BI::cont_note];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
@@ -344,9 +356,15 @@ public:
 	{
 	// (level 1)
 
+		// interoperators:
+
+			static constexpr index_type load		=  0;
+
+			static constexpr index_type go_to_label		=  1;
+
 		// halters:
 
-			static constexpr index_type at			=  0;
+			static constexpr index_type at			=  2;
 
 		// passers:
 
@@ -354,13 +372,9 @@ public:
 
 		// mutators:
 
-			static constexpr index_type erase		=  1;
-			static constexpr index_type insert		=  2;
-			static constexpr index_type replace		=  3;
-
-		// control:
-
-			static constexpr index_type go_to_label		=  4;
+			static constexpr index_type erase		=  3;
+			static constexpr index_type insert		=  4;
+			static constexpr index_type replace		=  5;
 	};
 
 	using LN = LinearName;
@@ -426,12 +440,12 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// turing:
+// user:
 
 /***********************************************************************************************************************/
 
 	template<key_type...>
-	struct turing_program
+	struct user_program
 	{
 		// defaults:
 
@@ -524,8 +538,8 @@ public:
 			}
 	};
 
-	using T_TP				= turing_program<>;
-	static constexpr auto U_turing_program	= U_type_T<turing_program<>>;
+	using T_UP				= user_program<>;
+	static constexpr auto U_user_program	= U_type_T<user_program<>>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

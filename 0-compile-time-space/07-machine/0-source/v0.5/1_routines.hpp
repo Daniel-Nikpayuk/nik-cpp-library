@@ -66,41 +66,29 @@ public:
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type pose_turing = pose
-		<
-			MT::turing, Subname, Subnote, Args...
-		>;
-
-		template<key_type Subname, key_type Subnote, index_type... Args>
 		static constexpr instr_type pose_user = pose
 		<
 			MT::user, Subname, Subnote, Args...
 		>;
 
-	template<key_type Note, key_type Subname, key_type Subnote, index_type... Args>
+	template<key_type Note, key_type Subname, index_type... Args>
 	static constexpr instr_type load = instruction
 	<
-		MN::load, Note, Subname, Subnote, Args...
+		MN::load, Note, Subname, Args...
 	>;
 
 		// specifies block instructions:
 
-		template<key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type Pos>
+		template<key_type Subname, key_type Contname, key_type Contnote, key_type Mem, key_type Loc, index_type Pos>
 		static constexpr instr_type load_block = load
 		<
-			MT::block, Subname, Subnote, Mem, Loc, Pos
+			MT::block, Subname, Contname, Contnote, Mem, Loc, Pos
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
 		static constexpr instr_type load_linear = load
 		<
 			MT::linear, Subname, Subnote, Args...
-		>;
-
-		template<key_type Subname, key_type Subnote, index_type... Args>
-		static constexpr instr_type load_turing = load
-		<
-			MT::turing, Subname, Subnote, Args...
 		>;
 
 		template<key_type Subname, key_type Subnote, index_type... Args>
@@ -223,23 +211,23 @@ public:
 	template<key_type... filler>
 	struct block_program<BN::unpack_i_segment__insert_at_h1_back, filler...> : public block_program<filler...>
 	{
-		template<key_type Note, key_type Mem, key_type Loc>
+		template<key_type Contname, key_type Contnote, key_type Mem, key_type Loc>
 		static constexpr instr_type controller = instruction
 		<
-			MN::unpack_i_block__insert_at_h1_back, Note, Mem, Loc
+			MN::unpack_i_block__insert_at_h1_back, Contname, Contnote, Mem, Loc
 		>;
 	};
 
-		template<key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote>
 		static constexpr instr_type pose__unpack_i_segment__insert_at_h1_back = pose_block
 		<
-			BN::unpack_i_segment__insert_at_h1_back, Note, MM::heap_zero, MM::back
+			BN::unpack_i_segment__insert_at_h1_back, Contname, Contnote, MM::heap_zero, MM::back
 		>;
 
-		template<index_type Size, key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote, index_type Size>
 		static constexpr instr_type load__unpack_i_segment__insert_at_h1_back = load_block
 		<
-			BN::unpack_i_segment__insert_at_h1_back, Note, MM::heap_zero, MM::back, Size
+			BN::unpack_i_segment__insert_at_h1_back, Contname, Contnote, MM::heap_zero, MM::back, Size
 		>;
 
 /***********************************************************************************************************************/
@@ -249,20 +237,20 @@ public:
 	template<key_type... filler>
 	struct block_program<BN::drop_s_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Note, key_type Mem, key_type Loc>
-		static constexpr instr_type controller = instruction<MN::drop_s_block, Note, Mem, Loc>;
+		template<key_type Contname, key_type Contnote, key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::drop_s_block, Contname, Contnote, Mem, Loc>;
 	};
 
-		template<key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote>
 		static constexpr instr_type pose__drop_s_segment = pose_block
 		<
-			BN::drop_s_segment, Note, MM::not_applicable, MM::not_applicable
+			BN::drop_s_segment, Contname, Contnote, MM::not_applicable, MM::not_applicable
 		>;
 
-		template<index_type Pos, key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote, index_type Pos>
 		static constexpr instr_type load__drop_s_segment = load_block
 		<
-			BN::drop_s_segment, Note, MM::not_applicable, MM::not_applicable, Pos
+			BN::drop_s_segment, Contname, Contnote, MM::not_applicable, MM::not_applicable, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -272,20 +260,20 @@ public:
 	template<key_type... filler>
 	struct block_program<BN::move_s_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Note, key_type Mem, key_type Loc>
-		static constexpr instr_type controller = instruction<MN::move_s_block, Note, Mem, Loc>;
+		template<key_type Contname, key_type Contnote, key_type Mem, key_type Loc>
+		static constexpr instr_type controller = instruction<MN::move_s_block, Contname, Contnote, Mem, Loc>;
 	};
 
-		template<key_type Mem, key_type Loc, key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote, key_type Mem, key_type Loc>
 		static constexpr instr_type pose__move_s_segment = pose_block
 		<
-			BN::move_s_segment, Note, Mem, Loc
+			BN::move_s_segment, Contname, Contnote, Mem, Loc
 		>;
 
-		template<key_type Mem, key_type Loc, index_type Pos, key_type Note = MN::pass>
+		template<key_type Contname, key_type Contnote, key_type Mem, key_type Loc, index_type Pos>
 		static constexpr instr_type load__move_s_segment = load_block
 		<
-			BN::move_s_segment, Note, Mem, Loc, Pos
+			BN::move_s_segment, Contname, Contnote, Mem, Loc, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -297,22 +285,54 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// halters:
+// interoperators:
 
 /***********************************************************************************************************************/
 
 	template<key_type... filler>
-	struct linear_program<LN::at, filler...> : public linear_program<>
+	struct linear_program<LN::load, filler...> : public linear_program<filler...>
 	{
-		template<key_type Note, index_type Pos>
-		static constexpr auto controller = label
+		template<key_type Subname, key_type Subnote, index_type Size, index_type... Args>
+		static constexpr label_type controller = label
 		<
-			load__drop_s_segment<Pos, Note>,
+			load__unpack_i_segment__insert_at_h1_back<MN::pass, _zero, Size>,
 			call<>,
 			ship<>,
-			first<>
+			pose_linear<Subname, Subnote, Args...>,
+			pass<_one> // subpass
 		>;
 	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// halters:
+
+/***********************************************************************************************************************/
+
+		// for reference:
+
+		//	template<key_type Contname, key_type Contnote, index_type Pos>
+		//	static constexpr label_type controller = label
+		//	<
+		//		load__drop_s_segment<Contname, Contnote, Pos>,
+		//		call<>,
+		//		ship<>,
+		//		first<>
+		//	>;
+
+	template<key_type... filler>
+	struct linear_program<LN::at, filler...> : public linear_program<filler...>
+	{
+		template<index_type Pos>
+		static constexpr label_type controller = label
+		<
+			load__drop_s_segment<MN::first, _zero, Pos>,
+			call<>
+		>;
+	};
+
+	using linear_program_at = linear_program<LN::at>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

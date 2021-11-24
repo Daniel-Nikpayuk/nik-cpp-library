@@ -65,19 +65,26 @@
 		template<key_type... filler>										\
 		struct machine<MN::unpack_i_block__insert_at_h1_back, _n_, filler...>					\
 		{													\
-			template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, auto... Ws, typename... Heaps>		\
-			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, auto... Vs,								\
+				auto ins, auto size, auto... Ws, auto... Xs, typename... Heaps				\
+			>												\
+			static constexpr auto result									\
+			(												\
+				void(*H0)(auto_pack<ins, size, Ws...>*),						\
+				void(*H1)(auto_pack<Xs...>*), Heaps... Hs						\
+			)												\
 			{												\
 				using tn			= T_type_U<n>;						\
-				constexpr auto ins		= tn::instr(c, i, j);					\
-				constexpr auto offset		= MI::length(ins) - i;					\
+				constexpr auto offset		= size - i;						\
 															\
 				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 				(											\
 					H0,										\
 					U_opt_pack_Vs									\
 					<										\
-						Ws...,									\
+						Xs...,									\
 						NIK_2_ ## _n_ ## _ARRAY_BLOCK(ins, offset)				\
 					>,										\
 					Hs...										\

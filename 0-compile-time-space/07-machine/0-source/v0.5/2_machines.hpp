@@ -180,9 +180,10 @@ private:
 		// instructions:
 
 			static constexpr index_type pose_name		= 3;
-			static constexpr index_type pose_note		= 4;
-			static constexpr index_type pose_mem		= 5;
-			static constexpr index_type pose_loc		= 6;
+			static constexpr index_type pose_cont_name	= 4;
+			static constexpr index_type pose_cont_note	= 5;
+			static constexpr index_type pose_mem		= 6;
+			static constexpr index_type pose_loc		= 7;
 
 		template
 		<
@@ -199,7 +200,8 @@ private:
 
 						>::template controller
 						<
-							tn::value(c, i, j, pose_note),
+							tn::value(c, i, j, pose_cont_name),
+							tn::value(c, i, j, pose_cont_note),
 							tn::value(c, i, j, pose_mem),
 							tn::value(c, i, j, pose_loc)
 						>;
@@ -207,6 +209,88 @@ private:
 			constexpr auto ni	= pos + nj;
 
 			constexpr auto nH2	= U_opt_pack_Vs<U_block_program, nc, ni, nj, Vs...>;
+			constexpr auto nH3	= U_pre_pack_Ts<Heap0, null_type, Heap2, Heap3, Heaps...>;
+
+			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, null, nH2, nH3, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// pose (linear):
+
+	template<key_type... filler>
+	struct machine<MN::pose, MT::linear, filler...>
+	{
+		// instructions:
+
+			static constexpr index_type pose_name		= 3;
+			static constexpr index_type pose_cont_name	= 4;
+			static constexpr index_type pose_cont_note	= 5;
+			static constexpr index_type pose_mem		= 6;
+			static constexpr index_type pose_loc		= 7;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, auto... Ws, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+
+			constexpr auto nc	= linear_program
+						<
+							tn::value(c, i, j, pose_name)
+
+						>::template controller
+						<
+							tn::value(c, i, j, pose_cont_name),
+							tn::value(c, i, j, pose_cont_note),
+							tn::value(c, i, j, pose_mem),
+							tn::value(c, i, j, pose_loc),
+
+							Ws...
+						>;
+			constexpr auto ni	= T_LP::initial_i;
+			constexpr auto nj	= T_LP::initial_j;
+
+			constexpr auto nH2	= U_opt_pack_Vs<U_linear_program, nc, ni, nj, Vs...>;
+			constexpr auto nH3	= U_pre_pack_Ts<Heap0, null_type, Heap2, Heap3, Heaps...>;
+
+			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, null, nH2, nH3, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// pose (user):
+
+	template<key_type... filler>
+	struct machine<MN::pose, MT::user, filler...>
+	{
+		// instructions:
+
+			static constexpr index_type pose_name		= 3;
+			static constexpr index_type pose_cont_name	= 4;
+			static constexpr index_type pose_cont_note	= 5;
+			static constexpr index_type pose_mem		= 6;
+			static constexpr index_type pose_loc		= 7;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, auto up, auto... Ws, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<up, Ws...>*), Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+
+			constexpr auto nc	= T_type_U<up>::template controller<Ws...>;
+			constexpr auto ni	= T_UP::initial_i;
+			constexpr auto nj	= T_UP::initial_j;
+
+			constexpr auto nH2	= U_opt_pack_Vs<U_user_program, nc, ni, nj, Vs...>;
 			constexpr auto nH3	= U_pre_pack_Ts<Heap0, null_type, Heap2, Heap3, Heaps...>;
 
 			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, null, nH2, nH3, Hs...);
@@ -223,10 +307,11 @@ private:
 		// instructions:
 
 			static constexpr index_type load_name		= 3;
-			static constexpr index_type load_note		= 4;
-			static constexpr index_type load_mem		= 5;
-			static constexpr index_type load_loc		= 6;
-			static constexpr index_type load_pos		= 7;
+			static constexpr index_type load_cont_name	= 4;
+			static constexpr index_type load_cont_note	= 5;
+			static constexpr index_type load_mem		= 6;
+			static constexpr index_type load_loc		= 7;
+			static constexpr index_type load_pos		= 8;
 
 		template
 		<
@@ -243,7 +328,8 @@ private:
 
 						>::template controller
 						<
-							tn::value(c, i, j, load_note),
+							tn::value(c, i, j, load_cont_name),
+							tn::value(c, i, j, load_cont_note),
 							tn::value(c, i, j, load_mem),
 							tn::value(c, i, j, load_loc)
 						>;
@@ -257,6 +343,66 @@ private:
 			return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, nH2, nH3, Hs...);
 		}
 	};
+
+/***********************************************************************************************************************/
+
+// load (linear):
+
+/*
+	template<key_type... filler>
+	struct machine<MN::load, MT::linear, filler...>
+	{
+		// instructions:
+
+			static constexpr index_type load_subname	= 3;
+			static constexpr index_type load_subnote	= 4;
+			static constexpr index_type load_mem		= 5;
+			static constexpr index_type load_loc		= 6;
+			static constexpr index_type load_offset		= 7;
+
+		// controller:
+
+			static constexpr auto nn	= U_linear_program;
+			static constexpr key_type ni	= T_LP::initial_i;
+			static constexpr key_type nj	= T_LP::initial_j;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			using tn			= T_type_U<n>;
+
+			constexpr auto ins		= tn::instr(c, i, j);
+			constexpr auto size		= MI::length(ins) - load_offset;
+			constexpr auto nc		= linear_program<LN::load>::template controller
+							<
+								ins[load_subname],
+								ins[load_subnote],
+								ins[load_mem],
+								ins[load_loc],
+								size
+							>;
+
+			constexpr auto val		= NIK_MACHINE(nn, nc, d, ni, nj, nVs)(nHs...);
+			constexpr auto nd		= tn::next_depth(d);
+
+			if constexpr (nd == d)
+
+				return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, H2, H3, Hs...);
+
+			else if constexpr (is_machination(val))
+
+				return machine::template result<n, c, nd, i, j, Vs...>(H0, H1, val.sc, val.hc, Hs...);
+
+			else // if constexpr (is_loadable(val))
+
+				return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, nH2, nH3, Hs...);
+		}
+	};
+*/
 
 /***********************************************************************************************************************/
 
@@ -330,7 +476,7 @@ private:
 
 			if constexpr (nd == d)
 
-				return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, H2, Hs...);
+				return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, H2, H3, Hs...);
 
 			else if constexpr (is_machination(val))
 
@@ -407,7 +553,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// pass:
+// (all) pass:
 
 	template<key_type... filler>
 	struct machine<MN::pass, _zero, filler...>
@@ -419,6 +565,24 @@ private:
 			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
 
 			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// (sub) pass:
+
+	template<key_type... filler>
+	struct machine<MN::pass, _one, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3, typename... Heaps
+		>
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
+		{
+			return loadable(H2, H3);
 		}
 	};
 
