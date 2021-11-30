@@ -40,7 +40,7 @@
 /***********************************************************************************************************************/
 
 	template<typename... Ts>
-	static constexpr auto U_pre_pack_Ts = U_opt_pack_Vs<U_type_T<T_pretype_T<Ts>>...>;
+	static constexpr auto U_pre_pack_Ts = U_opt_pack_Vs<U_pretype_T<Ts>...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -56,46 +56,47 @@ public:
 
 	struct MachineName
 	{
+			static constexpr key_type identity				=  0;
+			static constexpr key_type id					= identity;	// convenience for
+													// default params.
 		// interposers:
 
-			static constexpr key_type pause					=  0;
+			static constexpr key_type pause					=  1;
 
-			static constexpr key_type pose					=  1;
-			static constexpr key_type load					=  2;
-			static constexpr key_type reload				=  3;
-			static constexpr key_type call					=  4;
-			static constexpr key_type pass					=  5;
-			static constexpr key_type ship					=  6;
+			static constexpr key_type save					=  2;
+			static constexpr key_type call					=  3;
+			static constexpr key_type pass					=  4;
+			static constexpr key_type ship					=  5;
 
-			static constexpr key_type branch				=  7; // <machine>
-			static constexpr key_type go_to					=  8; // <machine>
+			static constexpr key_type branch				=  6; // <machine>
+			static constexpr key_type go_to					=  7; // <machine>
 
 		// halters:
 
-			static constexpr key_type first					=  9;
-			static constexpr key_type rest					= 10;
+			static constexpr key_type first					=  8;
+			static constexpr key_type rest					=  9;
 
 		// debuggers:
 
-			static constexpr key_type depth					= 11;
-			static constexpr key_type dump					= 12;
+			static constexpr key_type depth					= 10;
+			static constexpr key_type dump					= 11;
 
-			static constexpr key_type stack					= 13;
-			static constexpr key_type heaps					= 14;
+			static constexpr key_type stack					= 12;
+			static constexpr key_type heaps					= 13;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back	= 15; // <machine>
-			static constexpr key_type drop_s_block				= 16; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back	= 14; // <machine>
+			static constexpr key_type drop_s_block				= 15; // <halters>
 
-			static constexpr key_type move_s_block				= 17; // <mutators>
-			static constexpr key_type move_s_all				= 18; // <mutators>
+			static constexpr key_type move_s_block				= 16; // <mutators>
+			static constexpr key_type move_s_all				= 17; // <mutators>
 
-			static constexpr key_type move_h0_all				= 19; // <mutators>
-			static constexpr key_type move_h1_all				= 20; // <mutators>
+			static constexpr key_type move_h0_all				= 18; // <mutators>
+			static constexpr key_type move_h1_all				= 19; // <mutators>
 
-			static constexpr key_type apply_h0_all				= 21; // <machine>
-			static constexpr key_type compel_h0_all				= 22; // <machine>
+			static constexpr key_type apply_h0_all				= 20; // <machine>
+			static constexpr key_type compel_h0_all				= 21; // <machine>
 	};
 
 	using MN = MachineName;
@@ -109,9 +110,13 @@ public:
 
 	struct MachineNote
 	{
-		static constexpr key_type block				= 0;
-		static constexpr key_type linear			= 1;
-		static constexpr key_type user				= 2;
+		static constexpr key_type identity			= 0;
+		static constexpr key_type id				= identity;	// convenience for
+											// default params.
+		static constexpr key_type stage2			= 1;
+		static constexpr key_type block				= 2;
+		static constexpr key_type linear			= 3;
+		static constexpr key_type user				= 4;
 	};
 
 	using MT = MachineNote;
@@ -125,10 +130,9 @@ public:
 
 	struct MachineMode
 	{
-			static constexpr key_type not_applicable	= 0;
-			static constexpr key_type na			= not_applicable;	// convenience for
-												// default params.
-
+			static constexpr key_type identity		= 0;
+			static constexpr key_type id			= identity;	// convenience for
+											// default params.
 		// memonics:
 
 			static constexpr key_type stack			= 1;
@@ -157,6 +161,8 @@ public:
 		static constexpr index_type size			= 0;
 		static constexpr index_type name			= 1;
 		static constexpr index_type note			= 2;
+		static constexpr index_type memonic			= 3;
+		static constexpr index_type location			= 4;
 
 		static constexpr index_type length (type i)		{ return i[size]; }
 		static constexpr index_type last   (type i)		{ return i[length(i)]; }
@@ -164,6 +170,18 @@ public:
 
 	using MI							= MachineInstr;
 	using instr_type						= typename MI::type;
+
+	struct CallInstr : public MachineInstr
+	{
+		static constexpr index_type call_name			= 1;
+		static constexpr index_type call_note			= 2;
+		static constexpr index_type name			= 3;
+		static constexpr index_type note			= 4;
+		static constexpr index_type memonic			= 5;
+		static constexpr index_type location			= 6;
+	};
+
+	using CI = CallInstr;
 
 		// pack length is stored as the initial value.
 
@@ -208,8 +226,8 @@ public:
 
 		static constexpr index_type size			= 0;
 
-		static constexpr index_type length   (type c)		{ return c[size][ML::size][MI::size]; }
-		static constexpr label_type last     (type c)		{ return c[length(c)]; }
+		static constexpr index_type length (type c)		{ return c[size][ML::size][MI::size]; }
+		static constexpr label_type last   (type c)		{ return c[length(c)]; }
 	};
 
 	using MC							= MachineContr;
@@ -237,15 +255,18 @@ public:
 
 	struct BlockName
 	{
+			static constexpr key_type identity					= 0;
+			static constexpr key_type id						= identity;	// convenience for
+														// default params.
 		// halters:
 
 		// passers:
 
-			static constexpr key_type unpack_i_segment__insert_at_h1_back		= 0; // <machine>
+			static constexpr key_type unpack_i_segment__insert_at_h1_back		= 1; // <machine>
 
-			static constexpr key_type drop_s_segment				= 1; // <list>
+			static constexpr key_type drop_s_segment				= 2; // <list>
 
-			static constexpr key_type move_s_segment				= 2; // <mutators>
+			static constexpr key_type move_s_segment				= 3; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -256,11 +277,27 @@ public:
 
 	struct BlockInstr : public MachineInstr
 	{
-		static constexpr index_type cont_name			= 2;
-		static constexpr index_type cont_note			= 3;
+		static constexpr index_type coname			=  5;
+		static constexpr index_type conote			=  6;
+
+		static constexpr index_type pos				=  7;
+
+		static constexpr index_type offset			=  8;
 	};
 
 	using BI							= BlockInstr;
+
+	struct BlockCallInstr : public CallInstr
+	{
+		static constexpr index_type coname			=  7;
+		static constexpr index_type conote			=  8;
+
+		static constexpr index_type pos				=  9;
+
+		static constexpr index_type offset			= 10;
+	};
+
+	using BCI							= BlockCallInstr;
 
 /***********************************************************************************************************************/
 
@@ -275,6 +312,9 @@ public:
 
 			static constexpr auto value(instr_type i, index_type, index_type, key_type p)
 				{ return i[p]; }
+
+			static constexpr auto instr(instr_type i, index_type, index_type)
+				{ return i; }
 
 			static constexpr index_type max_note(index_type n)
 			{
@@ -305,35 +345,39 @@ public:
 
 		// navigators:
 
-			static constexpr key_type next_name(instr_type c, depth_type d, index_type i, index_type j)
+			static constexpr key_type next_name(instr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
-				if (d == 0)	return MN::pause;		// assumes i >= j, next i := i - j
-				else if (i > j)	return c[BI::name];		// implies next i > 0
-				else 		return c[BI::cont_name];	// otherwise next i == 0
+				if (d == 0)	return MN::pause;
+				else if (r)	return MN::call;	// assumes i >= j, next i := i - j
+				else if (i > j)	return c[BI::name];	// implies next i > 0
+				else 		return c[BI::coname];	// otherwise next i == 0
 			}
 
-			static constexpr key_type next_note(instr_type c, depth_type d, index_type i, index_type j)
+			static constexpr key_type next_note(instr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0)	return _zero;
+				else if (r)	return MT::stage2;
 				else if (i > j)	return max_note(i - j);
-				else		return c[BI::cont_note];
+				else		return c[BI::conote];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d > 0)	return d-1;
-				else 		return d;
+				if (d == 0)	return d;
+				else 		return d-1;
 			}
 
-			static constexpr index_type next_index1(instr_type c, depth_type d, index_type i, index_type j)
+			static constexpr index_type next_index1(instr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0)	return i;
+				else if (r)	return i;
 				else 		return i - j;
 			}
 
-			static constexpr index_type next_index2(instr_type c, depth_type d, index_type i, index_type j)
+			static constexpr index_type next_index2(instr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0)	return j;
+				else if (r)	return j;
 				else		return max_index2(i - j);
 			}
 	};
@@ -354,17 +398,20 @@ public:
 
 	struct LinearName
 	{
+			static constexpr key_type identity		= 0;
+			static constexpr key_type id			= identity;	// convenience for
+											// default params.
 	// (level 1)
 
 		// interoperators:
 
-			static constexpr index_type load		=  0;
+			static constexpr index_type call		= 1;
 
-			static constexpr index_type go_to_label		=  1;
+			static constexpr index_type go_to_label		= 2;
 
 		// halters:
 
-			static constexpr index_type at			=  2;
+			static constexpr index_type at			= 3;
 
 		// passers:
 
@@ -372,12 +419,30 @@ public:
 
 		// mutators:
 
-			static constexpr index_type erase		=  3;
-			static constexpr index_type insert		=  4;
-			static constexpr index_type replace		=  5;
+			static constexpr index_type erase		= 4;
+			static constexpr index_type insert		= 5;
+			static constexpr index_type replace		= 6;
 	};
 
 	using LN = LinearName;
+
+/***********************************************************************************************************************/
+
+// instructions:
+
+	struct LinearInstr : public MachineInstr
+	{
+		static constexpr index_type offset			= 5;
+	};
+
+	using LI							= LinearInstr;
+
+	struct LinearCallInstr : public CallInstr
+	{
+		static constexpr index_type offset			= 7;
+	};
+
+	using LCI							= LinearCallInstr;
 
 /***********************************************************************************************************************/
 
@@ -391,45 +456,45 @@ public:
 			static constexpr index_type initial_i		= _one;
 			static constexpr index_type initial_j		= _zero;
 
-		// instructions:
-
-			static constexpr index_type linear_name		= 3;
-			static constexpr index_type linear_note		= 4;
-			static constexpr index_type linear_index	= 4;
-
 		// accessors:
 
 			static constexpr auto value(label_type l, index_type, index_type j, key_type p)
 				{ return l[j][p]; }
 
+			static constexpr auto instr(label_type l, index_type, index_type j)
+				{ return l[j]; }
+
 		// navigators:
 
-			static constexpr key_type next_name(label_type l, depth_type d, index_type, index_type j)
+			static constexpr key_type next_name(label_type l, depth_type d, bool r, index_type, index_type j)
 			{
 				if (d == 0)	return MN::pause;
+				else if (r)	return MN::call;
 				else 		return l[j+1][MI::name];
 			}
 
-			static constexpr key_type next_note(label_type l, depth_type d, index_type, index_type j)
+			static constexpr key_type next_note(label_type l, depth_type d, bool r, index_type, index_type j)
 			{
-				if (d == 0)	 return _zero;
-				else		 return l[j+1][MI::note];
+				if (d == 0)	return _zero;
+				else if (r)	return MT::stage2;
+				else		return l[j+1][MI::note];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d > 0)	return d-1;
-				else 		return d;
+				if (d == 0)	return d;
+				else 		return d-1;
 			}
 
-			static constexpr index_type next_index1(label_type, depth_type, index_type i, index_type)
+			static constexpr index_type next_index1(label_type, depth_type, bool, index_type i, index_type)
 			{
 				return i;
 			}
 
-			static constexpr index_type next_index2(label_type, depth_type d, index_type, index_type j)
+			static constexpr index_type next_index2(label_type, depth_type d, bool r, index_type, index_type j)
 			{
 				if (d == 0)	return j;
+				else if (r)	return j;
 				else 		return j+1;
 			}
 	};
@@ -449,15 +514,24 @@ public:
 	{
 		// defaults:
 
-			static constexpr depth_type depth	= 500;
+			static constexpr depth_type depth		= 500;
 
-			static constexpr index_type initial_i	= _one;
-			static constexpr index_type initial_j	= _zero;
+			static constexpr index_type initial_i		= _one;
+			static constexpr index_type initial_j		= _zero;
+
+		// instructions:
+
+			static constexpr index_type linear_name		= 3;
+			static constexpr index_type linear_note		= 4;
+			static constexpr index_type linear_index	= 4;
 
 		// accessors:
 
 			static constexpr auto value(contr_type c, index_type i, index_type j, key_type p)
 				{ return c[i][j][p]; }
+
+			static constexpr auto instr(contr_type c, index_type i, index_type j)
+				{ return c[i][j]; }
 
 		// initial indices:
 
@@ -475,35 +549,38 @@ public:
 
 		// navigators:
 
-			static constexpr key_type next_name(contr_type c, depth_type d, index_type i, index_type j)
+			static constexpr key_type next_name(contr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0) return MN::pause;
+				else if (r) return MN::call;
 
-				index_type ni = next_index1(c, d, i, j);
-				index_type nj = next_index2(c, d, i, j);
+				index_type ni = next_index1(c, d, r, i, j);
+				index_type nj = next_index2(c, d, r, i, j);
 
 				return c[ni][nj][MI::name];
 			}
 
-			static constexpr key_type next_note(contr_type c, depth_type d, index_type i, index_type j)
+			static constexpr key_type next_note(contr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0) return _zero;
+				else if (r) return MT::stage2;
 
-				index_type ni = next_index1(c, d, i, j);
-				index_type nj = next_index2(c, d, i, j);
+				index_type ni = next_index1(c, d, r, i, j);
+				index_type nj = next_index2(c, d, r, i, j);
 
 				return c[ni][nj][MI::note];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d > 0)	return d-1;
-				else 		return d;
+				if (d == 0)	return d;
+				else 		return d-1;
 			}
 
-			static constexpr index_type next_index1(contr_type c, depth_type d, index_type i, index_type j)
+			static constexpr index_type next_index1(contr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0) return i;
+				else if (r) return i;
 
 				index_type ni = initial_next_index1(c, i, j);
 				index_type nj = initial_next_index2(c, i, j);
@@ -511,17 +588,18 @@ public:
 
 				if (note == MT::linear)
 				{
-					key_type linear_name = c[ni][nj][T_LP::linear_name];
+					key_type l_name = c[ni][nj][linear_name];
 
-					if (linear_name == LN::go_to_label) return c[ni][nj][T_LP::linear_index];
+					if (l_name == LN::go_to_label) return c[ni][nj][linear_index];
 				}
 
 				return ni;
 			}
 
-			static constexpr index_type next_index2(contr_type c, depth_type d, index_type i, index_type j)
+			static constexpr index_type next_index2(contr_type c, depth_type d, bool r, index_type i, index_type j)
 			{
 				if (d == 0) return j;
+				else if (r) return j;
 
 				index_type ni = initial_next_index1(c, i, j);
 				index_type nj = initial_next_index2(c, i, j);
@@ -529,9 +607,9 @@ public:
 
 				if (note == MT::linear)
 				{
-					key_type linear_name = c[ni][nj][T_LP::linear_name];
+					key_type l_name = c[ni][nj][linear_name];
 
-					if (linear_name == LN::go_to_label) return _one;
+					if (l_name == LN::go_to_label) return _one;
 				}
 
 				return nj;

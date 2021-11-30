@@ -91,6 +91,9 @@ public:
 	template<typename T>
 	using T_pretype_T = typename pattern_match_map_type<T>::pretype;
 
+	template<typename T>
+	static constexpr auto U_pretype_T = U_type_T<T_pretype_T<T>>;
+
 	template<auto TMap>
 	using T_type_U = typename pattern_match_map_type<decltype(TMap)>::pretype;
 

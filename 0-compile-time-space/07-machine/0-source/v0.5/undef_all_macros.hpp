@@ -42,6 +42,11 @@
 	#undef NIK_MACHINE
 	#undef NIK_END_MACHINE
 	#undef NIK_BEGIN_MACHINE
+
+	#undef NIK_AUTOMATA
+	#undef NIK_END_AUTOMATA
+	#undef NIK_BEGIN_AUTOMATA
+
 	#undef NIK_CONTR_PARAMS
 
 /***********************************************************************************************************************/

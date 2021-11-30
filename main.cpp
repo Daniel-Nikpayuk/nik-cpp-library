@@ -131,11 +131,7 @@
 	using index_type = unsigned short;
 
 	template<index_type Pos, auto... Vs>
-	constexpr auto pack_at = machine_module::template start
-	<
-		machine_module::linear_program_at, Vs...
-
-	>(U_pack_Vs<Pos>);
+	constexpr auto pack_at = machine_module::template start<machine_module::linear_program_at, Vs...>(U_pack_Vs<Pos>);
 
 /***********************************************************************************************************************/
 

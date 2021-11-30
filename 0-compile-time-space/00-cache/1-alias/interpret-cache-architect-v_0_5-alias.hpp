@@ -51,6 +51,9 @@
 	template<typename T>
 	using nik_name(NIK_PREFIX, T_pretype_T)			= typename NIK_MODULE::template T_pretype_T<T>;
 
+	template<typename T>
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_pretype_T)	= NIK_MODULE::template U_pretype_T<T>;
+
 	template<auto TMap>
 	using nik_name(NIK_PREFIX, T_type_U)			= typename NIK_MODULE::template T_type_U<TMap>;
 
