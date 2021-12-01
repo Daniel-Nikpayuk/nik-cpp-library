@@ -146,9 +146,26 @@
 
 /***********************************************************************************************************************/
 
+	struct linear_program_erase : public machine_module::template linear_program<>
+	{
+		using label_type = typename machine_module::label_type;
+
+		template<auto Pos>
+		static constexpr label_type controller = machine_module::template label
+		<
+			machine_module::template call__erase<Pos>
+		>;
+	};
+
+	template<index_type Pos, auto... Vs>
+	constexpr auto pack_erase = machine_module::template start<linear_program_erase, Vs...>(U_pack_Vs<Pos>);
+
+/***********************************************************************************************************************/
+
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", pack_at<5,  0, 1, 2, 3, 4, 7>); // prints: 7
+	//	printf("%d\n", pack_at<5,  0, 1, 2, 3, 4, 7>); // prints: 7
+		printf("%d\n", pack_erase<3,  0, 1, 2, 3, 4, 7>); // prints: 7
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

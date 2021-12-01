@@ -43,6 +43,8 @@ namespace nik
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
 		#include nik_import(../../.., interpret, array, architect, v_0_5, gcc, static, name)
 
+		using boolean_module = nik_module(interpret, boolean, architect, v_0_5, gcc);
+
 		template<auto... Vs>				// optimized because we know auto_pack<Vs...>
 		static constexpr auto U_opt_pack_Vs =		// is not void nor a reference.
 			nik_module(interpret, cache, architect, v_0_5, gcc)::template

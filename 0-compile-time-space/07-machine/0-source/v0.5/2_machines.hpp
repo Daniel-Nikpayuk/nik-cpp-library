@@ -213,23 +213,25 @@ private:
 			void(*H3)(auto_pack<nHs...>*), Heaps... Hs
 		)
 		{
-			using tn		= T_type_U<n>;
+			using tn			= T_type_U<n>;
 
-			constexpr auto val	= NIK_AUTOMATA(nn, nc, d, nr, ni, nj, nVs)(nHs...);
-			constexpr bool nnr	= is_machination(val);
-			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto val		= NIK_AUTOMATA(nn, nc, d, nr, ni, nj, nVs)(nHs...);
+			constexpr bool nnr		= is_machination(val);
+			constexpr auto ins		= tn::instr(c, i, j);
+			constexpr key_type memonic	= ins[CI::memonic];
+			constexpr key_type location	= ins[CI::location];
 
 			if constexpr (nnr || is_loadable(val))
 
 				return NIK_AUTOMATA(n, c, d, nnr, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
 
-			else if constexpr (ins[CI::memonic] == MM::id && ins[CI::location] == MM::id)
+			else if constexpr (memonic == MM::id && location == MM::id)
 
 				return val;
 
-			else if constexpr (ins[CI::memonic] == MM::stack)
+			else if constexpr (memonic == MM::stack)
 			{
-				if constexpr (ins[CI::location] == MM::front)
+				if constexpr (location == MM::front)
 
 					return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
@@ -243,9 +245,9 @@ private:
 
 					NIK_END_MACHINE(H0, H1, null, null, Hs...);
 			}
-			else if constexpr (ins[CI::memonic] == MM::heap_zero)
+			else if constexpr (memonic == MM::heap_zero)
 			{
-				if constexpr (ins[CI::location] == MM::front)
+				if constexpr (location == MM::front)
 
 					return NIK_MACHINE(n, c, d, i, j, Vs)
 						(U_opt_pack_Vs<val, Ws...>, H1, null, null, Hs...);
@@ -253,9 +255,9 @@ private:
 					return NIK_MACHINE(n, c, d, i, j, Vs)
 						(U_opt_pack_Vs<Ws..., val>, H1, null, null, Hs...);
 			}
-			else if constexpr (ins[CI::memonic] == MM::heap_one)
+			else if constexpr (memonic == MM::heap_one)
 			{
-				if constexpr (ins[CI::location] == MM::front)
+				if constexpr (location == MM::front)
 
 					return NIK_MACHINE(n, c, d, i, j, Vs)
 						(H0, U_opt_pack_Vs<val, Xs...>, null, null, Hs...);
@@ -292,7 +294,7 @@ private:
 			using tn		= T_type_U<n>;
 
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto nc	= block_controller<ins>;
+			constexpr auto nc	= T_BP::template make_controller<ins>;
 			constexpr auto pos	= ins[BCI::pos];
 			constexpr auto nj	= T_BP::max_index2(pos);
 			constexpr auto ni	= pos + nj;
@@ -308,17 +310,15 @@ private:
 
 /***********************************************************************************************************************/
 
-// call (linear):
+// call (linear, user):
 
 		// Replacing the existing controller with an "inlined" equivalent is the preferred
 		// implementation, but the gcc/clang compilers issue too many type misalignments.
 		// As such, any convenience machines such as call rely on tail function calls.
 
-	template<key_type... filler>
-	struct machine<MN::call, MT::linear, filler...>
+	template<key_type Note, key_type... filler>
+	struct machine<MN::call, Note, filler...>
 	{
-		using unpack_params		= block_program<BN::unpack_i_segment__insert_at_h1_back>;
-
 		static constexpr auto nn	= U_block_program;
 		static constexpr auto nr	= false;
 		static constexpr auto nnr	= true;
@@ -339,13 +339,13 @@ private:
 
 			constexpr auto ins		= tn::instr(c, i, j);
 			constexpr index_type length	= MI::length(ins) + 1;
-			constexpr index_type size	= length - LCI::offset;
+			constexpr index_type size	= length - (MT::is_linear(Note) ? LCI::offset : UCI::offset);
+			constexpr auto nc		= bp_unpack_i_segment__insert_at_h1_back::template controller
+							<
+								MM::identity, MM::identity, MN::pass, Note
+							>;
 			constexpr auto nj		= T_BP::max_index2(size);
 			constexpr auto ni		= size + nj;
-			constexpr auto nc		= unpack_params::template controller
-							<
-								MM::identity, MM::identity, MN::pass, MT::linear
-							>;
 
 			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
 			constexpr auto cH0		= U_pretype_T<Heap0>;
@@ -401,15 +401,12 @@ private:
 
 /***********************************************************************************************************************/
 
-// pass (linear):
+// pass (linear, call):
 
-	template<key_type... filler>
-	struct machine<MN::pass, MT::linear, filler...>
+	template<key_type Note, key_type... filler>
+	struct machine<MN::pass, Note, filler...>
 	{
-		static constexpr auto nn		= U_linear_program;
-		static constexpr auto nr		= false;
-		static constexpr auto ni		= T_LP::initial_i;
-		static constexpr auto nj		= T_LP::initial_j;
+		static constexpr auto nr = false;
 
 		template
 		<
@@ -423,9 +420,18 @@ private:
 			Heap2 H2, Heap3 H3, Heaps... Hs
 		)
 		{
+			using tn		= boolean_module::template T_if_then_else_TxT
+						<
+							MT::is_linear(Note), T_LP, T_UP
+						>;
+
+			constexpr auto nn	= U_type_T<tn>;
+			constexpr auto ni	= tn::initial_i;
+			constexpr auto nj	= tn::initial_j;
+
 			constexpr auto cH2	= U_pretype_T<Heap2>;
 			constexpr auto cH3	= U_pretype_T<Heap3>;
-			constexpr auto nc	= linear_controller<ins, Xs...>;
+			constexpr auto nc	= tn::template make_controller<ins, Xs...>;
 			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
 			constexpr auto hc	= U_opt_pack_Vs<cH2, cH3, null, null, U_pretype_T<Heaps>...>;
 
@@ -623,12 +629,14 @@ private:
 		)
 		{
 			using tn			= T_type_U<n>;
-			constexpr key_type memonic	= tn::mem(c, i, j);
-			constexpr key_type locator	= tn::loc(c, i, j);
+
+			constexpr auto ins		= tn::instr(c, i, j);
+			constexpr key_type memonic	= ins[MI::memonic];
+			constexpr key_type location	= ins[MI::location];
 
 			if constexpr (memonic == MM::stack)
 			{
-				if constexpr (locator == MM::front)
+				if constexpr (location == MM::front)
 
 					return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
@@ -644,7 +652,7 @@ private:
 			}
 			else // if constexpr (memonic == MM::heap_zero)
 			{
-				if constexpr (locator == MM::front)
+				if constexpr (location == MM::front)
 
 					return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<Xs..., Ws...>, null, Hs...);
 				else

@@ -145,12 +145,13 @@
 			)												\
 			{												\
 				using tn			= T_type_U<n>;						\
-				constexpr key_type memonic	= tn::mem(c, i, j);					\
-				constexpr key_type locator	= tn::loc(c, i, j);					\
+				constexpr auto ins		= tn::instr(c, i, j);					\
+				constexpr key_type memonic	= ins[BI::memonic];					\
+				constexpr key_type location	= ins[BI::location];					\
 															\
 				if constexpr (memonic == MM::heap_one)							\
 				{											\
-					if constexpr (locator == MM::back)						\
+					if constexpr (location == MM::back)						\
 															\
 						return NIK_MACHINE(n, c, d, i, j, Vs)					\
 							(H0, U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _VS>, Hs...);	\
@@ -160,7 +161,7 @@
 				}											\
 				else if constexpr (memonic == MM::heap_zero)						\
 				{											\
-					if constexpr (locator == MM::front)						\
+					if constexpr (location == MM::front)						\
 															\
 						return NIK_MACHINE(n, c, d, i, j, Vs)					\
 							(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, H1, Hs...);	\

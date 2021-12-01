@@ -118,6 +118,8 @@ public:
 		static constexpr key_type block				= 2;
 		static constexpr key_type linear			= 3;
 		static constexpr key_type user				= 4;
+
+		static constexpr bool is_linear(key_type n)		{ return (n == linear); }
 	};
 
 	using MT = MachineNote;
@@ -381,23 +383,25 @@ public:
 				else if (r)	return j;
 				else		return max_index2(i - j);
 			}
+
+		// controllers:
+
+			template<auto ins>
+			static constexpr instr_type make_controller = block_program
+			<
+				ins[BCI::name]
+
+			>::template controller
+			<
+				ins[BCI::memonic],
+				ins[BCI::location],
+				ins[BCI::coname],
+				ins[BCI::conote]
+			>;
 	};
 
 	using T_BP					= block_program<>;
 	static constexpr auto U_block_program		= U_type_T<block_program<>>;
-
-	template<auto ins>
-	static constexpr instr_type block_controller	= block_program
-							<
-								ins[BCI::name]
-
-							>::template controller
-							<
-								ins[BCI::memonic],
-								ins[BCI::location],
-								ins[BCI::coname],
-								ins[BCI::conote]
-							>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -511,27 +515,47 @@ public:
 				else if (r)	return j;
 				else 		return j+1;
 			}
+
+		// controllers:
+
+			template<auto ins, auto... Xs>
+			static constexpr label_type make_controller = linear_program
+			<
+				ins[LCI::name]
+
+			>::template controller
+			<
+				ins[LCI::memonic],
+				ins[LCI::location],
+				Xs...
+			>;
 	};
 
 	using T_LP					= linear_program<>;
 	static constexpr auto U_linear_program		= U_type_T<linear_program<>>;
 
-	template<auto ins, auto... Xs>
-	static constexpr label_type linear_controller	= linear_program
-							<
-								ins[LCI::name]
-
-							>::template controller
-							<
-								ins[LCI::memonic],
-								ins[LCI::location],
-								Xs...
-							>;
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // user:
+
+/***********************************************************************************************************************/
+
+// instructions:
+
+	struct UserInstr : public MachineInstr
+	{
+		static constexpr index_type offset			= 5;
+	};
+
+	using UI							= LinearInstr;
+
+	struct UserCallInstr : public CallInstr
+	{
+		static constexpr index_type offset			= 7;
+	};
+
+	using UCI							= UserCallInstr;
 
 /***********************************************************************************************************************/
 
@@ -640,6 +664,20 @@ public:
 
 				return nj;
 			}
+
+		// controllers:
+
+			template<auto ins, auto... Xs>
+			static constexpr contr_type make_controller = user_program
+			<
+				ins[UCI::name]
+
+			>::template controller
+			<
+				ins[UCI::memonic],
+				ins[UCI::location],
+				Xs...
+			>;
 	};
 
 	using T_UP				= user_program<>;

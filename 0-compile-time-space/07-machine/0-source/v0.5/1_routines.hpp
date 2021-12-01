@@ -84,7 +84,7 @@ public:
 	>;
 
 	template<key_type Note = _zero>
-	static constexpr instr_type ship = instruction // needed ?
+	static constexpr instr_type ship = instruction
 	<
 		MN::ship, Note
 	>;
@@ -143,6 +143,12 @@ public:
 
 // passers:
 
+	template<key_type Note = _zero>
+	static constexpr instr_type drop_s_block = instruction
+	<
+		MN::drop_s_block, Note
+	>;
+
 	template<key_type Mem, key_type Loc, key_type Note = _zero>
 	static constexpr instr_type move_h0_all = instruction
 	<
@@ -180,6 +186,8 @@ public:
 		>;
 	};
 
+	using bp_unpack_i_segment__insert_at_h1_back = block_program<BN::unpack_i_segment__insert_at_h1_back>;
+
 		template<key_type Coname, key_type Conote, index_type Size>
 		static constexpr instr_type call__unpack_i_segment__insert_at_h1_back = call_block
 		<
@@ -200,12 +208,10 @@ public:
 		>;
 	};
 
-	//	template<key_type Coname, key_type Conote, index_type Pos>
 		template<key_type Mem, key_type Loc, key_type Coname, key_type Conote, index_type Pos>
 		static constexpr instr_type call__drop_s_segment = call_block
 		<
 			BN::drop_s_segment, Mem, Loc, Coname, Conote, Pos
-		//	BN::drop_s_segment, MM::identity, MM::identity, Coname, Conote, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -244,16 +250,12 @@ public:
 	template<key_type... filler>
 	struct linear_program<LN::at, filler...> : public linear_program<filler...>
 	{
-	//	template<index_type Pos>
 		template<key_type Mem, key_type Loc, index_type Pos>
 		static constexpr label_type controller = label
 		<
 			call__drop_s_segment<Mem, Loc, MN::first, _zero, Pos>
-	//		call__drop_s_segment<MN::first, _zero, Pos>
 		>;
 	};
-
-	using linear_program_at = linear_program<LN::at>;
 
 		template<index_type Pos, key_type Mem = MM::id, key_type Loc = MM::id>
 		static constexpr instr_type call__at = call_linear
@@ -337,40 +339,25 @@ public:
 
 // :
 
-/*
 	template<key_type... filler>
 	struct linear_program<LN::erase, filler...> : public linear_program<filler...>
 	{
-		template<key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type Size>
+		template<key_type Mem, key_type Loc, index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__unpack_i_segment__insert_at_h1_back<MN::pass, _zero, Size>,
-			call<>,
+			call__move_s_segment<MM::heap_one, MM::back, MN::pass, _zero, Pos>,
 			ship<>,
-			pose_linear<Subname, Subnote, Mem, Loc>,
-			pass<_one> // subpass
-		>;
-	};
-*/
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::erase, filler...> : public linear_program<> // e1e
-	{
-		template<index_type Pos>
-		static constexpr label_type controller = label
-		<
-			drop_s_pos<Pos>,
-			pass<>
+			drop_s_block<>,
+			move_h1_all<MM::stack, MM::front>,
+			stack<> // testing
 		>;
 	};
 
-		template<index_type Pos>
-		static constexpr instr_type erase = linear
+		template<index_type Pos, key_type Mem = MM::id, key_type Loc = MM::id>
+		static constexpr instr_type call__erase = call_linear
 		<
-			LN::erase, _zero, Pos
+			LN::erase, MT::identity, Mem, Loc, Pos
 		>;
-*/
 
 /***********************************************************************************************************************/
 
