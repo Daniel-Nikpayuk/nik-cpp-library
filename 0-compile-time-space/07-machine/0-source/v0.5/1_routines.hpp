@@ -183,7 +183,7 @@ public:
 		template<key_type Coname, key_type Conote, index_type Size>
 		static constexpr instr_type call__unpack_i_segment__insert_at_h1_back = call_block
 		<
-			BN::unpack_i_segment__insert_at_h1_back, MM::heap_zero, MM::back, Coname, Conote, Size
+			BN::unpack_i_segment__insert_at_h1_back, MM::identity, MM::identity, Coname, Conote, Size
 		>;
 
 /***********************************************************************************************************************/
@@ -247,6 +247,12 @@ public:
 	};
 
 	using linear_program_at = linear_program<LN::at>;
+
+		template<key_type Mem, key_type Loc, index_type Pos>
+		static constexpr instr_type call__at = call_linear
+		<
+			LN::at, Mem, Loc, Pos
+		>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

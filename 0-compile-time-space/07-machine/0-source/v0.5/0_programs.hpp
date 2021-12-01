@@ -65,38 +65,39 @@ public:
 
 			static constexpr key_type save					=  2;
 			static constexpr key_type call					=  3;
-			static constexpr key_type pass					=  4;
-			static constexpr key_type ship					=  5;
+			static constexpr key_type load					=  4;
+			static constexpr key_type pass					=  5;
+			static constexpr key_type ship					=  6;
 
-			static constexpr key_type branch				=  6; // <machine>
-			static constexpr key_type go_to					=  7; // <machine>
+			static constexpr key_type branch				=  7; // <machine>
+			static constexpr key_type go_to					=  8; // <machine>
 
 		// halters:
 
-			static constexpr key_type first					=  8;
-			static constexpr key_type rest					=  9;
+			static constexpr key_type first					=  9;
+			static constexpr key_type rest					= 10;
 
 		// debuggers:
 
-			static constexpr key_type depth					= 10;
-			static constexpr key_type dump					= 11;
+			static constexpr key_type depth					= 11;
+			static constexpr key_type dump					= 12;
 
-			static constexpr key_type stack					= 12;
-			static constexpr key_type heaps					= 13;
+			static constexpr key_type stack					= 13;
+			static constexpr key_type heaps					= 14;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back	= 14; // <machine>
-			static constexpr key_type drop_s_block				= 15; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back	= 15; // <machine>
+			static constexpr key_type drop_s_block				= 16; // <halters>
 
-			static constexpr key_type move_s_block				= 16; // <mutators>
-			static constexpr key_type move_s_all				= 17; // <mutators>
+			static constexpr key_type move_s_block				= 17; // <mutators>
+			static constexpr key_type move_s_all				= 18; // <mutators>
 
-			static constexpr key_type move_h0_all				= 18; // <mutators>
-			static constexpr key_type move_h1_all				= 19; // <mutators>
+			static constexpr key_type move_h0_all				= 19; // <mutators>
+			static constexpr key_type move_h1_all				= 20; // <mutators>
 
-			static constexpr key_type apply_h0_all				= 20; // <machine>
-			static constexpr key_type compel_h0_all				= 21; // <machine>
+			static constexpr key_type apply_h0_all				= 21; // <machine>
+			static constexpr key_type compel_h0_all				= 22; // <machine>
 	};
 
 	using MN = MachineName;
@@ -382,8 +383,21 @@ public:
 			}
 	};
 
-	using T_BP				= block_program<>;
-	static constexpr auto U_block_program	= U_type_T<block_program<>>;
+	using T_BP					= block_program<>;
+	static constexpr auto U_block_program		= U_type_T<block_program<>>;
+
+	template<auto ins>
+	static constexpr instr_type block_controller	= block_program
+							<
+								ins[BCI::name]
+
+							>::template controller
+							<
+								ins[BCI::memonic],
+								ins[BCI::location],
+								ins[BCI::coname],
+								ins[BCI::conote]
+							>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -499,8 +513,20 @@ public:
 			}
 	};
 
-	using T_LP				= linear_program<>;
-	static constexpr auto U_linear_program	= U_type_T<linear_program<>>;
+	using T_LP					= linear_program<>;
+	static constexpr auto U_linear_program		= U_type_T<linear_program<>>;
+
+	template<auto ins, auto... Xs>
+	static constexpr label_type linear_controller	= linear_program
+							<
+								ins[LCI::name]
+
+							>::template controller
+							<
+								ins[LCI::memonic],
+								ins[LCI::location],
+								Xs...
+							>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
