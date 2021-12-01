@@ -83,16 +83,16 @@
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, auto... Vs,								\
-				auto ins, auto size, auto... Ws, auto... Xs, typename... Heaps				\
+				auto ins, auto length, auto... Ws, auto... Xs, typename... Heaps			\
 			>												\
 			static constexpr auto result									\
 			(												\
-				void(*H0)(auto_pack<ins, size, Ws...>*),						\
+				void(*H0)(auto_pack<ins, length, Ws...>*),						\
 				void(*H1)(auto_pack<Xs...>*), Heaps... Hs						\
 			)												\
 			{												\
 				using tn			= T_type_U<n>;						\
-				constexpr auto offset		= size - i;						\
+				constexpr index_type offset	= length - i;						\
 															\
 				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 				(											\

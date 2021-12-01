@@ -338,7 +338,7 @@ private:
 			using tn			= T_type_U<n>;
 
 			constexpr auto ins		= tn::instr(c, i, j);
-			constexpr index_type length	= MI::length(ins);
+			constexpr index_type length	= MI::length(ins) + 1;
 			constexpr index_type size	= length - LCI::offset;
 			constexpr auto nj		= T_BP::max_index2(size);
 			constexpr auto ni		= size + nj;
@@ -347,9 +347,9 @@ private:
 								MM::identity, MM::identity, MN::pass, MT::linear
 							>;
 
+			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
 			constexpr auto cH0		= U_pretype_T<Heap0>;
 			constexpr auto cH1		= U_pretype_T<Heap1>;
-			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
 			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
 			constexpr auto nH3		= U_opt_pack_Vs<nH0, null, cH0, cH1, U_pretype_T<Heaps>...>;
 

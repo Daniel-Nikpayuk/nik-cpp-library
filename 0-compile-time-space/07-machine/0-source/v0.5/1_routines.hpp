@@ -176,7 +176,7 @@ public:
 		template<key_type Mem, key_type Loc, key_type Coname, key_type Conote>
 		static constexpr instr_type controller = instruction
 		<
-			MN::unpack_i_block__insert_at_h1_back, Mem, Loc, Coname, Conote
+			MN::unpack_i_block__insert_at_h1_back, MT::identity, Mem, Loc, Coname, Conote
 		>;
 	};
 
@@ -200,10 +200,12 @@ public:
 		>;
 	};
 
-		template<key_type Coname, key_type Conote, index_type Pos>
+	//	template<key_type Coname, key_type Conote, index_type Pos>
+		template<key_type Mem, key_type Loc, key_type Coname, key_type Conote, index_type Pos>
 		static constexpr instr_type call__drop_s_segment = call_block
 		<
-			BN::drop_s_segment, MM::identity, MM::identity, Coname, Conote, Pos
+			BN::drop_s_segment, Mem, Loc, Coname, Conote, Pos
+		//	BN::drop_s_segment, MM::identity, MM::identity, Coname, Conote, Pos
 		>;
 
 /***********************************************************************************************************************/
@@ -214,7 +216,10 @@ public:
 	struct block_program<BN::move_s_segment, filler...> : public block_program<filler...>
 	{
 		template<key_type Mem, key_type Loc, key_type Coname, key_type Conote>
-		static constexpr instr_type controller = instruction<MN::move_s_block, Mem, Loc, Coname, Conote>;
+		static constexpr instr_type controller = instruction
+		<
+			MN::move_s_block, MT::identity, Mem, Loc, Coname, Conote
+		>;
 	};
 
 		template<key_type Mem, key_type Loc, key_type Coname, key_type Conote, index_type Pos>
@@ -239,19 +244,21 @@ public:
 	template<key_type... filler>
 	struct linear_program<LN::at, filler...> : public linear_program<filler...>
 	{
-		template<index_type Pos>
+	//	template<index_type Pos>
+		template<key_type Mem, key_type Loc, index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__drop_s_segment<MN::first, _zero, Pos>
+			call__drop_s_segment<Mem, Loc, MN::first, _zero, Pos>
+	//		call__drop_s_segment<MN::first, _zero, Pos>
 		>;
 	};
 
 	using linear_program_at = linear_program<LN::at>;
 
-		template<key_type Mem, key_type Loc, index_type Pos>
+		template<index_type Pos, key_type Mem = MM::id, key_type Loc = MM::id>
 		static constexpr instr_type call__at = call_linear
 		<
-			LN::at, Mem, Loc, Pos
+			LN::at, MT::identity, Mem, Loc, Pos
 		>;
 
 /***********************************************************************************************************************/

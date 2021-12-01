@@ -130,8 +130,19 @@
 
 	using index_type = unsigned short;
 
+	struct linear_program_at : public machine_module::template linear_program<>
+	{
+		using label_type = typename machine_module::label_type;
+
+		template<auto Pos>
+		static constexpr label_type controller = machine_module::template label
+		<
+			machine_module::template call__at<Pos>
+		>;
+	};
+
 	template<index_type Pos, auto... Vs>
-	constexpr auto pack_at = machine_module::template start<machine_module::linear_program_at, Vs...>(U_pack_Vs<Pos>);
+	constexpr auto pack_at = machine_module::template start<linear_program_at, Vs...>(U_pack_Vs<Pos>);
 
 /***********************************************************************************************************************/
 
