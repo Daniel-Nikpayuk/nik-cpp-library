@@ -54,7 +54,7 @@
 //			<
 //				// stack:
 
-//					auto n, auto c, auto d, auto i, auto j, auto... Vs,
+//					auto n, auto c, auto d, auto m, auto i, auto j, auto... Vs,
 
 //				// heaps:
 
@@ -64,16 +64,17 @@
 //			{
 //				return machine
 //				<
-//					T_type_U<n>::next_name(c, d, i, j),
-//					T_type_U<n>::next_note(c, d, i, j)
+//					T_type_U<n>::next_name(c, d, m, i, j),
+//					T_type_U<n>::next_note(c, d, m, i, j)
 
 //				>::template result
 //				<
 //					n, c,
 
 //					T_type_U<n>::next_depth(d),
-//					T_type_U<n>::next_index1(c, d, i, j),
-//					T_type_U<n>::next_index2(c, d, i, j),
+//					m,
+//					T_type_U<n>::next_index1(c, d, m, i, j),
+//					T_type_U<n>::next_index2(c, d, m, i, j),
 
 //					Vs...	// The behaviour of each
 //						// machine is such that it
@@ -105,7 +106,8 @@ private:
 		StackCache sc;
 		HeapCache hc;
 
-		constexpr machination(const StackCache & _sc, const HeapCache & _hc) : sc(_sc), hc(_hc) { }
+		constexpr machination(const StackCache & _sc, const HeapCache & _hc) :
+			sc(_sc), hc(_hc) { }
 	};
 
 	//
@@ -129,7 +131,8 @@ private:
 		StackCache sc;
 		HeapCache hc;
 
-		constexpr loadable(const StackCache & _sc, const HeapCache & _hc) : sc(_sc), hc(_hc) { }
+		constexpr loadable(const StackCache & _sc, const HeapCache & _hc) :
+			sc(_sc), hc(_hc) { }
 	};
 
 	//
@@ -158,12 +161,12 @@ private:
 // pause:
 
 	template<key_type... filler>
-	struct machine<MN::pause, _zero, filler...>
+	struct machine<MN::pause, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
 		{
-			constexpr auto sc = U_opt_pack_Vs<n, c, r, i, j, Vs...>;
+			constexpr auto sc = U_opt_pack_Vs<n, c, m, i, j, Vs...>;
 			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
 
 			return machination(sc, hc);
@@ -175,7 +178,7 @@ private:
 // save:
 
 	template<key_type... filler>
-	struct machine<MN::save, _zero, filler...>
+	struct machine<MN::save, MT::id, filler...>
 	{
 		template
 		<
@@ -202,28 +205,31 @@ private:
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
 			auto... Ws, auto... Xs,
-			auto nn, auto nc, bool nr, auto ni, auto nj, auto... nVs,
+			auto nn, auto nc, auto nm, auto ni, auto nj, auto... nVs,
 			auto... nHs, typename... Heaps
 		>
 		static constexpr auto result
 		(
 			void(*H0)(auto_pack<Ws...>*),
 			void(*H1)(auto_pack<Xs...>*),
-			void(*H2)(auto_pack<nn, nc, nr, ni, nj, nVs...>*),
+			void(*H2)(auto_pack<nn, nc, nm, ni, nj, nVs...>*),
 			void(*H3)(auto_pack<nHs...>*), Heaps... Hs
 		)
 		{
 			using tn			= T_type_U<n>;
 
-			constexpr auto val		= NIK_AUTOMATA(nn, nc, d, nr, ni, nj, nVs)(nHs...);
-			constexpr bool nnr		= is_machination(val);
+			constexpr auto val		= NIK_AUTOMATA(nn, nc, d, nm, ni, nj, nVs)(nHs...);
 			constexpr auto ins		= tn::instr(c, i, j);
 			constexpr key_type memonic	= ins[CI::memonic];
 			constexpr key_type location	= ins[CI::location];
 
-			if constexpr (nnr || is_loadable(val))
+			if constexpr (is_machination(val))
 
-				return NIK_AUTOMATA(n, c, d, nnr, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
+				return NIK_AUTOMATA(n, c, d, MN::call, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
+
+			else if constexpr (is_loadable(val))
+
+				return NIK_AUTOMATA(n, c, d, MN::pass, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
 
 			else if constexpr (memonic == MM::id && location == MM::id)
 
@@ -276,8 +282,8 @@ private:
 	struct machine<MN::call, MT::block, filler...>
 	{
 		static constexpr auto nn		= U_block_program;
-		static constexpr auto nr		= false;
-		static constexpr auto nnr		= true;
+		static constexpr auto nm		= MN::id;
+		static constexpr auto nnm		= MN::call;
 
 		template
 		<
@@ -301,10 +307,10 @@ private:
 
 			constexpr auto cH0	= U_pretype_T<Heap0>;
 			constexpr auto cH1	= U_pretype_T<Heap1>;
-			constexpr auto nH2	= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
+			constexpr auto nH2	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto nH3	= U_opt_pack_Vs<cH0, cH1, null, null, U_pretype_T<Heaps>...>;
 
-			return NIK_AUTOMATA(n, c, d, nnr, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
+			return NIK_AUTOMATA(n, c, d, nnm, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
 		}
 	};
 
@@ -320,8 +326,8 @@ private:
 	struct machine<MN::call, Note, filler...>
 	{
 		static constexpr auto nn	= U_block_program;
-		static constexpr auto nr	= false;
-		static constexpr auto nnr	= true;
+		static constexpr auto nm	= MN::id;
+		static constexpr auto nnm	= MN::call;
 
 		template
 		<
@@ -350,52 +356,52 @@ private:
 			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
 			constexpr auto cH0		= U_pretype_T<Heap0>;
 			constexpr auto cH1		= U_pretype_T<Heap1>;
-			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
+			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto nH3		= U_opt_pack_Vs<nH0, null, cH0, cH1, U_pretype_T<Heaps>...>;
 
-			return NIK_AUTOMATA(n, c, d, nnr, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
+			return NIK_AUTOMATA(n, c, d, nnm, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
-// ship:
+// pass (id):
 
 	template<key_type... filler>
-	struct machine<MN::ship, _zero, filler...>
+	struct machine<MN::pass, MT::id, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
+		static constexpr auto result(Heaps... Hs)
+		{
+			constexpr auto sc = U_opt_pack_Vs<n, c, m, i, j, Vs...>;
+			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
+
+			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// pass (stage2):
+
+	template<key_type... filler>
+	struct machine<MN::pass, MT::stage2, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
 			typename Heap0, typename Heap1,
-			auto nn, auto nc, bool nr, auto ni, auto nj, auto... nVs,
+			auto nn, auto nc, auto nm, auto ni, auto nj, auto... nVs,
 			auto nH0, auto nH1, auto nH2, auto nH3, auto... nHs, typename... Heaps
 		>
 		static constexpr auto result
 		(
 			Heap0 H0, Heap1 H1,
-			void(*H2)(auto_pack<nn, nc, nr, ni, nj, nVs...>*),
+			void(*H2)(auto_pack<nn, nc, nm, ni, nj, nVs...>*),
 			void(*H3)(auto_pack<nH0, nH1, nH2, nH3, nHs...>*), Heaps... Hs
 		)
 		{
 			return NIK_MACHINE(n, c, d, i, j, nVs)(nH0, nH1, nH2, nH3, nHs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// (all) pass:
-
-	template<key_type... filler>
-	struct machine<MN::pass, _zero, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
-		static constexpr auto result(Heaps... Hs)
-		{
-			constexpr auto sc = U_opt_pack_Vs<n, c, r, i, j, Vs...>;
-			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
-
-			return loadable(sc, hc);
 		}
 	};
 
@@ -406,16 +412,17 @@ private:
 	template<key_type Note, key_type... filler>
 	struct machine<MN::pass, Note, filler...>
 	{
-		static constexpr auto nr = false;
+		static constexpr auto nm = MN::id;
 
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto ins, auto length, auto... Xs, typename Heap2, typename Heap3, typename... Heaps
+			auto ins, auto length, auto... Ws,
+			auto... Xs, typename Heap2, typename Heap3, typename... Heaps
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<ins, length>*),
+			void(*H0)(auto_pack<ins, length, Ws...>*),
 			void(*H1)(auto_pack<Xs...>*),
 			Heap2 H2, Heap3 H3, Heaps... Hs
 		)
@@ -432,7 +439,7 @@ private:
 			constexpr auto cH2	= U_pretype_T<Heap2>;
 			constexpr auto cH3	= U_pretype_T<Heap3>;
 			constexpr auto nc	= tn::template make_controller<ins, Xs...>;
-			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
+			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto hc	= U_opt_pack_Vs<cH2, cH3, null, null, U_pretype_T<Heaps>...>;
 
 			return machination(sc, hc);
@@ -459,7 +466,7 @@ private:
 // branch:
 
 	template<key_type... filler>
-	struct machine<MN::branch, _zero, filler...>
+	struct machine<MN::branch, MT::id, filler...>
 	{
 		template
 		<
@@ -468,9 +475,9 @@ private:
 		>
 		static constexpr auto result(void(*H0)(auto_pack<is_br, Ws...>*), Heaps... Hs)
 		{
-			using p			= T_type_U<n>;
+			using tn		= T_type_U<n>;
 
-			constexpr auto ni	= is_br ? p::val(c, i, j) : i;
+			constexpr auto ni	= is_br ? tn::value(c, i, j, UI::offset) : i;
 			constexpr auto nj	= is_br ? _zero : j;
 
 			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
@@ -487,7 +494,7 @@ private:
 // first:
 
 	template<key_type... filler>
-	struct machine<MN::first, _zero, filler...>
+	struct machine<MN::first, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
@@ -501,7 +508,7 @@ private:
 // rest:
 
 	template<key_type... filler>
-	struct machine<MN::rest, _zero, filler...>
+	struct machine<MN::rest, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto V0, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
@@ -520,7 +527,7 @@ private:
 // depth:
 
 	template<key_type... filler>
-	struct machine<MN::depth, _zero, filler...>
+	struct machine<MN::depth, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
@@ -534,12 +541,12 @@ private:
 // dump:
 
 	template<key_type... filler>
-	struct machine<MN::dump, _zero, filler...>
+	struct machine<MN::dump, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
 		{
-			constexpr auto sc = U_opt_pack_Vs<n, c, r, i, j, Vs...>;
+			constexpr auto sc = U_opt_pack_Vs<n, c, m, i, j, Vs...>;
 			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
 
 			return U_opt_pack_Vs<sc, hc>;
@@ -551,7 +558,7 @@ private:
 // stack:
 
 	template<key_type... filler>
-	struct machine<MN::stack, _zero, filler...>
+	struct machine<MN::stack, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
@@ -565,7 +572,7 @@ private:
 // heaps:
 
 	template<key_type... filler>
-	struct machine<MN::heaps, _zero, filler...>
+	struct machine<MN::heaps, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, typename... Heaps>
 		static constexpr auto result(Heaps... Hs)
@@ -614,7 +621,7 @@ private:
 // move heap one all:
 
 	template<key_type... filler>
-	struct machine<MN::move_h1_all, _zero, filler...>
+	struct machine<MN::move_h1_all, MT::id, filler...>
 	{
 		template
 		<
@@ -654,9 +661,11 @@ private:
 			{
 				if constexpr (location == MM::front)
 
-					return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<Xs..., Ws...>, null, Hs...);
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<Xs..., Ws...>, null, Hs...);
 				else
-					return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<Ws..., Xs...>, null, Hs...);
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<Ws..., Xs...>, null, Hs...);
 			}
 		}
 	};
@@ -673,20 +682,20 @@ public:
 		constexpr auto n	= U_linear_program;
 		constexpr auto c	= label<call_linear<MN::id, MT::id, MM::id, MM::id>>;
 		constexpr auto d	= program::depth;
-		constexpr bool r	= true;
+		constexpr auto m	= MN::call;
 		constexpr auto i	= T_LP::initial_i;
-		constexpr auto j	= T_LP::next_index2(c, d, false, i, T_LP::initial_j);
+		constexpr auto j	= T_LP::next_index2(c, d, MN::id, i, T_LP::initial_j);
 
 		constexpr auto nn	= U_type_T<program>;
 		constexpr auto nc	= program::template controller<Is...>;
-		constexpr bool nr	= false;
+		constexpr auto nm	= MN::id;
 		constexpr auto ni	= program::initial_i;
 		constexpr auto nj	= program::initial_j;
 
-		constexpr auto nH2	= U_opt_pack_Vs<nn, nc, nr, ni, nj, Vs...>;
+		constexpr auto nH2	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 		constexpr auto nH3	= U_opt_pack_Vs<null, null, null, null>;
 
-		return NIK_BEGIN_AUTOMATA(n, c, d, r, i, j) NIK_END_AUTOMATA(null, null, nH2, nH3);
+		return NIK_BEGIN_AUTOMATA(n, c, d, m, i, j) NIK_END_AUTOMATA(null, null, nH2, nH3);
 	}
 
 /***********************************************************************************************************************/

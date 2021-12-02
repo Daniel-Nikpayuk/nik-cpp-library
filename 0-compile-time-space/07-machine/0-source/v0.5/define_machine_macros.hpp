@@ -28,39 +28,39 @@
 
 	#define NIK_CONTR_PARAMS											\
 															\
-		auto n, auto c, auto d, bool r, auto i, auto j								\
+		auto n, auto c, auto d, auto m, auto i, auto j								\
 
 /***********************************************************************************************************************/
 
-	#define NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, _r_, _i_, _j_)							\
+	#define NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, _m_, _i_, _j_)							\
 															\
 		machine													\
 		<													\
-			T_type_U<_n_>::next_name(_c_, _d_, _r_, _i_, _j_),						\
-			T_type_U<_n_>::next_note(_c_, _d_, _r_, _i_, _j_)						\
+			T_type_U<_n_>::next_name(_c_, _d_, _m_, _i_, _j_),						\
+			T_type_U<_n_>::next_note(_c_, _d_, _m_, _i_, _j_)						\
 															\
 		>::template result											\
 		<													\
 			_n_, _c_,											\
 															\
 			T_type_U<_n_>::next_depth(_d_),									\
-			_r_,												\
-			T_type_U<_n_>::next_index1(_c_, _d_, _r_, _i_, _j_),						\
-			T_type_U<_n_>::next_index2(_c_, _d_, _r_, _i_, _j_)
+			_m_,												\
+			T_type_U<_n_>::next_index1(_c_, _d_, _m_, _i_, _j_),						\
+			T_type_U<_n_>::next_index2(_c_, _d_, _m_, _i_, _j_)
 
 	#define NIK_END_AUTOMATA 											\
 															\
 		>
 
-	#define NIK_AUTOMATA(_n_, _c_, _d_, _r_, _i_, _j_, _v_)								\
+	#define NIK_AUTOMATA(_n_, _c_, _d_, _m_, _i_, _j_, _v_)								\
 															\
-		NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, _r_, _i_, _j_),  _v_...  NIK_END_AUTOMATA
+		NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, _m_, _i_, _j_),  _v_...  NIK_END_AUTOMATA
 
 /***********************************************************************************************************************/
 
 	#define NIK_BEGIN_MACHINE(_n_, _c_, _d_, _i_, _j_)								\
 															\
-		NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, false, _i_, _j_)
+		NIK_BEGIN_AUTOMATA(_n_, _c_, _d_, MN::id, _i_, _j_)
 
 	#define NIK_END_MACHINE 											\
 															\
@@ -68,7 +68,7 @@
 
 	#define NIK_MACHINE(_n_, _c_, _d_, _i_, _j_, _v_)								\
 															\
-		NIK_AUTOMATA(_n_, _c_, _d_, false, _i_, _j_, _v_)
+		NIK_AUTOMATA(_n_, _c_, _d_, MN::id, _i_, _j_, _v_)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

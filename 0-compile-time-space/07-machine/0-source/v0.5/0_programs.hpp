@@ -67,37 +67,36 @@ public:
 			static constexpr key_type call					=  3;
 			static constexpr key_type load					=  4;
 			static constexpr key_type pass					=  5;
-			static constexpr key_type ship					=  6;
 
-			static constexpr key_type branch				=  7; // <machine>
-			static constexpr key_type go_to					=  8; // <machine>
+			static constexpr key_type branch				=  6; // <machine>
+			static constexpr key_type go_to					=  7; // <machine>
 
 		// halters:
 
-			static constexpr key_type first					=  9;
-			static constexpr key_type rest					= 10;
+			static constexpr key_type first					=  8;
+			static constexpr key_type rest					=  9;
 
 		// debuggers:
 
-			static constexpr key_type depth					= 11;
-			static constexpr key_type dump					= 12;
+			static constexpr key_type depth					= 10;
+			static constexpr key_type dump					= 11;
 
-			static constexpr key_type stack					= 13;
-			static constexpr key_type heaps					= 14;
+			static constexpr key_type stack					= 12;
+			static constexpr key_type heaps					= 13;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back	= 15; // <machine>
-			static constexpr key_type drop_s_block				= 16; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back	= 14; // <machine>
+			static constexpr key_type drop_s_block				= 15; // <halters>
 
-			static constexpr key_type move_s_block				= 17; // <mutators>
-			static constexpr key_type move_s_all				= 18; // <mutators>
+			static constexpr key_type move_s_block				= 16; // <mutators>
+			static constexpr key_type move_s_all				= 17; // <mutators>
 
-			static constexpr key_type move_h0_all				= 19; // <mutators>
-			static constexpr key_type move_h1_all				= 20; // <mutators>
+			static constexpr key_type move_h0_all				= 18; // <mutators>
+			static constexpr key_type move_h1_all				= 19; // <mutators>
 
-			static constexpr key_type apply_h0_all				= 21; // <machine>
-			static constexpr key_type compel_h0_all				= 22; // <machine>
+			static constexpr key_type apply_h0_all				= 20; // <machine>
+			static constexpr key_type compel_h0_all				= 21; // <machine>
 	};
 
 	using MN = MachineName;
@@ -142,7 +141,7 @@ public:
 			static constexpr key_type heap_zero		= 2;
 			static constexpr key_type heap_one		= 3;
 
-		// locators:
+		// locations:
 
 			static constexpr key_type front			= 4;
 			static constexpr key_type back			= 5;
@@ -348,40 +347,40 @@ public:
 
 		// navigators:
 
-			static constexpr key_type next_name(instr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr key_type next_name(instr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0)	return MN::pause;
-				else if (r)	return MN::call;	// assumes i >= j, next i := i - j
-				else if (i > j)	return c[BI::name];	// implies next i > 0
-				else 		return c[BI::coname];	// otherwise next i == 0
+				if (d == 0)		return MN::pause;	// assumes i >= j, next i := i - j
+				else if (m != MN::id)	return m;		// implies next i > 0
+				else if (i > j)		return c[BI::name];
+				else 			return c[BI::coname];
 			}
 
-			static constexpr key_type next_note(instr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr key_type next_note(instr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0)	return _zero;
-				else if (r)	return MT::stage2;
-				else if (i > j)	return max_note(i - j);
-				else		return c[BI::conote];
+				if (d == 0)		return MT::identity;	// assumes i >= j, next i := i - j
+				else if (m != MN::id)	return MT::stage2;
+				else if (i > j)		return max_note(i - j);
+				else			return c[BI::conote];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d == 0)	return d;
-				else 		return d-1;
+				if (d == 0)		return d;
+				else 			return d-1;
 			}
 
-			static constexpr index_type next_index1(instr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr index_type next_index1(instr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0)	return i;
-				else if (r)	return i;
-				else 		return i - j;
+				if (d == 0)		return i;
+				else if (m != MN::id)	return i;
+				else 			return i - j;
 			}
 
-			static constexpr index_type next_index2(instr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr index_type next_index2(instr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0)	return j;
-				else if (r)	return j;
-				else		return max_index2(i - j);
+				if (d == 0)		return j;
+				else if (m != MN::id)	return j;
+				else			return max_index2(i - j);
 			}
 
 		// controllers:
@@ -484,36 +483,36 @@ public:
 
 		// navigators:
 
-			static constexpr key_type next_name(label_type l, depth_type d, bool r, index_type, index_type j)
+			static constexpr key_type next_name(label_type l, depth_type d, key_type m, index_type, index_type j)
 			{
-				if (d == 0)	return MN::pause;
-				else if (r)	return MN::call;
-				else 		return l[j+1][MI::name];
+				if (d == 0)		return MN::pause;
+				else if (m != MN::id)	return m;
+				else 			return l[j+1][MI::name];
 			}
 
-			static constexpr key_type next_note(label_type l, depth_type d, bool r, index_type, index_type j)
+			static constexpr key_type next_note(label_type l, depth_type d, key_type m, index_type, index_type j)
 			{
-				if (d == 0)	return _zero;
-				else if (r)	return MT::stage2;
-				else		return l[j+1][MI::note];
+				if (d == 0)		return MT::identity;
+				else if (m != MN::id)	return MT::stage2;
+				else			return l[j+1][MI::note];
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d == 0)	return d;
-				else 		return d-1;
+				if (d == 0)		return d;
+				else 			return d-1;
 			}
 
-			static constexpr index_type next_index1(label_type, depth_type, bool, index_type i, index_type)
+			static constexpr index_type next_index1(label_type, depth_type, key_type, index_type i, index_type)
 			{
 				return i;
 			}
 
-			static constexpr index_type next_index2(label_type, depth_type d, bool r, index_type, index_type j)
+			static constexpr index_type next_index2(label_type, depth_type d, key_type m, index_type, index_type j)
 			{
-				if (d == 0)	return j;
-				else if (r)	return j;
-				else 		return j+1;
+				if (d == 0)		return j;
+				else if (m != MN::id)	return j;
+				else 			return j+1;
 			}
 
 		// controllers:
@@ -599,70 +598,78 @@ public:
 
 		// navigators:
 
-			static constexpr key_type next_name(contr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr key_type next_name(contr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0) return MN::pause;
-				else if (r) return MN::call;
+				if (d == 0)		return MN::pause;
+				else if (m != MN::id)	return m;
+				else
+				{
+					index_type ni = next_index1(c, d, m, i, j);
+					index_type nj = next_index2(c, d, m, i, j);
 
-				index_type ni = next_index1(c, d, r, i, j);
-				index_type nj = next_index2(c, d, r, i, j);
-
-				return c[ni][nj][MI::name];
+					return c[ni][nj][MI::name];
+				}
 			}
 
-			static constexpr key_type next_note(contr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr key_type next_note(contr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0) return _zero;
-				else if (r) return MT::stage2;
+				if (d == 0)		return MT::identity;
+				else if (m != MN::id)	return MT::stage2;
+				else
+				{
+					index_type ni = next_index1(c, d, m, i, j);
+					index_type nj = next_index2(c, d, m, i, j);
 
-				index_type ni = next_index1(c, d, r, i, j);
-				index_type nj = next_index2(c, d, r, i, j);
-
-				return c[ni][nj][MI::note];
+					return c[ni][nj][MI::note];
+				}
 			}
 
 			static constexpr depth_type next_depth(depth_type d)
 			{
-				if (d == 0)	return d;
-				else 		return d-1;
+				if (d == 0)		return d;
+				else 			return d-1;
 			}
 
-			static constexpr index_type next_index1(contr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr index_type next_index1(contr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0) return i;
-				else if (r) return i;
-
-				index_type ni = initial_next_index1(c, i, j);
-				index_type nj = initial_next_index2(c, i, j);
-				key_type note = c[ni][nj][MI::note];
-
-				if (note == MT::linear)
+				if (d == 0)		return i;
+				else if (m != MN::id)	return i;
+				else
 				{
-					key_type l_name = c[ni][nj][linear_name];
+					index_type ni = initial_next_index1(c, i, j);
+					index_type nj = initial_next_index2(c, i, j);
+					key_type note = c[ni][nj][MI::note];
 
-					if (l_name == LN::go_to_label) return c[ni][nj][linear_index];
+					if (note == MT::linear)
+					{
+						key_type l_name = c[ni][nj][linear_name];
+
+						if (l_name == LN::go_to_label) return c[ni][nj][linear_index];
+					}
+
+					return ni;
 				}
-
-				return ni;
 			}
 
-			static constexpr index_type next_index2(contr_type c, depth_type d, bool r, index_type i, index_type j)
+			static constexpr index_type next_index2(contr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
-				if (d == 0) return j;
-				else if (r) return j;
-
-				index_type ni = initial_next_index1(c, i, j);
-				index_type nj = initial_next_index2(c, i, j);
-				key_type note = c[ni][nj][MI::note];
-
-				if (note == MT::linear)
+				if (d == 0)		return j;
+				else if (m != MN::id)	return j;
+				else
 				{
-					key_type l_name = c[ni][nj][linear_name];
+					index_type ni = initial_next_index1(c, i, j);
+					index_type nj = initial_next_index2(c, i, j);
+					key_type note = c[ni][nj][MI::note];
 
-					if (l_name == LN::go_to_label) return _one;
+					if (note == MT::linear)
+					{
+						key_type l_name = c[ni][nj][linear_name];
+
+						if (l_name == LN::go_to_label) return _one;
+					}
+
+					return nj;
 				}
-
-				return nj;
 			}
 
 		// controllers:

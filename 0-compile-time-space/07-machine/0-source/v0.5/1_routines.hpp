@@ -39,13 +39,13 @@ public:
 
 // interposers:
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type pause = instruction
 	<
 		MN::pause, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type save = instruction
 	<
 		MN::save, Note
@@ -77,25 +77,19 @@ public:
 			MT::user, Subname, Subnote, Mem, Loc, Args...
 		>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type pass = instruction
 	<
 		MN::pass, Note
 	>;
 
-	template<key_type Note = _zero>
-	static constexpr instr_type ship = instruction
-	<
-		MN::ship, Note
-	>;
-
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type branch = instruction
 	<
 		MN::branch, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type go_to = instruction
 	<
 		MN::go_to, Note
@@ -103,13 +97,13 @@ public:
 
 // halters:
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type first = instruction
 	<
 		MN::first, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type rest = instruction
 	<
 		MN::rest, Note
@@ -117,25 +111,25 @@ public:
 
 // debuggers:
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type depth = instruction
 	<
 		MN::depth, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type dump = instruction
 	<
 		MN::dump, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type stack = instruction
 	<
 		MN::stack, Note
 	>;
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type heaps = instruction
 	<
 		MN::heaps, Note
@@ -143,19 +137,19 @@ public:
 
 // passers:
 
-	template<key_type Note = _zero>
+	template<key_type Note = MT::id>
 	static constexpr instr_type drop_s_block = instruction
 	<
 		MN::drop_s_block, Note
 	>;
 
-	template<key_type Mem, key_type Loc, key_type Note = _zero>
+	template<key_type Mem, key_type Loc, key_type Note = MT::id>
 	static constexpr instr_type move_h0_all = instruction
 	<
 		MN::move_h0_all, Note, Mem, Loc
 	>;
 
-	template<key_type Mem, key_type Loc, key_type Note = _zero>
+	template<key_type Mem, key_type Loc, key_type Note = MT::id>
 	static constexpr instr_type move_h1_all = instruction
 	<
 		MN::move_h1_all, Note, Mem, Loc
@@ -253,7 +247,7 @@ public:
 		template<key_type Mem, key_type Loc, index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__drop_s_segment<Mem, Loc, MN::first, _zero, Pos>
+			call__drop_s_segment<Mem, Loc, MN::first, MT::identity, Pos>
 		>;
 	};
 
@@ -345,8 +339,7 @@ public:
 		template<key_type Mem, key_type Loc, index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__move_s_segment<MM::heap_one, MM::back, MN::pass, _zero, Pos>,
-			ship<>,
+			call__move_s_segment<MM::heap_one, MM::back, MN::pass, MT::id, Pos>,
 			drop_s_block<>,
 			move_h1_all<MM::stack, MM::front>,
 			stack<> // testing
