@@ -75,6 +75,8 @@
 
 // unpack instruction block, insert at heap one back (2^N):
 
+		// This machine is not general purpose, and so is optimized accordingly.
+
 	#define NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
@@ -83,16 +85,15 @@
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, auto... Vs,								\
-				auto ins, auto length, auto... Ws, auto... Xs, typename... Heaps			\
+				auto call_ins, auto length, auto... Xs, typename... Heaps				\
 			>												\
 			static constexpr auto result									\
 			(												\
-				void(*H0)(auto_pack<ins, length, Ws...>*),						\
+				void(*H0)(auto_pack<call_ins, length>*),						\
 				void(*H1)(auto_pack<Xs...>*), Heaps... Hs						\
 			)												\
 			{												\
-				using tn			= T_type_U<n>;						\
-				constexpr index_type offset	= length - i;						\
+				constexpr index_type offset = length - i;						\
 															\
 				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 				(											\
@@ -100,7 +101,7 @@
 					U_opt_pack_Vs									\
 					<										\
 						Xs...,									\
-						NIK_2_ ## _n_ ## _ARRAY_BLOCK(ins, offset)				\
+						NIK_2_ ## _n_ ## _ARRAY_BLOCK(call_ins, offset)				\
 					>,										\
 					Hs...										\
 				);											\
@@ -125,56 +126,22 @@
 
 /***********************************************************************************************************************/
 
-// move stack block (2^N):
+// move stack block, insert at heap one back (2^N):
 
-	#define NIK_DEFINE__MOVE_S_BLOCK(_n_)										\
+	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_s_block, _n_, filler...>							\
+		struct machine<MN::move_s_block__insert_at_h1_back, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs,				\
-				auto... Ws, auto... Xs, typename... Heaps						\
+				typename Heap0, auto... Xs, typename... Heaps						\
 			>												\
-			static constexpr auto result									\
-			(												\
-				void(*H0)(auto_pack<Ws...>*),								\
-				void(*H1)(auto_pack<Xs...>*),								\
-				Heaps... Hs										\
-			)												\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Xs...>*), Heaps... Hs)		\
 			{												\
-				using tn			= T_type_U<n>;						\
-				constexpr auto ins		= tn::instr(c, i, j);					\
-				constexpr key_type memonic	= ins[BI::memonic];					\
-				constexpr key_type location	= ins[BI::location];					\
-															\
-				if constexpr (memonic == MM::heap_one)							\
-				{											\
-					if constexpr (location == MM::back)						\
-															\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-							(H0, U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _VS>, Hs...);	\
-					else										\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-							(H0, U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Xs...>, Hs...);	\
-				}											\
-				else if constexpr (memonic == MM::heap_zero)						\
-				{											\
-					if constexpr (location == MM::front)						\
-															\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-							(U_opt_pack_Vs<NIK_2_ ## _n_ ## _VS, Ws...>, H1, Hs...);	\
-					else										\
-						return NIK_MACHINE(n, c, d, i, j, Vs)					\
-							(U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, H1, Hs...);	\
-				}											\
-				else /* if constexpr (memonic == MM::stack) */						\
-					return NIK_BEGIN_MACHINE(n, c, d, i, j),					\
-															\
-						Vs..., NIK_2_ ## _n_ ## _VS						\
-															\
-					NIK_END_MACHINE(H0, H1, Hs...);							\
+				return NIK_MACHINE(n, c, d, i, j, Vs)							\
+					(H0, U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
 			}												\
 		}
 

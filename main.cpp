@@ -153,7 +153,8 @@
 		template<auto Pos>
 		static constexpr label_type controller = machine_module::template label
 		<
-			machine_module::template call__erase<Pos>
+			machine_module::template call__erase<Pos>,
+			machine_module::template stack<>
 		>;
 	};
 

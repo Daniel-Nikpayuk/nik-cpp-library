@@ -219,25 +219,45 @@ private:
 			using tn			= T_type_U<n>;
 
 			constexpr auto val		= NIK_AUTOMATA(nn, nc, d, nm, ni, nj, nVs)(nHs...);
-			constexpr auto ins		= tn::instr(c, i, j);
-			constexpr key_type memonic	= ins[CI::memonic];
-			constexpr key_type location	= ins[CI::location];
+			constexpr auto call_ins		= tn::instr(c, i, j);
+			constexpr key_type memonic	= call_ins[CI::memonic];
+			constexpr key_type location	= call_ins[CI::location];
 
 			if constexpr (is_machination(val))
 
 				return NIK_AUTOMATA(n, c, d, MN::call, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
 
-			else if constexpr (is_loadable(val))
-
-				return NIK_AUTOMATA(n, c, d, MN::pass, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
-
-			else if constexpr (memonic == MM::id && location == MM::id)
+			else if constexpr (memonic == PM::id && location == PL::id)
 
 				return val;
 
-			else if constexpr (memonic == MM::stack)
+			else if constexpr (memonic == PM::stage2 && location == PL::id)
+
+				return NIK_AUTOMATA(n, c, d, MN::pass, i, j, Vs)(H0, H1, val.sc, val.hc, Hs...);
+
+			else if constexpr (memonic == PM::heap_zero)
 			{
-				if constexpr (location == MM::front)
+				if constexpr (location == PL::front)
+
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<val, Ws...>, H1, null, null, Hs...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(U_opt_pack_Vs<Ws..., val>, H1, null, null, Hs...);
+			}
+			else if constexpr (memonic == PM::heap_one)
+			{
+				if constexpr (location == PL::front)
+
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(H0, U_opt_pack_Vs<val, Xs...>, null, null, Hs...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)
+						(H0, U_opt_pack_Vs<Xs..., val>, null, null, Hs...);
+			}
+			else if constexpr (memonic == PM::stack)
+			{
+				if constexpr (location == PL::front)
 
 					return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
@@ -250,26 +270,6 @@ private:
 						Vs..., val
 
 					NIK_END_MACHINE(H0, H1, null, null, Hs...);
-			}
-			else if constexpr (memonic == MM::heap_zero)
-			{
-				if constexpr (location == MM::front)
-
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(U_opt_pack_Vs<val, Ws...>, H1, null, null, Hs...);
-				else
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(U_opt_pack_Vs<Ws..., val>, H1, null, null, Hs...);
-			}
-			else if constexpr (memonic == MM::heap_one)
-			{
-				if constexpr (location == MM::front)
-
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(H0, U_opt_pack_Vs<val, Xs...>, null, null, Hs...);
-				else
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(H0, U_opt_pack_Vs<Xs..., val>, null, null, Hs...);
 			}
 		}
 	};
@@ -299,9 +299,9 @@ private:
 		{
 			using tn		= T_type_U<n>;
 
-			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto nc	= T_BP::template make_controller<ins>;
-			constexpr auto pos	= ins[BCI::pos];
+			constexpr auto call_ins	= tn::instr(c, i, j);
+			constexpr auto nc	= T_BP::template make_controller<call_ins>;
+			constexpr auto pos	= call_ins[BCI::pos];
 			constexpr auto nj	= T_BP::max_index2(pos);
 			constexpr auto ni	= pos + nj;
 
@@ -343,17 +343,17 @@ private:
 		{
 			using tn			= T_type_U<n>;
 
-			constexpr auto ins		= tn::instr(c, i, j);
-			constexpr index_type length	= MI::length(ins) + 1;
+			constexpr auto call_ins		= tn::instr(c, i, j);
+			constexpr index_type length	= MI::length(call_ins) + 1;
 			constexpr index_type size	= length - (MT::is_linear(Note) ? LCI::offset : UCI::offset);
 			constexpr auto nc		= bp_unpack_i_segment__insert_at_h1_back::template controller
 							<
-								MM::identity, MM::identity, MN::pass, Note
+								MN::pass, Note
 							>;
 			constexpr auto nj		= T_BP::max_index2(size);
 			constexpr auto ni		= size + nj;
 
-			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
+			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length>;
 			constexpr auto cH0		= U_pretype_T<Heap0>;
 			constexpr auto cH1		= U_pretype_T<Heap1>;
 			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
@@ -417,12 +417,12 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto ins, auto length, auto... Ws,
+			auto call_ins, auto length, auto... Ws,
 			auto... Xs, typename Heap2, typename Heap3, typename... Heaps
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<ins, length, Ws...>*),
+			void(*H0)(auto_pack<call_ins, length, Ws...>*),
 			void(*H1)(auto_pack<Xs...>*),
 			Heap2 H2, Heap3 H3, Heaps... Hs
 		)
@@ -438,7 +438,7 @@ private:
 
 			constexpr auto cH2	= U_pretype_T<Heap2>;
 			constexpr auto cH3	= U_pretype_T<Heap3>;
-			constexpr auto nc	= tn::template make_controller<ins, Xs...>;
+			constexpr auto nc	= tn::template make_controller<call_ins, Xs...>;
 			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto hc	= U_opt_pack_Vs<cH2, cH3, null, null, U_pretype_T<Heaps>...>;
 
@@ -468,6 +468,8 @@ private:
 	template<key_type... filler>
 	struct machine<MN::branch, MT::id, filler...>
 	{
+		static constexpr index_type index = 3;
+
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
@@ -477,7 +479,8 @@ private:
 		{
 			using tn		= T_type_U<n>;
 
-			constexpr auto ni	= is_br ? tn::value(c, i, j, UI::offset) : i;
+			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto ni	= is_br ? ins[index] : i;
 			constexpr auto nj	= is_br ? _zero : j;
 
 			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
@@ -603,70 +606,38 @@ private:
 
 /***********************************************************************************************************************/
 
-// move stack block (2^N):
+// move stack block, insert at heap one back (2^N):
 
-	NIK_DEFINE__MOVE_S_BLOCK(0);
-	NIK_DEFINE__MOVE_S_BLOCK(1);
-	NIK_DEFINE__MOVE_S_BLOCK(2);
-	NIK_DEFINE__MOVE_S_BLOCK(3);
-	NIK_DEFINE__MOVE_S_BLOCK(4);
-	NIK_DEFINE__MOVE_S_BLOCK(5);
-	NIK_DEFINE__MOVE_S_BLOCK(6);
-	NIK_DEFINE__MOVE_S_BLOCK(7);
-	NIK_DEFINE__MOVE_S_BLOCK(8);
-	NIK_DEFINE__MOVE_S_BLOCK(9);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(0);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(1);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(2);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(3);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(4);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(5);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(6);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(7);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(8);
+	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(9);
 
 /***********************************************************************************************************************/
 
-// move heap one all:
+// move heap one all, insert at stack front:
 
 	template<key_type... filler>
-	struct machine<MN::move_h1_all, MT::id, filler...>
+	struct machine<MN::move_h1_all__insert_at_s_front, MT::id, filler...>
 	{
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, auto... Xs, typename... Heaps
+			typename Heap0, auto... Xs, typename... Heaps
 		>
-		static constexpr auto result
-		(
-			void(*H0)(auto_pack<Ws...>*),
-			void(*H1)(auto_pack<Xs...>*),
-			Heaps... Hs
-		)
+		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Xs...>*), Heaps... Hs)
 		{
-			using tn			= T_type_U<n>;
+			return NIK_BEGIN_MACHINE(n, c, d, i, j),
 
-			constexpr auto ins		= tn::instr(c, i, j);
-			constexpr key_type memonic	= ins[MI::memonic];
-			constexpr key_type location	= ins[MI::location];
+				Xs..., Vs...
 
-			if constexpr (memonic == MM::stack)
-			{
-				if constexpr (location == MM::front)
-
-					return NIK_BEGIN_MACHINE(n, c, d, i, j),
-
-						Xs..., Vs...
-
-					NIK_END_MACHINE(H0, null, Hs...);
-				else
-					return NIK_BEGIN_MACHINE(n, c, d, i, j),
-
-						Vs..., Xs...
-
-					NIK_END_MACHINE(H0, null, Hs...);
-			}
-			else // if constexpr (memonic == MM::heap_zero)
-			{
-				if constexpr (location == MM::front)
-
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(U_opt_pack_Vs<Xs..., Ws...>, null, Hs...);
-				else
-					return NIK_MACHINE(n, c, d, i, j, Vs)
-						(U_opt_pack_Vs<Ws..., Xs...>, null, Hs...);
-			}
+			NIK_END_MACHINE(H0, null, Hs...);
 		}
 	};
 
@@ -680,7 +651,7 @@ public:
 	static constexpr auto start(void(*)(auto_pack<Is...>*) = null)
 	{
 		constexpr auto n	= U_linear_program;
-		constexpr auto c	= label<call_linear<MN::id, MT::id, MM::id, MM::id>>;
+		constexpr auto c	= label<call_linear_program<MN::id, MT::id, PM::id, PL::id>>;
 		constexpr auto d	= program::depth;
 		constexpr auto m	= MN::call;
 		constexpr auto i	= T_LP::initial_i;

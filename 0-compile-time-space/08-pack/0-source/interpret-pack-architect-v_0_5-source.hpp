@@ -31,6 +31,16 @@
 
 private:
 
+	template<key_type... filler>
+	struct linear_program<LN::at, filler...> : public linear_program<filler...>
+	{
+		template<key_type Mem, key_type Loc, index_type Pos>
+		static constexpr label_type controller = label
+		<
+			call__at<Pos, Mem, Loc>
+		>;
+	};
+
 	template<auto d, auto n, auto... Vs>
 	static constexpr auto f_at()
 	{

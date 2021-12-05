@@ -65,38 +65,34 @@ public:
 
 			static constexpr key_type save					=  2;
 			static constexpr key_type call					=  3;
-			static constexpr key_type load					=  4;
-			static constexpr key_type pass					=  5;
+			static constexpr key_type pass					=  4;
 
-			static constexpr key_type branch				=  6; // <machine>
-			static constexpr key_type go_to					=  7; // <machine>
+			static constexpr key_type branch				=  5; // <machine>
+			static constexpr key_type go_to					=  6; // <machine>
 
 		// halters:
 
-			static constexpr key_type first					=  8;
-			static constexpr key_type rest					=  9;
+			static constexpr key_type first					=  7;
+			static constexpr key_type rest					=  8;
 
 		// debuggers:
 
-			static constexpr key_type depth					= 10;
-			static constexpr key_type dump					= 11;
+			static constexpr key_type depth					=  9;
+			static constexpr key_type dump					= 10;
 
-			static constexpr key_type stack					= 12;
-			static constexpr key_type heaps					= 13;
+			static constexpr key_type stack					= 11;
+			static constexpr key_type heaps					= 12;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back	= 14; // <machine>
-			static constexpr key_type drop_s_block				= 15; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back	= 13; // <machine>
+			static constexpr key_type drop_s_block				= 14; // <halters>
 
-			static constexpr key_type move_s_block				= 16; // <mutators>
-			static constexpr key_type move_s_all				= 17; // <mutators>
+			static constexpr key_type move_s_block__insert_at_h1_back	= 15; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_s_front	= 16; // <mutators>
 
-			static constexpr key_type move_h0_all				= 18; // <mutators>
-			static constexpr key_type move_h1_all				= 19; // <mutators>
-
-			static constexpr key_type apply_h0_all				= 20; // <machine>
-			static constexpr key_type compel_h0_all				= 21; // <machine>
+			static constexpr key_type apply_h0_all				= 17; // <machine>
+			static constexpr key_type compel_h0_all				= 18; // <machine>
 	};
 
 	using MN = MachineName;
@@ -130,24 +126,31 @@ public:
 
 /***********************************************************************************************************************/
 
-	struct MachineMode
+	struct PassMemonic
 	{
 			static constexpr key_type identity		= 0;
 			static constexpr key_type id			= identity;	// convenience for
 											// default params.
-		// memonics:
 
 			static constexpr key_type stack			= 1;
 			static constexpr key_type heap_zero		= 2;
 			static constexpr key_type heap_one		= 3;
-
-		// locations:
-
-			static constexpr key_type front			= 4;
-			static constexpr key_type back			= 5;
+			static constexpr key_type stage2		= 4;
+			static constexpr key_type pack			= 5;
 	};
 
-	using MM = MachineMode;
+	using PM = PassMemonic;
+
+	struct PassLocation
+	{
+			static constexpr key_type identity		= 0;
+			static constexpr key_type id			= identity;	// convenience for
+											// default params.
+			static constexpr key_type front			= 5;
+			static constexpr key_type back			= 6;
+	};
+
+	using PL = PassLocation;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -163,8 +166,6 @@ public:
 		static constexpr index_type size			= 0;
 		static constexpr index_type name			= 1;
 		static constexpr index_type note			= 2;
-		static constexpr index_type memonic			= 3;
-		static constexpr index_type location			= 4;
 
 		static constexpr index_type length (type i)		{ return i[size]; }
 		static constexpr index_type last   (type i)		{ return i[length(i)]; }
@@ -179,6 +180,7 @@ public:
 		static constexpr index_type call_note			= 2;
 		static constexpr index_type name			= 3;
 		static constexpr index_type note			= 4;
+
 		static constexpr index_type memonic			= 5;
 		static constexpr index_type location			= 6;
 	};
@@ -246,10 +248,14 @@ public:
 
 // (block) programs:
 
-	// Optimized to use a single instruction as the controller.
+	// Block programs are intended *only* to be called by linear/user programs. 
 
-	// Block programs are intended *only* to be called by linear, or user programs. 
-	// Their instruction indices coincide with their machine modifiers.
+	// Block programs consist of two block instructions. Minimally, in order to call
+	// these programs only "unpack i segment, insert at h1 back" is required to bootstrap
+	// the calling/loading process for the others. As the minimum number of required
+	// programs all have the same form they are optimized into a single-call loader.
+
+	// As an optimization the two co-instructions are encoded as a single one instead.
 
 /***********************************************************************************************************************/
 
@@ -268,7 +274,7 @@ public:
 
 			static constexpr key_type drop_s_segment				= 2; // <list>
 
-			static constexpr key_type move_s_segment				= 3; // <mutators>
+			static constexpr key_type move_s_segment__insert_at_h1_back		= 3; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -279,24 +285,18 @@ public:
 
 	struct BlockInstr : public MachineInstr
 	{
-		static constexpr index_type coname			=  5;
-		static constexpr index_type conote			=  6;
-
-		static constexpr index_type pos				=  7;
-
-		static constexpr index_type offset			=  8;
+		static constexpr index_type coname			=  3;
+		static constexpr index_type conote			=  4;
 	};
 
 	using BI							= BlockInstr;
 
 	struct BlockCallInstr : public CallInstr
 	{
-		static constexpr index_type coname			=  7;
-		static constexpr index_type conote			=  8;
+		static constexpr index_type pos				=  7;
 
-		static constexpr index_type pos				=  9;
-
-		static constexpr index_type offset			= 10;
+		static constexpr index_type coname			=  8;
+		static constexpr index_type conote			=  9;
 	};
 
 	using BCI							= BlockCallInstr;
@@ -311,9 +311,6 @@ public:
 			static constexpr depth_type depth = 500;
 
 		// accessors:
-
-			static constexpr auto value(instr_type i, index_type, index_type, key_type p)
-				{ return i[p]; }
 
 			static constexpr auto instr(instr_type i, index_type, index_type)
 				{ return i; }
@@ -385,17 +382,15 @@ public:
 
 		// controllers:
 
-			template<auto ins>
+			template<auto call_ins>
 			static constexpr instr_type make_controller = block_program
 			<
-				ins[BCI::name]
+				call_ins[BCI::name]
 
 			>::template controller
 			<
-				ins[BCI::memonic],
-				ins[BCI::location],
-				ins[BCI::coname],
-				ins[BCI::conote]
+				call_ins[BCI::coname],
+				call_ins[BCI::conote]
 			>;
 	};
 
@@ -449,7 +444,7 @@ public:
 
 	struct LinearInstr : public MachineInstr
 	{
-		static constexpr index_type offset			= 5;
+		// none.
 	};
 
 	using LI							= LinearInstr;
@@ -474,9 +469,6 @@ public:
 			static constexpr index_type initial_j		= _zero;
 
 		// accessors:
-
-			static constexpr auto value(label_type l, index_type, index_type j, key_type p)
-				{ return l[j][p]; }
 
 			static constexpr auto instr(label_type l, index_type, index_type j)
 				{ return l[j]; }
@@ -517,17 +509,12 @@ public:
 
 		// controllers:
 
-			template<auto ins, auto... Xs>
+			template<auto call_ins, auto... Vs>
 			static constexpr label_type make_controller = linear_program
 			<
-				ins[LCI::name]
+				call_ins[LCI::name]
 
-			>::template controller
-			<
-				ins[LCI::memonic],
-				ins[LCI::location],
-				Xs...
-			>;
+			>::template controller<Vs...>;
 	};
 
 	using T_LP					= linear_program<>;
@@ -544,7 +531,7 @@ public:
 
 	struct UserInstr : public MachineInstr
 	{
-		static constexpr index_type offset			= 5;
+		// none.
 	};
 
 	using UI							= LinearInstr;
@@ -575,9 +562,6 @@ public:
 			static constexpr index_type linear_index	= 4;
 
 		// accessors:
-
-			static constexpr auto value(contr_type c, index_type i, index_type j, key_type p)
-				{ return c[i][j][p]; }
 
 			static constexpr auto instr(contr_type c, index_type i, index_type j)
 				{ return c[i][j]; }
@@ -674,17 +658,12 @@ public:
 
 		// controllers:
 
-			template<auto ins, auto... Xs>
+			template<auto call_ins, auto... Vs>
 			static constexpr contr_type make_controller = user_program
 			<
-				ins[UCI::name]
+				call_ins[UCI::name]
 
-			>::template controller
-			<
-				ins[UCI::memonic],
-				ins[UCI::location],
-				Xs...
-			>;
+			>::template controller<Vs...>;
 	};
 
 	using T_UP				= user_program<>;
