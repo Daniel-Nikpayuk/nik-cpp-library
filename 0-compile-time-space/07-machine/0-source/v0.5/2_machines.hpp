@@ -198,6 +198,8 @@ private:
 
 // call (stage2):
 
+		// { Vs... , Hs... } passing policy: copy.
+
 	template<key_type... filler>
 	struct machine<MN::call, MT::stage2, filler...>
 	{
@@ -278,6 +280,8 @@ private:
 
 // call (block):
 
+		// { Vs... , Hs... } passing policy: copy.
+
 	template<key_type... filler>
 	struct machine<MN::call, MT::block, filler...>
 	{
@@ -288,14 +292,9 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			typename Heap0, typename Heap1, auto... nVs, auto... nHs, typename... Heaps
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3, typename... Heaps
 		>
-		static constexpr auto result
-		(
-			Heap0 H0, Heap1 H1,
-			void(*H2)(auto_pack<nVs...>*),
-			void(*H3)(auto_pack<nHs...>*), Heaps... Hs
-		)
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Heaps... Hs)
 		{
 			using tn		= T_type_U<n>;
 
@@ -310,13 +309,15 @@ private:
 			constexpr auto nH2	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto nH3	= U_opt_pack_Vs<cH0, cH1, null, null, U_pretype_T<Heaps>...>;
 
-			return NIK_AUTOMATA(n, c, d, nnm, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
+			return NIK_AUTOMATA(n, c, d, nnm, i, j, Vs)(H0, H1, nH2, nH3, Hs...);
 		}
 	};
 
 /***********************************************************************************************************************/
 
 // call (linear, user):
+
+		// { Vs... , Hs... } passing policy: restore.
 
 		// Replacing the existing controller with an "inlined" equivalent is the preferred
 		// implementation, but the gcc/clang compilers issue too many type misalignments.
@@ -618,6 +619,28 @@ private:
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(7);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(8);
 	NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(9);
+
+/***********************************************************************************************************************/
+
+// move heap zero first, insert at stack front:
+
+	template<key_type... filler>
+	struct machine<MN::move_h0_first__insert_at_s_front, MT::id, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto W0, auto... Ws, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
+		{
+			return NIK_BEGIN_MACHINE(n, c, d, i, j),
+
+				W0, Vs...
+
+			NIK_END_MACHINE(U_opt_pack_Vs<Ws...>, Hs...);
+		}
+	};
 
 /***********************************************************************************************************************/
 
