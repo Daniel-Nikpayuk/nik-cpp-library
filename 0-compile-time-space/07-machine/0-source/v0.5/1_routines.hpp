@@ -122,35 +122,59 @@ public:
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type stack = instruction
+	static constexpr instr_type registers = instruction
 	<
-		MN::stack, Note
+		MN::registers, Note
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type heaps = instruction
+	static constexpr instr_type arguments = instruction
 	<
-		MN::heaps, Note
+		MN::arguments, Note
 	>;
 
 // passers:
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type drop_s_block = instruction
+	static constexpr instr_type drop_r_block = instruction
 	<
-		MN::drop_s_block, Note
+		MN::drop_r_block, Note
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type move_h0_first__insert_at_s_front = instruction
+	static constexpr instr_type move_h0_first__insert_at_r_front = instruction
 	<
-		MN::move_h0_first__insert_at_s_front, Note
+		MN::move_h0_first__insert_at_r_front, Note
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type move_h1_all__insert_at_s_front = instruction
+	static constexpr instr_type move_h1_all__insert_at_r_front = instruction
 	<
-		MN::move_h1_all__insert_at_s_front, Note
+		MN::move_h1_all__insert_at_r_front, Note
+	>;
+
+	template<key_type Note = MT::id>
+	static constexpr instr_type apply_h0_all__move__replace_at_h0_front = instruction
+	<
+		MN::apply_h0_all__move__insert_at_r_front, Note
+	>;
+
+	template<key_type Note = MT::id>
+	static constexpr instr_type apply_h0_all__move__insert_at_r_front = instruction
+	<
+		MN::apply_h0_all__move__insert_at_r_front, Note
+	>;
+
+	template<key_type Note = MT::id>
+	static constexpr instr_type compel_h0_all__move__replace_at_h0_front = instruction
+	<
+		MN::compel_h0_all__move__insert_at_r_front, Note
+	>;
+
+	template<key_type Note = MT::id>
+	static constexpr instr_type compel_h0_all__move__insert_at_r_front = instruction
+	<
+		MN::compel_h0_all__move__insert_at_r_front, Note
 	>;
 
 /***********************************************************************************************************************/
@@ -186,15 +210,15 @@ public:
 
 /***********************************************************************************************************************/
 
-// drop stack segment:
+// drop register segment:
 
 	template<key_type... filler>
-	struct block_program<BN::drop_s_segment, filler...> : public block_program<filler...>
+	struct block_program<BN::drop_r_segment, filler...> : public block_program<filler...>
 	{
 		template<key_type Coname, key_type Conote>
 		static constexpr instr_type controller = instruction
 		<
-			MN::drop_s_block, MT::id,
+			MN::drop_r_block, MT::id,
 			Coname, Conote
 		>;
 	};
@@ -207,16 +231,16 @@ public:
 			index_type Pos,
 			key_type Coname, key_type Conote
 		>
-		static constexpr instr_type call__drop_s_segment = call_block_program
+		static constexpr instr_type call__drop_r_segment = call_block_program
 		<
-			BN::drop_s_segment,
+			BN::drop_r_segment,
 			Mem, Loc,
 			Pos,
 			Coname, Conote
 		>;
 
 		template<index_type Pos, key_type Loc>
-		static constexpr instr_type call__copy_s_pos__insert_at_h0 = call__drop_s_segment
+		static constexpr instr_type call__copy_r_pos__insert_at_h0 = call__drop_r_segment
 		<
 			PM::heap_zero, Loc,
 			Pos,
@@ -226,7 +250,7 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos, key_type Mem = PM::id, key_type Loc = PL::id>
-		static constexpr instr_type call__at = call__drop_s_segment
+		static constexpr instr_type call__at = call__drop_r_segment
 		<
 			Mem, Loc,
 			Pos,
@@ -234,28 +258,28 @@ public:
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type call__copy_s_pos__insert_at_h0_front = call__copy_s_pos__insert_at_h0
+		static constexpr instr_type call__copy_r_pos__insert_at_h0_front = call__copy_r_pos__insert_at_h0
 		<
 			Pos, PL::front
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type call__copy_s_pos__insert_at_h0_back = call__copy_s_pos__insert_at_h0
+		static constexpr instr_type call__copy_r_pos__insert_at_h0_back = call__copy_r_pos__insert_at_h0
 		<
 			Pos, PL::back
 		>;
 
 /***********************************************************************************************************************/
 
-// move stack segment, insert at heap one back:
+// move register segment, insert at heap one back:
 
 	template<key_type... filler>
-	struct block_program<BN::move_s_segment__insert_at_h1_back, filler...> : public block_program<filler...>
+	struct block_program<BN::move_r_segment__insert_at_h1_back, filler...> : public block_program<filler...>
 	{
 		template<key_type Coname, key_type Conote>
 		static constexpr instr_type controller = instruction
 		<
-			MN::move_s_block__insert_at_h1_back, MT::id,
+			MN::move_r_block__insert_at_h1_back, MT::id,
 			Coname, Conote
 		>;
 	};
@@ -263,9 +287,9 @@ public:
 	// interface:
 
 		template<index_type Pos>
-		static constexpr instr_type call__move_s_segment__insert_at_h1_back = call_block_program
+		static constexpr instr_type call__move_r_segment__insert_at_h1_back = call_block_program
 		<
-			BN::move_s_segment__insert_at_h1_back,
+			BN::move_r_segment__insert_at_h1_back,
 			PM::stage2, PL::id,
 			Pos,
 			MN::pass, MT::id
@@ -276,174 +300,6 @@ public:
 /***********************************************************************************************************************/
 
 // linear:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// mutators:
-
-/***********************************************************************************************************************/
-
-// erase:
-
-	template<key_type... filler>
-	struct linear_program<LN::erase, filler...> : public linear_program<filler...>
-	{
-		template<index_type Pos>
-		static constexpr label_type controller = label
-		<
-			call__move_s_segment__insert_at_h1_back<Pos>,
-			drop_s_block<>,
-			move_h1_all__insert_at_s_front<>,
-			pass<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type call__erase = call_linear_program
-		<
-			LN::erase, MT::id,
-			PM::stage2, PL::id,
-			Pos
-		>;
-
-/***********************************************************************************************************************/
-
-// insert:
-
-	template<key_type... filler>
-	struct linear_program<LN::insert, filler...> : public linear_program<>
-	{
-		template<index_type Pos, index_type Obj>
-		static constexpr label_type controller = label
-		<
-			call__copy_s_pos__insert_at_h0_front<Obj>,
-			call__move_s_segment__insert_at_h1_back<Pos>,
-			move_h0_first__insert_at_s_front<>,
-			move_h1_all__insert_at_s_front<>,
-			pass<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type call__insert = call_linear_program
-		<
-			LN::insert, MT::id,
-			PM::stage2, PL::id,
-			Pos, Obj
-		>;
-
-/***********************************************************************************************************************/
-
-// :
-
-	template<key_type... filler>
-	struct linear_program<LN::replace, filler...> : public linear_program<>
-	{
-		template<index_type Pos, index_type Obj>
-		static constexpr label_type controller = label
-		<
-			call__copy_s_pos__insert_at_h0_front<Obj>,
-			call__move_s_segment__insert_at_h1_back<Pos>,
-			drop_s_block<>,
-			move_h0_first__insert_at_s_front<>,
-			move_h1_all__insert_at_s_front<>,
-			pass<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type call__replace = call_linear_program
-		<
-			LN::replace, MT::id,
-			PM::stage2, PL::id,
-			Pos, Obj
-		>;
-
-	// syntactic sugar:
-
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type assign_using = call__replace
-		<
-			Pos, Obj
-		>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// passers:
-
-/***********************************************************************************************************************/
-
-// :
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::apply_h0_all__move__replace_at_s_pos, filler...> : public linear_program<> // e1e
-	{
-		template<index_type Pos>
-		static constexpr label_type controller = label
-		<
-			move_s_segment__insert_at_h1_back<Pos>,
-			drop_s_block<>, // first
-			apply_h0_all__move__insert_at_s_front<>,
-			move_h1_all__insert_at_s_front<>,
-			pass<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type f_apply_h0_all__move__replace_at_s_pos()
-		{
-			if constexpr (MI::is_opt(Pos)) return apply_h0_all__move__replace_at_s_pos_opt<Pos>;
-			else return linear<LN::apply_h0_all__move__replace_at_s_pos, _zero, Pos>;
-		}
-
-		template<index_type Pos>
-		static constexpr instr_type apply_h0_all__move__replace_at_s_pos =
-			f_apply_h0_all__move__replace_at_s_pos<Pos>();
-*/
-
-/***********************************************************************************************************************/
-
-// :
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::compel_h0_all__move__replace_at_s_pos, filler...> : public linear_program<> // e1e
-	{
-		template<index_type Pos>
-		static constexpr label_type controller = label
-		<
-			move_s_segment__insert_at_h1_back<Pos>,
-			drop_s_block<>, // first
-			compel_h0_all__move__insert_at_s_front<>,
-			move_h1_all__insert_at_s_front<>,
-			pass<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type f_compel_h0_all__move__replace_at_s_pos()
-		{
-			if constexpr (MI::is_opt(Pos)) return compel_h0_all__move__replace_at_s_pos_opt<Pos>;
-			else return linear<LN::compel_h0_all__move__replace_at_s_pos, _zero, Pos>;
-		}
-
-		template<index_type Pos>
-		static constexpr instr_type compel_h0_all__move__replace_at_s_pos =
-			f_compel_h0_all__move__replace_at_s_pos<Pos>();
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -461,7 +317,7 @@ public:
 		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
-			copy_s_pos__insert_at_h0_front<Pos>,
+			copy_r_pos__insert_at_h0_front<Pos>,
 			instruction<MN::pass, PT::reindex>
 		>;
 	};
@@ -514,7 +370,7 @@ public:
 		static constexpr label_type controller = label
 		<
 			copy_i_pos__insert_at_h0_front<Obj>,
-			move_h0_first__replace_at_s_pos<Pos>,
+			move_h0_first__replace_at_r_pos<Pos>,
 			pass<>
 		>;
 	};
@@ -527,18 +383,119 @@ public:
 */
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// :
+// mutators:
 
-/*
+/***********************************************************************************************************************/
+
+// erase:
+
 	template<key_type... filler>
-	struct linear_program<LN::test, filler...> : public linear_program<> // e2e
+	struct linear_program<LN::erase, filler...> : public linear_program<filler...>
+	{
+		template<index_type Pos>
+		static constexpr label_type controller = label
+		<
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			move_h1_all__insert_at_r_front<>,
+			pass<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos>
+		static constexpr instr_type call__erase = call_linear_program
+		<
+			LN::erase, MT::id,
+			PM::stage2, PL::id,
+			Pos
+		>;
+
+/***********************************************************************************************************************/
+
+// insert:
+
+	template<key_type... filler>
+	struct linear_program<LN::insert, filler...> : public linear_program<>
+	{
+		template<index_type Pos, index_type Obj>
+		static constexpr label_type controller = label
+		<
+			call__copy_r_pos__insert_at_h0_front<Obj>,
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			move_h0_first__insert_at_r_front<>,
+			move_h1_all__insert_at_r_front<>,
+			pass<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type call__insert = call_linear_program
+		<
+			LN::insert, MT::id,
+			PM::stage2, PL::id,
+			Pos, Obj
+		>;
+
+/***********************************************************************************************************************/
+
+// replace:
+
+	template<key_type... filler>
+	struct linear_program<LN::replace, filler...> : public linear_program<>
+	{
+		template<index_type Pos, index_type Obj>
+		static constexpr label_type controller = label
+		<
+			call__copy_r_pos__insert_at_h0_front<Obj>,
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			move_h0_first__insert_at_r_front<>,
+			move_h1_all__insert_at_r_front<>,
+			pass<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type call__replace = call_linear_program
+		<
+			LN::replace, MT::id,
+			PM::stage2, PL::id,
+			Pos, Obj
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type assign_using = call__replace
+		<
+			Pos, Obj
+		>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// passers:
+
+/***********************************************************************************************************************/
+
+// test:
+
+	template<key_type... filler>
+	struct linear_program<LN::test, filler...> : public linear_program<>
 	{
 		template<index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			copy_s_pos__insert_at_h0_back<Op>,
-			copy_s_pos__insert_at_h0_back<Args>...,
+			call__copy_r_pos__insert_at_h0_back<Op>,
+			call__copy_r_pos__insert_at_h0_back<Args>...,
 			apply_h0_all__move__replace_at_h0_front<>,
 			pass<>
 		>;
@@ -547,51 +504,56 @@ public:
 	// interface:
 
 		template<index_type Op, index_type... Args>
-		static constexpr instr_type test = linear
+		static constexpr instr_type call__test = call_linear_program
 		<
-			LN::test, _zero, Op, Args...
+			LN::test, MT::id,
+			PM::stage2, PL::id,
+			Op, Args...
 		>;
-*/
 
 /***********************************************************************************************************************/
 
-// :
+// check:
 
-/*
 	template<key_type... filler>
-	struct linear_program<LN::check, filler...> : public linear_program<> // e2e
+	struct linear_program<LN::check, filler...> : public linear_program<>
 	{
 		template<index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			copy_s_pos__insert_at_h0_back<Op>,
-			copy_s_pos__insert_at_h0_back<Args>...,
+			call__copy_r_pos__insert_at_h0_back<Op>,
+			call__copy_r_pos__insert_at_h0_back<Args>...,
 			compel_h0_all__move__replace_at_h0_front<>,
 			pass<>
 		>;
 	};
 
-		template<index_type Act, index_type... Args>
-		static constexpr instr_type check = linear
+	// interface:
+
+		template<index_type Op, index_type... Args>
+		static constexpr instr_type call__check = call_linear_program
 		<
-			LN::check, _zero, Act, Args...
+			LN::check, MT::id,
+			PM::stage2, PL::id,
+			Op, Args...
 		>;
-*/
 
 /***********************************************************************************************************************/
 
-// :
+// apply:
 
-/*
 	template<key_type... filler>
-	struct linear_program<LN::apply, filler...> : public linear_program<> // e2e
+	struct linear_program<LN::apply, filler...> : public linear_program<>
 	{
 		template<index_type Pos, index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			copy_s_pos__insert_at_h0_back<Op>,
-			copy_s_pos__insert_at_h0_back<Args>...,
-			apply_h0_all__move__replace_at_s_pos<Pos>,
+			call__copy_r_pos__insert_at_h0_back<Op>,
+			call__copy_r_pos__insert_at_h0_back<Args>...,
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			apply_h0_all__move__insert_at_r_front<>,
+			move_h1_all__insert_at_r_front<>,
 			pass<>
 		>;
 	};
@@ -599,38 +561,42 @@ public:
 	// interface:
 
 		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr instr_type apply = linear
+		static constexpr instr_type call__apply = call_linear_program
 		<
-			LN::apply, _zero, Pos, Op, Args...
+			LN::apply, MT::id,
+			PM::stage2, PL::id,
+			Pos, Op, Args...
 		>;
-*/
 
 /***********************************************************************************************************************/
 
-// :
+// compel:
 
-/*
 	template<key_type... filler>
-	struct linear_program<LN::compel, filler...> : public linear_program<> // e2e
+	struct linear_program<LN::compel, filler...> : public linear_program<>
 	{
 		template<index_type Pos, index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			copy_s_pos__insert_at_h0_back<Op>,
-			copy_s_pos__insert_at_h0_back<Args>...,
-			compel_h0_all__move__replace_at_s_pos<Pos>,
+			call__copy_r_pos__insert_at_h0_back<Op>,
+			call__copy_r_pos__insert_at_h0_back<Args>...,
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			compel_h0_all__move__insert_at_r_front<>,
+			move_h1_all__insert_at_r_front<>,
 			pass<>
 		>;
 	};
 
 	// interface:
 
-		template<index_type Pos, index_type Act, index_type... Args>
-		static constexpr instr_type compel = linear
+		template<index_type Pos, index_type Op, index_type... Args>
+		static constexpr instr_type call__compel = call_linear_program
 		<
-			LN::compel, _zero, Pos, Act, Args...
+			LN::compel, MT::id,
+			PM::stage2, PL::id,
+			Pos, Op, Args...
 		>;
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

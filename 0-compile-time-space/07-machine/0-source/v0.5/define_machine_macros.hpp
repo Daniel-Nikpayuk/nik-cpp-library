@@ -110,12 +110,12 @@
 
 /***********************************************************************************************************************/
 
-// drop stack block (2^N):
+// drop register block (2^N):
 
-	#define NIK_DEFINE__DROP_S_BLOCK(_n_)										\
+	#define NIK_DEFINE__DROP_R_BLOCK(_n_)										\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::drop_s_block, _n_, filler...>							\
+		struct machine<MN::drop_r_block, _n_, filler...>							\
 		{													\
 			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
 			static constexpr auto result(Heaps... Hs)							\
@@ -126,12 +126,12 @@
 
 /***********************************************************************************************************************/
 
-// move stack block, insert at heap one back (2^N):
+// move register block, insert at heap one back (2^N):
 
-	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(_n_)							\
+	#define NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::move_s_block__insert_at_h1_back, _n_, filler...>					\
+		struct machine<MN::move_r_block__insert_at_h1_back, _n_, filler...>					\
 		{													\
 			template											\
 			<												\

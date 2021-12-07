@@ -56,44 +56,48 @@ public:
 
 	struct MachineName
 	{
-			static constexpr key_type identity				=  0;
-			static constexpr key_type id					= identity;	// convenience for
+			static constexpr key_type identity					=  0;
+			static constexpr key_type id						= identity;
+													// convenience for
 													// default params.
 		// interposers:
 
-			static constexpr key_type pause					=  1;
+			static constexpr key_type pause						=  1;
 
-			static constexpr key_type save					=  2;
-			static constexpr key_type call					=  3;
-			static constexpr key_type pass					=  4;
+			static constexpr key_type save						=  2;
+			static constexpr key_type call						=  3;
+			static constexpr key_type pass						=  4;
 
-			static constexpr key_type branch				=  5; // <machine>
-			static constexpr key_type go_to					=  6; // <machine>
+			static constexpr key_type branch					=  5; // <machine>
+			static constexpr key_type go_to						=  6; // <machine>
 
 		// halters:
 
-			static constexpr key_type first					=  7;
-			static constexpr key_type rest					=  8;
+			static constexpr key_type first						=  7;
+			static constexpr key_type rest						=  8;
 
 		// debuggers:
 
-			static constexpr key_type depth					=  9;
-			static constexpr key_type dump					= 10;
+			static constexpr key_type depth						=  9;
+			static constexpr key_type dump						= 10;
 
-			static constexpr key_type stack					= 11;
-			static constexpr key_type heaps					= 12;
+			static constexpr key_type registers					= 11;
+			static constexpr key_type arguments					= 12;
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back	= 13; // <machine>
-			static constexpr key_type drop_s_block				= 14; // <halters>
+			static constexpr key_type unpack_i_block__insert_at_h1_back		= 13; // <machine>
+			static constexpr key_type drop_r_block					= 14; // <halters>
 
-			static constexpr key_type move_s_block__insert_at_h1_back	= 15; // <mutators>
-			static constexpr key_type move_h0_first__insert_at_s_front	= 16; // <mutators>
-			static constexpr key_type move_h1_all__insert_at_s_front	= 17; // <mutators>
+			static constexpr key_type move_r_block__insert_at_h1_back		= 15; // <mutators>
+			static constexpr key_type move_h0_first__insert_at_r_front		= 16; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_r_front		= 17; // <mutators>
 
-			static constexpr key_type apply_h0_all				= 18; // <machine>
-			static constexpr key_type compel_h0_all				= 19; // <machine>
+			static constexpr key_type apply_h0_all__move__replace_at_h0_front	= 18; // <machine>
+			static constexpr key_type apply_h0_all__move__insert_at_r_front		= 19; // <machine>
+
+			static constexpr key_type compel_h0_all__move__replace_at_h0_front	= 20; // <machine>
+			static constexpr key_type compel_h0_all__move__insert_at_r_front	= 21; // <machine>
 	};
 
 	using MN = MachineName;
@@ -110,10 +114,12 @@ public:
 		static constexpr key_type identity			= 0;
 		static constexpr key_type id				= identity;	// convenience for
 											// default params.
-		static constexpr key_type stage2			= 1;
-		static constexpr key_type block				= 2;
-		static constexpr key_type linear			= 3;
-		static constexpr key_type user				= 4;
+		static constexpr key_type reindex			= 1;
+
+		static constexpr key_type stage2			= 2;
+		static constexpr key_type block				= 3;
+		static constexpr key_type linear			= 4;
+		static constexpr key_type user				= 5;
 
 		static constexpr bool is_linear(key_type n)		{ return (n == linear); }
 	};
@@ -133,11 +139,11 @@ public:
 			static constexpr key_type id			= identity;	// convenience for
 											// default params.
 
-			static constexpr key_type stack			= 1;
+			static constexpr key_type registers		= 1;
 			static constexpr key_type heap_zero		= 2;
 			static constexpr key_type heap_one		= 3;
 			static constexpr key_type stage2		= 4;
-			static constexpr key_type pack			= 5;
+			static constexpr key_type arguments		= 5;
 	};
 
 	using PM = PassMemonic;
@@ -268,8 +274,8 @@ public:
 		static constexpr key_type id						= identity;	// convenience for
 													// default params.
 		static constexpr key_type unpack_i_segment__insert_at_h1_back		= 1; // <machine>
-		static constexpr key_type drop_s_segment				= 2; // <list>
-		static constexpr key_type move_s_segment__insert_at_h1_back		= 3; // <mutators>
+		static constexpr key_type drop_r_segment				= 2; // <list>
+		static constexpr key_type move_r_segment__insert_at_h1_back		= 3; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -417,6 +423,12 @@ public:
 			static constexpr index_type erase		= 2;
 			static constexpr index_type insert		= 3;
 			static constexpr index_type replace		= 4;
+
+			static constexpr index_type test		= 5;
+			static constexpr index_type check		= 6;
+
+			static constexpr index_type apply		= 7;
+			static constexpr index_type compel		= 8;
 	};
 
 	using LN = LinearName;

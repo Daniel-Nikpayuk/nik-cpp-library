@@ -38,10 +38,10 @@
 		B - value(s) template template				[template<auto...> class]
 
 	As for meta function output: Since only types or values can be returned from meta grammatical operators
-	(regardless of template parameter input), if we require any of the other template parameter categories
+	(regardless of template parameter input), if we then require any of the other template parameter categories
 	to be returned we must embed or *cache* them within types or values (such that they may also be recovered
 	or pattern matched afterward). As such they are encoded as subcategories of typenames or autos, but given
-	their relevance throughout the library, they given names with meanings as follows:
+	their relevance throughout the library, they are given names with meanings as follows:
 
 	Type subcategories:
 
@@ -62,7 +62,7 @@
 		G - has a type cache with its own type(s) template template(s) cache
 		H - has a type cache with its own value(s) template template(s) cache
 
-	To summarize, there are 17 distinct categories. As for "categories",
+	To summarize, there are seventeen distinct categories. As for "categories",
 	the theoretcal narrative comes from category theory, and is as follows:
 
 	a) We start with the discrete category of C++17s type system, with C++17s types as objects, and the only morphisms
