@@ -19,6 +19,10 @@
 
 // machines source:
 
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 	// Heap policy:
 
 		// Heap zero:
@@ -42,7 +46,11 @@
 			// Privileges function calls.
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
+
+	// Replacing the existing controller with an "inlined" equivalent is the preferred
+	// implementation, but the gcc/clang compilers issue too many type misalignments.
+	// As such, any convenience machines such as call rely on tail function calls.
+
 /***********************************************************************************************************************/
 
 	// constexpr monad (design):
@@ -273,6 +281,14 @@ private:
 
 					NIK_END_MACHINE(H0, H1, null, null, As...);
 			}
+			else if constexpr (memonic == PM::arguments)
+			{
+				if constexpr (location == PL::front)
+
+					return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, null, null, val, As...);
+				else
+					return NIK_MACHINE(n, c, d, i, j, Vs)(H0, H1, null, null, As..., val);
+			}
 		}
 	};
 
@@ -315,16 +331,54 @@ private:
 
 /***********************************************************************************************************************/
 
-// call (linear, user):
+// call (linear):
+
+		// { Vs... , Hs... } passing policy: copy.
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::linear, filler...>
+	{
+		static constexpr auto nn	= U_block_program;
+		static constexpr auto nm	= MN::id;
+		static constexpr auto nnm	= MN::call;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3, typename... Args
+		>
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Args... As)
+		{
+			using tn			= T_type_U<n>;
+
+			constexpr auto call_ins		= tn::instr(c, i, j);
+			constexpr index_type length	= MI::length(call_ins) + 1;
+			constexpr index_type size	= length - LCI::offset;
+			constexpr auto nc		= bp_unpack_i_segment__insert_at_h1_back::template controller
+							<
+								MN::pass, MT::linear
+							>;
+			constexpr auto nj		= T_BP::max_index2(size);
+			constexpr auto ni		= size + nj;
+
+			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length>;
+			constexpr auto cH0		= U_pretype_T<Heap0>;
+			constexpr auto cH1		= U_pretype_T<Heap1>;
+			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
+			constexpr auto nH3		= U_opt_pack_Vs<nH0, null, cH0, cH1, U_pretype_T<Args>...>;
+
+			return NIK_AUTOMATA(n, c, d, nnm, i, j, Vs)(H0, H1, nH2, nH3, As...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// call (user):
 
 		// { Vs... , Hs... } passing policy: restore.
 
-		// Replacing the existing controller with an "inlined" equivalent is the preferred
-		// implementation, but the gcc/clang compilers issue too many type misalignments.
-		// As such, any convenience machines such as call rely on tail function calls.
-
-	template<key_type Note, key_type... filler>
-	struct machine<MN::call, Note, filler...>
+	template<key_type... filler>
+	struct machine<MN::call, MT::user, filler...>
 	{
 		static constexpr auto nn	= U_block_program;
 		static constexpr auto nm	= MN::id;
@@ -346,10 +400,10 @@ private:
 
 			constexpr auto call_ins		= tn::instr(c, i, j);
 			constexpr index_type length	= MI::length(call_ins) + 1;
-			constexpr index_type size	= length - (MT::is_linear(Note) ? LCI::offset : UCI::offset);
+			constexpr index_type size	= length - UCI::offset;
 			constexpr auto nc		= bp_unpack_i_segment__insert_at_h1_back::template controller
 							<
-								MN::pass, Note
+								MN::pass, MT::user
 							>;
 			constexpr auto nj		= T_BP::max_index2(size);
 			constexpr auto ni		= size + nj;
@@ -380,33 +434,6 @@ private:
 			return loadable(sc, hc);
 		}
 	};
-
-/***********************************************************************************************************************/
-
-// reindex:
-
-/*
-	template<key_type... filler>
-	struct machine<MN::pass, MT::reindex, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto pos, auto... Ws, typename Heap1, typename Heap2,
-			auto un, auto nc, auto ni, auto nj, typename... Args
-		>
-		static constexpr auto result
-		(
-			void(*H0)(auto_pack<pos, Ws...>*), Heap1 H1, Heap2 H2,
-			void(*H3)(auto_pack<un, nc, ni, nj>*), Args... As
-		)
-		{
-			using nn = T_type_U<un>;
-
-			return NIK_MACHINE(nn, nc, d, pos, nn::j)(U_opt_pack_Vs<Ws...>, H1, H2, As...);
-		}
-	};
-*/
 
 /***********************************************************************************************************************/
 
@@ -491,15 +518,33 @@ private:
 
 /***********************************************************************************************************************/
 
-// branch:
+// reindex (id; unconditional):
 
 	template<key_type... filler>
-	struct machine<MN::branch, MT::id, filler...>
+	struct machine<MN::reindex, MT::id, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto ni, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<ni, Ws...>*), Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+
+			constexpr auto nj	= tn::initial_j;
+
+			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// reindex (conditional):
+
+	template<key_type... filler>
+	struct machine<MN::reindex, MT::conditional, filler...>
 	{
 		static constexpr index_type index = 3;
 
-		template<NIK_CONTR_PARAMS, auto... Vs, bool is_br, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<is_br>*), Heaps... Hs)
+		template<NIK_CONTR_PARAMS, auto... Vs, bool is_br, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<is_br, Ws...>*), Heaps... Hs)
 		{
 			using tn		= T_type_U<n>;
 
@@ -696,6 +741,17 @@ private:
 // apply heap zero all, move, replace at heap zero front (V_apply_VxVs):
 
 	template<key_type... filler>
+	struct machine<MN::apply_h0_all__return_value, MT::id, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto op, auto... args, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<op, args...>*), Heaps... Hs)
+		{
+			return op(args...);
+		}
+	};
+
+/*
+	template<key_type... filler>
 	struct machine<MN::apply_h0_all__move__replace_at_h0_front, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, auto op, auto... args, typename... Heaps>
@@ -706,6 +762,7 @@ private:
 			return NIK_MACHINE(n, c, d, i, j, Vs)(nH0, Hs...);
 		}
 	};
+*/
 
 /***********************************************************************************************************************/
 
@@ -730,6 +787,17 @@ private:
 // compel heap zero all, move, replace at heap zero front (V_apply_ExVs):
 
 	template<key_type... filler>
+	struct machine<MN::compel_h0_all__return_value, MT::id, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto uact, auto... args, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<uact, args...>*), Heaps... Hs)
+		{
+			return T_type_U<uact>::template result<args...>;
+		}
+	};
+
+/*
+	template<key_type... filler>
 	struct machine<MN::compel_h0_all__move__replace_at_h0_front, MT::id, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, auto uact, auto... args, typename... Heaps>
@@ -740,6 +808,7 @@ private:
 			return NIK_MACHINE(n, c, d, i, j, Vs)(nH0, Hs...);
 		}
 	};
+*/
 
 /***********************************************************************************************************************/
 

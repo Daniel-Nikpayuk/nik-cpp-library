@@ -82,16 +82,19 @@ public:
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type branch = instruction
+	static constexpr instr_type reindex = instruction
 	<
-		MN::branch, Note
+		MN::reindex, Note
 	>;
 
-	template<key_type Note = MT::id>
-	static constexpr instr_type go_to = instruction
-	<
-		MN::go_to, Note
-	>;
+		template<key_type...>
+		static constexpr instr_type go_to = reindex<>;
+
+		template<key_type...>
+		static constexpr instr_type branch = reindex
+		<
+			MT::conditional
+		>;
 
 // halters:
 
@@ -154,9 +157,9 @@ public:
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type apply_h0_all__move__replace_at_h0_front = instruction
+	static constexpr instr_type apply_h0_all__return_value = instruction
 	<
-		MN::apply_h0_all__move__insert_at_r_front, Note
+		MN::apply_h0_all__return_value, Note
 	>;
 
 	template<key_type Note = MT::id>
@@ -166,9 +169,9 @@ public:
 	>;
 
 	template<key_type Note = MT::id>
-	static constexpr instr_type compel_h0_all__move__replace_at_h0_front = instruction
+	static constexpr instr_type compel_h0_all__return_value = instruction
 	<
-		MN::compel_h0_all__move__insert_at_r_front, Note
+		MN::compel_h0_all__return_value, Note
 	>;
 
 	template<key_type Note = MT::id>
@@ -308,36 +311,13 @@ public:
 
 /***********************************************************************************************************************/
 
-// :
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::go_to, filler...> : public linear_program<> // e1e
-	{
-		template<index_type Pos>
-		static constexpr label_type controller = label
-		<
-			copy_r_pos__insert_at_h0_front<Pos>,
-			instruction<MN::pass, PT::reindex>
-		>;
-	};
-
-		template<index_type Pos>
-		static constexpr instr_type goto_using = linear
-		<
-			LN::go_to, _zero, Pos
-		>;
-*/
-
-/***********************************************************************************************************************/
-
-// :
+// instruction reindex:
 
 /*
 	template<key_type... filler>
 	struct linear_program<LN::go_to_label, filler...> : public linear_program<>
 	{
-		// goto label is optimized for register dispatchers, 
+		// goto label is optimized for register dispatchers,
 		// but is still required for linear controllers,
 		// and incase it is the first label instruction.
 
@@ -355,6 +335,35 @@ public:
 		static constexpr instr_type goto_label = linear // shifts label value:
 		<
 			LN::go_to_label, _zero, Val+1
+		>;
+*/
+
+/***********************************************************************************************************************/
+
+// register reindex:
+
+		// call copy r pos, return, reindex as a call dispatch?
+
+/*
+	template<key_type... filler>
+	struct linear_program<LN::register_reindex, filler...> : public linear_program<>
+	{
+		template<index_type Pos>
+		static constexpr label_type controller = label
+		<
+			call__copy_r_pos__insert_at_h0_front<Pos>,
+			go_to<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos>
+		static constexpr instr_type register_goto = call_linear_program
+		<
+			LN::register_reindex, MT::id,
+			PM::stage2, PL::id,
+			Pos
 		>;
 */
 
@@ -496,8 +505,7 @@ public:
 		<
 			call__copy_r_pos__insert_at_h0_back<Op>,
 			call__copy_r_pos__insert_at_h0_back<Args>...,
-			apply_h0_all__move__replace_at_h0_front<>,
-			pass<>
+			apply_h0_all__return_value<>
 		>;
 	};
 
@@ -507,7 +515,7 @@ public:
 		static constexpr instr_type call__test = call_linear_program
 		<
 			LN::test, MT::id,
-			PM::stage2, PL::id,
+			PM::heap_zero, PL::front,
 			Op, Args...
 		>;
 
@@ -523,8 +531,7 @@ public:
 		<
 			call__copy_r_pos__insert_at_h0_back<Op>,
 			call__copy_r_pos__insert_at_h0_back<Args>...,
-			compel_h0_all__move__replace_at_h0_front<>,
-			pass<>
+			compel_h0_all__return_value<>
 		>;
 	};
 
@@ -534,7 +541,7 @@ public:
 		static constexpr instr_type call__check = call_linear_program
 		<
 			LN::check, MT::id,
-			PM::stage2, PL::id,
+			PM::heap_zero, PL::front,
 			Op, Args...
 		>;
 
