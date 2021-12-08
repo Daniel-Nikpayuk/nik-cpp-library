@@ -56,10 +56,9 @@ public:
 
 	struct MachineName
 	{
-			static constexpr key_type identity					=  0;
-			static constexpr key_type id						= identity;
-													// convenience for
-													// default params.
+			static constexpr key_type id						=  0;
+			static constexpr key_type identity					= id; // convenience for
+												      // default params.
 		// interposers:
 
 			static constexpr key_type pause						=  1;
@@ -85,18 +84,20 @@ public:
 
 		// passers:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back		= 12; // <machine>
-			static constexpr key_type drop_r_block					= 13; // <halters>
+			static constexpr key_type copy_i_value__insert_at_h0_front		= 12; // <machine>
+			static constexpr key_type unpack_i_block__insert_at_h1_back		= 13; // <machine>
 
-			static constexpr key_type move_r_block__insert_at_h1_back		= 14; // <mutators>
-			static constexpr key_type move_h0_first__insert_at_r_front		= 15; // <mutators>
-			static constexpr key_type move_h1_all__insert_at_r_front		= 16; // <mutators>
+			static constexpr key_type drop_r_block					= 14; // <halters>
 
-			static constexpr key_type apply_h0_all__return_value			= 17; // <machine>
-			static constexpr key_type apply_h0_all__move__insert_at_r_front		= 18; // <machine>
+			static constexpr key_type move_r_block__insert_at_h1_back		= 15; // <mutators>
+			static constexpr key_type move_h0_first__insert_at_r_front		= 16; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_r_front		= 17; // <mutators>
 
-			static constexpr key_type compel_h0_all__return_value			= 19; // <machine>
-			static constexpr key_type compel_h0_all__move__insert_at_r_front	= 20; // <machine>
+			static constexpr key_type apply_h0_all__return_value			= 18; // <machine>
+			static constexpr key_type apply_h0_all__move__insert_at_r_front		= 19; // <machine>
+
+			static constexpr key_type compel_h0_all__return_value			= 20; // <machine>
+			static constexpr key_type compel_h0_all__move__insert_at_r_front	= 21; // <machine>
 	};
 
 	using MN = MachineName;
@@ -110,15 +111,15 @@ public:
 
 	struct MachineNote
 	{
-		static constexpr key_type identity			= 0;
-		static constexpr key_type id				= identity;	// convenience for
-											// default params.
-		static constexpr key_type stage2			= 1;
-		static constexpr key_type block				= 2;
-		static constexpr key_type linear			= 3;
-		static constexpr key_type user				= 4;
+		static constexpr key_type id				=  0;
+		static constexpr key_type identity			= id; // convenience for
+									      // default params.
+		static constexpr key_type stage2			=  1;
+		static constexpr key_type block				=  2;
+		static constexpr key_type linear			=  3;
+		static constexpr key_type user				=  4;
 
-		static constexpr key_type conditional			= 5;
+		static constexpr key_type conditional			=  5;
 
 		static constexpr bool is_linear(key_type n)		{ return (n == linear); }
 	};
@@ -134,26 +135,25 @@ public:
 
 	struct PassMemonic
 	{
-			static constexpr key_type identity		= 0;
-			static constexpr key_type id			= identity;	// convenience for
-											// default params.
-
-			static constexpr key_type registers		= 1;
-			static constexpr key_type heap_zero		= 2;
-			static constexpr key_type heap_one		= 3;
-			static constexpr key_type stage2		= 4;
-			static constexpr key_type arguments		= 5;
+			static constexpr key_type id			=  0;
+			static constexpr key_type identity		= id; // convenience for
+									      // default params.
+			static constexpr key_type registers		=  1;
+			static constexpr key_type heap_zero		=  2;
+			static constexpr key_type heap_one		=  3;
+			static constexpr key_type stage2		=  4;
+			static constexpr key_type arguments		=  5;
 	};
 
 	using PM = PassMemonic;
 
 	struct PassLocation
 	{
-			static constexpr key_type identity		= 0;
-			static constexpr key_type id			= identity;	// convenience for
-											// default params.
-			static constexpr key_type front			= 5;
-			static constexpr key_type back			= 6;
+			static constexpr key_type id			=  0;
+			static constexpr key_type identity		= id; // convenience for
+									      // default params.
+			static constexpr key_type front			=  1;
+			static constexpr key_type back			=  2;
 	};
 
 	using PL = PassLocation;
@@ -269,13 +269,12 @@ public:
 
 	struct BlockName
 	{
-		static constexpr key_type identity					= 0;
-		static constexpr key_type id						= identity;
-				i								// convenience for
-												// default params.
-		static constexpr key_type unpack_i_segment__insert_at_h1_back		= 1; // <machine>
-		static constexpr key_type drop_r_segment				= 2; // <list>
-		static constexpr key_type move_r_segment__insert_at_h1_back		= 3; // <mutators>
+		static constexpr key_type id						=  0;
+		static constexpr key_type identity					= id; // convenience for
+											      // default params.
+		static constexpr key_type unpack_i_segment__insert_at_h1_back		=  1; // <machine>
+		static constexpr key_type drop_r_segment				=  2; // <list>
+		static constexpr key_type move_r_segment__insert_at_h1_back		=  3; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -411,26 +410,27 @@ public:
 
 	struct LinearName
 	{
-			static constexpr key_type identity				= 0;
-			static constexpr key_type id					= identity;
-					i							// convenience for
-												// default params.
+			static constexpr key_type id					=  0;
+			static constexpr key_type identity				= id; // convenience for
+											      // default params.
 		// interoperators:
 
-			static constexpr index_type instruction_reindex			= 1;
-			static constexpr index_type register_reindex			= 2;
+			static constexpr index_type instr_goto				=  1;
+			static constexpr index_type regstr_goto				=  2;
 
 		// mutators:
 
-			static constexpr index_type erase				= 3;
-			static constexpr index_type insert				= 4;
-			static constexpr index_type replace				= 5;
+			static constexpr index_type erase				=  3;
+			static constexpr index_type insert				=  4;
+			static constexpr index_type replace				=  5;
 
-			static constexpr index_type test				= 6;
-			static constexpr index_type check				= 7;
+			static constexpr index_type instr_assign			=  6;
 
-			static constexpr index_type apply				= 8;
-			static constexpr index_type compel				= 9;
+			static constexpr index_type test				=  7;
+			static constexpr index_type check				=  8;
+
+			static constexpr index_type apply				=  9;
+			static constexpr index_type compel				= 10;
 	};
 
 	using LN = LinearName;
@@ -625,7 +625,7 @@ public:
 					{
 						key_type l_name = c[ni][nj][linear_name];
 
-						if (l_name == LN::go_to_label) return c[ni][nj][linear_index];
+						if (l_name == LN::instr_goto) return c[ni][nj][linear_index];
 					}
 
 					return ni;
@@ -646,7 +646,7 @@ public:
 					{
 						key_type l_name = c[ni][nj][linear_name];
 
-						if (l_name == LN::go_to_label) return _one;
+						if (l_name == LN::instr_goto) return _one;
 					}
 
 					return nj;

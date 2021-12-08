@@ -88,9 +88,6 @@ public:
 	>;
 
 		template<key_type...>
-		static constexpr instr_type go_to = reindex<>;
-
-		template<key_type...>
 		static constexpr instr_type branch = reindex
 		<
 			MT::conditional
@@ -137,6 +134,12 @@ public:
 	>;
 
 // passers:
+
+	template<key_type Value, key_type Note = MT::id>
+	static constexpr instr_type copy_i_value__insert_at_h0_front = instruction
+	<
+		MN::copy_i_value__insert_at_h0_front, Note, Value
+	>;
 
 	template<key_type Note = MT::id>
 	static constexpr instr_type drop_r_block = instruction
@@ -311,85 +314,54 @@ public:
 
 /***********************************************************************************************************************/
 
-// instruction reindex:
+// instruction goto:
 
-/*
 	template<key_type... filler>
-	struct linear_program<LN::go_to_label, filler...> : public linear_program<>
+	struct linear_program<LN::instr_goto, filler...> : public linear_program<>
 	{
-		// goto label is optimized for register dispatchers,
-		// but is still required for linear controllers,
-		// and incase it is the first label instruction.
-
-		template<index_type Obj>
+		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
-			copy_i_pos__insert_at_h0_front<Obj>,
-			instruction<MN::pass, PT::reindex>
+			copy_i_value__insert_at_h0_front<Pos>,
+			reindex<>	// reindexing only makes sense after val is returned within the call.
+					// call copy r pos, return, reindex as a call dispatch?
 		>;
 	};
 
 	// interface:
 
-		template<index_type Val>
-		static constexpr instr_type goto_label = linear // shifts label value:
+		template<index_type Pos>
+		static constexpr instr_type instr_goto = call_linear_program
 		<
-			LN::go_to_label, _zero, Val+1
+			LN::instr_goto, MT::id,
+			PM::stage2, PL::id,
+			Pos
 		>;
-*/
 
 /***********************************************************************************************************************/
 
-// register reindex:
+// register goto:
 
-		// call copy r pos, return, reindex as a call dispatch?
-
-/*
 	template<key_type... filler>
-	struct linear_program<LN::register_reindex, filler...> : public linear_program<>
+	struct linear_program<LN::regstr_goto, filler...> : public linear_program<>
 	{
 		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
 			call__copy_r_pos__insert_at_h0_front<Pos>,
-			go_to<>
+			reindex<>
 		>;
 	};
 
 	// interface:
 
 		template<index_type Pos>
-		static constexpr instr_type register_goto = call_linear_program
+		static constexpr instr_type regstr_goto = call_linear_program
 		<
-			LN::register_reindex, MT::id,
+			LN::regstr_goto, MT::id,
 			PM::stage2, PL::id,
 			Pos
 		>;
-*/
-
-/***********************************************************************************************************************/
-
-// :
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::assign_label, filler...> : public linear_program<> // e1e
-	{
-		template<index_type Pos, index_type Obj>
-		static constexpr label_type controller = label
-		<
-			copy_i_pos__insert_at_h0_front<Obj>,
-			move_h0_first__replace_at_r_pos<Pos>,
-			pass<>
-		>;
-	};
-
-		template<index_type Pos, index_type Val>
-		static constexpr instr_type assign_label = linear // shifts label value:
-		<
-			LN::assign_label, _zero, Pos, Val+1
-		>;
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -483,8 +455,37 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos, index_type Obj>
-		static constexpr instr_type assign_using = call__replace
+		static constexpr instr_type regstr_assign = call__replace
 		<
+			Pos, Obj
+		>;
+
+/***********************************************************************************************************************/
+
+// instruction assign:
+
+	template<key_type... filler>
+	struct linear_program<LN::instr_assign, filler...> : public linear_program<>
+	{
+		template<index_type Pos, index_type Obj>
+		static constexpr label_type controller = label
+		<
+			copy_i_value__insert_at_h0_front<Obj>,
+			call__move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			move_h0_first__insert_at_r_front<>,
+			move_h1_all__insert_at_r_front<>,
+			pass<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type instr_assign = call_linear_program
+		<
+			LN::instr_assign, MT::id,
+			PM::stage2, PL::id,
 			Pos, Obj
 		>;
 

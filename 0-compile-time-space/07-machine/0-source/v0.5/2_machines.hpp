@@ -503,6 +503,25 @@ private:
 
 /***********************************************************************************************************************/
 
+// copy instruction value, insert at heap zero front:
+
+	template<key_type... filler>
+	struct machine<MN::copy_i_value__insert_at_h0_front, MT::id, filler...>
+	{
+		static constexpr index_type value = 3;
+
+		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+
+			return NIK_MACHINE(n, c, d, i, j, Vs)(U_opt_pack_Vs<ins[value], Ws...>, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // unpack instruction block (2^N):
 
 	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(0);
@@ -527,7 +546,6 @@ private:
 		static constexpr auto result(void(*H0)(auto_pack<ni, Ws...>*), Heaps... Hs)
 		{
 			using tn		= T_type_U<n>;
-
 			constexpr auto nj	= tn::initial_j;
 
 			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
@@ -552,7 +570,7 @@ private:
 			constexpr auto ni	= is_br ? ins[index] : i;
 			constexpr auto nj	= is_br ? _zero : j;
 
-			return NIK_MACHINE(n, c, d, ni, nj, Vs)(null, Hs...);
+			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
 		}
 	};
 
