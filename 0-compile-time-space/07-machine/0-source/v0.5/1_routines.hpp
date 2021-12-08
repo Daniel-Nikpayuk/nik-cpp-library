@@ -46,7 +46,7 @@ public:
 		// call instructions are required by the stage2 machine to have mem, loc info.
 
 	template<key_type Note, key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type... Args>
-	static constexpr instr_type call = instruction
+	static constexpr instr_type call_program = instruction
 	<
 		MN::call, Note, Subname, Subnote, Mem, Loc, Args...
 	>;
@@ -58,21 +58,21 @@ public:
 			key_type Subname, key_type Mem, key_type Loc,
 			index_type Pos, key_type Coname, key_type Conote
 		>
-		static constexpr instr_type call_block_program = call
+		static constexpr instr_type call_block_program = call_program
 		<
 			MT::block, Subname, MT::id, Mem, Loc, Pos, Coname, Conote
 		>;
 
 		template<key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type... Args>
-		static constexpr instr_type call_linear_program = call
+		static constexpr instr_type call_linear_program = call_program
 		<
 			MT::linear, Subname, Subnote, Mem, Loc, Args...
 		>;
 
-		template<key_type Subname, key_type Subnote, key_type Mem, key_type Loc, index_type... Args>
-		static constexpr instr_type call_user_program = call
+		template<index_type... Args>
+		static constexpr instr_type call_user_program = call_program
 		<
-			MT::user, Subname, Subnote, Mem, Loc, Args...
+			MT::user, MN::id, MT::id, PM::registers, PL::front, Args...
 		>;
 
 	template<key_type Note = MT::id>
@@ -310,7 +310,36 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// control:
+// interoperators:
+
+/***********************************************************************************************************************/
+
+// (user) call:
+
+	template<key_type... filler>
+	struct linear_program<LN::call, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Program, index_type... Args>
+		static constexpr label_type controller = label
+		<
+			copy_r_pos__insert_at_h0_front<Program>,
+			move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			call_user_program<Args...>,
+			move_h1_all__insert_at_r_front<>,
+			pass<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Program, index_type... Args>
+		static constexpr instr_type call = call_linear_program
+		<
+			LN::call, MT::id,
+			PM::stage2, PL::id,
+			Pos, Program, Args...
+		>;
 
 /***********************************************************************************************************************/
 

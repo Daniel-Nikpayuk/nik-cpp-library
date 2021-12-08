@@ -387,11 +387,12 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			typename Heap0, typename Heap1, auto... nVs, auto... nHs, typename... Args
+			auto U_UP, auto... Ws, typename Heap1, auto... nVs, auto... nHs, typename... Args
 		>
 		static constexpr auto result
 		(
-			Heap0 H0, Heap1 H1,
+			void(*H0)(auto_pack<U_UP, Ws...>*),
+			Heap1 H1,
 			void(*H2)(auto_pack<nVs...>*),
 			void(*H3)(auto_pack<nHs...>*), Args... As
 		)
@@ -408,13 +409,13 @@ private:
 			constexpr auto nj		= T_block_program::max_index2(size);
 			constexpr auto ni		= size + nj;
 
-			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length>;
-			constexpr auto cH0		= U_pretype_T<Heap0>;
+			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length, U_UP>;
+			constexpr auto cH0		= U_opt_pack_Vs<Ws...>;
 			constexpr auto cH1		= U_pretype_T<Heap1>;
 			constexpr auto nH2		= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto nH3		= U_opt_pack_Vs<nH0, null, cH0, cH1, U_pretype_T<Args>...>;
 
-			return NIK_AUTOMATA(n, c, d, nnm, i, j, nVs)(H0, H1, nH2, nH3, nHs...);
+			return NIK_AUTOMATA(n, c, d, nnm, i, j, nVs)(cH0, H1, nH2, nH3, nHs...);
 		}
 	};
 
@@ -482,12 +483,15 @@ private:
 
 /***********************************************************************************************************************/
 
-// pass (linear, call):
+// pass (linear):
 
-	template<key_type Note, key_type... filler>
-	struct machine<MN::pass, Note, filler...>
+	template<key_type... filler>
+	struct machine<MN::pass, MT::linear, filler...>
 	{
+		static constexpr auto nn = U_linear_program;
 		static constexpr auto nm = MN::id;
+		static constexpr auto ni = T_linear_program::initial_i;
+		static constexpr auto nj = T_linear_program::initial_j;
 
 		template
 		<
@@ -502,20 +506,46 @@ private:
 			Heap2 H2, Heap3 H3, Args...
 		)
 		{
-			using tn		= boolean_module::template T_if_then_else_TxT
-						<
-							MT::is_linear(Note),
-							T_linear_program,
-							T_user_program
-						>;
+			constexpr auto cH2	= U_pretype_T<Heap2>;
+			constexpr auto cH3	= U_pretype_T<Heap3>;
+			constexpr auto nc	= T_linear_program::template make_controller<call_ins, Xs...>;
+			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
+			constexpr auto hc	= U_opt_pack_Vs<cH2, cH3, null, null, U_pretype_T<Args>...>;
 
-			constexpr auto nn	= U_type_T<tn>;
-			constexpr auto ni	= tn::initial_i;
-			constexpr auto nj	= tn::initial_j;
+			return machination(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// pass (user):
+
+	template<key_type... filler>
+	struct machine<MN::pass, MT::user, filler...>
+	{
+		static constexpr auto nn = U_user_program;
+		static constexpr auto nm = MN::id;
+		static constexpr auto ni = T_user_program::initial_i;
+		static constexpr auto nj = T_user_program::initial_j;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto call_ins, auto length, auto U_UP, auto... Ws,
+			auto... Xs, typename Heap2, typename Heap3, typename... Args
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<call_ins, length, Ws...>*),
+			void(*H1)(auto_pack<Xs...>*),
+			Heap2 H2, Heap3 H3, Args...
+		)
+		{
+			using T_UP		= T_type_U<U_UP>;
 
 			constexpr auto cH2	= U_pretype_T<Heap2>;
 			constexpr auto cH3	= U_pretype_T<Heap3>;
-			constexpr auto nc	= tn::template make_controller<call_ins, Xs...>;
+			constexpr auto nc	= T_UP::template controller<Xs...>;
 			constexpr auto sc	= U_opt_pack_Vs<nn, nc, nm, ni, nj, Vs...>;
 			constexpr auto hc	= U_opt_pack_Vs<cH2, cH3, null, null, U_pretype_T<Args>...>;
 

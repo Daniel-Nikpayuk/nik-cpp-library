@@ -120,8 +120,6 @@ public:
 		static constexpr key_type block				=  3;
 		static constexpr key_type linear			=  4;
 		static constexpr key_type user				=  5;
-
-		static constexpr bool is_linear(key_type n)		{ return (n == linear); }
 	};
 
 	using MT = MachineNote;
@@ -415,22 +413,24 @@ public:
 											      // default params.
 		// interoperators:
 
-			static constexpr index_type instr_goto				=  1;
-			static constexpr index_type regstr_goto				=  2;
+			static constexpr index_type call				=  1;
+
+			static constexpr index_type instr_goto				=  2;
+			static constexpr index_type regstr_goto				=  3;
 
 		// mutators:
 
-			static constexpr index_type erase				=  3;
-			static constexpr index_type insert				=  4;
-			static constexpr index_type replace				=  5;
+			static constexpr index_type erase				=  4;
+			static constexpr index_type insert				=  5;
+			static constexpr index_type replace				=  6;
 
-			static constexpr index_type instr_assign			=  6;
+			static constexpr index_type instr_assign			=  7;
 
-			static constexpr index_type test				=  7;
-			static constexpr index_type check				=  8;
+			static constexpr index_type test				=  8;
+			static constexpr index_type check				=  9;
 
-			static constexpr index_type apply				=  9;
-			static constexpr index_type compel				= 10;
+			static constexpr index_type apply				= 10;
+			static constexpr index_type compel				= 11;
 	};
 
 	using LN = LinearName;
@@ -652,15 +652,6 @@ public:
 					return nj;
 				}
 			}
-
-		// controllers:
-
-			template<auto call_ins, auto... Vs>
-			static constexpr contr_type make_controller = user_program
-			<
-				call_ins[UCI::name]
-
-			>::template controller<Vs...>;
 	};
 
 	using T_user_program			= user_program<>;

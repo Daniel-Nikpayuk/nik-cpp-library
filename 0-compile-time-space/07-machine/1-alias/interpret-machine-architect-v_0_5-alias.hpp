@@ -152,7 +152,11 @@
 
 // linear:
 
-	// control:
+	// interoperators:
+
+		template<auto Pos, auto Program, auto... Args>
+		NIK_POLICY auto nik_name(NIK_PREFIX, call)					=
+			NIK_MODULE::template call<Pos, Program, Args...>;
 
 		template<auto Pos>
 		NIK_POLICY auto nik_name(NIK_PREFIX, instr_goto)				=
