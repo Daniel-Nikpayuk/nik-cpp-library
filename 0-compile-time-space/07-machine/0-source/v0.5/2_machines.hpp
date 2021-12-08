@@ -315,9 +315,9 @@ private:
 			using tn		= T_type_U<n>;
 
 			constexpr auto call_ins	= tn::instr(c, i, j);
-			constexpr auto nc	= T_BP::template make_controller<call_ins>;
+			constexpr auto nc	= T_block_program::template make_controller<call_ins>;
 			constexpr auto pos	= call_ins[BCI::pos];
-			constexpr auto nj	= T_BP::max_index2(pos);
+			constexpr auto nj	= T_block_program::max_index2(pos);
 			constexpr auto ni	= pos + nj;
 
 			constexpr auto cH0	= U_pretype_T<Heap0>;
@@ -358,7 +358,7 @@ private:
 							<
 								MN::pass, MT::linear
 							>;
-			constexpr auto nj		= T_BP::max_index2(size);
+			constexpr auto nj		= T_block_program::max_index2(size);
 			constexpr auto ni		= size + nj;
 
 			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length>;
@@ -405,7 +405,7 @@ private:
 							<
 								MN::pass, MT::user
 							>;
-			constexpr auto nj		= T_BP::max_index2(size);
+			constexpr auto nj		= T_block_program::max_index2(size);
 			constexpr auto ni		= size + nj;
 
 			constexpr auto nH0		= U_opt_pack_Vs<call_ins, length>;
@@ -430,6 +430,26 @@ private:
 		{
 			constexpr auto sc = U_opt_pack_Vs<n, c, m, i, j, Vs...>;
 			constexpr auto hc = U_pre_pack_Ts<Heaps...>;
+
+			return loadable(sc, hc);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// pass (reindex):
+
+	template<key_type... filler>
+	struct machine<MN::pass, MT::reindex, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, auto ni, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<ni, Ws...>*), Heaps...)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto nj	= tn::initial_j;
+			constexpr auto nH0	= U_opt_pack_Vs<Ws...>;
+			constexpr auto sc	= U_opt_pack_Vs<n, c, m, ni, nj, Vs...>;
+			constexpr auto hc	= U_opt_pack_Vs<nH0, U_pretype_T<Heaps>...>;
 
 			return loadable(sc, hc);
 		}
@@ -484,7 +504,9 @@ private:
 		{
 			using tn		= boolean_module::template T_if_then_else_TxT
 						<
-							MT::is_linear(Note), T_LP, T_UP
+							MT::is_linear(Note),
+							T_linear_program,
+							T_user_program
 						>;
 
 			constexpr auto nn	= U_type_T<tn>;
@@ -537,27 +559,10 @@ private:
 
 /***********************************************************************************************************************/
 
-// reindex (id; unconditional):
+// branch:
 
 	template<key_type... filler>
-	struct machine<MN::reindex, MT::id, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto ni, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<ni, Ws...>*), Heaps... Hs)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto nj	= tn::initial_j;
-
-			return NIK_MACHINE(n, c, d, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// reindex (conditional):
-
-	template<key_type... filler>
-	struct machine<MN::reindex, MT::conditional, filler...>
+	struct machine<MN::branch, MT::id, filler...>
 	{
 		static constexpr index_type index = 3;
 
@@ -860,8 +865,8 @@ public:
 		constexpr auto c	= label<call_linear_program<MN::id, MT::id, PM::id, PL::id>>;
 		constexpr auto d	= program::depth;
 		constexpr auto m	= MN::call;
-		constexpr auto i	= T_LP::initial_i;
-		constexpr auto j	= T_LP::next_index2(c, d, MN::id, i, T_LP::initial_j);
+		constexpr auto i	= T_linear_program::initial_i;
+		constexpr auto j	= T_linear_program::next_index2(c, d, MN::id, i, T_linear_program::initial_j);
 
 		constexpr auto nn	= U_type_T<program>;
 		constexpr auto nc	= program::template controller<Is...>;

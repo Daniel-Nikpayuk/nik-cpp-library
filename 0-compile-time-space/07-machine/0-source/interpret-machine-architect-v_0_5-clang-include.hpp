@@ -27,6 +27,7 @@
 // dependencies:
 
 	#include nik_source(../../.., interpret, constant, architect, v_0_5, clang)
+	#include nik_source(../../.., interpret, boolean, architect, v_0_5, clang)
 	#include nik_source(../../.., interpret, array, architect, v_0_5, clang)
 
 /***********************************************************************************************************************/
@@ -43,6 +44,8 @@ namespace nik
 		#include nik_import(../../.., interpret, constant, architect, v_0_5, clang, static, name)
 		#include nik_import(../../.., interpret, array, architect, v_0_5, clang, static, name)
 
+		using boolean_module = nik_module(interpret, boolean, architect, v_0_5, clang);
+
 		template<auto... Vs>				// optimized because we know auto_pack<Vs...>
 		static constexpr auto U_opt_pack_Vs =		// is not void nor a reference.
 			nik_module(interpret, cache, architect, v_0_5, clang)::template
@@ -53,9 +56,9 @@ namespace nik
 
 		//
 
-		#include"v0.5/0_machines.hpp"
-		#include"v0.5/1_dispatchers.hpp"
-		#include"v0.5/2_controllers.hpp"
+		#include"v0.5/0_programs.hpp"
+		#include"v0.5/1_routines.hpp"
+		#include"v0.5/2_machines.hpp"
 
 		//
 

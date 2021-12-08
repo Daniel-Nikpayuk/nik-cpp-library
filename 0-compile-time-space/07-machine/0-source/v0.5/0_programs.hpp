@@ -67,7 +67,7 @@ public:
 			static constexpr key_type call						=  3;
 			static constexpr key_type pass						=  4;
 
-			static constexpr key_type reindex					=  5; // <machine>
+			static constexpr key_type branch					=  5; // <machine>
 
 		// halters:
 
@@ -114,12 +114,12 @@ public:
 		static constexpr key_type id				=  0;
 		static constexpr key_type identity			= id; // convenience for
 									      // default params.
-		static constexpr key_type stage2			=  1;
-		static constexpr key_type block				=  2;
-		static constexpr key_type linear			=  3;
-		static constexpr key_type user				=  4;
+		static constexpr key_type reindex			=  1;
 
-		static constexpr key_type conditional			=  5;
+		static constexpr key_type stage2			=  2;
+		static constexpr key_type block				=  3;
+		static constexpr key_type linear			=  4;
+		static constexpr key_type user				=  5;
 
 		static constexpr bool is_linear(key_type n)		{ return (n == linear); }
 	};
@@ -394,7 +394,7 @@ public:
 			>;
 	};
 
-	using T_BP					= block_program<>;
+	using T_block_program				= block_program<>;
 	static constexpr auto U_block_program		= U_type_T<block_program<>>;
 
 /***********************************************************************************************************************/
@@ -514,7 +514,7 @@ public:
 			>::template controller<Vs...>;
 	};
 
-	using T_LP					= linear_program<>;
+	using T_linear_program				= linear_program<>;
 	static constexpr auto U_linear_program		= U_type_T<linear_program<>>;
 
 /***********************************************************************************************************************/
@@ -663,7 +663,7 @@ public:
 			>::template controller<Vs...>;
 	};
 
-	using T_UP				= user_program<>;
+	using T_user_program			= user_program<>;
 	static constexpr auto U_user_program	= U_type_T<user_program<>>;
 
 /***********************************************************************************************************************/

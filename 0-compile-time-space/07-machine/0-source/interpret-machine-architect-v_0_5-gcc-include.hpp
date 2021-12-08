@@ -27,6 +27,7 @@
 // dependencies:
 
 	#include nik_source(../../.., interpret, constant, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, boolean, architect, v_0_5, gcc)
 	#include nik_source(../../.., interpret, array, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/

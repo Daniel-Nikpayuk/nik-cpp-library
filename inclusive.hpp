@@ -33,7 +33,7 @@
 //#include nik_source(., interpret, cache, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., interpret, constant, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., interpret, pair, architect, v_0_5, gcc)			// redundant inclusion
-#include nik_source(., interpret, boolean, architect, v_0_5, gcc)			// redundant inclusion
+//#include nik_source(., interpret, boolean, architect, v_0_5, gcc)			// redundant inclusion
 #include nik_source(., interpret, pointer, architect, v_0_5, gcc)
 //#include nik_source(., interpret, reference, architect, v_0_5, gcc)			// redundant inclusion
 //#include nik_source(., interpret, array, architect, v_0_5, gcc)			// redundant inclusion

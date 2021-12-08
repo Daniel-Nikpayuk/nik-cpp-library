@@ -81,17 +81,17 @@ public:
 		MN::pass, Note
 	>;
 
-	template<key_type Note = MT::id>
-	static constexpr instr_type reindex = instruction
-	<
-		MN::reindex, Note
-	>;
-
 		template<key_type...>
-		static constexpr instr_type branch = reindex
+		static constexpr instr_type reindex = pass
 		<
-			MT::conditional
+			MT::reindex
 		>;
+
+	template<key_type Note = MT::id>
+	static constexpr instr_type branch = instruction
+	<
+		MN::branch, Note
+	>;
 
 // halters:
 
@@ -237,7 +237,7 @@ public:
 			index_type Pos,
 			key_type Coname, key_type Conote
 		>
-		static constexpr instr_type call__drop_r_segment = call_block_program
+		static constexpr instr_type drop_r_segment = call_block_program
 		<
 			BN::drop_r_segment,
 			Mem, Loc,
@@ -246,7 +246,7 @@ public:
 		>;
 
 		template<index_type Pos, key_type Loc>
-		static constexpr instr_type call__copy_r_pos__insert_at_h0 = call__drop_r_segment
+		static constexpr instr_type copy_r_pos__insert_at_h0 = drop_r_segment
 		<
 			PM::heap_zero, Loc,
 			Pos,
@@ -256,7 +256,7 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos, key_type Mem = PM::id, key_type Loc = PL::id>
-		static constexpr instr_type call__at = call__drop_r_segment
+		static constexpr instr_type at = drop_r_segment
 		<
 			Mem, Loc,
 			Pos,
@@ -264,13 +264,13 @@ public:
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type call__copy_r_pos__insert_at_h0_front = call__copy_r_pos__insert_at_h0
+		static constexpr instr_type copy_r_pos__insert_at_h0_front = copy_r_pos__insert_at_h0
 		<
 			Pos, PL::front
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type call__copy_r_pos__insert_at_h0_back = call__copy_r_pos__insert_at_h0
+		static constexpr instr_type copy_r_pos__insert_at_h0_back = copy_r_pos__insert_at_h0
 		<
 			Pos, PL::back
 		>;
@@ -293,7 +293,7 @@ public:
 	// interface:
 
 		template<index_type Pos>
-		static constexpr instr_type call__move_r_segment__insert_at_h1_back = call_block_program
+		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
 		<
 			BN::move_r_segment__insert_at_h1_back,
 			PM::stage2, PL::id,
@@ -317,14 +317,13 @@ public:
 // instruction goto:
 
 	template<key_type... filler>
-	struct linear_program<LN::instr_goto, filler...> : public linear_program<>
+	struct linear_program<LN::instr_goto, filler...> : public T_linear_program
 	{
 		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
 			copy_i_value__insert_at_h0_front<Pos>,
-			reindex<>	// reindexing only makes sense after val is returned within the call.
-					// call copy r pos, return, reindex as a call dispatch?
+			reindex<>
 		>;
 	};
 
@@ -343,12 +342,12 @@ public:
 // register goto:
 
 	template<key_type... filler>
-	struct linear_program<LN::regstr_goto, filler...> : public linear_program<>
+	struct linear_program<LN::regstr_goto, filler...> : public T_linear_program
 	{
 		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_front<Pos>,
+			copy_r_pos__insert_at_h0_front<Pos>,
 			reindex<>
 		>;
 	};
@@ -378,7 +377,7 @@ public:
 		template<index_type Pos>
 		static constexpr label_type controller = label
 		<
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			move_r_segment__insert_at_h1_back<Pos>,
 			drop_r_block<>,
 			move_h1_all__insert_at_r_front<>,
 			pass<>
@@ -388,7 +387,7 @@ public:
 	// interface:
 
 		template<index_type Pos>
-		static constexpr instr_type call__erase = call_linear_program
+		static constexpr instr_type erase = call_linear_program
 		<
 			LN::erase, MT::id,
 			PM::stage2, PL::id,
@@ -400,13 +399,13 @@ public:
 // insert:
 
 	template<key_type... filler>
-	struct linear_program<LN::insert, filler...> : public linear_program<>
+	struct linear_program<LN::insert, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Obj>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_front<Obj>,
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			copy_r_pos__insert_at_h0_front<Obj>,
+			move_r_segment__insert_at_h1_back<Pos>,
 			move_h0_first__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
 			pass<>
@@ -416,7 +415,7 @@ public:
 	// interface:
 
 		template<index_type Pos, index_type Obj>
-		static constexpr instr_type call__insert = call_linear_program
+		static constexpr instr_type insert = call_linear_program
 		<
 			LN::insert, MT::id,
 			PM::stage2, PL::id,
@@ -428,13 +427,13 @@ public:
 // replace:
 
 	template<key_type... filler>
-	struct linear_program<LN::replace, filler...> : public linear_program<>
+	struct linear_program<LN::replace, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Obj>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_front<Obj>,
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			copy_r_pos__insert_at_h0_front<Obj>,
+			move_r_segment__insert_at_h1_back<Pos>,
 			drop_r_block<>,
 			move_h0_first__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
@@ -445,7 +444,7 @@ public:
 	// interface:
 
 		template<index_type Pos, index_type Obj>
-		static constexpr instr_type call__replace = call_linear_program
+		static constexpr instr_type replace = call_linear_program
 		<
 			LN::replace, MT::id,
 			PM::stage2, PL::id,
@@ -455,7 +454,7 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos, index_type Obj>
-		static constexpr instr_type regstr_assign = call__replace
+		static constexpr instr_type regstr_assign = replace
 		<
 			Pos, Obj
 		>;
@@ -465,13 +464,13 @@ public:
 // instruction assign:
 
 	template<key_type... filler>
-	struct linear_program<LN::instr_assign, filler...> : public linear_program<>
+	struct linear_program<LN::instr_assign, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Obj>
 		static constexpr label_type controller = label
 		<
 			copy_i_value__insert_at_h0_front<Obj>,
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			move_r_segment__insert_at_h1_back<Pos>,
 			drop_r_block<>,
 			move_h0_first__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
@@ -499,13 +498,13 @@ public:
 // test:
 
 	template<key_type... filler>
-	struct linear_program<LN::test, filler...> : public linear_program<>
+	struct linear_program<LN::test, filler...> : public T_linear_program
 	{
 		template<index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_back<Op>,
-			call__copy_r_pos__insert_at_h0_back<Args>...,
+			copy_r_pos__insert_at_h0_back<Op>,
+			copy_r_pos__insert_at_h0_back<Args>...,
 			apply_h0_all__return_value<>
 		>;
 	};
@@ -513,7 +512,7 @@ public:
 	// interface:
 
 		template<index_type Op, index_type... Args>
-		static constexpr instr_type call__test = call_linear_program
+		static constexpr instr_type test = call_linear_program
 		<
 			LN::test, MT::id,
 			PM::heap_zero, PL::front,
@@ -525,13 +524,13 @@ public:
 // check:
 
 	template<key_type... filler>
-	struct linear_program<LN::check, filler...> : public linear_program<>
+	struct linear_program<LN::check, filler...> : public T_linear_program
 	{
 		template<index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_back<Op>,
-			call__copy_r_pos__insert_at_h0_back<Args>...,
+			copy_r_pos__insert_at_h0_back<Op>,
+			copy_r_pos__insert_at_h0_back<Args>...,
 			compel_h0_all__return_value<>
 		>;
 	};
@@ -539,7 +538,7 @@ public:
 	// interface:
 
 		template<index_type Op, index_type... Args>
-		static constexpr instr_type call__check = call_linear_program
+		static constexpr instr_type check = call_linear_program
 		<
 			LN::check, MT::id,
 			PM::heap_zero, PL::front,
@@ -551,14 +550,14 @@ public:
 // apply:
 
 	template<key_type... filler>
-	struct linear_program<LN::apply, filler...> : public linear_program<>
+	struct linear_program<LN::apply, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_back<Op>,
-			call__copy_r_pos__insert_at_h0_back<Args>...,
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			copy_r_pos__insert_at_h0_back<Op>,
+			copy_r_pos__insert_at_h0_back<Args>...,
+			move_r_segment__insert_at_h1_back<Pos>,
 			drop_r_block<>,
 			apply_h0_all__move__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
@@ -569,7 +568,7 @@ public:
 	// interface:
 
 		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr instr_type call__apply = call_linear_program
+		static constexpr instr_type apply = call_linear_program
 		<
 			LN::apply, MT::id,
 			PM::stage2, PL::id,
@@ -581,14 +580,14 @@ public:
 // compel:
 
 	template<key_type... filler>
-	struct linear_program<LN::compel, filler...> : public linear_program<>
+	struct linear_program<LN::compel, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Op, index_type... Args>
 		static constexpr label_type controller = label
 		<
-			call__copy_r_pos__insert_at_h0_back<Op>,
-			call__copy_r_pos__insert_at_h0_back<Args>...,
-			call__move_r_segment__insert_at_h1_back<Pos>,
+			copy_r_pos__insert_at_h0_back<Op>,
+			copy_r_pos__insert_at_h0_back<Args>...,
+			move_r_segment__insert_at_h1_back<Pos>,
 			drop_r_block<>,
 			compel_h0_all__move__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
@@ -599,7 +598,7 @@ public:
 	// interface:
 
 		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr instr_type call__compel = call_linear_program
+		static constexpr instr_type compel = call_linear_program
 		<
 			LN::compel, MT::id,
 			PM::stage2, PL::id,

@@ -53,7 +53,7 @@
 
 	using FN = FactorialNames;
 
-	template<key_type, key_type...> struct S_user_factorial_contr;
+	template<key_type, key_type...> struct T_user_program_factorial;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -63,7 +63,7 @@
 /***********************************************************************************************************************/
 
 	template<>
-	struct S_user_factorial_contr<FN::naive>
+	struct T_user_program_factorial<FN::naive> : public T_user_program
 	{
 		template
 		<
@@ -74,6 +74,7 @@
 				index_type is_zero	= 2,
 				index_type dec		= 3,
 				index_type mult		= 4,
+				index_type fact_prog	= 5,
 
 			// labels:
 
@@ -84,25 +85,25 @@
 		<
 			label // loop:
 			<
-				test    < is_zero , n              >,
-				branch  < done                     >,
-				save    < n                        >,
-				apply   < n       , dec  , n       >,
-				recurse < val                      >,
-				restore < n                        >,
-				apply   < val     , mult , n , val >,
-				stop    < val                      >
+				test   < is_zero , n                                                                      >,
+				branch < done                                                                             >,
+				save   <                                                                                  >,
+				apply  < n       , dec       , n                                                          >,
+				call   < val     , fact_prog , val , n   , is_zero , dec , mult , fact_prog , loop , done >,
+				apply  < val     , mult      , n   , val                                                  >,
+				at     < val                                                                              >
 			>,
 
 			label // done:
 			<
-				stop    < val                      >
+				at     < val                                                                              >
 			>
 		>;
 	};
 
 /***********************************************************************************************************************/
 
+/*
 	template<auto n, auto d>
 	constexpr auto f_naive_factorial()
 	{
@@ -124,6 +125,7 @@
 
 	template<auto n, depth_type d = 500>
 	constexpr auto naive_factorial = f_naive_factorial<n, d>();
+*/
 
 /***********************************************************************************************************************/
 
@@ -172,6 +174,7 @@
 
 /***********************************************************************************************************************/
 
+/*
 	template
 	<
 		// registers:
@@ -196,9 +199,11 @@
 			stop    < val                                                    >
 		>
 	>;
+*/
 
 /***********************************************************************************************************************/
 
+/*
 	template<auto n, auto d>
 	constexpr auto f_off_by_one_factorial()
 	{
@@ -221,6 +226,7 @@
 
 	template<auto n, depth_type d = 500>
 	constexpr auto off_by_one_factorial = f_off_by_one_factorial<n, d>();
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -229,6 +235,7 @@
 
 /***********************************************************************************************************************/
 
+/*
 	template<>
 	struct S_user_factorial_contr<FN::fast>
 	{
@@ -264,9 +271,11 @@
 			>
 		>;
 	};
+*/
 
 /***********************************************************************************************************************/
 
+/*
 	template<auto n, auto d>
 	constexpr auto f_fast_factorial()
 	{
@@ -288,6 +297,7 @@
 
 	template<auto n, depth_type d = 500>
 	constexpr auto fast_factorial = f_fast_factorial<n, d>();
+*/
 
 /***********************************************************************************************************************/
 
