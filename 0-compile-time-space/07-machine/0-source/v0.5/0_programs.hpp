@@ -40,7 +40,7 @@
 /***********************************************************************************************************************/
 
 	template<typename... Ts>
-	static constexpr auto U_pre_pack_Ts = U_opt_pack_Vs<U_pretype_T<Ts>...>;
+	static constexpr auto U_prepack_Ts = U_opt_pack_Vs<U_pretype_T<Ts>...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -63,41 +63,44 @@ public:
 
 			static constexpr key_type pause						=  1;
 
-			static constexpr key_type save						=  2;
-			static constexpr key_type call						=  3;
-			static constexpr key_type pass						=  4;
+			static constexpr key_type call						=  2;
+			static constexpr key_type make						=  3;
+			static constexpr key_type unwind					=  4;
+			static constexpr key_type overwrite					=  5;
 
-			static constexpr key_type branch					=  5; // <machine>
+			static constexpr key_type branch					=  6; // <machine>
 
 		// halters:
 
-			static constexpr key_type first						=  6;
-			static constexpr key_type rest						=  7;
+			static constexpr key_type first						=  7;
+			static constexpr key_type rest						=  8;
 
 		// debuggers:
 
-			static constexpr key_type depth						=  8;
-			static constexpr key_type dump						=  9;
+			static constexpr key_type depth						=  9;
+			static constexpr key_type dump						= 10;
 
-			static constexpr key_type registers					= 10;
-			static constexpr key_type arguments					= 11;
+			static constexpr key_type registers					= 11;
+			static constexpr key_type arguments					= 12;
 
 		// passers:
 
-			static constexpr key_type copy_i_value__insert_at_h0_front		= 12; // <machine>
-			static constexpr key_type unpack_i_block__insert_at_h1_back		= 13; // <machine>
+			static constexpr key_type copy_i_value__insert_at_h0_front		= 13; // <machine>
+			static constexpr key_type unpack_i_block__insert_at_h0_back		= 14; // <machine>
 
-			static constexpr key_type drop_r_block					= 14; // <halters>
+			static constexpr key_type drop_r_block					= 15; // <halters>
+			static constexpr key_type fold_r_block					= 16; // <halters>
+			static constexpr key_type roll_r_block					= 17; // <halters>
 
-			static constexpr key_type move_r_block__insert_at_h1_back		= 15; // <mutators>
-			static constexpr key_type move_h0_first__insert_at_r_front		= 16; // <mutators>
-			static constexpr key_type move_h1_all__insert_at_r_front		= 17; // <mutators>
+			static constexpr key_type move_r_block__insert_at_h1_back		= 18; // <mutators>
+			static constexpr key_type move_h0_first__insert_at_r_front		= 19; // <mutators>
+			static constexpr key_type move_h1_all__insert_at_r_front		= 20; // <mutators>
 
-			static constexpr key_type apply_h0_all__return_value			= 18; // <machine>
-			static constexpr key_type apply_h0_all__move__insert_at_r_front		= 19; // <machine>
+			static constexpr key_type apply_h0_all__return_value			= 21; // <machine>
+			static constexpr key_type apply_h0_all__move__insert_at_r_front		= 22; // <machine>
 
-			static constexpr key_type compel_h0_all__return_value			= 20; // <machine>
-			static constexpr key_type compel_h0_all__move__insert_at_r_front	= 21; // <machine>
+			static constexpr key_type compel_h0_all__return_value			= 23; // <machine>
+			static constexpr key_type compel_h0_all__move__insert_at_r_front	= 24; // <machine>
 	};
 
 	using MN = MachineName;
@@ -116,7 +119,7 @@ public:
 									      // default params.
 		static constexpr key_type reindex			=  1;
 
-		static constexpr key_type stage2			=  2;
+		static constexpr key_type between			=  2;
 		static constexpr key_type block				=  3;
 		static constexpr key_type linear			=  4;
 		static constexpr key_type user				=  5;
@@ -183,10 +186,9 @@ public:
 		static constexpr index_type call_name			= 1;
 		static constexpr index_type call_note			= 2;
 		static constexpr index_type name			= 3;
-		static constexpr index_type note			= 4;
 
-		static constexpr index_type memonic			= 5;
-		static constexpr index_type location			= 6;
+		static constexpr index_type memonic			= 4;
+		static constexpr index_type location			= 5;
 	};
 
 	using CI = CallInstr;
@@ -255,7 +257,7 @@ public:
 	// Block programs are intended *only* to be called by linear/user programs. 
 
 	// Block programs consist of two block instructions. Minimally, in order to call
-	// these programs only "unpack i segment, insert at h1 back" is required to bootstrap
+	// these programs only "unpack i segment, insert at h0 back" is required to bootstrap
 	// the calling/loading process for the others. As the minimum number of required
 	// programs all have the same form they are optimized into a single-call loader.
 
@@ -270,9 +272,11 @@ public:
 		static constexpr key_type id						=  0;
 		static constexpr key_type identity					= id; // convenience for
 											      // default params.
-		static constexpr key_type unpack_i_segment__insert_at_h1_back		=  1; // <machine>
+		static constexpr key_type unpack_i_segment__insert_at_h0_back		=  1; // <machine>
 		static constexpr key_type drop_r_segment				=  2; // <list>
-		static constexpr key_type move_r_segment__insert_at_h1_back		=  3; // <mutators>
+		static constexpr key_type fold_r_segment				=  3; // <list>
+		static constexpr key_type roll_r_segment				=  4; // <list>
+		static constexpr key_type move_r_segment__insert_at_h1_back		=  5; // <mutators>
 	};
 
 	using BN = BlockName;
@@ -283,18 +287,18 @@ public:
 
 	struct BlockInstr : public MachineInstr
 	{
-		static constexpr index_type coname			=  3;
-		static constexpr index_type conote			=  4;
+		static constexpr index_type coname			=  2;
+		static constexpr index_type conote			=  3;
 	};
 
 	using BI							= BlockInstr;
 
 	struct BlockCallInstr : public CallInstr
 	{
-		static constexpr index_type pos				=  7;
+		static constexpr index_type pos				=  6;
 
-		static constexpr index_type coname			=  8;
-		static constexpr index_type conote			=  9;
+		static constexpr index_type coname			=  7;
+		static constexpr index_type conote			=  8;
 	};
 
 	using BCI							= BlockCallInstr;
@@ -353,7 +357,7 @@ public:
 			static constexpr key_type next_note(instr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
 				if (d == 0)		return MT::identity;	// assumes i >= j, next i := i - j
-				else if (m != MN::id)	return MT::stage2;
+				else if (m != MN::id)	return MT::between;
 				else if (i > j)		return max_note(i - j);
 				else			return c[BI::conote];
 			}
@@ -378,14 +382,14 @@ public:
 				else			return max_index2(i - j);
 			}
 
-		// controllers:
+		// programs:
 
 			template<auto call_ins>
-			static constexpr instr_type make_controller = block_program
+			static constexpr instr_type make = block_program
 			<
 				call_ins[BCI::name]
 
-			>::template controller
+			>::template lines
 			<
 				call_ins[BCI::coname],
 				call_ins[BCI::conote]
@@ -413,24 +417,27 @@ public:
 											      // default params.
 		// interoperators:
 
-			static constexpr index_type call				=  1;
+			static constexpr key_type save					=  1;
+			static constexpr key_type make					=  2;
+			static constexpr key_type call					=  3;
+			static constexpr key_type restore				=  4;
 
-			static constexpr index_type instr_goto				=  2;
-			static constexpr index_type regstr_goto				=  3;
+			static constexpr key_type instr_goto				=  5;
+			static constexpr key_type regstr_goto				=  6;
 
 		// mutators:
 
-			static constexpr index_type erase				=  4;
-			static constexpr index_type insert				=  5;
-			static constexpr index_type replace				=  6;
+			static constexpr key_type erase					=  7;
+			static constexpr key_type insert				=  8;
+			static constexpr key_type replace				=  9;
 
-			static constexpr index_type instr_assign			=  7;
+			static constexpr key_type instr_assign				= 10;
 
-			static constexpr index_type test				=  8;
-			static constexpr index_type check				=  9;
+			static constexpr key_type test					= 11;
+			static constexpr key_type check					= 12;
 
-			static constexpr index_type apply				= 10;
-			static constexpr index_type compel				= 11;
+			static constexpr key_type apply					= 13;
+			static constexpr key_type compel				= 14;
 	};
 
 	using LN = LinearName;
@@ -448,7 +455,7 @@ public:
 
 	struct LinearCallInstr : public CallInstr
 	{
-		static constexpr index_type offset			= 7;
+		static constexpr index_type offset			= 6;
 	};
 
 	using LCI							= LinearCallInstr;
@@ -482,7 +489,7 @@ public:
 			static constexpr key_type next_note(label_type l, depth_type d, key_type m, index_type, index_type j)
 			{
 				if (d == 0)		return MT::identity;
-				else if (m != MN::id)	return MT::stage2;
+				else if (m != MN::id)	return MT::between;
 				else			return l[j+1][MI::note];
 			}
 
@@ -504,14 +511,14 @@ public:
 				else 			return j+1;
 			}
 
-		// controllers:
+		// programs:
 
 			template<auto call_ins, auto... Vs>
-			static constexpr label_type make_controller = linear_program
+			static constexpr label_type make = linear_program
 			<
 				call_ins[LCI::name]
 
-			>::template controller<Vs...>;
+			>::template lines<Vs...>;
 	};
 
 	using T_linear_program				= linear_program<>;
@@ -535,7 +542,10 @@ public:
 
 	struct UserCallInstr : public CallInstr
 	{
-		static constexpr index_type offset			= 7;
+		static constexpr index_type pos				= 6;
+		static constexpr index_type prog			= 7;
+
+		static constexpr index_type offset			= 8;
 	};
 
 	using UCI							= UserCallInstr;
@@ -554,9 +564,9 @@ public:
 
 		// instructions:
 
-			static constexpr index_type linear_name		= 3;
-			static constexpr index_type linear_note		= 4;
-			static constexpr index_type linear_index	= 4;
+		//	static constexpr index_type linear_name		= 3;
+		//	static constexpr index_type linear_note		= 4;
+		//	static constexpr index_type linear_index	= 4;
 
 		// accessors:
 
@@ -595,7 +605,7 @@ public:
 			static constexpr key_type next_note(contr_type c, depth_type d, key_type m, index_type i, index_type j)
 			{
 				if (d == 0)		return MT::identity;
-				else if (m != MN::id)	return MT::stage2;
+				else if (m != MN::id)	return MT::between;
 				else
 				{
 					index_type ni = next_index1(c, d, m, i, j);
@@ -618,16 +628,16 @@ public:
 				else
 				{
 					index_type ni = initial_next_index1(c, i, j);
-					index_type nj = initial_next_index2(c, i, j);
-					key_type note = c[ni][nj][MI::note];
+				//	index_type nj = initial_next_index2(c, i, j);
+				//	key_type note = c[ni][nj][MI::note];
 
-					if (note == MT::linear)
-					{
-						key_type l_name = c[ni][nj][linear_name];
+				//	if (note == MT::linear)
+				//	{
+				//		key_type l_name = c[ni][nj][linear_name];
 
-						if (l_name == LN::instr_goto) return c[ni][nj][linear_index];
-					}
-
+				//		if (l_name == LN::instr_goto) return c[ni][nj][linear_index];
+				//	}
+				//	else
 					return ni;
 				}
 			}
@@ -638,17 +648,17 @@ public:
 				else if (m != MN::id)	return j;
 				else
 				{
-					index_type ni = initial_next_index1(c, i, j);
+				//	index_type ni = initial_next_index1(c, i, j);
 					index_type nj = initial_next_index2(c, i, j);
-					key_type note = c[ni][nj][MI::note];
+				//	key_type note = c[ni][nj][MI::note];
 
-					if (note == MT::linear)
-					{
-						key_type l_name = c[ni][nj][linear_name];
+				//	if (note == MT::linear)
+				//	{
+				//		key_type l_name = c[ni][nj][linear_name];
 
-						if (l_name == LN::instr_goto) return _one;
-					}
-
+				//		if (l_name == LN::instr_goto) return _one;
+				//	}
+				//	else
 					return nj;
 				}
 			}

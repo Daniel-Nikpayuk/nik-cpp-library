@@ -73,34 +73,29 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// unpack instruction block, insert at heap one back (2^N):
+// unpack instruction block, insert at heap zero back (2^N):
 
 		// This machine is not general purpose, and so is optimized accordingly.
 
-	#define NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(_n_)							\
+	#define NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(_n_)							\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::unpack_i_block__insert_at_h1_back, _n_, filler...>					\
+		struct machine<MN::unpack_i_block__insert_at_h0_back, _n_, filler...>					\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, auto... Vs,								\
-				auto call_ins, auto length, auto... Xs, typename... Heaps				\
+				auto call_ins, auto length, auto... Ws, typename... Heaps				\
 			>												\
-			static constexpr auto result									\
-			(												\
-				void(*H0)(auto_pack<call_ins, length>*),						\
-				void(*H1)(auto_pack<Xs...>*), Heaps... Hs						\
-			)												\
+			static constexpr auto result(void(*H0)(auto_pack<call_ins, length, Ws...>*), Heaps... Hs)	\
 			{												\
 				constexpr index_type offset = length - i;						\
 															\
 				return NIK_MACHINE(n, c, d, i, j, Vs)							\
 				(											\
-					H0,										\
 					U_opt_pack_Vs									\
 					<										\
-						Xs...,									\
+						call_ins, length, Ws...,						\
 						NIK_2_ ## _n_ ## _ARRAY_BLOCK(call_ins, offset)				\
 					>,										\
 					Hs...										\

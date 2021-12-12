@@ -23,6 +23,8 @@
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
 
+	using machine_module = nik_module(interpret, machine, architect, v_0_5, gcc); // temporary to call *start*
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -81,7 +83,7 @@
 				index_type loop		= 0,
 				index_type done		= 1
 		>
-		static constexpr auto result = controller
+		static constexpr auto lines = controller
 		<
 			label // loop:
 			<
@@ -90,7 +92,7 @@
 				save   <                                                                                  >,
 				apply  < n       , dec       , n                                                          >,
 				call   < val     , fact_prog , val , n   , is_zero , dec , mult , fact_prog , loop , done >,
-				apply  < val     , mult      , n   , val                                                  >,
+			//	apply  < val     , mult      , n   , val                                                  >,
 				at     < val                                                                              >
 			>,
 
@@ -102,6 +104,27 @@
 	};
 
 /***********************************************************************************************************************/
+
+	template<auto n>
+	constexpr auto f_naive_factorial()
+	{
+		using n_type = decltype(n);
+
+		constexpr n_type val		= _one;
+		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
+		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto mult_op		= multiply<n_type, n_type>;
+		constexpr auto fact_prog	= U_type_T<T_user_program_factorial<FN::naive>>;
+
+		return machine_module::template start
+		<
+			T_user_program_factorial<FN::naive>,
+				val, n, is_zero_op, dec_op, mult_op, fact_prog
+		>();
+	}
+
+	template<auto n>
+	constexpr auto naive_factorial = f_naive_factorial<n>();
 
 /*
 	template<auto n, auto d>
@@ -254,7 +277,7 @@
 				index_type loop		= 0,
 				index_type done		= 1
 		>
-		static constexpr auto result = controller
+		static constexpr auto lines = controller
 		<
 			label // loop:
 			<

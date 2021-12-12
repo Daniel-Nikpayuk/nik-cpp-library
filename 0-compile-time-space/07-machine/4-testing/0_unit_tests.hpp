@@ -230,7 +230,7 @@
 		using label_type = typename machine_module::label_type;
 
 		template<auto Pos>
-		static constexpr label_type controller = machine_module::template label
+		static constexpr label_type lines = machine_module::template label
 		<
 			machine_module::template at<Pos>
 		>;
@@ -248,7 +248,7 @@
 		using label_type = typename machine_module::label_type;
 
 		template<auto Pos>
-		static constexpr label_type controller = machine_module::template label
+		static constexpr label_type lines = machine_module::template label
 		<
 			machine_module::template erase<Pos>,
 			machine_module::template registers<>
@@ -267,7 +267,7 @@
 		using label_type = typename machine_module::label_type;
 
 		template<auto Pos, auto Obj>
-		static constexpr label_type controller = machine_module::template label
+		static constexpr label_type lines = machine_module::template label
 		<
 			machine_module::template insert<Pos, Obj>,
 			machine_module::template registers<>
@@ -286,7 +286,7 @@
 		using label_type = typename machine_module::label_type;
 
 		template<auto Pos, auto Obj>
-		static constexpr label_type controller = machine_module::template label
+		static constexpr label_type lines = machine_module::template label
 		<
 			machine_module::template replace<Pos, Obj>,
 			machine_module::template registers<>
@@ -305,7 +305,7 @@
 		using label_type = typename machine_module::label_type;
 
 		template<auto Pos, auto Op, auto... Args>
-		static constexpr label_type controller = machine_module::template label
+		static constexpr label_type lines = machine_module::template label
 		<
 			machine_module::template apply<Pos, Op, Args...>,
 			machine_module::template registers<>

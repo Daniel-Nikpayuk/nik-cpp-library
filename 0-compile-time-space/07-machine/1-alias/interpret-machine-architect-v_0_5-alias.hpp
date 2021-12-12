@@ -217,7 +217,7 @@
 // start:
 
 	template<typename program, auto... Vs, typename T>
-	inline NIK_POLICY auto start(T v = nik_module(interpret, cache, architect, v_0_5, gcc)::template U_pack_Vs<>)
+	inline NIK_POLICY auto start(T v = NIK_MODULE::null)
 	{
 		return NIK_MODULE::template start<program, Vs...>(v);
 	}
