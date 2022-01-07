@@ -41,6 +41,9 @@ public:
 
 	// accessors:
 
+	template<typename T1, typename T2>
+	using pair_type = pair<T1, T2> (*)();
+
 	template<auto p>
 	static constexpr auto car = p().v1;
 

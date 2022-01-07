@@ -35,6 +35,9 @@
 
 	// accessors:
 
+	template<typename T1, typename T2>
+	using nik_name(NIK_PREFIX, pair_type)		= typename NIK_MODULE::template pair_type<T1, T2>;
+
 	template<auto p>
 	NIK_POLICY auto nik_name(NIK_PREFIX, car)	= NIK_MODULE::template car<p>;
 

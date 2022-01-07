@@ -39,6 +39,10 @@
 
 /***********************************************************************************************************************/
 
+	#undef NIK_INTERNAL
+	#undef NIK_END_INTERNAL
+	#undef NIK_BEGIN_INTERNAL
+
 	#undef NIK_MACHINE
 	#undef NIK_END_MACHINE
 	#undef NIK_BEGIN_MACHINE

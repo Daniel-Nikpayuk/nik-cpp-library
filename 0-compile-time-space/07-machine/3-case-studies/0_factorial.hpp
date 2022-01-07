@@ -90,8 +90,8 @@
 				test   < is_zero , n                                                                      >,
 				branch < done                                                                             >,
 				save   <                                                                                  >,
-				apply  < n       , dec       , n                                                          >,
-				call   < val     , fact_prog , val , n   , is_zero , dec , mult , fact_prog , loop , done >,
+			//	apply  < n       , dec       , n                                                          >,
+			//	call   < val     , fact_prog , val , n   , is_zero , dec , mult , fact_prog , loop , done >,
 			//	apply  < val     , mult      , n   , val                                                  >,
 				at     < val                                                                              >
 			>,
