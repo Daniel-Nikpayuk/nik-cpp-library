@@ -307,8 +307,8 @@ private:
 			constexpr auto _H0		= U_opt_pack_Vs<call_ins, length>;
 			constexpr auto _H2		= U_opt_pack_Vs<Vs...>;
 			constexpr auto _H3		= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
-			constexpr auto nH2		= U_opt_pack_Vs<_m, _n, _c, _i, _j>;
-			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, _H2, _H3>;
+			constexpr auto nH2		= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
+			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, _H2, _H3>; // As... aren't used.
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
 		}
@@ -338,17 +338,14 @@ private:
 			constexpr auto call_ins		= tn::instr(c, i, j);
 			constexpr index_type length	= MI::length(call_ins) + 1;
 			constexpr index_type size	= length - UCI::offset;
-			constexpr auto _c		= run_user_program
-							<
-								call_ins[UCI::prog], call_ins[UCI::pos], size
-							>;
+			constexpr auto _c		= make_user_program<call_ins[UCI::prog], size>;
 
 			constexpr auto _H0		= U_opt_pack_Vs<call_ins, length>;
-			constexpr auto _H2		= U_opt_pack_Vs<Vs...>;
 			constexpr auto _H3		= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
 
 			constexpr auto nH2		= U_opt_pack_Vs<_m, _n, _c, _i, _j, Vs...>;
-			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, _H2, _H3>;
+			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, null, _H3>;	// optimization:
+												// As... aren't used.
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
 		}
@@ -391,6 +388,14 @@ private:
 					// optimization: Assumes _H2, _H3 are stored in val.
 
 				return NIK_AUTOMATA(d, val.m, n, c, i, j, Vs)(H0, H1, val.s1, val.s2, As...);
+
+			else if constexpr (policy == MT::insert_at_r_front)
+
+				return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					val, Vs...
+
+				NIK_END_MACHINE(H0, H1, _H2, _H3, As...);
 
 			else if constexpr (policy == MT::insert_at_h0_back)
 
@@ -471,28 +476,6 @@ private:
 
 /***********************************************************************************************************************/
 
-// reindex:
-
-	// doesn't quite work (just yet).
-
-	template<key_type... filler>
-	struct machine<MN::machinate, MT::reindex, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, auto ni, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<ni, Ws...>*), Heaps...)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto nj	= tn::initial_j;
-			constexpr auto nH0	= U_opt_pack_Vs<Ws...>;
-			constexpr auto s1	= U_opt_pack_Vs<m, n, c, ni, nj, Vs...>;
-			constexpr auto s2	= U_opt_pack_Vs<nH0, U_pretype_T<Heaps>...>;
-
-			return machination(MT::load, s1, s2);
-		}
-	};
-
-/***********************************************************************************************************************/
-
 // linear:
 
 		// This is an optimization: The narrative design would be to return the unpacked
@@ -510,24 +493,22 @@ private:
 		template
 		<
 			NIK_CONTR_PARAMS,
-			auto call_ins, auto length, auto... Ws,
-			typename Heap1, auto... _Vs,
+			auto call_ins, auto length,
+			auto... Xs, auto... _Vs,
 			auto _H0, auto _H1, auto _H2, auto _H3, auto... _As
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<call_ins, length, Ws...>*),
-			Heap1 H1,
+			void(*H0)(auto_pack<call_ins, length>*),
+			void(*H1)(auto_pack<Xs...>*),
 			void(*H2)(auto_pack<_Vs...>*),
 			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _As...>*)
 		)
 		{
-			constexpr auto _c = T_linear_program::template make<call_ins, Ws...>;
+			constexpr auto _c = T_linear_program::template make<call_ins, Xs...>;
 			constexpr auto s1 = U_opt_pack_Vs<_m, _n, _c, _i, _j, _Vs...>;
-		//	constexpr auto s2 = U_pretype_T<decltype(_H3)>;
 
 			return machination(MT::call, s1, H3);
-		//	return machination(MT::call, s1, s2);
 		}
 	};
 
@@ -535,7 +516,6 @@ private:
 
 // preuser:
 
-/*
 	template<key_type... filler>
 	struct machine<MN::machinate, MT::preuser, filler...>
 	{
@@ -546,43 +526,37 @@ private:
 
 		static constexpr auto _m = MT::id;
 		static constexpr auto _n = U_user_program;
-		static constexpr auto _i = T_user_program::initial_i;
 		static constexpr auto _j = T_user_program::initial_j;
 
 		template
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
-			auto call_ins, auto length, auto U_UP, auto... Ws,
-			typename Heap1, auto... _Vs,
-			auto _H0, auto _H1, auto _H2, auto _H3, auto... _As,
-			typename... Args
+			auto call_ins, auto length, auto U_UP,
+			auto... Xs, typename Heap2,
+			auto _H0, auto _H1, auto _H2, auto _H3, auto... _As
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<call_ins, length, U_UP, Ws...>*),
-			Heap1 H1,
-			void(*H2)(auto_pack<_Vs...>*),
-			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _As...>*),
-			Args...
+			void(*H0)(auto_pack<call_ins, length, U_UP>*),
+			void(*H1)(auto_pack<Xs...>*),
+			Heap2 H2,
+			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _As...>*)
 		)
 		{
-			using T_UP		= T_type_U<U_UP>;
-
-			constexpr auto nc	= call_user_program<>;
+			constexpr auto nc	= run_user_program<call_ins[UCI::pos]>;
 			constexpr auto s1	= U_opt_pack_Vs<nm, nn, nc, ni, nj, Vs...>;
 
-			constexpr auto nH0	= U_pretype_T<decltype(H3)>;
-			constexpr auto nH1	= U_pretype_T<decltype(H1)>;
+			constexpr auto _c	= T_type_U<U_UP>::template lines<Xs...>;
+			constexpr auto _i	= call_ins[UCI::adj];
 
-			constexpr auto _c	= T_UP::template lines<Ws...>;
-			constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j, _Vs...>;
+			constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j, Vs...>;
+			constexpr auto nH3	= U_pretype_T<decltype(H3)>;
 
-			constexpr auto s2	= U_opt_pack_Vs<nH0, nH1, nH2, nH0>; // nH3 == nH0
+			constexpr auto s2	= U_opt_pack_Vs<nH3, null, nH2, nH3>; // nH0 := nH3
 
 			return machination(MT::call, s1, s2);
 		}
 	};
-*/
 
 /***********************************************************************************************************************/
 
@@ -595,9 +569,8 @@ private:
 		static constexpr auto result(Heap0 H0, Heaps...)
 		{
 			constexpr auto s1 = U_opt_pack_Vs<Vs...>;
-			constexpr auto s2 = U_pretype_T<decltype(H0)>;
 
-			return machination(MT::load, s1, s2);
+			return machination(MT::load, s1, H0);
 		}
 	};
 
@@ -608,18 +581,18 @@ private:
 
 /***********************************************************************************************************************/
 
-// unpack instruction block, insert at heap zero back (2^N):
+// unpack instruction block, insert at heap one back (2^N):
 
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(0);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(1);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(2);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(3);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(4);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(5);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(6);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(7);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(8);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H0_BACK(9);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(0);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(1);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(2);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(3);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(4);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(5);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(6);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(7);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(8);
+	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(9);
 
 /***********************************************************************************************************************/
 
@@ -715,28 +688,8 @@ private:
 
 /***********************************************************************************************************************/
 
-// copy instruction value, insert at heap zero front:
-
-	template<key_type... filler>
-	struct machine<MN::copy_i_value, MT::insert_at_h0_front, filler...>
-	{
-		static constexpr index_type value = 3;
-
-		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto ins	= tn::instr(c, i, j);
-
-			return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<ins[value], Ws...>, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
 // branch:
 
-/*
 	template<key_type... filler>
 	struct machine<MN::branch, MT::id, filler...>
 	{
@@ -754,7 +707,6 @@ private:
 			return NIK_MACHINE(d, n, c, ni, nj, Vs)(U_opt_pack_Vs<Ws...>, Hs...);
 		}
 	};
-*/
 
 /***********************************************************************************************************************/
 

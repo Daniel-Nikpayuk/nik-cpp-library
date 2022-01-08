@@ -73,25 +73,22 @@ public:
 		template<index_type Pos, index_type Prog, index_type... Args>
 		static constexpr instr_type call = call_program // call user program
 		<
-			MT::user, MN::id, MT::id, Pos, Prog, Args...
+			MT::user, MN::id, MT::load, Pos, Prog, T_user_program::initial_i, Args...
+		>;
+
+		template<index_type Pos, index_type Prog, index_type Adj, index_type... Args>
+		static constexpr instr_type adj_call = call_program // call adjusted user program
+		<
+			MT::user, MN::call, MT::load, Pos, Prog, Adj, Args...
 		>;
 
 	// detour:
 
-	template<key_type Note>
-	static constexpr instr_type detour = instruction
+	template<index_type...>
+	static constexpr instr_type apply_user__insert_at_r_front = instruction
 	<
-		MN::detour, Note
+		MN::detour, MT::call, MN::id, MT::insert_at_r_front
 	>;
-
-		template<key_type...> static constexpr instr_type internal	= detour < MT::call >;
-		template<key_type...> static constexpr instr_type overwrite	= detour < MT::load >;
-
-	//	template<key_type Policy, index_type... Args>
-	//	static constexpr instr_type call_between_program = call_program
-	//	<
-	//		MT::between, MN::id, Policy, Args...
-	//	>;
 
 	// machinate:
 
@@ -102,11 +99,8 @@ public:
 	>;
 
 		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause   >;
-		template<key_type...> static constexpr instr_type unwind_linear		= machinate < MT::linear  >;
-		template<key_type...> static constexpr instr_type unwind_preuser	= machinate < MT::preuser >;
-		template<key_type...> static constexpr instr_type unwind_user		= machinate < MT::user    >;
 		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind  >;
-		template<key_type...> static constexpr instr_type reindex		= machinate < MT::reindex >;
+		template<key_type...> static constexpr instr_type unwind_user		= machinate < MT::user    >;
 
 // passers:
 
@@ -146,16 +140,10 @@ public:
 
 	// user:
 
-	template<key_type Value>
-	static constexpr instr_type copy_i_value__insert_at_h0_front = instruction
-	<
-		MN::copy_i_value, MT::insert_at_h0_front, Value
-	>;
-
-	template<key_type Pos>
+	template<key_type Index>
 	static constexpr instr_type branch = instruction
 	<
-		MN::branch, MT::id, Pos
+		MN::branch, MT::id, Index
 	>;
 
 	template<key_type...>
@@ -198,15 +186,15 @@ public:
 
 /***********************************************************************************************************************/
 
-// unpack instruction segment, insert at heap zero back:
+// unpack instruction segment, insert at heap one back:
 
 	template<key_type... filler>
-	struct block_program<BN::unpack_i_segment__insert_at_h0_back, filler...> : public block_program<filler...>
+	struct block_program<BN::unpack_i_segment__insert_at_h1_back, filler...> : public block_program<filler...>
 	{
 		template<key_type Coname, key_type Conote>
 		static constexpr instr_type lines = instruction
 		<
-			MN::unpack_i_block__insert_at_h0_back, Coname, Conote
+			MN::unpack_i_block__insert_at_h1_back, Coname, Conote
 		>;
 	};
 
@@ -216,20 +204,20 @@ public:
 
 		template<key_type...>
 		static constexpr instr_type make_linear_program =
-			block_program<BN::unpack_i_segment__insert_at_h0_back>::template lines
+			block_program<BN::unpack_i_segment__insert_at_h1_back>::template lines
 			<
 				MN::machinate, MT::linear
 			>;
 
 		// user:
 
-		template<index_type Pos>
-		static constexpr instr_type make_user_program = call_block_program
+		template<index_type Size>
+		static constexpr instr_type bind_user_program = call_block_program
 		<
-			BN::unpack_i_segment__insert_at_h0_back,
+			BN::unpack_i_segment__insert_at_h1_back,
 			MT::call, // corresponds to an optimization.
-			Pos,
-			MN::machinate, MT::user
+			Size,
+			MN::machinate, MT::preuser
 		>;
 
 /***********************************************************************************************************************/
@@ -453,47 +441,30 @@ public:
 			Pos, Obj
 		>;
 
-	// syntactic sugar:
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type regstr_assign = replace
-		<
-			Pos, Obj
-		>;
+// interoperators:
 
 /***********************************************************************************************************************/
 
-// instruction assign:
+// make (user):
 
 	template<key_type... filler>
-	struct linear_program<LN::instr_assign, filler...> : public T_linear_program
+	struct linear_program<LN::make, filler...> : public T_linear_program
 	{
-		template<index_type Pos, index_type Obj>
+		template<index_type Prog, index_type Size>
 		static constexpr label_type lines = label
 		<
-			copy_i_value__insert_at_h0_front<Obj>,
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_block<>,
-			move_h0_first__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
+			copy_r_pos__insert_at_h0_back<Prog>,
+			bind_user_program<Size>
 		>;
 	};
 
 	// interface:
 
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type instr_assign = call_linear_program
-		<
-			LN::instr_assign,
-			MT::call, // ?
-			Pos, Obj
-		>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// interoperators:
+		template<index_type Prog, index_type Size>
+		static constexpr label_type make_user_program = linear_program<LN::make>::template lines<Prog, Size>;
 
 /***********************************************************************************************************************/
 
@@ -502,105 +473,21 @@ public:
 	template<key_type... filler>
 	struct linear_program<LN::run, filler...> : public T_linear_program
 	{
-		template<index_type Obj, index_type Pos, index_type Size>
+		template<index_type Pos>
 		static constexpr label_type lines = label
 		<
-			copy_r_pos__insert_at_h0_back<Obj>,
 			move_r_segment__insert_at_h1_back<Pos>,
-			make_user_program<Size>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Obj, index_type Pos, index_type Size>
-		static constexpr instr_type run_user_program = call_linear_program
-		<
-			LN::run,
-			MT::load,
-			Pos, Obj, Size
-		>;
-
-/***********************************************************************************************************************/
-
-// call (user):
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::call, filler...> : public T_linear_program
-	{
-		template<index_type Mem, index_type Loc>
-		static constexpr label_type lines = label
-		<
-			call_between_program<Mem, Loc>,
+			drop_r_block<>,
+			apply_user__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
-			unwind<MT::user>
-		>;
-	};
-
-	// interface:
-
-		template<index_type...>
-		static constexpr instr_type call_user_program = call_linear_program
-		<
-			LN::call,
-			MT::singleton
-		>;
-*/
-
-/***********************************************************************************************************************/
-
-// instruction goto:
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::instr_goto, filler...> : public T_linear_program
-	{
-		template<index_type Pos>
-		static constexpr label_type lines = label
-		<
-			copy_i_value__insert_at_h0_front<Pos>,
-			reindex<>
+			unwind_user<>
 		>;
 	};
 
 	// interface:
 
 		template<index_type Pos>
-		static constexpr instr_type instr_goto = call_linear_program
-		<
-			LN::instr_goto,
-			MT::call, // ?
-			Pos
-		>;
-*/
-
-/***********************************************************************************************************************/
-
-// register goto:
-
-/*
-	template<key_type... filler>
-	struct linear_program<LN::regstr_goto, filler...> : public T_linear_program
-	{
-		template<index_type Pos>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_front<Pos>,
-			reindex<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type regstr_goto = call_linear_program
-		<
-			LN::regstr_goto,
-			MT::call, // ?
-			Pos
-		>;
-*/
+		static constexpr label_type run_user_program = linear_program<LN::run>::template lines<Pos>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
