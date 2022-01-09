@@ -19,8 +19,11 @@
 
 // fibonacci:
 
+	#include nik_import(../../.., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 	#include nik_import(../../.., interpret, machine, architect, v_0_5, gcc, dynamic, name)
+
+	using machine_module = nik_module(interpret, machine, architect, v_0_5, gcc); // temporary to call *start*
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -46,7 +49,7 @@
 
 	using FN = FibonacciNames;
 
-	template<key_type, key_type...> struct S_user_fibonacci_contr;
+	template<key_type, key_type...> struct T_user_program_fibonacci;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -56,8 +59,13 @@
 /***********************************************************************************************************************/
 
 	template<>
-	struct S_user_fibonacci_contr<FN::naive>
+	struct T_user_program_fibonacci<FN::naive> : public T_user_program
 	{
+		template<auto... Args> static constexpr auto loop_label = label<Args...>;
+		template<auto... Args> static constexpr auto adj1_label = label<Args...>;
+		template<auto... Args> static constexpr auto adj2_label = label<Args...>;
+		template<auto... Args> static constexpr auto done_label = label<Args...>;
+
 		template
 		<
 			// registers:
@@ -66,31 +74,49 @@
 				index_type m			= 1,
 				index_type n			= 2,
 				index_type is_0_or_1		= 3,
-				index_type dec			= 4,
-				index_type add			= 5,
+				index_type dec1			= 4,
+				index_type dec2			= 5,
+				index_type add			= 6,
+				index_type fib_prog		= 7,
 
 			// labels:
 
-				index_type loop			= 0,
-				index_type done			= 1
+				index_type loop			= 1,
+				index_type adj1			= 2,
+				index_type adj2			= 3,
+				index_type done			= 4
 		>
-		static constexpr auto result = controller
+		static constexpr auto lines = controller
 		<
-			label // loop:
+			loop_label
 			<
-				test    < is_0_or_1 , n           >,
-				branch  < done                    >,
-				apply   < n         , dec , n     >,
-				recurse < m                       >,
-				apply   < n         , dec , n     >,
-				recurse < n                       >,
-				apply   < val       , add , m , n >,
-				stop    < val                     >
+				test     < is_0_or_1 , n                               >,
+				branch   < done                                        >,
+				adj_call < m         , fib_prog , adj1
+					 , val       , m        , n        , is_0_or_1
+					 , dec1      , dec2     , add      , fib_prog  >,
+				adj_call < n         , fib_prog , adj2
+					 , val       , m        , n        , is_0_or_1
+					 , dec1      , dec2     , add      , fib_prog  >,
+				apply    < val       , add      , m    , n             >,
+				at       < val                                         >
 			>,
 
-			label // done:
+			adj1_label
 			<
-				stop    < val                     >
+				apply    < n         , dec1     , n                    >,
+				recurse  <                                             >
+			>,
+
+			adj2_label
+			<
+				apply    < n         , dec2     , n                    >,
+				recurse  <                                             >
+			>,
+
+			done_label
+			<
+				at      < val                                          >
 			>
 		>;
 	};
@@ -100,28 +126,28 @@
 	template<typename T>
 	static constexpr bool is_0_or_1_value(T n) { return n == 0 || n == 1; }
 
-	template<auto n, auto d>
+	template<auto n>
 	static constexpr auto f_naive_fibonacci()
 	{
 		using n_type = decltype(n);
 
-		constexpr auto contr		= S_user_fibonacci_contr<FN::naive>::template result<>;
-
 		constexpr n_type val		= _one;
 		constexpr n_type m		= _zero;
 		constexpr auto is_0_or_1_op	= is_0_or_1_value<n_type>;
-		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto dec1_op		= subtract_by<n_type, n_type{_one}>;
+		constexpr auto dec2_op		= subtract_by<n_type, n_type{_two}>;
 		constexpr auto add_op		= add<n_type, n_type>;
+		constexpr auto fib_prog		= U_type_T<T_user_program_fibonacci<FN::naive>>;
 
-		return start
+		return machine_module::template start
 		<
-			register_machine, contr, d,
-			val, m, n, is_0_or_1_op, dec_op, add_op
+			T_user_program_fibonacci<FN::naive>,
+				val, m, n, is_0_or_1_op, dec1_op, dec2_op, add_op, fib_prog
 		>();
 	}
 
-	template<auto n, depth_type d = 500>
-	constexpr auto naive_fibonacci = f_naive_fibonacci<n, d>();
+	template<auto n>
+	constexpr auto naive_fibonacci = f_naive_fibonacci<n>();
 
 /***********************************************************************************************************************/
 

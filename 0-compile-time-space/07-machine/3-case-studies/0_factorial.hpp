@@ -137,30 +137,6 @@
 	template<auto n>
 	constexpr auto naive_factorial = f_naive_factorial<n>();
 
-/*
-	template<auto n, auto d>
-	constexpr auto f_naive_factorial()
-	{
-		using n_type = decltype(n);
-
-		constexpr auto contr		= S_user_factorial_contr<FN::naive>::template result<>;
-
-		constexpr n_type val		= _one;
-		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
-		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
-		constexpr auto mult_op		= multiply<n_type, n_type>;
-
-		return start
-		<
-			register_machine, contr, d,
-			val, n, is_zero_op, dec_op, mult_op
-		>();
-	}
-
-	template<auto n, depth_type d = 500>
-	constexpr auto naive_factorial = f_naive_factorial<n, d>();
-*/
-
 /***********************************************************************************************************************/
 
 // perf:
@@ -269,10 +245,12 @@
 
 /***********************************************************************************************************************/
 
-/*
 	template<>
-	struct S_user_factorial_contr<FN::fast>
+	struct T_user_program_factorial<FN::fast> : public T_user_program
 	{
+		template<auto... Args> static constexpr auto loop_label = label<Args...>;
+		template<auto... Args> static constexpr auto done_label = label<Args...>;
+
 		template
 		<
 			// registers:
@@ -285,53 +263,48 @@
 
 			// labels:
 
-				index_type loop		= 0,
-				index_type done		= 1
+				index_type loop		= 1,
+				index_type done		= 2
 		>
 		static constexpr auto lines = controller
 		<
-			label // loop:
+			loop_label
 			<
-				test       < is_zero , n            >,
-				branch     < done                   >,
-				apply      < p       , mult , p , n >,
-				apply      < n       , dec      , n >,
-				goto_label < loop                   >
+				test    < is_zero , n            >,
+				branch  < done                   >,
+				apply   < p       , mult , p , n >,
+				apply   < n       , dec      , n >,
+				recurse <                        >
 			>,
 
-			label // done:
+			done_label
 			<
-				stop       < p                      >
+				at         < p                      >
 			>
 		>;
 	};
-*/
 
 /***********************************************************************************************************************/
 
-/*
-	template<auto n, auto d>
+	template<auto n>
 	constexpr auto f_fast_factorial()
 	{
 		using n_type = decltype(n);
-
-		constexpr auto contr		= S_user_factorial_contr<FN::fast>::template result<>;
 
 		constexpr n_type p		= _one;
 		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
 		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
 		constexpr auto mult_op		= multiply<n_type, n_type>;
 
-		return start
+		return machine_module::template start
 		<
-			register_machine, contr, d,
-			p, n, is_zero_op, dec_op, mult_op
+			T_user_program_factorial<FN::fast>,
+				p, n, is_zero_op, dec_op, mult_op
 		>();
 	}
 
-	template<auto n, depth_type d = 500>
-	constexpr auto fast_factorial = f_fast_factorial<n, d>();
-*/
+	template<auto n>
+	constexpr auto fast_factorial = f_fast_factorial<n>();
 
 /***********************************************************************************************************************/
 
