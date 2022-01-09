@@ -91,7 +91,7 @@ public:
 
 			// user:
 
-			static constexpr key_type branch					= 12; // <machine>
+			static constexpr key_type go_to						= 12; // <machine>
 			static constexpr key_type apply_h0_all					= 13; // <machine>
 			static constexpr key_type compel_h0_all					= 14; // <machine>
 	};
@@ -137,24 +137,26 @@ public:
 
 			static constexpr key_type block					= 11;
 			static constexpr key_type linear				= 12;
-			static constexpr key_type preuser				= 13;
 			static constexpr key_type user					= 14;
+			static constexpr key_type user1					= 15;
+			static constexpr key_type user2					= 16;
 
 			// detour:
 
-			static constexpr key_type call					= 15;
-			static constexpr key_type load					= 16;
+			static constexpr key_type call					= 17;
+			static constexpr key_type load					= 18;
 
 			// machinate:
 
-			static constexpr key_type pause					= 17;
-			static constexpr key_type unwind				= 18;
+			static constexpr key_type pause					= 19;
+			static constexpr key_type unwind				= 20;
 
 		// passers:
 
 			// user:
 
-			static constexpr key_type replace_at_h0_front			= 19;
+			static constexpr key_type conditional				= 21;
+			static constexpr key_type replace_at_h0_front			= 22;
 	};
 
 	using MT = MachineNote;
@@ -593,39 +595,6 @@ public:
 		else 			return d-1;
 	}
 
-	template<typename tn, typename ctr_type>
-	static constexpr key_type next_name(depth_type d, key_type m, ctr_type c, index_type i, index_type j)
-	{
-		if (d == 0)		return MN::machinate;
-		else if (m != MT::id)	return MN::detour;
-		else			return tn::next_name(c, i, j);
-	}
-
-	template<typename tn, typename ctr_type>
-	static constexpr key_type next_note(depth_type d, key_type m, ctr_type c, index_type i, index_type j)
-	{
-		if (d == 0)		return MT::pause;
-		else if (m != MT::id)	return m;
-		else			return tn::next_note(c, i, j);
-	}
-
-	template<typename tn, typename ctr_type>
-	static constexpr index_type next_index1(depth_type d, key_type m, ctr_type c, index_type i, index_type j)
-	{
-		if (d == 0)		return i;
-		else if (m != MT::id)	return i;
-		else 			return tn::next_index1(c, i, j);
-	}
-
-	template<typename tn, typename ctr_type>
-	static constexpr index_type next_index2(depth_type d, key_type m, ctr_type c, index_type i, index_type j)
-	{
-		if (d == 0)		return j;
-		else if (m != MT::id)	return j;
-		else 			return tn::next_index2(c, i, j);
-	}
-
-/*
 	template<typename tn>
 	static constexpr key_type next_name(depth_type d, key_type m, typename tn::ctr_type c, index_type i, index_type j)
 	{
@@ -657,7 +626,6 @@ public:
 		else if (m != MT::id)	return j;
 		else 			return tn::next_index2(c, i, j);
 	}
-*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

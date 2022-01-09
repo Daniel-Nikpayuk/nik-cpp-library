@@ -90,6 +90,9 @@
 
 // passers:
 
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, recurse)		= NIK_MODULE::template recurse<>;
+
 	template<auto Pos>
 	NIK_POLICY auto nik_name(NIK_PREFIX, branch)		= NIK_MODULE::template branch<Pos>;
 

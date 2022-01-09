@@ -84,11 +84,14 @@ public:
 
 	// detour:
 
-	template<index_type...>
-	static constexpr instr_type apply_user__insert_at_r_front = instruction
+	template<key_type Policy>
+	static constexpr instr_type detour_call = instruction
 	<
-		MN::detour, MT::call, MN::id, MT::insert_at_r_front
+		MN::detour, MT::call, MN::id, Policy
 	>;
+
+		template<key_type...>
+		static constexpr instr_type apply_user__insert_at_r_front = detour_call<MT::insert_at_r_front>;
 
 	// machinate:
 
@@ -100,7 +103,7 @@ public:
 
 		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause   >;
 		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind  >;
-		template<key_type...> static constexpr instr_type unwind_user		= machinate < MT::user    >;
+		template<key_type...> static constexpr instr_type unmake		= machinate < MT::user1   >;
 
 // passers:
 
@@ -140,10 +143,16 @@ public:
 
 	// user:
 
+	template<key_type...>
+	static constexpr instr_type recurse = instruction
+	<
+		MN::go_to, MT::first
+	>;
+
 	template<key_type Index>
 	static constexpr instr_type branch = instruction
 	<
-		MN::branch, MT::id, Index
+		MN::go_to, MT::conditional, Index
 	>;
 
 	template<key_type...>
@@ -200,25 +209,12 @@ public:
 
 	// syntactic sugar:
 
-		// linear:
-
-		template<key_type...>
-		static constexpr instr_type make_linear_program =
+		template<key_type Note>
+		static constexpr instr_type make_program =
 			block_program<BN::unpack_i_segment__insert_at_h1_back>::template lines
 			<
-				MN::machinate, MT::linear
+				MN::machinate, Note
 			>;
-
-		// user:
-
-		template<index_type Size>
-		static constexpr instr_type bind_user_program = call_block_program
-		<
-			BN::unpack_i_segment__insert_at_h1_back,
-			MT::call, // corresponds to an optimization.
-			Size,
-			MN::machinate, MT::preuser
-		>;
 
 /***********************************************************************************************************************/
 
@@ -453,18 +449,18 @@ public:
 	template<key_type... filler>
 	struct linear_program<LN::make, filler...> : public T_linear_program
 	{
-		template<index_type Prog, index_type Size>
+		template<index_type Prog>
 		static constexpr label_type lines = label
 		<
-			copy_r_pos__insert_at_h0_back<Prog>,
-			bind_user_program<Size>
+			copy_r_pos__insert_at_h0_front<Prog>,
+			unmake<>
 		>;
 	};
 
 	// interface:
 
-		template<index_type Prog, index_type Size>
-		static constexpr label_type make_user_program = linear_program<LN::make>::template lines<Prog, Size>;
+		template<index_type Prog>
+		static constexpr label_type make_user_program = linear_program<LN::make>::template lines<Prog>;
 
 /***********************************************************************************************************************/
 
@@ -480,7 +476,7 @@ public:
 			drop_r_block<>,
 			apply_user__insert_at_r_front<>,
 			move_h1_all__insert_at_r_front<>,
-			unwind_user<>
+			unwind<>
 		>;
 	};
 

@@ -67,7 +67,7 @@
 	template<>
 	struct T_user_program_factorial<FN::naive> : public T_user_program
 	{
-		template<auto... Args> static constexpr auto core_label = label<Args...>;
+		template<auto... Args> static constexpr auto loop_label = label<Args...>;
 		template<auto... Args> static constexpr auto  adj_label = label<Args...>;
 		template<auto... Args> static constexpr auto done_label = label<Args...>;
 
@@ -84,28 +84,27 @@
 
 			// labels:
 
-				index_type core		= 1,
+				index_type loop		= 1,
 				index_type adj		= 2,
 				index_type done		= 3
 		>
 		static constexpr auto lines = controller
 		<
-			core_label
+			loop_label
 			<
 				test     < is_zero   , n                       >,
 				branch   < done                                >,
-
 				adj_call < val       , fact_prog , adj  , val
 					 , n         , is_zero   , dec  , mult
-					 , fact_prog , core      , adj  , done >,
-
+					 , fact_prog , loop      , adj  , done >,
 				apply    < val       , mult      , n    , val  >,
 				at       < val                                 >
 			>,
 
 			adj_label
 			<
-				apply    < n         , dec       , n           >
+				apply    < n         , dec       , n           >,
+				recurse  <                                     >
 			>,
 
 			done_label
