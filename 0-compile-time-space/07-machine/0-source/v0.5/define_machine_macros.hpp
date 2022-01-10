@@ -189,40 +189,14 @@
 
 /***********************************************************************************************************************/
 
-// copy register position (optimization):
+// fast_at (optimization):
 
-	#define NIK_DEFINE__COPY_R_POS(_s_, _n_)									\
+	#define NIK_DEFINE__FAST_AT(_s_, _n_)										\
 															\
-		template<key_type... filler>										\
-		struct machine<MN::copy_r_pos, _n_, filler...>								\
+		template<NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs>							\
+		static constexpr auto fast_at(void(*)(auto_pack<index_type{_n_}>*))					\
 		{													\
-			template											\
-			<												\
-				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto... Ws, typename... Heaps								\
-			>												\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
-			{												\
-				return NIK_BEGIN_MACHINE(d, n, c, i, j),						\
-															\
-					NIK_ ## _s_ ## _FAST_VS, Vs...							\
-															\
-				NIK_END_MACHINE(U_opt_pack_Vs<V ## _n_, Ws...>, Hs...);					\
-			}												\
-															\
-			template											\
-			<												\
-				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
-				auto... Ws, typename... Heaps								\
-			>												\
-			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
-			{												\
-				return NIK_BEGIN_MACHINE(d, n, c, i, j),						\
-															\
-					NIK_ ## _s_ ## _FAST_VS, Vs...							\
-															\
-				NIK_END_MACHINE(U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);					\
-			}												\
+			return V ## _n_;										\
 		}
 
 /***********************************************************************************************************************/

@@ -83,14 +83,15 @@ public:
 
 			// linear:
 
-			static constexpr key_type move_h0_first					=  8;
-			static constexpr key_type move_h1_all					=  9;
+			static constexpr key_type copy_r_pos					=  8;
+			static constexpr key_type move_h0_first					=  9;
+			static constexpr key_type move_h1_all					= 10;
 
 			// user:
 
-			static constexpr key_type go_to						= 10;
-			static constexpr key_type apply_h0_all					= 11;
-			static constexpr key_type compel_h0_all					= 12;
+			static constexpr key_type go_to						= 11;
+			static constexpr key_type apply_h0_all					= 12;
+			static constexpr key_type compel_h0_all					= 13;
 	};
 
 	using MN = MachineName;
@@ -179,6 +180,7 @@ public:
 
 		static constexpr index_type length (type i)			{ return i[size]; }
 		static constexpr index_type last   (type i)			{ return i[length(i)]; }
+		static constexpr bool       is_opt (index_type n)		{ return (n < _eight); }
 	};
 
 	using MI								= MachineInstr;
@@ -191,6 +193,19 @@ public:
 		static constexpr index_type name				= 3;
 
 		static constexpr index_type call_policy				= 4;
+
+		template<typename p, instr_type i, index_type s, index_type o>
+		static constexpr auto opt_bind_program()
+		{
+			if constexpr      (s == 0) return p::template make<i>;
+			else if constexpr (s == 1) return p::template make<i, i[o]>;
+			else if constexpr (s == 2) return p::template make<i, i[o], i[o+1]>;
+			else if constexpr (s == 3) return p::template make<i, i[o], i[o+1], i[o+2]>;
+			else if constexpr (s == 4) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3]>;
+			else if constexpr (s == 5) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4]>;
+			else if constexpr (s == 6) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5]>;
+			else return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5], i[o+6]>;
+		}
 	};
 
 	using CI = CallInstr;

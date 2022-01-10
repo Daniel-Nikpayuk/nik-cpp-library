@@ -189,6 +189,24 @@
 //			user	1m58.793s               user	0m0.000s
 //			sys	0m3.142s                sys	0m0.001s
 
+//		printf("%llu\n", fibonacci<utype(13)>); internal call:
+
+//			gcc compile time:		gcc run time:
+//			                                
+//			                                naive fibonacci(13): 377
+//			                                
+//			real	0m15.474s               real	0m0.002s
+//			user	0m14.695s               user	0m0.003s
+//			sys	0m0.750s                sys	0m0.000s
+//			                                
+//			clang compile time:             clang run time:
+//			                                
+//			                                naive fibonacci(13): 377
+//			                                
+//			real	2m48.237s               real	0m0.002s
+//			user	2m37.733s               user	0m0.001s
+//			sys	0m5.798s                sys	0m0.002s
+
 //		printf("%llu\n", fibonacci<utype(14)>);
 
 //			gcc compile time:		gcc run time:

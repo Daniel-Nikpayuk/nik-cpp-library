@@ -280,11 +280,16 @@ private:
 
 /***********************************************************************************************************************/
 
-// linear/user:
+// linear:
 
-	template<key_type Note, key_type... filler>
-	struct machine<MN::call, Note, filler...>
+	template<key_type... filler>
+	struct machine<MN::call, MT::linear, filler...>
 	{
+		static constexpr auto om = MT::id;
+		static constexpr auto on = U_linear_program;
+		static constexpr auto oi = T_linear_program::initial_i;
+		static constexpr auto oj = T_linear_program::initial_j;
+
 		static constexpr auto _m = MT::id;
 		static constexpr auto _n = U_block_program;
 
@@ -299,18 +304,89 @@ private:
 
 			constexpr auto call_ins		= tn::instr(c, i, j);
 			constexpr index_type length	= MI::length(call_ins) + 1;
-			constexpr index_type size	= length - (Note == MT::linear ? LCI::offset : UCI::offset);
-			constexpr auto _c		= make_program<Note>;
-			constexpr auto _j		= T_block_program::max_index2(size);
-			constexpr auto _i		= size + _j;
+			constexpr index_type size	= length - LCI::offset;
 
-			constexpr auto _H0		= U_opt_pack_Vs<call_ins, length>;
-			constexpr auto _H2		= U_opt_pack_Vs<Vs...>;
-			constexpr auto _H3		= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
-			constexpr auto nH2		= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
-			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, _H2, _H3>; // As... aren't used.
+			if constexpr (MI::is_opt(size))
+			{
+				constexpr auto oc	= CI::opt_bind_program
+							<
+								T_linear_program, call_ins, size, LCI::offset
+							>();
+				constexpr auto nH2	= U_opt_pack_Vs<om, on, oc, oi, oj, Vs...>;
+				constexpr auto nH3	= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
 
-			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
+				return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
+			}
+			else
+			{
+				constexpr auto _c	= bind_linear_program<>;
+				constexpr auto _j	= T_block_program::max_index2(size);
+				constexpr auto _i	= size + _j;
+
+				constexpr auto _H0	= U_opt_pack_Vs<call_ins, length>;
+				constexpr auto _H2	= U_opt_pack_Vs<Vs...>;
+				constexpr auto _H3	= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
+				constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
+				constexpr auto nH3	= U_opt_pack_Vs<_H0, null, _H2, _H3>; // As... aren't used.
+
+				return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
+			}
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// user:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::user, filler...>
+	{
+		static constexpr auto om = MT::id;
+		static constexpr auto on = U_user_program;
+		static constexpr auto oi = T_user_program::initial_i;
+		static constexpr auto oj = T_user_program::initial_j;
+
+		static constexpr auto _m = MT::id;
+		static constexpr auto _n = U_block_program;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3, typename... Args
+		>
+		static constexpr auto result(Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Args... As)
+		{
+			using tn			= T_type_U<n>;
+
+			constexpr auto call_ins		= tn::instr(c, i, j);
+			constexpr index_type length	= MI::length(call_ins) + 1;
+			constexpr index_type size	= length - UCI::offset;
+
+			if constexpr (MI::is_opt(size))
+			{
+				constexpr auto oc	= CI::opt_bind_program
+							<
+								T_user_program, call_ins, size, UCI::offset
+							>();
+				constexpr auto nH2	= U_opt_pack_Vs<om, on, oc, oi, oj, Vs...>;
+				constexpr auto nH3	= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
+
+				return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
+			}
+			else
+			{
+				constexpr auto _c	= bind_user_program<>;
+				constexpr auto _j	= T_block_program::max_index2(size);
+				constexpr auto _i	= size + _j;
+
+				constexpr auto _H0	= U_opt_pack_Vs<call_ins, length>;
+				constexpr auto _H2	= U_opt_pack_Vs<Vs...>;
+				constexpr auto _H3	= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
+				constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
+				constexpr auto nH3	= U_opt_pack_Vs<_H0, null, _H2, _H3>; // As... aren't used.
+
+				return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
+			}
 		}
 	};
 
@@ -659,16 +735,34 @@ private:
 
 // copy register position (optimization):
 
-/*
-	NIK_DEFINE__COPY_R_POS(1, 0);
-	NIK_DEFINE__COPY_R_POS(2, 1);
-	NIK_DEFINE__COPY_R_POS(3, 2);
-	NIK_DEFINE__COPY_R_POS(4, 3);
-	NIK_DEFINE__COPY_R_POS(5, 4);
-	NIK_DEFINE__COPY_R_POS(6, 5);
-	NIK_DEFINE__COPY_R_POS(7, 6);
-	NIK_DEFINE__COPY_R_POS(8, 7);
-*/
+	NIK_DEFINE__FAST_AT(1, 0);
+	NIK_DEFINE__FAST_AT(2, 1);
+	NIK_DEFINE__FAST_AT(3, 2);
+	NIK_DEFINE__FAST_AT(4, 3);
+	NIK_DEFINE__FAST_AT(5, 4);
+	NIK_DEFINE__FAST_AT(6, 5);
+	NIK_DEFINE__FAST_AT(7, 6);
+	NIK_DEFINE__FAST_AT(8, 7);
+
+	template<key_type Note, key_type... filler>
+	struct machine<MN::copy_r_pos, Note, filler...>
+	{
+		static constexpr index_type pos = 3;
+
+		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
+		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto val	= fast_at<Vs...>(U_opt_pack_Vs<ins[pos]>);
+
+			if constexpr (Note == MT::insert_at_h0_back)
+
+				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<Ws..., val>, Hs...);
+			else
+				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<val, Ws...>, Hs...);
+		}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

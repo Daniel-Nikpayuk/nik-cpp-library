@@ -167,6 +167,14 @@ public:
 		MN::compel_h0_all, MT::replace_at_h0_front
 	>;
 
+	// optimizations:
+
+	template<key_type Note, key_type Pos>
+	static constexpr instr_type copy_r_pos = instruction
+	<
+		MN::copy_r_pos, Note, Pos
+	>;
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -195,13 +203,18 @@ public:
 		>;
 	};
 
-	// syntactic sugar:
+	// interface:
 
 		template<key_type Note>
-		static constexpr instr_type make_program = block_program<BN::unpack_i_segment>::template lines
+		static constexpr instr_type bind_program = block_program<BN::unpack_i_segment>::template lines
 		<
 			MN::machinate, Note, MT::insert_at_h1_back
 		>;
+
+	// syntactic sugar:
+
+		template<key_type...> static constexpr instr_type bind_linear_program	= bind_program < MT::linear >;
+		template<key_type...> static constexpr instr_type bind_user_program	= bind_program < MT::user   >;
 
 /***********************************************************************************************************************/
 
@@ -249,21 +262,27 @@ public:
 			MN::value, MT::first
 		>;
 
-		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_front = drop_r_segment
-		<
-			MT::insert_at_h0_front,
-			Pos,
-			MN::value, MT::first
-		>;
+			template<key_type Note, index_type Pos>
+			static constexpr auto dispatch_copy_r_pos()
+			{
+				if constexpr (MI::is_opt(Pos))
+
+					return copy_r_pos<Note, Pos>;
+				else
+					return drop_r_segment<Note, Pos, MN::value, MT::first>;
+			}
 
 		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_back = drop_r_segment
+		static constexpr instr_type copy_r_pos__insert_at_h0_front = dispatch_copy_r_pos
 		<
-			MT::insert_at_h0_back,
-			Pos,
-			MN::value, MT::first
-		>;
+			MT::insert_at_h0_front, Pos
+		>();
+
+		template<index_type Pos>
+		static constexpr instr_type copy_r_pos__insert_at_h0_back = dispatch_copy_r_pos
+		<
+			MT::insert_at_h0_back, Pos
+		>();
 
 /***********************************************************************************************************************/
 
