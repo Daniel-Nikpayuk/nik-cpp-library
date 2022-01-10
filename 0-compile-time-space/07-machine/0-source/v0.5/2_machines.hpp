@@ -569,56 +569,106 @@ private:
 
 /***********************************************************************************************************************/
 
-// unpack instruction block, insert at heap one back (2^N):
+// unpack instruction block (2^N):
 
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(0);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(1);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(2);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(3);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(4);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(5);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(6);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(7);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(8);
-	NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(9);
-
-/***********************************************************************************************************************/
-
-// drop register block (2^N):
-
-	NIK_DEFINE__DROP_R_BLOCK(0);
-	NIK_DEFINE__DROP_R_BLOCK(1);
-	NIK_DEFINE__DROP_R_BLOCK(2);
-	NIK_DEFINE__DROP_R_BLOCK(3);
-	NIK_DEFINE__DROP_R_BLOCK(4);
-	NIK_DEFINE__DROP_R_BLOCK(5);
-	NIK_DEFINE__DROP_R_BLOCK(6);
-	NIK_DEFINE__DROP_R_BLOCK(7);
-	NIK_DEFINE__DROP_R_BLOCK(8);
-	NIK_DEFINE__DROP_R_BLOCK(9);
+	NIK_DEFINE__UNPACK_I_BLOCK(0);
+	NIK_DEFINE__UNPACK_I_BLOCK(1);
+	NIK_DEFINE__UNPACK_I_BLOCK(2);
+	NIK_DEFINE__UNPACK_I_BLOCK(3);
+	NIK_DEFINE__UNPACK_I_BLOCK(4);
+	NIK_DEFINE__UNPACK_I_BLOCK(5);
+	NIK_DEFINE__UNPACK_I_BLOCK(6);
+	NIK_DEFINE__UNPACK_I_BLOCK(7);
+	NIK_DEFINE__UNPACK_I_BLOCK(8);
+	NIK_DEFINE__UNPACK_I_BLOCK(9);
 
 /***********************************************************************************************************************/
 
-// move register block, insert at heap one back (2^N):
+// move register block (2^N):
 
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(0);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(1);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(2);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(3);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(4);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(5);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(6);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(7);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(8);
-	NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(9);
+	NIK_DEFINE__MOVE_R_BLOCK(0);
+	NIK_DEFINE__MOVE_R_BLOCK(1);
+	NIK_DEFINE__MOVE_R_BLOCK(2);
+	NIK_DEFINE__MOVE_R_BLOCK(3);
+	NIK_DEFINE__MOVE_R_BLOCK(4);
+	NIK_DEFINE__MOVE_R_BLOCK(5);
+	NIK_DEFINE__MOVE_R_BLOCK(6);
+	NIK_DEFINE__MOVE_R_BLOCK(7);
+	NIK_DEFINE__MOVE_R_BLOCK(8);
+	NIK_DEFINE__MOVE_R_BLOCK(9);
 
 /***********************************************************************************************************************/
 
 // fold register block (2^N):
 
+	NIK_DEFINE__FOLD_R_BLOCK(0);
+	NIK_DEFINE__FOLD_R_BLOCK(1);
+	NIK_DEFINE__FOLD_R_BLOCK(2);
+	NIK_DEFINE__FOLD_R_BLOCK(3);
+	NIK_DEFINE__FOLD_R_BLOCK(4);
+	NIK_DEFINE__FOLD_R_BLOCK(5);
+	NIK_DEFINE__FOLD_R_BLOCK(6);
+	NIK_DEFINE__FOLD_R_BLOCK(7);
+	NIK_DEFINE__FOLD_R_BLOCK(8);
+
+#ifdef GCC_IMPLEMENTATION
+
+//	NIK_DEFINE__FOLD_R_BLOCK(9);
+
+#endif // GCC_IMPLEMENTATION
+
+		// clang: bracket nesting level defaults to a maximum of 256
+
+	template<key_type... filler>
+	struct machine<MN::fold_r_block, _nine, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto V, NIK_2_9_AUTO_VS, auto... Vs,
+			auto op, auto... Ws, typename... Heaps
+		>
+		static constexpr auto result(void(*H0)(auto_pack<op, Ws...>*), Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+
+			if constexpr (ins[BI::policy] == MT::act_at_h0_first)
+			{
+				using act = T_type_U<op>;
+
+				return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					NIK_2_9_ACTS  V,  NIK_2_9_ACT_VS, Vs...
+
+				NIK_END_MACHINE(H0, Hs...);
+			}
+			else
+			{
+				constexpr auto val = NIK_2_8_OPS  V,  NIK_2_8_OP_VS;
+
+				return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					NIK_2_8_OPS  val,  NIK_UPPER_512_OP_VS, Vs...
+
+				NIK_END_MACHINE(H0, Hs...);
+			}
+		}
+	};
+
 /***********************************************************************************************************************/
 
-// roll register block (2^N):
+// copy register position (optimization):
+
+/*
+	NIK_DEFINE__COPY_R_POS(1, 0);
+	NIK_DEFINE__COPY_R_POS(2, 1);
+	NIK_DEFINE__COPY_R_POS(3, 2);
+	NIK_DEFINE__COPY_R_POS(4, 3);
+	NIK_DEFINE__COPY_R_POS(5, 4);
+	NIK_DEFINE__COPY_R_POS(6, 5);
+	NIK_DEFINE__COPY_R_POS(7, 6);
+	NIK_DEFINE__COPY_R_POS(8, 7);
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

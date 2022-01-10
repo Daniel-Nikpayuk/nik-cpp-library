@@ -85,14 +85,14 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// unpack instruction block, insert at heap one back (2^N):
+// unpack instruction block (, insert at heap one back) (2^N):
 
 		// This machine is not general purpose, and so is optimized accordingly.
 
-	#define NIK_DEFINE__UNPACK_I_BLOCK__INSERT_AT_H1_BACK(_n_)							\
+	#define NIK_DEFINE__UNPACK_I_BLOCK(_n_)										\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::unpack_i_block__insert_at_h1_back, _n_, filler...>					\
+		struct machine<MN::unpack_i_block, _n_, filler...>							\
 		{													\
 			template											\
 			<												\
@@ -124,28 +124,12 @@
 
 /***********************************************************************************************************************/
 
-// drop register block (2^N):
+// move register block (2^N):
 
-	#define NIK_DEFINE__DROP_R_BLOCK(_n_)										\
+	#define NIK_DEFINE__MOVE_R_BLOCK(_n_)										\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::drop_r_block, _n_, filler...>							\
-		{													\
-			template<NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs, typename... Heaps>		\
-			static constexpr auto result(Heaps... Hs)							\
-			{												\
-				return NIK_MACHINE(d, n, c, i, j, Vs)(Hs...);						\
-			}												\
-		}
-
-/***********************************************************************************************************************/
-
-// move register block, insert at heap one back (2^N):
-
-	#define NIK_DEFINE__MOVE_R_BLOCK__INSERT_AT_H1_BACK(_n_)							\
-															\
-		template<key_type... filler>										\
-		struct machine<MN::move_r_block__insert_at_h1_back, _n_, filler...>					\
+		struct machine<MN::move_r_block, _n_, filler...>							\
 		{													\
 			template											\
 			<												\
@@ -154,8 +138,90 @@
 			>												\
 			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Xs...>*), Heaps... Hs)		\
 			{												\
-				return NIK_MACHINE(d, n, c, i, j, Vs)							\
-					(H0, U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
+				using tn		= T_type_U<n>;							\
+				constexpr auto ins	= tn::instr(c, i, j);						\
+															\
+				if constexpr (ins[BI::policy] == MT::drop)						\
+															\
+					return NIK_MACHINE(d, n, c, i, j, Vs)(H0, H1, Hs...);				\
+				else											\
+					return NIK_MACHINE(d, n, c, i, j, Vs)						\
+						(H0, U_opt_pack_Vs<Xs..., NIK_2_ ## _n_ ## _VS>, Hs...);		\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// fold register block (2^N):
+
+	#define NIK_DEFINE__FOLD_R_BLOCK(_n_)										\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::fold_r_block, _n_, filler...>							\
+		{													\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, auto V, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs,			\
+				auto op, auto... Ws, typename... Heaps							\
+			>												\
+			static constexpr auto result(void(*H0)(auto_pack<op, Ws...>*), Heaps... Hs)			\
+			{												\
+				using tn		= T_type_U<n>;							\
+				constexpr auto ins	= tn::instr(c, i, j);						\
+															\
+				if constexpr (ins[BI::policy] == MT::act_at_h0_first)					\
+				{											\
+					using act = T_type_U<op>;							\
+															\
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),					\
+															\
+						NIK_2_ ## _n_ ## _ACTS  V,  NIK_2_ ## _n_ ## _ACT_VS, Vs...		\
+															\
+					NIK_END_MACHINE(H0, Hs...);							\
+				}											\
+				else return NIK_BEGIN_MACHINE(d, n, c, i, j),						\
+															\
+						NIK_2_ ## _n_ ## _OPS  V,  NIK_2_ ## _n_ ## _OP_VS, Vs...		\
+															\
+					NIK_END_MACHINE(H0, Hs...);							\
+			}												\
+		}
+
+/***********************************************************************************************************************/
+
+// copy register position (optimization):
+
+	#define NIK_DEFINE__COPY_R_POS(_s_, _n_)									\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::copy_r_pos, _n_, filler...>								\
+		{													\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
+				auto... Ws, typename... Heaps								\
+			>												\
+			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
+			{												\
+				return NIK_BEGIN_MACHINE(d, n, c, i, j),						\
+															\
+					NIK_ ## _s_ ## _FAST_VS, Vs...							\
+															\
+				NIK_END_MACHINE(U_opt_pack_Vs<V ## _n_, Ws...>, Hs...);					\
+			}												\
+															\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, NIK_ ## _s_ ## _FAST_AUTO_VS, auto... Vs,				\
+				auto... Ws, typename... Heaps								\
+			>												\
+			static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)				\
+			{												\
+				return NIK_BEGIN_MACHINE(d, n, c, i, j),						\
+															\
+					NIK_ ## _s_ ## _FAST_VS, Vs...							\
+															\
+				NIK_END_MACHINE(U_opt_pack_Vs<Ws..., V ## _n_>, Hs...);					\
 			}												\
 		}
 

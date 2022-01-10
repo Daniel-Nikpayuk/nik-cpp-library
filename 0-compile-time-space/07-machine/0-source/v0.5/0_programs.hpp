@@ -77,23 +77,20 @@ public:
 
 			// block:
 
-			static constexpr key_type unpack_i_block__insert_at_h1_back		=  5; // <machine>
-			static constexpr key_type drop_r_block					=  6; // <halters>
-			static constexpr key_type move_r_block__insert_at_h1_back		=  7; // <mutators>
-
-			static constexpr key_type fold_r_block					=  8; // <halters>
-			static constexpr key_type roll_r_block					=  9; // <halters>
+			static constexpr key_type unpack_i_block				=  5;
+			static constexpr key_type move_r_block					=  6;
+			static constexpr key_type fold_r_block					=  7;
 
 			// linear:
 
-			static constexpr key_type move_h0_first					= 10; // <mutators>
-			static constexpr key_type move_h1_all					= 11; // <mutators>
+			static constexpr key_type move_h0_first					=  8;
+			static constexpr key_type move_h1_all					=  9;
 
 			// user:
 
-			static constexpr key_type go_to						= 12; // <machine>
-			static constexpr key_type apply_h0_all					= 13; // <machine>
-			static constexpr key_type compel_h0_all					= 14; // <machine>
+			static constexpr key_type go_to						= 10;
+			static constexpr key_type apply_h0_all					= 11;
+			static constexpr key_type compel_h0_all					= 12;
 	};
 
 	using MN = MachineName;
@@ -128,35 +125,39 @@ public:
 
 			// call (policy):
 
-			static constexpr key_type insert_at_r_front			=  7;
-			static constexpr key_type insert_at_h0_front			=  8;
-			static constexpr key_type insert_at_h0_back			=  9;
-			static constexpr key_type insert_at_h1_back			= 10;
+			static constexpr key_type drop					=  7;
+			static constexpr key_type insert_at_r_front			=  8;
+			static constexpr key_type insert_at_h0_front			=  9;
+			static constexpr key_type insert_at_h0_back			= 10;
+			static constexpr key_type insert_at_h1_back			= 11;
+
+			static constexpr key_type op_at_h0_first			= 12;
+			static constexpr key_type act_at_h0_first			= 13;
 
 			// call/detour:
 
-			static constexpr key_type block					= 11;
-			static constexpr key_type linear				= 12;
-			static constexpr key_type user					= 14;
-			static constexpr key_type user1					= 15;
-			static constexpr key_type user2					= 16;
+			static constexpr key_type block					= 14;
+			static constexpr key_type linear				= 15;
+			static constexpr key_type user					= 16;
+			static constexpr key_type user1					= 17;
+			static constexpr key_type user2					= 18;
 
 			// detour:
 
-			static constexpr key_type call					= 17;
-			static constexpr key_type load					= 18;
+			static constexpr key_type call					= 19;
+			static constexpr key_type load					= 20;
 
 			// machinate:
 
-			static constexpr key_type pause					= 19;
-			static constexpr key_type unwind				= 20;
+			static constexpr key_type pause					= 21;
+			static constexpr key_type unwind				= 22;
 
 		// passers:
 
 			// user:
 
-			static constexpr key_type conditional				= 21;
-			static constexpr key_type replace_at_h0_front			= 22;
+			static constexpr key_type conditional				= 23;
+			static constexpr key_type replace_at_h0_front			= 24;
 	};
 
 	using MT = MachineNote;
@@ -273,11 +274,9 @@ public:
 		static constexpr key_type id						=  0;
 		static constexpr key_type identity					= id; // convenience for
 											      // default params.
-		static constexpr key_type unpack_i_segment__insert_at_h1_back		=  1; // <machine>
-		static constexpr key_type drop_r_segment				=  2; // <list>
-		static constexpr key_type move_r_segment__insert_at_h1_back		=  3; // <mutators>
-		static constexpr key_type fold_r_segment				=  4; // <list>
-		static constexpr key_type roll_r_segment				=  5; // <list>
+		static constexpr key_type unpack_i_segment				=  1;
+		static constexpr key_type move_r_segment				=  2;
+		static constexpr key_type fold_r_segment				=  3;
 	};
 
 	using BN = BlockName;
@@ -290,6 +289,8 @@ public:
 	{
 		static constexpr index_type coname				=  2;
 		static constexpr index_type conote				=  3;
+
+		static constexpr index_type policy				=  4;
 	};
 
 	using BI = BlockInstr;
@@ -300,6 +301,8 @@ public:
 
 		static constexpr index_type coname				=  6;
 		static constexpr index_type conote				=  7;
+
+		static constexpr index_type policy				=  8;
 	};
 
 	using BCI = BlockCallInstr;
@@ -381,7 +384,8 @@ public:
 			>::template lines
 			<
 				call_ins[BCI::coname],
-				call_ins[BCI::conote]
+				call_ins[BCI::conote],
+				call_ins[BCI::policy]
 			>;
 	};
 

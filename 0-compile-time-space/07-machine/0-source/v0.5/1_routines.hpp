@@ -58,10 +58,10 @@ public:
 		MN::call, Note, Subname, Policy, Args...
 	>;
 
-		template<key_type Subname, key_type Policy, index_type Pos, key_type Coname, key_type Conote>
+		template<key_type Subname, key_type Policy, index_type Pos, key_type Coname, key_type Conote, key_type SubPolicy>
 		static constexpr instr_type call_block_program = call_program
 		<
-			MT::block, Subname, Policy, Pos, Coname, Conote
+			MT::block, Subname, Policy, Pos, Coname, Conote, SubPolicy
 		>;
 
 		template<key_type Subname, key_type Policy, index_type... Args>
@@ -112,19 +112,7 @@ public:
 	template<key_type...>
 	static constexpr instr_type drop_r_block = instruction
 	<
-		MN::drop_r_block, MT::id
-	>;
-
-	template<key_type...>
-	static constexpr instr_type fold_r_block = instruction
-	<
-		MN::fold_r_block, MT::id
-	>;
-
-	template<key_type...>
-	static constexpr instr_type roll_r_block = instruction
-	<
-		MN::roll_r_block, MT::id
+		MN::move_r_block, MN::id, MT::id, MT::drop
 	>;
 
 	// linear:
@@ -195,38 +183,37 @@ public:
 
 /***********************************************************************************************************************/
 
-// unpack instruction segment, insert at heap one back:
+// unpack instruction segment (, insert at heap one back):
 
 	template<key_type... filler>
-	struct block_program<BN::unpack_i_segment__insert_at_h1_back, filler...> : public block_program<filler...>
+	struct block_program<BN::unpack_i_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Coname, key_type Conote>
+		template<key_type Coname, key_type Conote, key_type Policy>
 		static constexpr instr_type lines = instruction
 		<
-			MN::unpack_i_block__insert_at_h1_back, Coname, Conote
+			MN::unpack_i_block, Coname, Conote, Policy
 		>;
 	};
 
 	// syntactic sugar:
 
 		template<key_type Note>
-		static constexpr instr_type make_program =
-			block_program<BN::unpack_i_segment__insert_at_h1_back>::template lines
-			<
-				MN::machinate, Note
-			>;
+		static constexpr instr_type make_program = block_program<BN::unpack_i_segment>::template lines
+		<
+			MN::machinate, Note, MT::insert_at_h1_back
+		>;
 
 /***********************************************************************************************************************/
 
-// drop register segment:
+// move register segment:
 
 	template<key_type... filler>
-	struct block_program<BN::drop_r_segment, filler...> : public block_program<filler...>
+	struct block_program<BN::move_r_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Coname, key_type Conote>
+		template<key_type Coname, key_type Conote, key_type Policy>
 		static constexpr instr_type lines = instruction
 		<
-			MN::drop_r_block, Coname, Conote
+			MN::move_r_block, Coname, Conote, Policy
 		>;
 	};
 
@@ -235,10 +222,21 @@ public:
 		template<key_type Policy, index_type Pos, key_type Coname, key_type Conote>
 		static constexpr instr_type drop_r_segment = call_block_program
 		<
-			BN::drop_r_segment,
+			BN::move_r_segment,
 			Policy,
 			Pos,
-			Coname, Conote
+			Coname, Conote,
+			MT::drop
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
+		<
+			BN::move_r_segment,
+			MT::load,
+			Pos,
+			MN::machinate, MT::unwind,
+			MT::insert_at_h1_back
 		>;
 
 	// syntactic sugar:
@@ -269,77 +267,38 @@ public:
 
 /***********************************************************************************************************************/
 
-// move register segment, insert at heap one back:
-
-	template<key_type... filler>
-	struct block_program<BN::move_r_segment__insert_at_h1_back, filler...> : public block_program<filler...>
-	{
-		template<key_type Coname, key_type Conote>
-		static constexpr instr_type lines = instruction
-		<
-			MN::move_r_block__insert_at_h1_back, Coname, Conote
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
-		<
-			BN::move_r_segment__insert_at_h1_back,
-			MT::load,
-			Pos,
-			MN::machinate, MT::unwind
-		>;
-
-/***********************************************************************************************************************/
-
 // fold register segment:
 
 	template<key_type... filler>
 	struct block_program<BN::fold_r_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Coname, key_type Conote>
+		template<key_type Coname, key_type Conote, key_type Policy>
 		static constexpr instr_type lines = instruction
 		<
-			MN::fold_r_block, Coname, Conote
+			MN::fold_r_block, Coname, Conote, Policy
 		>;
 	};
 
-	// interface:
+	// syntactic sugar:
 
-		template<key_type Policy, index_type Pos>
-		static constexpr instr_type fold_r_segment = call_block_program
+		template<index_type Pos>
+		static constexpr instr_type fold_r_segment__op_at_h0_first = call_block_program
 		<
 			BN::fold_r_segment,
-			Policy,
+			MT::id, // return the value
 			Pos,
-			MN::value, MT::first
+			MN::value, MT::first,
+			MT::op_at_h0_first
 		>;
 
-/***********************************************************************************************************************/
-
-// roll register segment:
-
-	template<key_type... filler>
-	struct block_program<BN::roll_r_segment, filler...> : public block_program<filler...>
-	{
-		template<key_type Coname, key_type Conote>
-		static constexpr instr_type lines = instruction
+		template<index_type Pos>
+		static constexpr instr_type fold_r_segment__act_at_h0_first = call_block_program
 		<
-			MN::roll_r_block, Coname, Conote
-		>;
-	};
-
-	// interface:
-
-		template<key_type Policy, index_type Pos>
-		static constexpr instr_type roll_r_segment = call_block_program
-		<
-			BN::roll_r_segment,
-			Policy,
+			BN::fold_r_segment,
+			MT::id, // return the value
 			Pos,
-			MN::value, MT::first
+			MN::value, MT::first,
+			MT::act_at_h0_first
 		>;
 
 /***********************************************************************************************************************/
