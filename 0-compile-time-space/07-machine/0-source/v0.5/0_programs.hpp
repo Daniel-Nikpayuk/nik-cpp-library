@@ -1,6 +1,6 @@
 /************************************************************************************************************************
 **
-** Copyright 2021 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
+** Copyright 2021-2022 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
 **
 ** This file is part of nik_cpp_library.
 **
@@ -178,9 +178,10 @@ public:
 		static constexpr index_type name				= 1;
 		static constexpr index_type note				= 2;
 
-		static constexpr index_type length (type i)			{ return i[size]; }
-		static constexpr index_type last   (type i)			{ return i[length(i)]; }
-		static constexpr bool       is_opt (index_type n)		{ return (n < _eight); }
+		static constexpr index_type length  (type i)			{ return i[size]; }
+		static constexpr index_type last    (type i)			{ return i[length(i)]; }
+		static constexpr bool       is_lopt (index_type n)		{ return (n < _five); }
+		static constexpr bool       is_opt  (index_type n)		{ return (n < _eight); }
 	};
 
 	using MI								= MachineInstr;
@@ -194,17 +195,33 @@ public:
 
 		static constexpr index_type call_policy				= 4;
 
-		template<typename p, instr_type i, index_type s, index_type o>
-		static constexpr auto opt_bind_program()
+		template<instr_type i, index_type s>
+		static constexpr auto opt_bind_linear_program() // apply, s == 4:
 		{
+			using p			= T_linear_program;
+			constexpr index_type o	= LCI::offset;
+
 			if constexpr      (s == 0) return p::template make<i>;
 			else if constexpr (s == 1) return p::template make<i, i[o]>;
 			else if constexpr (s == 2) return p::template make<i, i[o], i[o+1]>;
 			else if constexpr (s == 3) return p::template make<i, i[o], i[o+1], i[o+2]>;
-			else if constexpr (s == 4) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3]>;
-			else if constexpr (s == 5) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4]>;
-			else if constexpr (s == 6) return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5]>;
-			else return p::template make<i, i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5], i[o+6]>;
+			else			   return p::template make<i, i[o], i[o+1], i[o+2], i[o+3]>;
+		}
+
+		template<auto u, instr_type i, index_type s>
+		static constexpr auto opt_bind_user_program()
+		{
+			using p			= T_type_U<u>;
+			constexpr index_type o	= UCI::offset;
+
+			if constexpr      (s == 0) return p::template lines<>;
+			else if constexpr (s == 1) return p::template lines<i[o]>;
+			else if constexpr (s == 2) return p::template lines<i[o], i[o+1]>;
+			else if constexpr (s == 3) return p::template lines<i[o], i[o+1], i[o+2]>;
+			else if constexpr (s == 4) return p::template lines<i[o], i[o+1], i[o+2], i[o+3]>;
+			else if constexpr (s == 5) return p::template lines<i[o], i[o+1], i[o+2], i[o+3], i[o+4]>;
+			else if constexpr (s == 6) return p::template lines<i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5]>;
+			else return p::template lines<i[o], i[o+1], i[o+2], i[o+3], i[o+4], i[o+5], i[o+6]>;
 		}
 	};
 

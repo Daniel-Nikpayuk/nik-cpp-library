@@ -1,6 +1,6 @@
 /************************************************************************************************************************
 **
-** Copyright 2021 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
+** Copyright 2021-2022 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
 **
 ** This file is part of nik_cpp_library.
 **
@@ -103,7 +103,7 @@ public:
 
 		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause   >;
 		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind  >;
-		template<key_type...> static constexpr instr_type unmake		= machinate < MT::user1   >;
+		template<key_type...> static constexpr instr_type unmake		= machinate < MT::user    >;
 
 // passers:
 
@@ -214,7 +214,7 @@ public:
 	// syntactic sugar:
 
 		template<key_type...> static constexpr instr_type bind_linear_program	= bind_program < MT::linear >;
-		template<key_type...> static constexpr instr_type bind_user_program	= bind_program < MT::user   >;
+		template<key_type...> static constexpr instr_type bind_user_program	= bind_program < MT::user1  >;
 
 /***********************************************************************************************************************/
 
@@ -430,7 +430,7 @@ public:
 		template<index_type Prog>
 		static constexpr label_type lines = label
 		<
-			copy_r_pos__insert_at_h0_front<Prog>,
+			copy_r_pos__insert_at_h0_back<Prog>,
 			unmake<>
 		>;
 	};
