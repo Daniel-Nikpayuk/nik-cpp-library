@@ -81,17 +81,20 @@ public:
 			static constexpr key_type move_r_block					=  6;
 			static constexpr key_type fold_r_block					=  7;
 
+			static constexpr key_type map_a_block					=  8;
+			static constexpr key_type zip_a_block					=  9;
+
 			// linear:
 
-			static constexpr key_type copy_r_pos					=  8;
-			static constexpr key_type move_h0_first					=  9;
-			static constexpr key_type move_h1_all					= 10;
+			static constexpr key_type copy_r_pos					= 10;
+			static constexpr key_type move_h0_first					= 11;
+			static constexpr key_type move_h1_all					= 12;
 
 			// user:
 
-			static constexpr key_type go_to						= 11;
-			static constexpr key_type apply_h0_all					= 12;
-			static constexpr key_type compel_h0_all					= 13;
+			static constexpr key_type go_to						= 13;
+			static constexpr key_type apply_h0_all					= 14;
+			static constexpr key_type compel_h0_all					= 15;
 	};
 
 	using MN = MachineName;

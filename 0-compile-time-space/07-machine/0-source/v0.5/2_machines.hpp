@@ -338,6 +338,9 @@ private:
 	template<key_type... filler>
 	struct machine<MN::call, MT::user, filler...>
 	{
+		static constexpr auto um = MT::id;
+		static constexpr auto uj = T_user_program::initial_j;
+
 		static constexpr auto _m = MT::id;
 		static constexpr auto _n = U_linear_program;
 		static constexpr auto _i = T_linear_program::initial_i;
@@ -821,7 +824,7 @@ private:
 
 /***********************************************************************************************************************/
 
-// recurse:
+// restart:
 
 	template<key_type... filler>
 	struct machine<MN::go_to, MT::first, filler...>

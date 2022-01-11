@@ -40,8 +40,8 @@
 //	#include nik_import(., interpret, function, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, colist, architect, v_0_5, gcc, dynamic, name)
 
-	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
-//	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
+//	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
+	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
 //	#include"0-compile-time-space/07-machine/4-testing/0_unit_tests.hpp"
 //	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
@@ -128,21 +128,21 @@
 
 	using utype = unsigned long long;
 
-	template<utype n>
-	void print_naive_factorial() { printf("naive factorial(%llu): %llu\n", n, naive_factorial<n>); }
-
-	template<utype n>
-	void print_fast_factorial() { printf("fast factorial(%llu): %llu\n", n, fast_factorial<n>); }
+//	template<utype n>
+//	void print_naive_factorial() { printf("naive factorial(%llu): %llu\n", n, naive_factorial<n>); }
 
 //	template<utype n>
-//	void print_naive_fibonacci() { printf("naive fibonacci(%llu): %llu\n", n, naive_fibonacci<n>); }
+//	void print_fast_factorial() { printf("fast factorial(%llu): %llu\n", n, fast_factorial<n>); }
+
+	template<utype n>
+	void print_naive_fibonacci() { printf("naive fibonacci(%llu): %llu\n", n, naive_fibonacci<n>); }
 
 	int main(int argc, char *argv[])
 	{
-		print_naive_factorial<20>();
+	//	print_naive_factorial<20>();
 	//	print_fast_factorial<20>();
 
-	//	print_naive_fibonacci<5>();
+		print_naive_fibonacci<5>();
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

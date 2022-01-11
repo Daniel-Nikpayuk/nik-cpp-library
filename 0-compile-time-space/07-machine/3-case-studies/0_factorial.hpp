@@ -95,8 +95,8 @@
 				test     < is_zero   , n                       >,
 				branch   < done                                >,
 				adj_call < val       , fact_prog , adj  , val
-					 , n         , is_zero   , dec  , mult
-					 , fact_prog , loop      , adj  , done >,
+				         , n         , is_zero   , dec  , mult
+				         , fact_prog , loop      , adj  , done >,
 				apply    < val       , mult      , n    , val  >,
 				at       < val                                 >
 			>,
@@ -104,7 +104,7 @@
 			adj_label
 			<
 				apply    < n         , dec       , n           >,
-				recurse  <                                     >
+				restart  <                                     >
 			>,
 
 			done_label
@@ -274,7 +274,7 @@
 				branch  < done                   >,
 				apply   < p       , mult , p , n >,
 				apply   < n       , dec      , n >,
-				recurse <                        >
+				restart <                        >
 			>,
 
 			done_label

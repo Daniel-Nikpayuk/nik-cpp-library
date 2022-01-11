@@ -132,7 +132,7 @@ public:
 	// user:
 
 	template<key_type...>
-	static constexpr instr_type recurse = instruction
+	static constexpr instr_type restart = instruction
 	<
 		MN::go_to, MT::first
 	>;
