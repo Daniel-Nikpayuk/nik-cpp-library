@@ -61,11 +61,6 @@
 	template<>
 	struct T_user_program_fibonacci<FN::naive> : public T_user_program
 	{
-		template<auto... Args> static constexpr auto loop_label = label<Args...>;
-		template<auto... Args> static constexpr auto adj1_label = label<Args...>;
-		template<auto... Args> static constexpr auto adj2_label = label<Args...>;
-		template<auto... Args> static constexpr auto done_label = label<Args...>;
-
 		template
 		<
 			// registers:
@@ -88,7 +83,7 @@
 		>
 		static constexpr auto lines = controller
 		<
-			loop_label
+			label // loop:
 			<
 				test     < is_0_or_1 , n                               >,
 				branch   < done                                        >,
@@ -102,19 +97,19 @@
 				at       < val                                         >
 			>,
 
-			adj1_label
+			label // adj1:
 			<
 				apply    < n         , dec1     , n                    >,
 				restart  <                                             >
 			>,
 
-			adj2_label
+			label // adj2:
 			<
 				apply    < n         , dec2     , n                    >,
 				restart  <                                             >
 			>,
 
-			done_label
+			label // done:
 			<
 				at       < val                                         >
 			>
