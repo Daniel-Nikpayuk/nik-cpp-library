@@ -242,6 +242,20 @@ private:
 	};
 
 /***********************************************************************************************************************/
+
+// heap one:
+
+	template<key_type... filler>
+	struct machine<MN::value, MT::heap_one, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, typename Heap1, typename... Heaps>
+		static constexpr auto result(Heap0, Heap1 H1, Heaps...)
+		{
+			return H1;
+		}
+	};
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // interoperators (call):

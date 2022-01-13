@@ -108,6 +108,12 @@
 	template<auto Pos>
 	NIK_POLICY auto nik_name(NIK_PREFIX, at)		= NIK_MODULE::template at<Pos>;
 
+//	template<auto Pos>
+//	NIK_POLICY auto nik_name(NIK_PREFIX, left)		= NIK_MODULE::template left<Pos>;
+
+//	template<auto Pos>
+//	NIK_POLICY auto nik_name(NIK_PREFIX, right)		= NIK_MODULE::template right<Pos>;
+
 /***********************************************************************************************************************/
 
 // linear:

@@ -242,6 +242,22 @@ public:
 			MT::drop
 		>;
 
+		//	template<key_type Policy, index_type Pos>
+		//	static constexpr instr_type left = drop_r_segment
+		//	<
+		//		Policy,
+		//		Pos,
+		//		MN::value, MT::heap_one
+		//	>;
+
+		//	template<key_type Policy, index_type Pos>
+		//	static constexpr instr_type right = drop_r_segment
+		//	<
+		//		Policy,
+		//		Pos,
+		//		MN::value, MT::registers
+		//	>;
+
 		template<index_type Pos>
 		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
 		<

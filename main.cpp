@@ -138,7 +138,7 @@
 
 	int main(int argc, char *argv[])
 	{
-		print_reverse<l0>();
+	//	print_reverse<l0>();
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

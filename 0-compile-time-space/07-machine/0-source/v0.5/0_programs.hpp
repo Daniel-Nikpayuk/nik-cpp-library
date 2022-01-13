@@ -95,6 +95,12 @@ public:
 			static constexpr key_type go_to						= 13;
 			static constexpr key_type apply_h0_all					= 14;
 			static constexpr key_type compel_h0_all					= 15;
+
+		// functional:
+
+			static constexpr key_type predicate					= 16;
+			static constexpr key_type construct					= 17;
+			static constexpr key_type select					= 18;
 	};
 
 	using MN = MachineName;
@@ -124,44 +130,53 @@ public:
 
 			static constexpr key_type registers				=  5;
 			static constexpr key_type arguments				=  6;
+			static constexpr key_type heap_one				=  7;
 
 		// interoperators:
 
 			// call (policy):
 
-			static constexpr key_type drop					=  7;
-			static constexpr key_type insert_at_r_front			=  8;
-			static constexpr key_type insert_at_h0_front			=  9;
-			static constexpr key_type insert_at_h0_back			= 10;
-			static constexpr key_type insert_at_h1_back			= 11;
+			static constexpr key_type drop					=  8;
+			static constexpr key_type insert_at_r_front			=  9;
+			static constexpr key_type insert_at_h0_front			= 10;
+			static constexpr key_type insert_at_h0_back			= 11;
+			static constexpr key_type insert_at_h1_back			= 12;
 
-			static constexpr key_type op_at_h0_first			= 12;
-			static constexpr key_type act_at_h0_first			= 13;
+			static constexpr key_type op_at_h0_first			= 13;
+			static constexpr key_type act_at_h0_first			= 14;
 
 			// call/detour:
 
-			static constexpr key_type block					= 14;
-			static constexpr key_type linear				= 15;
-			static constexpr key_type user					= 16;
-			static constexpr key_type user1					= 17;
-			static constexpr key_type user2					= 18;
+			static constexpr key_type block					= 15;
+			static constexpr key_type linear				= 16;
+			static constexpr key_type user					= 17;
+			static constexpr key_type user1					= 18;
+			static constexpr key_type user2					= 19;
 
 			// detour:
 
-			static constexpr key_type call					= 19;
-			static constexpr key_type load					= 20;
+			static constexpr key_type call					= 20;
+			static constexpr key_type load					= 21;
 
 			// machinate:
 
-			static constexpr key_type pause					= 21;
-			static constexpr key_type unwind				= 22;
+			static constexpr key_type pause					= 22;
+			static constexpr key_type unwind				= 23;
 
 		// passers:
 
 			// user:
 
-			static constexpr key_type conditional				= 23;
-			static constexpr key_type replace_at_h0_front			= 24;
+			static constexpr key_type conditional				= 24;
+			static constexpr key_type replace_at_h0_front			= 25;
+
+		// functional:
+
+			// arguments:
+
+			static constexpr key_type using_a0				= 26;
+			static constexpr key_type using_a1				= 27;
+			static constexpr key_type using_a2				= 28;
 	};
 
 	using MT = MachineNote;
@@ -234,6 +249,36 @@ public:
 
 	template<index_type... Vs>
 	static constexpr instr_type instruction = array<index_type, sizeof...(Vs), Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// functional:
+
+/***********************************************************************************************************************/
+
+// instructions:
+
+	struct FunctionalInstr : public MachineInstr
+	{
+		static constexpr index_type action				= 4;
+		static constexpr index_type option				= 5;
+	};
+
+	using FI = FunctionalInstr;
+
+	struct FunctionalNote
+	{
+		// actions:
+
+			static constexpr index_type is_null			= 0;
+			static constexpr index_type cons			= 1;
+			static constexpr index_type push			= 2;
+			static constexpr index_type car				= 3;
+			static constexpr index_type cdr				= 4;
+	};
+
+	using FT = FunctionalNote;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -544,7 +589,7 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// user:
+// (user) programs:
 
 /***********************************************************************************************************************/
 
