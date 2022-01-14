@@ -45,11 +45,13 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// machine names:
+// machine:
 
 public:
 
 /***********************************************************************************************************************/
+
+// names:
 
 	// I would prefer to implement these as enums, but I don't know how
 	// to get gcc/clang to pattern match the register machine when I do.
@@ -177,6 +179,15 @@ public:
 			static constexpr key_type using_a0				= 26;
 			static constexpr key_type using_a1				= 27;
 			static constexpr key_type using_a2				= 28;
+
+			// actions:
+
+			static constexpr index_type is_null				= 29;
+
+			static constexpr index_type cons				= 30;
+			static constexpr index_type push				= 31;
+			static constexpr index_type car					= 32;
+			static constexpr index_type cdr					= 33;
 	};
 
 	using MT = MachineNote;
@@ -266,19 +277,6 @@ public:
 	};
 
 	using FI = FunctionalInstr;
-
-	struct FunctionalNote
-	{
-		// actions:
-
-			static constexpr index_type is_null			= 0;
-			static constexpr index_type cons			= 1;
-			static constexpr index_type push			= 2;
-			static constexpr index_type car				= 3;
-			static constexpr index_type cdr				= 4;
-	};
-
-	using FT = FunctionalNote;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -510,6 +508,19 @@ public:
 
 			static constexpr key_type apply					= 11;
 			static constexpr key_type compel				= 12;
+
+		// functional:
+
+			static constexpr index_type cons__insert_at_r_front		= 13;
+			static constexpr index_type cons__replace_at_arg		= 14;
+
+			static constexpr index_type push__insert_at_r_front		= 15;
+			static constexpr index_type push__replace_at_arg		= 16;
+
+			static constexpr index_type car__insert_at_r_front		= 17;
+
+			static constexpr index_type cdr__insert_at_r_front		= 18;
+			static constexpr index_type cdr__replace_at_arg			= 19;
 	};
 
 	using LN = LinearName;

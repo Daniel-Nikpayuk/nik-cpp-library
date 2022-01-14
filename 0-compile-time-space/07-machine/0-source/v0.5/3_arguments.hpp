@@ -46,10 +46,10 @@ private:
 			void(*A0)(auto_pack<Ps...>*), Args... As
 		)
 		{
-			constexpr bool is_null = (sizeof...(Ps) == 0);
+			constexpr bool is_null	= (sizeof...(Ps) == 0);
+			constexpr auto nH0	= U_opt_pack_Vs<is_null, Ws...>;
 
-			return NIK_MACHINE(d, n, c, i, j, Vs)
-				(U_opt_pack_Vs<is_null, Ws...>, H1, H2, H3, A0, As...);
+			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, As...);
 		}
 	};
 
@@ -72,10 +72,10 @@ private:
 			Arg0 A0, void(*A1)(auto_pack<Qs...>*), Args... As
 		)
 		{
-			constexpr bool is_null = (sizeof...(Qs) == 0);
+			constexpr bool is_null	= (sizeof...(Qs) == 0);
+			constexpr auto nH0	= U_opt_pack_Vs<is_null, Ws...>;
 
-			return NIK_MACHINE(d, n, c, i, j, Vs)
-				(U_opt_pack_Vs<is_null, Ws...>, H1, H2, H3, A0, A1, As...);
+			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, A1, As...);
 		}
 	};
 
@@ -98,10 +98,10 @@ private:
 			Arg0 A0, Arg1 A1, void(*A2)(auto_pack<Rs...>*), Args... As
 		)
 		{
-			constexpr bool is_null = (sizeof...(Rs) == 0);
+			constexpr bool is_null	= (sizeof...(Rs) == 0);
+			constexpr auto nH0	= U_opt_pack_Vs<is_null, Ws...>;
 
-			return NIK_MACHINE(d, n, c, i, j, Vs)
-				(U_opt_pack_Vs<is_null, Ws...>, H1, H2, H3, A0, A1, A2, As...);
+			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, A1, A2, As...);
 		}
 	};
 
@@ -132,17 +132,37 @@ private:
 			using tn			= T_type_U<n>;
 			constexpr auto ins		= tn::instr(c, i, j);
 			constexpr key_type action	= ins[FI::action];
+			constexpr key_type option	= ins[FI::option];
 			constexpr auto nH0		= U_opt_pack_Vs<Ws...>;
 
-			if constexpr (action == FT::cons)
+			if constexpr (action == MT::cons)
+			{
+				constexpr auto val	= U_opt_pack_Vs<W0, Ps...>;
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, U_opt_pack_Vs<W0, Ps...>, As...);
+				if constexpr (option == MT::insert_at_r_front)
 
-			else // FT::push
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, U_opt_pack_Vs<Ps..., W0>, As...);
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, val, As...);
+			}
+			else // MT::push
+			{
+				constexpr auto val	= U_opt_pack_Vs<Ps..., W0>;
+
+				if constexpr (option == MT::insert_at_r_front)
+
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, val, As...);
+			}
 		}
 	};
 
@@ -168,17 +188,38 @@ private:
 			using tn			= T_type_U<n>;
 			constexpr auto ins		= tn::instr(c, i, j);
 			constexpr key_type action	= ins[FI::action];
+			constexpr key_type option	= ins[FI::option];
 			constexpr auto nH0		= U_opt_pack_Vs<Ws...>;
 
-			if constexpr (action == FT::cons)
+			if constexpr (action == MT::cons)
+			{
+				constexpr auto val	= U_opt_pack_Vs<W0, Qs...>;
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, A0, U_opt_pack_Vs<W0, Qs...>, As...);
+				if constexpr (option == MT::insert_at_r_front)
 
-			else // FT::push
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, A0, U_opt_pack_Vs<Qs..., W0>, As...);
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, A1, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, val, As...);
+			}
+
+			else // MT::push
+			{
+				constexpr auto val	= U_opt_pack_Vs<Qs..., W0>;
+
+				if constexpr (option == MT::insert_at_r_front)
+
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, A1, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, val, As...);
+			}
 		}
 	};
 
@@ -204,17 +245,37 @@ private:
 			using tn			= T_type_U<n>;
 			constexpr auto ins		= tn::instr(c, i, j);
 			constexpr key_type action	= ins[FI::action];
+			constexpr key_type option	= ins[FI::option];
 			constexpr auto nH0		= U_opt_pack_Vs<Ws...>;
 
-			if constexpr (action == FT::cons)
+			if constexpr (action == MT::cons)
+			{
+				constexpr auto val	= U_opt_pack_Vs<W0, Rs...>;
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, A0, A1, U_opt_pack_Vs<W0, Rs...>, As...);
+				if constexpr (option == MT::insert_at_r_front)
 
-			else // FT::push
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
-				return NIK_MACHINE(d, n, c, i, j, Vs)
-					(nH0, H1, H2, H3, A0, A1, U_opt_pack_Vs<Rs..., W0>, As...);
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, A1, A2, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, A1, val, As...);
+			}
+			else // MT::push
+			{
+				constexpr auto val	= U_opt_pack_Vs<Rs..., W0>;
+
+				if constexpr (option == MT::insert_at_r_front)
+
+					return NIK_BEGIN_MACHINE(d, n, c, i, j),
+
+					       val, Vs...
+
+					NIK_END_MACHINE(nH0, H1, H2, H3, A0, A1, A2, As...);
+				else
+					return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, A0, A1, val, As...);
+			}
 		}
 	};
 
@@ -246,7 +307,7 @@ private:
 			constexpr auto ins			= tn::instr(c, i, j);
 			constexpr key_type action		= ins[FI::action];
 
-			if constexpr (action == FT::car)
+			if constexpr (action == MT::car)
 
 				return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
@@ -254,7 +315,7 @@ private:
 
 				NIK_END_MACHINE(H0, H1, H2, H3, A0, As...);
 
-			else // FT::cdr
+			else // MT::cdr
 			{
 				constexpr auto rest		= U_opt_pack_Vs<Ps...>;
 				constexpr key_type option	= ins[FI::option];
@@ -295,7 +356,7 @@ private:
 			constexpr auto ins			= tn::instr(c, i, j);
 			constexpr key_type action		= ins[FI::action];
 
-			if constexpr (action == FT::car)
+			if constexpr (action == MT::car)
 
 				return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
@@ -303,7 +364,7 @@ private:
 
 				NIK_END_MACHINE(H0, H1, H2, H3, A0, A1, As...);
 
-			else // FT::cdr
+			else // MT::cdr
 			{
 				constexpr auto rest		= U_opt_pack_Vs<Qs...>;
 				constexpr key_type option	= ins[FI::option];
@@ -344,7 +405,7 @@ private:
 			constexpr auto ins			= tn::instr(c, i, j);
 			constexpr key_type action		= ins[FI::action];
 
-			if constexpr (action == FT::car)
+			if constexpr (action == MT::car)
 
 				return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
@@ -352,7 +413,7 @@ private:
 
 				NIK_END_MACHINE(H0, H1, H2, H3, A0, A1, A2, As...);
 
-			else // FT::cdr
+			else // MT::cdr
 			{
 				constexpr auto rest		= U_opt_pack_Vs<Rs...>;
 				constexpr key_type option	= ins[FI::option];

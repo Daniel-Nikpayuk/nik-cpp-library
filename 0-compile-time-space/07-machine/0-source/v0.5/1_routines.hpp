@@ -175,6 +175,74 @@ public:
 		MN::copy_r_pos, Note, Pos
 	>;
 
+// functional:
+
+	// is null:
+
+	template<index_type Arg>
+	static constexpr instr_type is_null = instruction
+	<
+		MN::predicate, Arg, MT::is_null
+	>;
+
+		template<index_type...> static constexpr instr_type a0_is_null = is_null<MT::using_a0>;
+		template<index_type...> static constexpr instr_type a1_is_null = is_null<MT::using_a1>;
+		template<index_type...> static constexpr instr_type a2_is_null = is_null<MT::using_a2>;
+
+	// cons:
+
+	template<index_type Arg>
+	static constexpr instr_type cons__insert_at_r_front = instruction
+	<
+		MN::construct, Arg, MT::cons, MT::insert_at_r_front
+	>;
+
+	template<index_type Arg>
+	static constexpr instr_type cons__replace_at_arg = instruction
+	<
+		MN::construct, Arg, MT::cons, MT::id
+	>;
+
+	// push:
+
+	template<index_type Arg>
+	static constexpr instr_type push__insert_at_r_front = instruction
+	<
+		MN::construct, Arg, MT::push, MT::insert_at_r_front
+	>;
+
+	template<index_type Arg>
+	static constexpr instr_type push__replace_at_arg = instruction
+	<
+		MN::construct, Arg, MT::push, MT::id
+	>;
+
+	// car:
+
+	template<index_type Arg>
+	static constexpr instr_type car__insert_at_r_front = instruction
+	<
+		MN::select, Arg, MT::car, MT::insert_at_r_front
+	>;
+
+	// cdr:
+
+	template<index_type Arg>
+	static constexpr instr_type cdr__insert_at_r_front = instruction
+	<
+		MN::select, Arg, MT::cdr, MT::insert_at_r_front
+	>;
+
+	template<index_type Arg>
+	static constexpr instr_type cdr__replace_at_arg = instruction
+	<
+		MN::select, Arg, MT::cdr, MT::id
+	>;
+
+		template<index_type...> static constexpr instr_type cdr_assign_a0 = cdr__replace_at_arg<MT::using_a0>;
+		template<index_type...> static constexpr instr_type cdr_assign_a1 = cdr__replace_at_arg<MT::using_a1>;
+		template<index_type...> static constexpr instr_type cdr_assign_a2 = cdr__replace_at_arg<MT::using_a2>;
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -597,6 +665,213 @@ public:
 			MT::load,
 			Pos, Op, Args...
 		>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// functional:
+
+/***********************************************************************************************************************/
+
+// cons, insert at register front:
+
+	template<key_type... filler>
+	struct linear_program<LN::cons__insert_at_r_front, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Obj, index_type Arg>
+		static constexpr label_type lines = label
+		<
+			copy_r_pos__insert_at_h0_back<Obj>,
+			move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			cons__insert_at_r_front<Arg>,
+			move_h1_all__insert_at_r_front<>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj, index_type Arg>
+		static constexpr instr_type cons = call_linear_program
+		<
+			LN::cons__insert_at_r_front,
+			MT::load,
+			Pos, Obj, Arg
+		>;
+
+	// syntactic sugar:
+
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a0 = cons<Pos, Obj, MT::using_a0>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a1 = cons<Pos, Obj, MT::using_a1>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a2 = cons<Pos, Obj, MT::using_a2>;
+
+/***********************************************************************************************************************/
+
+// cons, replace at argument:
+
+	template<key_type... filler>
+	struct linear_program<LN::cons__replace_at_arg, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Obj>
+		static constexpr label_type lines = label
+		<
+			copy_r_pos__insert_at_h0_back<Obj>,
+			cons__replace_at_arg<Pos>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type cons_assign = call_linear_program
+		<
+			LN::cons__replace_at_arg,
+			MT::load,
+			Pos, Obj
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Obj> static constexpr instr_type cons_assign_a0 = cons_assign<MT::using_a0, Obj>;
+		template<index_type Obj> static constexpr instr_type cons_assign_a1 = cons_assign<MT::using_a1, Obj>;
+		template<index_type Obj> static constexpr instr_type cons_assign_a2 = cons_assign<MT::using_a2, Obj>;
+
+/***********************************************************************************************************************/
+
+// push, insert at register front:
+
+	template<key_type... filler>
+	struct linear_program<LN::push__insert_at_r_front, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Obj, index_type Arg>
+		static constexpr label_type lines = label
+		<
+			copy_r_pos__insert_at_h0_back<Obj>,
+			move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			push__insert_at_r_front<Arg>,
+			move_h1_all__insert_at_r_front<>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj, index_type Arg>
+		static constexpr instr_type push = call_linear_program
+		<
+			LN::push__insert_at_r_front,
+			MT::load,
+			Pos, Obj, Arg
+		>;
+
+	// syntactic sugar:
+
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_a0 = push<Pos, Obj, MT::using_a0>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_a1 = push<Pos, Obj, MT::using_a1>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_a2 = push<Pos, Obj, MT::using_a2>;
+
+/***********************************************************************************************************************/
+
+// push, replace at argument:
+
+	template<key_type... filler>
+	struct linear_program<LN::push__replace_at_arg, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Obj>
+		static constexpr label_type lines = label
+		<
+			copy_r_pos__insert_at_h0_back<Obj>,
+			push__replace_at_arg<Pos>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Obj>
+		static constexpr instr_type push_assign = call_linear_program
+		<
+			LN::push__replace_at_arg,
+			MT::load,
+			Pos, Obj
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Obj> static constexpr instr_type push_assign_a0 = push_assign<MT::using_a0, Obj>;
+		template<index_type Obj> static constexpr instr_type push_assign_a1 = push_assign<MT::using_a1, Obj>;
+		template<index_type Obj> static constexpr instr_type push_assign_a2 = push_assign<MT::using_a2, Obj>;
+
+/***********************************************************************************************************************/
+
+// car, insert at register front:
+
+	template<key_type... filler>
+	struct linear_program<LN::car__insert_at_r_front, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Arg>
+		static constexpr label_type lines = label
+		<
+			move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			car__insert_at_r_front<Arg>,
+			move_h1_all__insert_at_r_front<>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Arg>
+		static constexpr instr_type car = call_linear_program
+		<
+			LN::car__insert_at_r_front,
+			MT::load,
+			Pos, Arg
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Pos> static constexpr instr_type car_a0 = car<Pos, MT::using_a0>;
+		template<index_type Pos> static constexpr instr_type car_a1 = car<Pos, MT::using_a1>;
+		template<index_type Pos> static constexpr instr_type car_a2 = car<Pos, MT::using_a2>;
+
+/***********************************************************************************************************************/
+
+// cdr, insert at register front:
+
+	template<key_type... filler>
+	struct linear_program<LN::cdr__insert_at_r_front, filler...> : public T_linear_program
+	{
+		template<index_type Pos, index_type Arg>
+		static constexpr label_type lines = label
+		<
+			move_r_segment__insert_at_h1_back<Pos>,
+			drop_r_block<>,
+			cdr__insert_at_r_front<Arg>,
+			move_h1_all__insert_at_r_front<>,
+			unwind<>
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, index_type Arg>
+		static constexpr instr_type cdr = call_linear_program
+		<
+			LN::cdr__insert_at_r_front,
+			MT::load,
+			Pos, Arg
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Pos> static constexpr instr_type cdr_a0 = cdr<Pos, MT::using_a0>;
+		template<index_type Pos> static constexpr instr_type cdr_a1 = cdr<Pos, MT::using_a1>;
+		template<index_type Pos> static constexpr instr_type cdr_a2 = cdr<Pos, MT::using_a2>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
