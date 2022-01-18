@@ -71,7 +71,7 @@
 		<
 			// registers:
 
-				index_type val		= 0,
+				index_type res		= 0,
 				index_type n		= 1,
 				index_type is_zero	= 2,
 				index_type dec		= 3,
@@ -90,11 +90,11 @@
 			<
 				test     < is_zero   , n                       >,
 				branch   < done                                >,
-				adj_call < val       , fact_prog , adj  , val
+				adj_call < res       , fact_prog , adj  , res
 				         , n         , is_zero   , dec  , mult
 				         , fact_prog , loop      , adj  , done >,
-				apply    < val       , mult      , n    , val  >,
-				at       < val                                 >
+				apply    < res       , mult      , n    , res  >,
+				value    < res                                 >
 			>,
 
 			label // adj:
@@ -105,7 +105,7 @@
 
 			label // done:
 			<
-				at       < val                                 >
+				value    < res                                 >
 			>
 		>;
 	};
@@ -117,7 +117,7 @@
 	{
 		using n_type = decltype(n);
 
-		constexpr n_type val		= _one;
+		constexpr n_type res		= _one;
 		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
 		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
 		constexpr auto mult_op		= multiply<n_type, n_type>;
@@ -126,8 +126,9 @@
 		return machine_module::template start
 		<
 			T_user_program_factorial<FN::naive>,
-				val, n, is_zero_op, dec_op, mult_op, fact_prog
-		>();
+				res, n, is_zero_op, dec_op, mult_op, fact_prog
+
+		>(U_null_Vs);
 	}
 
 	template<auto n>
@@ -185,7 +186,7 @@
 	<
 		// registers:
 
-			index_type val		= 0,
+			index_type res		= 0,
 			index_type n		= 1,
 			index_type is_zero	= 2,
 			index_type dec		= 3,
@@ -200,9 +201,9 @@
 	<
 		label // done:
 		<
-			user    < FN::naive, algo , val , val , n , is_zero , dec , mult >,
-			apply   < val      , dec  , val                                  >,
-			stop    < val                                                    >
+			user    < FN::naive, algo , res , res , n , is_zero , dec , mult >,
+			apply   < res      , dec  , res                                  >,
+			value   < res                                                    >
 		>
 	>;
 */
@@ -217,7 +218,7 @@
 
 		constexpr auto contr		= off_by_one_factorial_contr<>;
 
-		constexpr n_type val		= _one;
+		constexpr n_type res		= _one;
 		constexpr auto is_zero_op	= is_value<n_type, n_type{_zero}>;
 		constexpr auto dec_op		= subtract_by<n_type, n_type{_one}>;
 		constexpr auto mult_op		= multiply<n_type, n_type>;
@@ -226,8 +227,9 @@
 		return start
 		<
 			register_machine, contr, d,
-			val, n, is_zero_op, dec_op, mult_op, algo
-		>();
+			res, n, is_zero_op, dec_op, mult_op, algo
+
+		>(U_null_Vs);
 	}
 
 	template<auto n, depth_type d = 500>
@@ -272,7 +274,7 @@
 
 			label // done:
 			<
-				at      < p                      >
+				value   < p                      >
 			>
 		>;
 	};
@@ -293,7 +295,8 @@
 		<
 			T_user_program_factorial<FN::fast>,
 				p, n, is_zero_op, dec_op, mult_op
-		>();
+
+		>(U_null_Vs);
 	}
 
 	template<auto n>

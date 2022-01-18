@@ -118,6 +118,15 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_signed_long_long)	= NIK_MODULE::U_signed_long_long;
 
 /***********************************************************************************************************************/
+
+// pack types:
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Ts)			= NIK_MODULE::U_null_Ts;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Vs)			= NIK_MODULE::U_null_Vs;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_As)			= NIK_MODULE::U_null_As;
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Bs)			= NIK_MODULE::U_null_Bs;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 

@@ -34,17 +34,23 @@ public:
 	// value:
 
 	template<key_type Note>
-	static constexpr instr_type value = instruction
+	static constexpr instr_type _value = instruction // *value* keyword is reserved for user use.
 	<
 		MN::value, Note
 	>;
 
-		template<key_type...> static constexpr instr_type first			= value < MT::first         >;
-		template<key_type...> static constexpr instr_type rest			= value < MT::rest          >;
-		template<key_type...> static constexpr instr_type depth			= value < MT::depth         >;
-		template<key_type...> static constexpr instr_type dump			= value < MT::dump          >;
-		template<key_type...> static constexpr instr_type registers		= value < MT::registers     >;
-		template<key_type...> static constexpr instr_type arguments		= value < MT::arguments     >;
+		template<key_type...> static constexpr instr_type first			= _value < MT::first         >;
+		template<key_type...> static constexpr instr_type rest			= _value < MT::rest          >;
+		template<key_type...> static constexpr instr_type depth			= _value < MT::depth         >;
+		template<key_type...> static constexpr instr_type dump			= _value < MT::dump          >;
+		template<key_type...> static constexpr instr_type registers		= _value < MT::registers     >;
+		template<key_type...> static constexpr instr_type arguments		= _value < MT::arguments     >;
+
+		//
+
+		template<key_type...> static constexpr instr_type list_0		= _value < MT::arg_zero      >;
+		template<key_type...> static constexpr instr_type list_1		= _value < MT::arg_one       >;
+		template<key_type...> static constexpr instr_type list_2		= _value < MT::arg_two       >;
 
 // interoperators:
 
@@ -185,9 +191,9 @@ public:
 		MN::predicate, Arg, MT::is_null
 	>;
 
-		template<index_type...> static constexpr instr_type a0_is_null = is_null<MT::using_a0>;
-		template<index_type...> static constexpr instr_type a1_is_null = is_null<MT::using_a1>;
-		template<index_type...> static constexpr instr_type a2_is_null = is_null<MT::using_a2>;
+		template<index_type...> static constexpr instr_type list_0_is_null = is_null<MT::using_a0>;
+		template<index_type...> static constexpr instr_type list_1_is_null = is_null<MT::using_a1>;
+		template<index_type...> static constexpr instr_type list_2_is_null = is_null<MT::using_a2>;
 
 	// cons:
 
@@ -239,9 +245,9 @@ public:
 		MN::select, Arg, MT::cdr, MT::id
 	>;
 
-		template<index_type...> static constexpr instr_type cdr_assign_a0 = cdr__replace_at_arg<MT::using_a0>;
-		template<index_type...> static constexpr instr_type cdr_assign_a1 = cdr__replace_at_arg<MT::using_a1>;
-		template<index_type...> static constexpr instr_type cdr_assign_a2 = cdr__replace_at_arg<MT::using_a2>;
+		template<index_type...> static constexpr instr_type cdr_assign_list_0 = cdr__replace_at_arg<MT::using_a0>;
+		template<index_type...> static constexpr instr_type cdr_assign_list_1 = cdr__replace_at_arg<MT::using_a1>;
+		template<index_type...> static constexpr instr_type cdr_assign_list_2 = cdr__replace_at_arg<MT::using_a2>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -339,7 +345,7 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos>
-		static constexpr instr_type at = drop_r_segment
+		static constexpr instr_type value = drop_r_segment
 		<
 			MT::id,
 			Pos,
@@ -676,7 +682,7 @@ public:
 // cons, insert at register front:
 
 	template<key_type... filler>
-	struct linear_program<LN::cons__insert_at_r_front, filler...> : public T_linear_program
+	struct linear_program<LN::cons__replace_at_r_pos, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Obj, index_type Arg>
 		static constexpr label_type lines = label
@@ -695,16 +701,16 @@ public:
 		template<index_type Pos, index_type Obj, index_type Arg>
 		static constexpr instr_type cons = call_linear_program
 		<
-			LN::cons__insert_at_r_front,
+			LN::cons__replace_at_r_pos,
 			MT::load,
 			Pos, Obj, Arg
 		>;
 
 	// syntactic sugar:
 
-	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a0 = cons<Pos, Obj, MT::using_a0>;
-	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a1 = cons<Pos, Obj, MT::using_a1>;
-	template<index_type Pos, index_type Obj> static constexpr instr_type cons_a2 = cons<Pos, Obj, MT::using_a2>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_list_0 = cons<Pos, Obj, MT::using_a0>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_list_1 = cons<Pos, Obj, MT::using_a1>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type cons_list_2 = cons<Pos, Obj, MT::using_a2>;
 
 /***********************************************************************************************************************/
 
@@ -734,16 +740,16 @@ public:
 
 	// syntactic sugar:
 
-		template<index_type Obj> static constexpr instr_type cons_assign_a0 = cons_assign<MT::using_a0, Obj>;
-		template<index_type Obj> static constexpr instr_type cons_assign_a1 = cons_assign<MT::using_a1, Obj>;
-		template<index_type Obj> static constexpr instr_type cons_assign_a2 = cons_assign<MT::using_a2, Obj>;
+		template<index_type Obj> static constexpr instr_type cons_assign_list_0 = cons_assign<MT::using_a0, Obj>;
+		template<index_type Obj> static constexpr instr_type cons_assign_list_1 = cons_assign<MT::using_a1, Obj>;
+		template<index_type Obj> static constexpr instr_type cons_assign_list_2 = cons_assign<MT::using_a2, Obj>;
 
 /***********************************************************************************************************************/
 
 // push, insert at register front:
 
 	template<key_type... filler>
-	struct linear_program<LN::push__insert_at_r_front, filler...> : public T_linear_program
+	struct linear_program<LN::push__replace_at_r_pos, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Obj, index_type Arg>
 		static constexpr label_type lines = label
@@ -762,16 +768,16 @@ public:
 		template<index_type Pos, index_type Obj, index_type Arg>
 		static constexpr instr_type push = call_linear_program
 		<
-			LN::push__insert_at_r_front,
+			LN::push__replace_at_r_pos,
 			MT::load,
 			Pos, Obj, Arg
 		>;
 
 	// syntactic sugar:
 
-	template<index_type Pos, index_type Obj> static constexpr instr_type push_a0 = push<Pos, Obj, MT::using_a0>;
-	template<index_type Pos, index_type Obj> static constexpr instr_type push_a1 = push<Pos, Obj, MT::using_a1>;
-	template<index_type Pos, index_type Obj> static constexpr instr_type push_a2 = push<Pos, Obj, MT::using_a2>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_list_0 = push<Pos, Obj, MT::using_a0>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_list_1 = push<Pos, Obj, MT::using_a1>;
+	template<index_type Pos, index_type Obj> static constexpr instr_type push_list_2 = push<Pos, Obj, MT::using_a2>;
 
 /***********************************************************************************************************************/
 
@@ -801,16 +807,16 @@ public:
 
 	// syntactic sugar:
 
-		template<index_type Obj> static constexpr instr_type push_assign_a0 = push_assign<MT::using_a0, Obj>;
-		template<index_type Obj> static constexpr instr_type push_assign_a1 = push_assign<MT::using_a1, Obj>;
-		template<index_type Obj> static constexpr instr_type push_assign_a2 = push_assign<MT::using_a2, Obj>;
+		template<index_type Obj> static constexpr instr_type push_assign_list_0 = push_assign<MT::using_a0, Obj>;
+		template<index_type Obj> static constexpr instr_type push_assign_list_1 = push_assign<MT::using_a1, Obj>;
+		template<index_type Obj> static constexpr instr_type push_assign_list_2 = push_assign<MT::using_a2, Obj>;
 
 /***********************************************************************************************************************/
 
 // car, insert at register front:
 
 	template<key_type... filler>
-	struct linear_program<LN::car__insert_at_r_front, filler...> : public T_linear_program
+	struct linear_program<LN::car__replace_at_r_pos, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Arg>
 		static constexpr label_type lines = label
@@ -828,23 +834,23 @@ public:
 		template<index_type Pos, index_type Arg>
 		static constexpr instr_type car = call_linear_program
 		<
-			LN::car__insert_at_r_front,
+			LN::car__replace_at_r_pos,
 			MT::load,
 			Pos, Arg
 		>;
 
 	// syntactic sugar:
 
-		template<index_type Pos> static constexpr instr_type car_a0 = car<Pos, MT::using_a0>;
-		template<index_type Pos> static constexpr instr_type car_a1 = car<Pos, MT::using_a1>;
-		template<index_type Pos> static constexpr instr_type car_a2 = car<Pos, MT::using_a2>;
+		template<index_type Pos> static constexpr instr_type car_list_0 = car<Pos, MT::using_a0>;
+		template<index_type Pos> static constexpr instr_type car_list_1 = car<Pos, MT::using_a1>;
+		template<index_type Pos> static constexpr instr_type car_list_2 = car<Pos, MT::using_a2>;
 
 /***********************************************************************************************************************/
 
 // cdr, insert at register front:
 
 	template<key_type... filler>
-	struct linear_program<LN::cdr__insert_at_r_front, filler...> : public T_linear_program
+	struct linear_program<LN::cdr__replace_at_r_pos, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Arg>
 		static constexpr label_type lines = label
@@ -862,16 +868,16 @@ public:
 		template<index_type Pos, index_type Arg>
 		static constexpr instr_type cdr = call_linear_program
 		<
-			LN::cdr__insert_at_r_front,
+			LN::cdr__replace_at_r_pos,
 			MT::load,
 			Pos, Arg
 		>;
 
 	// syntactic sugar:
 
-		template<index_type Pos> static constexpr instr_type cdr_a0 = cdr<Pos, MT::using_a0>;
-		template<index_type Pos> static constexpr instr_type cdr_a1 = cdr<Pos, MT::using_a1>;
-		template<index_type Pos> static constexpr instr_type cdr_a2 = cdr<Pos, MT::using_a2>;
+		template<index_type Pos> static constexpr instr_type cdr_list_0 = cdr<Pos, MT::using_a0>;
+		template<index_type Pos> static constexpr instr_type cdr_list_1 = cdr<Pos, MT::using_a1>;
+		template<index_type Pos> static constexpr instr_type cdr_list_2 = cdr<Pos, MT::using_a2>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

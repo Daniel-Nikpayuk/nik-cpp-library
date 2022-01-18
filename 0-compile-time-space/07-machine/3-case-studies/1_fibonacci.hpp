@@ -65,7 +65,7 @@
 		<
 			// registers:
 
-				index_type val			= 0,
+				index_type res			= 0,
 				index_type m			= 1,
 				index_type n			= 2,
 				index_type is_0_or_1		= 3,
@@ -88,13 +88,13 @@
 				test     < is_0_or_1 , n                               >,
 				branch   < done                                        >,
 				adj_call < m         , fib_prog , adj1
-				         , val       , m        , n        , is_0_or_1
+				         , res       , m        , n        , is_0_or_1
 				         , dec1      , dec2     , add      , fib_prog  >,
 				adj_call < n         , fib_prog , adj2
-				         , val       , m        , n        , is_0_or_1
+				         , res       , m        , n        , is_0_or_1
 				         , dec1      , dec2     , add      , fib_prog  >,
-				apply    < val       , add      , m    , n             >,
-				at       < val                                         >
+				apply    < res       , add      , m    , n             >,
+				value    < res                                         >
 			>,
 
 			label // adj1:
@@ -111,7 +111,7 @@
 
 			label // done:
 			<
-				at       < val                                         >
+				value    < res                                         >
 			>
 		>;
 	};
@@ -126,7 +126,7 @@
 	{
 		using n_type = decltype(n);
 
-		constexpr n_type val		= _one;
+		constexpr n_type res		= _one;
 		constexpr n_type m		= _zero;
 		constexpr auto is_0_or_1_op	= is_0_or_1_value<n_type>;
 		constexpr auto dec1_op		= subtract_by<n_type, n_type{_one}>;
@@ -137,8 +137,9 @@
 		return machine_module::template start
 		<
 			T_user_program_fibonacci<FN::naive>,
-				val, m, n, is_0_or_1_op, dec1_op, dec2_op, add_op, fib_prog
-		>();
+				res, m, n, is_0_or_1_op, dec1_op, dec2_op, add_op, fib_prog
+
+		>(U_null_Vs);
 	}
 
 	template<auto n>

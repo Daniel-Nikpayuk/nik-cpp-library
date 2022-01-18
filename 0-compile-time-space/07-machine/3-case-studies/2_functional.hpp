@@ -29,6 +29,99 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// names:
+
+/***********************************************************************************************************************/
+
+	struct FunctionalNames
+	{
+		static constexpr key_type reverse_v0	= 0;
+		static constexpr key_type reverse_v1	= 1;
+
+		static constexpr key_type left_v0	= 2;
+		static constexpr key_type right_v0	= 3;
+		static constexpr key_type merge_v0	= 0;
+		static constexpr key_type sort_v0	= 5;
+	};
+
+	using FN = FunctionalNames;
+
+	template<key_type, key_type...> struct T_user_program_functional;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// reverse (version 0):
+
+/***********************************************************************************************************************/
+
+	template<>
+	struct T_user_program_functional<FN::reverse_v0> : public T_user_program
+	{
+		template
+		<
+			// registers:
+
+				index_type front	= 0,
+
+			// labels:
+
+				index_type loop		= 1,
+				index_type done		= 2
+		>
+		static constexpr auto lines = controller
+		<
+			label // loop:
+			<
+				list_1_is_null     <       >,
+				branch             < done  >,
+				car_list_1         < front >,
+				cdr_assign_list_1  <       >,
+				cons_assign_list_0 < front >,
+				restart            <       >
+			>,
+
+			label // done:
+			<
+				list_0             <       >
+			>
+		>;
+	};
+
+/***********************************************************************************************************************/
+
+	template<auto list, auto front = _zero>
+	constexpr auto reverse_v0 = machine_module::template start
+	<
+		T_user_program_functional<FN::reverse_v0>, front
+
+	>(U_null_Vs, U_null_Vs, list);
+
+/***********************************************************************************************************************/
+
+// perf:
+
+//		print_reverse_v0< U_pack_Vs<0, 1, 2, 3, 4, 5> >():
+
+//			gcc compile time:		gcc run time:
+//			                                
+//			                                auto_pack<5, 4, 3, 2, 1, 0>
+//			                                
+//			real	0m0.987s                real	0m0.002s
+//			user	0m0.887s                user	0m0.002s
+//			sys	0m0.101s                sys	0m0.001s
+//			                                
+//			clang compile time:             clang run time:
+//			                                
+//			                                auto_pack<5, 4, 3, 2, 1, 0>
+//			                                
+//			real	0m1.425s                real	0m0.003s
+//			user	0m1.273s                user	0m0.001s
+//			sys	0m0.117s                sys	0m0.002s
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // functions (local):
 
 /***********************************************************************************************************************/
@@ -109,38 +202,18 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// names:
-
-/***********************************************************************************************************************/
-
-	struct FunctionalNames
-	{
-		static constexpr key_type reverse	= 0;
-		static constexpr key_type left		= 1;
-		static constexpr key_type right		= 2;
-		static constexpr key_type merge		= 3;
-		static constexpr key_type sort		= 4;
-	};
-
-	using FN = FunctionalNames;
-
-	template<key_type, key_type...> struct T_user_program_functional;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// reverse:
+// reverse (version 1):
 
 /***********************************************************************************************************************/
 
 	template<>
-	struct T_user_program_functional<FN::reverse> : public T_user_program
+	struct T_user_program_functional<FN::reverse_v1> : public T_user_program
 	{
 		template
 		<
 			// registers:
 
-				index_type val		= 0,
+				index_type res		= 0,
 				index_type list		= 1,
 				index_type is_null	= 2,
 				index_type push		= 3,
@@ -159,18 +232,18 @@
 			<
 				check  < is_null  , list                   >,
 				branch < done                              >,
-				compel < val      , car      , list        >,
+				compel < res      , car      , list        >,
 				compel < list     , cdr      , list        >,
-				call   < list     , rev_prog , val  , list
+				call   < list     , rev_prog , res  , list
 				       , is_null  , push     , car  , cdr
 				       , rev_prog , loop     , done        >,
-				compel < list     , push     , val  , list >,
-				at     < list                              >
+				compel < list     , push     , res  , list >,
+				value  < list                              >
 			>,
 
 			label // done:
 			<
-				at     < list                              >
+				value  < list                              >
 			>
 		>;
 	};
@@ -178,30 +251,30 @@
 /***********************************************************************************************************************/
 
 	template<auto list>
-	constexpr auto f_reverse()
+	constexpr auto f_reverse_v1()
 	{
-		constexpr auto val		= _zero;
+		constexpr auto res		= _zero;
 		constexpr auto is_null_op	= I_is_null;
 		constexpr auto push_op		= I_push;
 		constexpr auto car_op		= I_car;
 		constexpr auto cdr_op		= I_cdr;
-		constexpr auto rev_prog		= U_type_T<T_user_program_functional<FN::reverse>>;
+		constexpr auto rev_prog		= U_type_T<T_user_program_functional<FN::reverse_v1>>;
 
 		return machine_module::template start
 		<
-			T_user_program_functional<FN::reverse>,
-				val, list, is_null_op, push_op, car_op, cdr_op, rev_prog
-		>();
+			T_user_program_functional<FN::reverse_v1>,
+				res, list, is_null_op, push_op, car_op, cdr_op, rev_prog
+		>(U_null_Vs);
 	}
 
 	template<auto list>
-	constexpr auto reverse = f_reverse<list>();
+	constexpr auto reverse_v1 = f_reverse_v1<list>();
 
 /***********************************************************************************************************************/
 
 // perf:
 
-//		print_reverse< U_pack_Vs<0, 1, 2, 3, 4, 5> >():
+//		print_reverse_v1< U_pack_Vs<0, 1, 2, 3, 4, 5> >():
 
 //			gcc compile time:		gcc run time:
 //			                        	
@@ -220,11 +293,80 @@
 //			sys	0m0.350s        	sys	0m0.001s
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
 // convenience functions:
 
 //	template<auto list>
 //	void print_reverse() { printf("reverse(%d): %d\n", list, reverse<list>); }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// merge (version 0):
+
+/***********************************************************************************************************************/
+
+	template<>
+	struct T_user_program_functional<FN::merge_v0> : public T_user_program
+	{
+		template
+		<
+			// registers:
+
+				index_type front_1	= 0,
+				index_type front_2	= 1,
+				index_type less_than	= 2,
+
+			// lists:
+
+				index_type l1		= 1,
+				index_type l2		= 2,
+
+			// labels:
+
+				index_type loop_2	= 1,
+				index_type loop_1	= 2,
+				index_type done_1	= 3,
+				index_type done_2	= 4
+		>
+		static constexpr auto lines = controller
+		<
+			label // loop_2:
+			<
+				list_1_is_null     <                               >,
+				branch             < done_1                        >,
+				list_2_is_null     <                               >,
+				branch             < done_2                        >,
+				car_list_1         < front_1                       >,
+				car_list_2         < front_2                       >,
+				check              < less_than , front_1 , front_2 >,
+				branch             < loop_1                        >,
+				push_assign_list_0 < front_2                       >,
+				cdr_assign_list_2  <                               >,
+				restart            <                               >
+			>,
+
+			label // loop_1:
+			<
+				push_assign_list_0 < front_1                       >,
+				cdr_assign_list_1  <                               >,
+				restart            <                               >
+			>,
+
+			label // done_1:
+			<
+				cat_assign_list_0  < l2                            >,
+				list_0             <                               >
+			>,
+
+			label // done_2:
+			<
+				cat_assign_list_0  < l1                            >,
+				list_0             <                               >
+			>
+		>;
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

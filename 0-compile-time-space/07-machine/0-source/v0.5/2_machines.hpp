@@ -101,15 +101,6 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-public:
-
-// null:
-
-	using null_type			= decltype(U_opt_pack_Vs<>);
-	static constexpr null_type null	= U_opt_pack_Vs<>;
-
-/***********************************************************************************************************************/
-
 // machination:
 
 	// Do not refactor using other templated structs. Although these definitions are potentially redundant,
@@ -256,6 +247,63 @@ private:
 	};
 
 /***********************************************************************************************************************/
+
+// arg zero:
+
+	template<key_type... filler>
+	struct machine<MN::value, MT::arg_zero, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3,
+			typename Arg0, typename... Args
+		>
+		static constexpr auto result(Heap0, Heap1, Heap2, Heap3, Arg0 A0, Args...)
+		{
+			return A0;
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// arg one:
+
+	template<key_type... filler>
+	struct machine<MN::value, MT::arg_one, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3,
+			typename Arg0, typename Arg1, typename... Args
+		>
+		static constexpr auto result(Heap0, Heap1, Heap2, Heap3, Arg0, Arg1 A1, Args...)
+		{
+			return A1;
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// arg two:
+
+	template<key_type... filler>
+	struct machine<MN::value, MT::arg_two, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, typename Heap2, typename Heap3,
+			typename Arg0, typename Arg1, typename Arg2, typename... Args
+		>
+		static constexpr auto result(Heap0, Heap1, Heap2, Heap3, Arg0, Arg1, Arg2 A2, Args...)
+		{
+			return A2;
+		}
+	};
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // interoperators (call):
@@ -338,7 +386,7 @@ private:
 				constexpr auto _H2	= U_opt_pack_Vs<Vs...>;
 				constexpr auto _H3	= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
 				constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
-				constexpr auto nH3	= U_opt_pack_Vs<_H0, null, _H2, _H3>; // As... aren't used.
+				constexpr auto nH3	= U_opt_pack_Vs<_H0, U_null_Vs, _H2, _H3>; // As... aren't used.
 
 				return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, As...);
 			}
@@ -375,7 +423,7 @@ private:
 			constexpr auto _H3		= U_prepack_Ts<Heap0, Heap1, Heap2, Heap3, Args...>;
 
 			constexpr auto nH2		= U_opt_pack_Vs<_m, _n, _c, _i, _j, Vs...>;	// optimization:
-			constexpr auto nH3		= U_opt_pack_Vs<_H0, null, null, _H3>;		// As... aren't used.
+			constexpr auto nH3		= U_opt_pack_Vs<_H0, U_null_Vs, U_null_Vs, _H3>; // As... aren't used.
 
 			return NIK_BEGIN_INTERNAL(d, n, c, i, j) NIK_END_INTERNAL(H0, H1, nH2, nH3);
 		}
@@ -603,7 +651,7 @@ private:
 				constexpr auto nH3	= U_pretype_T<decltype(H3)>;
 
 				constexpr auto h2	= U_opt_pack_Vs<_m, _n, _c, _i, _j>;  // optimization: Vs...
-				constexpr auto h3	= U_opt_pack_Vs<nH0, null, nH2, nH3>; // As... aren't used.
+				constexpr auto h3	= U_opt_pack_Vs<nH0, U_null_Vs, nH2, nH3>; // As... aren't used.
 
 				return machination(MT::call, h2, h3);
 			}
@@ -827,7 +875,7 @@ private:
 
 				Xs..., Vs...
 
-			NIK_END_MACHINE(H0, null, Hs...);
+			NIK_END_MACHINE(H0, U_null_Vs, Hs...);
 		}
 	};
 
@@ -890,7 +938,7 @@ private:
 
 				op(args...), Vs...
 
-			NIK_END_MACHINE(null, Hs...);
+			NIK_END_MACHINE(U_null_Vs, Hs...);
 		}
 	};
 
@@ -927,7 +975,7 @@ private:
 
 				T_type_U<uact>::template result<args...>, Vs...
 			
-			NIK_END_MACHINE(null, Hs...);
+			NIK_END_MACHINE(U_null_Vs, Hs...);
 		}
 	};
 
@@ -957,8 +1005,8 @@ private:
 
 public:
 
-	template<typename program, auto... Vs, auto... Is>
-	static constexpr auto start(void(*)(auto_pack<Is...>*) = null)
+	template<typename program, auto... Vs, auto... Is, typename... Args>
+	static constexpr auto start(void(*)(auto_pack<Is...>*), Args...)
 	{
 		constexpr auto d	= program::depth;
 		constexpr auto n	= U_linear_program;
@@ -973,9 +1021,9 @@ public:
 		constexpr auto _j	= program::initial_j;
 
 		constexpr auto nH2	= U_opt_pack_Vs<_m, _n, _c, _i, _j, Vs...>;
-		constexpr auto nH3	= U_opt_pack_Vs<null, null, null, null>;
+		constexpr auto nH3	= U_opt_pack_Vs<U_null_Vs, U_null_Vs, U_null_Vs, U_null_Vs, U_pretype_T<Args>...>;
 
-		return NIK_BEGIN_MACHINE(d, n, c, i, j) NIK_END_MACHINE(null, null, nH2, nH3);
+		return NIK_BEGIN_MACHINE(d, n, c, i, j) NIK_END_MACHINE(U_null_Vs, U_null_Vs, nH2, nH3);
 	}
 
 /***********************************************************************************************************************/

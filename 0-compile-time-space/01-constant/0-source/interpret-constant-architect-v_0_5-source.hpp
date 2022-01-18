@@ -178,6 +178,15 @@ public:
 	static constexpr auto U_signed_long_long	= cache_module::template U_type_T<signed long long>;
 
 /***********************************************************************************************************************/
+
+// pack types:
+
+	static constexpr auto U_null_Ts			= cache_module::template U_pack_Ts<>;
+	static constexpr auto U_null_Vs			= cache_module::template U_pack_Vs<>;
+	static constexpr auto U_null_As			= cache_module::template U_pack_As<>;
+	static constexpr auto U_null_Bs			= cache_module::template U_pack_Bs<>;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 

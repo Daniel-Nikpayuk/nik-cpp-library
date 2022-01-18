@@ -80,6 +80,12 @@
 	template<auto...> NIK_POLICY auto nik_name(NIK_PREFIX, registers)	= NIK_MODULE::template registers<>;
 	template<auto...> NIK_POLICY auto nik_name(NIK_PREFIX, arguments)	= NIK_MODULE::template arguments<>;
 
+	//
+
+	template<auto...> NIK_POLICY auto nik_name(NIK_PREFIX, list_0)		= NIK_MODULE::template list_0<>;
+	template<auto...> NIK_POLICY auto nik_name(NIK_PREFIX, list_1)		= NIK_MODULE::template list_1<>;
+	template<auto...> NIK_POLICY auto nik_name(NIK_PREFIX, list_2)		= NIK_MODULE::template list_2<>;
+
 // interoperators:
 
 	template<auto Pos, auto Prog, auto... Args>
@@ -106,7 +112,7 @@
 // block:
 
 	template<auto Pos>
-	NIK_POLICY auto nik_name(NIK_PREFIX, at)		= NIK_MODULE::template at<Pos>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, value)		= NIK_MODULE::template value<Pos>;
 
 //	template<auto Pos>
 //	NIK_POLICY auto nik_name(NIK_PREFIX, left)		= NIK_MODULE::template left<Pos>;
@@ -144,20 +150,88 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX, compel)		= NIK_MODULE::template compel<Pos, Act, Args...>;
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// evaluation:
+// functional:
 
-/***********************************************************************************************************************/
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, list_0_is_null)		= NIK_MODULE::template list_0_is_null<>;
 
-// start:
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, list_1_is_null)		= NIK_MODULE::template list_1_is_null<>;
 
-	template<typename program, auto... Vs, typename T>
-	inline NIK_POLICY auto start(T v = NIK_MODULE::null)
-	{
-		return NIK_MODULE::template start<program, Vs...>(v);
-	}
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, list_2_is_null)		= NIK_MODULE::template list_2_is_null<>;
+
+	//
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_list_0)		= NIK_MODULE::template cons_list_0<Pos, Obj>;
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_list_1)		= NIK_MODULE::template cons_list_1<Pos, Obj>;
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_list_2)		= NIK_MODULE::template cons_list_2<Pos, Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_assign_list_0)	= NIK_MODULE::template cons_assign_list_0<Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_assign_list_1)	= NIK_MODULE::template cons_assign_list_1<Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cons_assign_list_2)	= NIK_MODULE::template cons_assign_list_2<Obj>;
+
+	//
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_list_0)		= NIK_MODULE::template push_list_0<Pos, Obj>;
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_list_1)		= NIK_MODULE::template push_list_1<Pos, Obj>;
+
+	template<auto Pos, auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_list_2)		= NIK_MODULE::template push_list_2<Pos, Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_assign_list_0)	= NIK_MODULE::template push_assign_list_0<Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_assign_list_1)	= NIK_MODULE::template push_assign_list_1<Obj>;
+
+	template<auto Obj>
+	NIK_POLICY auto nik_name(NIK_PREFIX, push_assign_list_2)	= NIK_MODULE::template push_assign_list_2<Obj>;
+
+	//
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, car_list_0)		= NIK_MODULE::template car_list_0<Pos>;
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, car_list_1)		= NIK_MODULE::template car_list_1<Pos>;
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, car_list_2)		= NIK_MODULE::template car_list_2<Pos>;
+
+	//
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_list_0)		= NIK_MODULE::template cdr_list_0<Pos>;
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_list_1)		= NIK_MODULE::template cdr_list_1<Pos>;
+
+	template<auto Pos>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_list_2)		= NIK_MODULE::template cdr_list_2<Pos>;
+
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_assign_list_0)		= NIK_MODULE::template cdr_assign_list_0<>;
+
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_assign_list_1)		= NIK_MODULE::template cdr_assign_list_1<>;
+
+	template<auto...>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_assign_list_2)		= NIK_MODULE::template cdr_assign_list_2<>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -132,62 +132,67 @@ public:
 
 			static constexpr key_type registers				=  5;
 			static constexpr key_type arguments				=  6;
+
 			static constexpr key_type heap_one				=  7;
+
+			static constexpr key_type arg_zero				=  8;
+			static constexpr key_type arg_one				=  9;
+			static constexpr key_type arg_two				= 10;
 
 		// interoperators:
 
 			// call (policy):
 
-			static constexpr key_type drop					=  8;
-			static constexpr key_type insert_at_r_front			=  9;
-			static constexpr key_type insert_at_h0_front			= 10;
-			static constexpr key_type insert_at_h0_back			= 11;
-			static constexpr key_type insert_at_h1_back			= 12;
+			static constexpr key_type drop					= 11;
+			static constexpr key_type insert_at_r_front			= 12;
+			static constexpr key_type insert_at_h0_front			= 13;
+			static constexpr key_type insert_at_h0_back			= 14;
+			static constexpr key_type insert_at_h1_back			= 15;
 
-			static constexpr key_type op_at_h0_first			= 13;
-			static constexpr key_type act_at_h0_first			= 14;
+			static constexpr key_type op_at_h0_first			= 16;
+			static constexpr key_type act_at_h0_first			= 17;
 
 			// call/detour:
 
-			static constexpr key_type block					= 15;
-			static constexpr key_type linear				= 16;
-			static constexpr key_type user					= 17;
-			static constexpr key_type user1					= 18;
-			static constexpr key_type user2					= 19;
+			static constexpr key_type block					= 18;
+			static constexpr key_type linear				= 19;
+			static constexpr key_type user					= 20;
+			static constexpr key_type user1					= 21;
+			static constexpr key_type user2					= 22;
 
 			// detour:
 
-			static constexpr key_type call					= 20;
-			static constexpr key_type load					= 21;
+			static constexpr key_type call					= 23;
+			static constexpr key_type load					= 24;
 
 			// machinate:
 
-			static constexpr key_type pause					= 22;
-			static constexpr key_type unwind				= 23;
+			static constexpr key_type pause					= 25;
+			static constexpr key_type unwind				= 26;
 
 		// passers:
 
 			// user:
 
-			static constexpr key_type conditional				= 24;
-			static constexpr key_type replace_at_h0_front			= 25;
+			static constexpr key_type conditional				= 27;
+			static constexpr key_type replace_at_h0_front			= 28;
 
 		// functional:
 
 			// arguments:
 
-			static constexpr key_type using_a0				= 26;
-			static constexpr key_type using_a1				= 27;
-			static constexpr key_type using_a2				= 28;
+			static constexpr key_type using_a0				= 29;
+			static constexpr key_type using_a1				= 30;
+			static constexpr key_type using_a2				= 31;
 
 			// actions:
 
-			static constexpr index_type is_null				= 29;
+			static constexpr index_type is_null				= 32;
 
-			static constexpr index_type cons				= 30;
-			static constexpr index_type push				= 31;
-			static constexpr index_type car					= 32;
-			static constexpr index_type cdr					= 33;
+			static constexpr index_type cons				= 33;
+			static constexpr index_type push				= 34;
+			static constexpr index_type car					= 35;
+			static constexpr index_type cdr					= 36;
 	};
 
 	using MT = MachineNote;
@@ -272,8 +277,8 @@ public:
 
 	struct FunctionalInstr : public MachineInstr
 	{
-		static constexpr index_type action				= 4;
-		static constexpr index_type option				= 5;
+		static constexpr index_type action				= 3;
+		static constexpr index_type option				= 4;
 	};
 
 	using FI = FunctionalInstr;
@@ -511,15 +516,15 @@ public:
 
 		// functional:
 
-			static constexpr index_type cons__insert_at_r_front		= 13;
+			static constexpr index_type cons__replace_at_r_pos		= 13;
 			static constexpr index_type cons__replace_at_arg		= 14;
 
-			static constexpr index_type push__insert_at_r_front		= 15;
+			static constexpr index_type push__replace_at_r_pos		= 15;
 			static constexpr index_type push__replace_at_arg		= 16;
 
-			static constexpr index_type car__insert_at_r_front		= 17;
+			static constexpr index_type car__replace_at_r_pos		= 17;
 
-			static constexpr index_type cdr__insert_at_r_front		= 18;
+			static constexpr index_type cdr__replace_at_r_pos		= 18;
 			static constexpr index_type cdr__replace_at_arg			= 19;
 	};
 
