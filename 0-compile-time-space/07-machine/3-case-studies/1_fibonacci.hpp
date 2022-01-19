@@ -100,13 +100,13 @@
 			label // adj1:
 			<
 				apply    < n         , dec1     , n                    >,
-				restart  <                                             >
+				cycle    <                                             >
 			>,
 
 			label // adj2:
 			<
 				apply    < n         , dec2     , n                    >,
-				restart  <                                             >
+				cycle    <                                             >
 			>,
 
 			label // done:
@@ -144,6 +144,13 @@
 
 	template<auto n>
 	constexpr auto naive_fibonacci = f_naive_fibonacci<n>();
+
+/***********************************************************************************************************************/
+
+// convenience functions:
+
+//	template<utype n>
+//	void print_naive_fibonacci() { printf("naive fibonacci(%llu): %llu\n", n, naive_fibonacci<n>); }
 
 /***********************************************************************************************************************/
 

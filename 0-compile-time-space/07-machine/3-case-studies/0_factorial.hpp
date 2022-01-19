@@ -100,7 +100,7 @@
 			label // adj:
 			<
 				apply    < n         , dec       , n           >,
-				restart  <                                     >
+				cycle    <                                     >
 			>,
 
 			label // done:
@@ -265,16 +265,16 @@
 		<
 			label // loop:
 			<
-				test    < is_zero , n            >,
-				branch  < done                   >,
-				apply   < p       , mult , p , n >,
-				apply   < n       , dec      , n >,
-				restart <                        >
+				test   < is_zero , n            >,
+				branch < done                   >,
+				apply  < p       , mult , p , n >,
+				apply  < n       , dec      , n >,
+				cycle  <                        >
 			>,
 
 			label // done:
 			<
-				value   < p                      >
+				value  < p                      >
 			>
 		>;
 	};

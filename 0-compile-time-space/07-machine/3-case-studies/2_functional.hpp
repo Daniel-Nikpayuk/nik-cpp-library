@@ -64,6 +64,11 @@
 
 				index_type front	= 0,
 
+			// lists:
+
+				index_type out_list	= 0,
+				index_type in_list	= 1,
+
 			// labels:
 
 				index_type loop		= 1,
@@ -73,17 +78,17 @@
 		<
 			label // loop:
 			<
-				list_1_is_null     <       >,
-				branch             < done  >,
-				car_list_1         < front >,
-				cdr_assign_list_1  <       >,
-				cons_assign_list_0 < front >,
-				restart            <       >
+				is_null     < in_list            >,
+				branch      < done               >,
+				car         < front    , in_list >,
+				cons_assign < out_list , front   >,
+				cdr_assign  < in_list            >,
+				cycle       <                    >
 			>,
 
 			label // done:
 			<
-				list_0             <       >
+				argument    < out_list           >
 			>
 		>;
 	};
@@ -307,6 +312,7 @@
 
 /***********************************************************************************************************************/
 
+/*
 	template<>
 	struct T_user_program_functional<FN::merge_v0> : public T_user_program
 	{
@@ -314,59 +320,61 @@
 		<
 			// registers:
 
-				index_type front_1	= 0,
-				index_type front_2	= 1,
+				index_type l_front	= 0,
+				index_type r_front	= 1,
 				index_type less_than	= 2,
 
 			// lists:
 
-				index_type l1		= 1,
-				index_type l2		= 2,
+				index_type out_list	= 0,
+				index_type left_list	= 1,
+				index_type right_list	= 2,
 
 			// labels:
 
-				index_type loop_2	= 1,
-				index_type loop_1	= 2,
-				index_type done_1	= 3,
-				index_type done_2	= 4
+				index_type loop_l	= 1,
+				index_type loop_r	= 2,
+				index_type done_l	= 3,
+				index_type done_r	= 4
 		>
 		static constexpr auto lines = controller
 		<
-			label // loop_2:
+			label // loop_l:
 			<
-				list_1_is_null     <                               >,
-				branch             < done_1                        >,
-				list_2_is_null     <                               >,
-				branch             < done_2                        >,
-				car_list_1         < front_1                       >,
-				car_list_2         < front_2                       >,
-				check              < less_than , front_1 , front_2 >,
-				branch             < loop_1                        >,
-				push_assign_list_0 < front_2                       >,
-				cdr_assign_list_2  <                               >,
-				restart            <                               >
+				is_null     < left_list                         >,
+				branch      < done_l                            >,
+				is_null     < right_list                        >,
+				branch      < done_r                            >,
+				car         < l_front    , left_list            >,
+				car         < r_front    , right_list           >,
+				check       < less_than  , l_front    , r_front >,
+				branch      < loop_r                            >,
+				push_assign < out_list   , r_front              >,
+				cdr_assign  < right_list                        >,
+				cycle       <                                   >
 			>,
 
-			label // loop_1:
+			label // loop_r:
 			<
-				push_assign_list_0 < front_1                       >,
-				cdr_assign_list_1  <                               >,
-				restart            <                               >
+				push_assign < out_list   , l_front              >,
+				cdr_assign  < left_list                         >,
+				cycle       <                                   >
 			>,
 
-			label // done_1:
+			label // done_l:
 			<
-				cat_assign_list_0  < l2                            >,
-				list_0             <                               >
+				cat_assign  < out_list   , right_list           >,
+				argument    < out_list                          >
 			>,
 
-			label // done_2:
+			label // done_r:
 			<
-				cat_assign_list_0  < l1                            >,
-				list_0             <                               >
+				cat_assign  < out_list   , left_list            >,
+				argument    < out_list                          >
 			>
 		>;
 	};
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -141,7 +141,7 @@
 				using tn		= T_type_U<n>;							\
 				constexpr auto ins	= tn::instr(c, i, j);						\
 															\
-				if constexpr (ins[BI::policy] == MT::drop)						\
+				if constexpr (ins[BI::policy] == BP::drop)						\
 															\
 					return NIK_MACHINE(d, n, c, i, j, Vs)(H0, H1, Hs...);				\
 				else											\
@@ -169,7 +169,7 @@
 				using tn		= T_type_U<n>;							\
 				constexpr auto ins	= tn::instr(c, i, j);						\
 															\
-				if constexpr (ins[BI::policy] == MT::act_at_h0_first)					\
+				if constexpr (ins[BI::policy] == BP::act_at_h0_first)					\
 				{											\
 					using act = T_type_U<op>;							\
 															\

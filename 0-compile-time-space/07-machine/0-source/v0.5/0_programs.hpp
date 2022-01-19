@@ -83,26 +83,29 @@ public:
 			static constexpr key_type move_r_block					=  6;
 			static constexpr key_type fold_r_block					=  7;
 
-			static constexpr key_type map_a_block					=  8;
-			static constexpr key_type zip_a_block					=  9;
-
 			// linear:
 
-			static constexpr key_type copy_r_pos					= 10;
-			static constexpr key_type move_h0_first					= 11;
-			static constexpr key_type move_h1_all					= 12;
+			static constexpr key_type copy_r_pos					=  8;
+			static constexpr key_type move_h0_first					=  9;
+			static constexpr key_type move_h1_all					= 10;
+
+			// near linear:
+
+			static constexpr key_type rotate					= 11;
+			static constexpr key_type swap						= 12;
+
+			static constexpr key_type a0_is_null					= 13;
+			static constexpr key_type construct_r_a0				= 14;
+			static constexpr key_type select_a0					= 15;
+
+			static constexpr key_type catenate_a0_a1				= 16;
+			static constexpr key_type zip_a0_a1					= 17;
 
 			// user:
 
-			static constexpr key_type go_to						= 13;
-			static constexpr key_type apply_h0_all					= 14;
-			static constexpr key_type compel_h0_all					= 15;
-
-		// functional:
-
-			static constexpr key_type predicate					= 16;
-			static constexpr key_type construct					= 17;
-			static constexpr key_type select					= 18;
+			static constexpr key_type go_to						= 18;
+			static constexpr key_type apply_h0_all					= 19;
+			static constexpr key_type compel_h0_all					= 20;
 	};
 
 	using MN = MachineName;
@@ -133,66 +136,48 @@ public:
 			static constexpr key_type registers				=  5;
 			static constexpr key_type arguments				=  6;
 
-			static constexpr key_type heap_one				=  7;
-
-			static constexpr key_type arg_zero				=  8;
-			static constexpr key_type arg_one				=  9;
-			static constexpr key_type arg_two				= 10;
+			static constexpr key_type h1					=  7;
+			static constexpr key_type a0					=  8;
 
 		// interoperators:
 
-			// call (policy):
-
-			static constexpr key_type drop					= 11;
-			static constexpr key_type insert_at_r_front			= 12;
-			static constexpr key_type insert_at_h0_front			= 13;
-			static constexpr key_type insert_at_h0_back			= 14;
-			static constexpr key_type insert_at_h1_back			= 15;
-
-			static constexpr key_type op_at_h0_first			= 16;
-			static constexpr key_type act_at_h0_first			= 17;
-
 			// call/detour:
 
-			static constexpr key_type block					= 18;
-			static constexpr key_type linear				= 19;
-			static constexpr key_type user					= 20;
-			static constexpr key_type user1					= 21;
-			static constexpr key_type user2					= 22;
+			static constexpr key_type block					=  9;
+			static constexpr key_type linear				= 10;
+			static constexpr key_type user					= 11;
+			static constexpr key_type user1					= 12;
+			static constexpr key_type user2					= 13;
 
 			// detour:
 
-			static constexpr key_type call					= 23;
-			static constexpr key_type load					= 24;
+			static constexpr key_type call					= 14;
+			static constexpr key_type load					= 15;
 
 			// machinate:
 
-			static constexpr key_type pause					= 25;
-			static constexpr key_type unwind				= 26;
+			static constexpr key_type pause					= 16;
+			static constexpr key_type unwind				= 17;
 
 		// passers:
 
+			static constexpr key_type insert_at_r_front			= 18;
+			static constexpr key_type insert_at_h0_front			= 19;
+			static constexpr key_type insert_at_h0_back			= 20;
+
+			// near linear:
+
+			static constexpr key_type replace_at_a0				= 21;
+
+			static constexpr key_type r_and_a0				= 22;
+			static constexpr key_type a0_and_a1				= 23;
+			static constexpr key_type a0_and_a2				= 24;
+			static constexpr key_type a1_and_a2				= 25;
+
 			// user:
 
-			static constexpr key_type conditional				= 27;
-			static constexpr key_type replace_at_h0_front			= 28;
-
-		// functional:
-
-			// arguments:
-
-			static constexpr key_type using_a0				= 29;
-			static constexpr key_type using_a1				= 30;
-			static constexpr key_type using_a2				= 31;
-
-			// actions:
-
-			static constexpr index_type is_null				= 32;
-
-			static constexpr index_type cons				= 33;
-			static constexpr index_type push				= 34;
-			static constexpr index_type car					= 35;
-			static constexpr index_type cdr					= 36;
+			static constexpr key_type conditional				= 26;
+			static constexpr key_type replace_at_h0_front			= 27;
 	};
 
 	using MT = MachineNote;
@@ -220,6 +205,82 @@ public:
 
 	using MI								= MachineInstr;
 	using instr_type							= typename MI::type;
+
+		// pack length is stored as the initial value.
+
+	template<index_type... Vs>
+	static constexpr instr_type instruction = array<index_type, sizeof...(Vs), Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// labels:
+
+/***********************************************************************************************************************/
+
+	struct MachineLabel
+	{
+		using type							= instr_type const*;
+
+		static constexpr index_type size				= 0;
+
+		static constexpr index_type length (type l)			{ return l[size][MI::size]; }
+		static constexpr instr_type last   (type l)			{ return l[length(l)]; }
+
+		template<auto... I0s, auto... I1s, auto... I2s, auto... I3s, auto... I4s>
+		static constexpr type safe_label
+		(
+			void(*)(auto_pack<I0s...>*),
+			void(*)(auto_pack<I1s...>*),
+			void(*)(auto_pack<I2s...>*),
+			void(*)(auto_pack<I3s...>*),
+			void(*)(auto_pack<I4s...>*)
+
+		) { return label<I0s..., I1s..., I2s..., I3s..., I4s...>; }
+	};
+
+	using ML								= MachineLabel;
+	using label_type							= typename ML::type;
+
+		// pack length is stored as the initial value.
+
+	template<instr_type... Vs>
+	static constexpr label_type label = array<instr_type, array<index_type, sizeof...(Vs)>, Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// controllers:
+
+/***********************************************************************************************************************/
+
+	struct MachineContr
+	{
+		using type							= label_type const*;
+
+		static constexpr index_type size				= 0;
+
+		static constexpr index_type length (type c)			{ return c[size][ML::size][MI::size]; }
+		static constexpr label_type last   (type c)			{ return c[length(c)]; }
+	};
+
+	using MC								= MachineContr;
+	using contr_type							= typename MC::type;
+
+		// pack length is stored as the initial value.
+
+	template<label_type... Vs>
+	static constexpr contr_type controller = array
+		<label_type, array<instr_type, array<index_type, sizeof...(Vs)>>, Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// call:
+
+/***********************************************************************************************************************/
+
+// instructions:
 
 	struct CallInstr : public MachineInstr
 	{
@@ -261,78 +322,23 @@ public:
 
 	using CI = CallInstr;
 
-		// pack length is stored as the initial value.
-
-	template<index_type... Vs>
-	static constexpr instr_type instruction = array<index_type, sizeof...(Vs), Vs...>;
-
-/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// functional:
+// policies:
 
-/***********************************************************************************************************************/
-
-// instructions:
-
-	struct FunctionalInstr : public MachineInstr
+	struct CallPolicy
 	{
-		static constexpr index_type action				= 3;
-		static constexpr index_type option				= 4;
+		static constexpr key_type id					=  0;
+		static constexpr key_type identity				= id;	// convenience for
+											// default params.
+
+		static constexpr key_type load					=  1;
+		static constexpr key_type insert_at_r_front			=  2;
+		static constexpr key_type insert_at_h0_front			=  3;
+		static constexpr key_type insert_at_h0_back			=  4;
 	};
 
-	using FI = FunctionalInstr;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// labels:
-
-/***********************************************************************************************************************/
-
-	struct MachineLabel
-	{
-		using type							= instr_type const*;
-
-		static constexpr index_type size				= 0;
-
-		static constexpr index_type length (type l)			{ return l[size][MI::size]; }
-		static constexpr instr_type last   (type l)			{ return l[length(l)]; }
-	};
-
-	using ML								= MachineLabel;
-	using label_type							= typename ML::type;
-
-		// pack length is stored as the initial value.
-
-	template<instr_type... Vs>
-	static constexpr label_type label = array<instr_type, array<index_type, sizeof...(Vs)>, Vs...>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// controllers:
-
-/***********************************************************************************************************************/
-
-	struct MachineContr
-	{
-		using type							= label_type const*;
-
-		static constexpr index_type size				= 0;
-
-		static constexpr index_type length (type c)			{ return c[size][ML::size][MI::size]; }
-		static constexpr label_type last   (type c)			{ return c[length(c)]; }
-	};
-
-	using MC								= MachineContr;
-	using contr_type							= typename MC::type;
-
-		// pack length is stored as the initial value.
-
-	template<label_type... Vs>
-	static constexpr contr_type controller = array
-		<label_type, array<instr_type, array<index_type, sizeof...(Vs)>>, Vs...>;
+	using CP = CallPolicy;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -354,12 +360,12 @@ public:
 
 	struct BlockName
 	{
-		static constexpr key_type id						=  0;
-		static constexpr key_type identity					= id; // convenience for
-											      // default params.
-		static constexpr key_type unpack_i_segment				=  1;
-		static constexpr key_type move_r_segment				=  2;
-		static constexpr key_type fold_r_segment				=  3;
+		static constexpr key_type id					=  0;
+		static constexpr key_type identity				= id; // convenience for
+										      // default params.
+		static constexpr key_type unpack_i_segment			=  1;
+		static constexpr key_type move_r_segment			=  2;
+		static constexpr key_type fold_r_segment			=  3;
 	};
 
 	using BN = BlockName;
@@ -392,6 +398,21 @@ public:
 
 /***********************************************************************************************************************/
 
+// policies:
+
+	struct BlockPolicy : public CallPolicy
+	{
+		static constexpr key_type drop					=  4;
+		static constexpr key_type insert_at_h1_back			=  5;
+
+		static constexpr key_type op_at_h0_first			=  6;
+		static constexpr key_type act_at_h0_first			=  7;
+	};
+
+	using BP = BlockPolicy;
+
+/***********************************************************************************************************************/
+
 	template<key_type...>
 	struct block_program
 	{
@@ -408,26 +429,14 @@ public:
 
 			static constexpr index_type max_note(index_type n)
 			{
-				return	(n >= _2_9) ? 9 :
-					(n >= _2_8) ? 8 :
-					(n >= _2_7) ? 7 :
-					(n >= _2_6) ? 6 :
-					(n >= _2_5) ? 5 :
-					(n >= _2_4) ? 4 :
-					(n >= _2_3) ? 3 :
+				return	(n >= _2_3) ? 3 :
 					(n >= _2_2) ? 2 :
 					(n >= _2_1) ? 1 : 0 ;
 			}
 
 			static constexpr index_type max_index2(index_type n)
 			{
-				return	(n >= _2_9) ? _2_9 :
-					(n >= _2_8) ? _2_8 :
-					(n >= _2_7) ? _2_7 :
-					(n >= _2_6) ? _2_6 :
-					(n >= _2_5) ? _2_5 :
-					(n >= _2_4) ? _2_4 :
-					(n >= _2_3) ? _2_3 :
+				return	(n >= _2_3) ? _2_3 :
 					(n >= _2_2) ? _2_2 :
 					(n >= _2_1) ? _2_1 :
 					(n >= _2_0) ? _2_0 : 0 ;
@@ -476,6 +485,42 @@ public:
 	static constexpr auto U_block_program		= U_type_T<block_program<>>;
 
 /***********************************************************************************************************************/
+
+	template<key_type...>
+	struct large_block_program : public block_program<>
+	{
+		static constexpr index_type max_note(index_type n)
+		{
+			return	(n >= _2_9) ? 9 :
+				(n >= _2_8) ? 8 :
+				(n >= _2_7) ? 7 :
+				(n >= _2_6) ? 6 :
+				(n >= _2_5) ? 5 :
+				(n >= _2_4) ? 4 :
+				(n >= _2_3) ? 3 :
+				(n >= _2_2) ? 2 :
+				(n >= _2_1) ? 1 : 0 ;
+		}
+
+		static constexpr index_type max_index2(index_type n)
+		{
+			return	(n >= _2_9) ? _2_9 :
+				(n >= _2_8) ? _2_8 :
+				(n >= _2_7) ? _2_7 :
+				(n >= _2_6) ? _2_6 :
+				(n >= _2_5) ? _2_5 :
+				(n >= _2_4) ? _2_4 :
+				(n >= _2_3) ? _2_3 :
+				(n >= _2_2) ? _2_2 :
+				(n >= _2_1) ? _2_1 :
+				(n >= _2_0) ? _2_0 : 0 ;
+		}
+	};
+
+	using T_large_block_program			= large_block_program<>;
+	static constexpr auto U_large_block_program	= U_type_T<large_block_program<>>;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // (linear) programs:
@@ -492,40 +537,41 @@ public:
 			static constexpr key_type identity				= id; // convenience for
 											      // default params.
 
+		// near linear:
+
+			static constexpr index_type a_pos				=  1;
+
+			static constexpr index_type a_pos_is_null__insert_at_h0_front	=  2;
+			static constexpr index_type cons_r_pos_a_pos__replace_at_a_pos	=  3;
+			static constexpr index_type push_r_pos_a_pos__replace_at_a_pos	=  4;
+			static constexpr index_type car_a_pos__replace_at_r_pos		=  5;
+			static constexpr index_type cdr_a_pos__replace_at_a_pos		=  6;
+
+			static constexpr index_type map_a_pos__replace_at_a_pos		=  7;
+			static constexpr index_type cat_a_pos_a_pos__replace_at_a_pos	=  8;
+			static constexpr index_type zip_a_pos_a_pos__replace_at_a_pos	=  9;
+
 		// mutators:
 
-			static constexpr key_type erase					=  1;
-			static constexpr key_type insert				=  2;
-			static constexpr key_type replace				=  3;
+			static constexpr key_type erase					= 10;
+			static constexpr key_type insert				= 11;
+			static constexpr key_type replace				= 12;
 
-		// interoperators:
+		// user:
 
-			static constexpr key_type make					=  4;
-			static constexpr key_type run					=  5;
+			static constexpr key_type make					= 13;
+			static constexpr key_type run					= 14;
 
-			static constexpr key_type instr_goto				=  6;
-			static constexpr key_type regstr_goto				=  7;
+			static constexpr key_type instr_goto				= 15;
+			static constexpr key_type regstr_goto				= 16;
 
-			static constexpr key_type instr_assign				=  8;
+			static constexpr key_type instr_assign				= 17;
 
-			static constexpr key_type test					=  9;
-			static constexpr key_type check					= 10;
+			static constexpr key_type test					= 18;
+			static constexpr key_type check					= 19;
 
-			static constexpr key_type apply					= 11;
-			static constexpr key_type compel				= 12;
-
-		// functional:
-
-			static constexpr index_type cons__replace_at_r_pos		= 13;
-			static constexpr index_type cons__replace_at_arg		= 14;
-
-			static constexpr index_type push__replace_at_r_pos		= 15;
-			static constexpr index_type push__replace_at_arg		= 16;
-
-			static constexpr index_type car__replace_at_r_pos		= 17;
-
-			static constexpr index_type cdr__replace_at_r_pos		= 18;
-			static constexpr index_type cdr__replace_at_arg			= 19;
+			static constexpr key_type apply					= 20;
+			static constexpr key_type compel				= 21;
 	};
 
 	using LN = LinearName;
@@ -601,6 +647,63 @@ public:
 
 	using T_linear_program				= linear_program<>;
 	static constexpr auto U_linear_program		= U_type_T<linear_program<>>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// (near linear) programs:
+
+/***********************************************************************************************************************/
+
+// instructions:
+
+	struct FunctionalInstr : public MachineInstr
+	{
+		static constexpr index_type action				= 3;
+		static constexpr index_type policy				= 4;
+	};
+
+	using FI = FunctionalInstr;
+
+/***********************************************************************************************************************/
+
+// actions:
+
+	struct FunctionalAction
+	{
+		static constexpr key_type id					=  0;
+		static constexpr key_type identity				= id; // convenience for
+										      // default params.
+
+		static constexpr index_type cons				=  2;
+		static constexpr index_type push				=  3;
+		static constexpr index_type car					=  4;
+		static constexpr index_type cdr					=  5;
+
+		static constexpr index_type op_map				=  6;
+		static constexpr index_type act_map				=  7;
+
+		static constexpr index_type op_zip				=  8;
+		static constexpr index_type act_zip				=  9;
+	};
+
+	using FA = FunctionalAction;
+
+/***********************************************************************************************************************/
+
+// policies:
+
+	struct FunctionalPolicy
+	{
+		static constexpr key_type id					=  0;
+		static constexpr key_type identity				= id; // convenience for
+										      // default params.
+
+		static constexpr key_type insert_at_r_front			=  1;
+		static constexpr key_type replace_at_a0				=  2;
+	};
+
+	using FP = FunctionalPolicy;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
