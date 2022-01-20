@@ -129,8 +129,11 @@
 
 	using utype = unsigned long long;
 
-	template<auto list>
-	void print_reverse() { printf("reverse: %d\n", reverse_v0<list>); }
+	struct LT { template<auto V1, auto V2> static constexpr bool result = (V1 < V2); };
+	constexpr auto U_LT = U_type_T<LT>;
+
+	template<auto list1, auto list2, auto less_than>
+	void print_merge_v0() { printf("merge: %d\n", merge_v0<list1, list2, less_than>); }
 
 	constexpr auto l0 = U_pack_Vs<0, 1, 2, 3, 4, 5>;
 
@@ -138,7 +141,7 @@
 
 	int main(int argc, char *argv[])
 	{
-		print_reverse<l0>();
+		print_merge_v0<l0, l0, U_LT>();
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

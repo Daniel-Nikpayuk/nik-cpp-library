@@ -365,7 +365,9 @@ public:
 										      // default params.
 		static constexpr key_type unpack_i_segment			=  1;
 		static constexpr key_type move_r_segment			=  2;
-		static constexpr key_type fold_r_segment			=  3;
+
+		static constexpr key_type move_r_large_segment			=  3;
+		static constexpr key_type fold_r_large_segment			=  4;
 	};
 
 	using BN = BlockName;

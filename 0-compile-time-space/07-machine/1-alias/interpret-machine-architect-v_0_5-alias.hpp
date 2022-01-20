@@ -150,14 +150,20 @@
 	template<auto Arg>
 	NIK_POLICY auto nik_name(NIK_PREFIX, cdr_assign)	= NIK_MODULE::template cdr_assign<Arg>;
 
-//	template<auto Arg>
-//	NIK_POLICY auto nik_name(NIK_PREFIX, map_assign)	= NIK_MODULE::template map_assign<Arg>;
+	template<auto Arg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, op_map_assign)	= NIK_MODULE::template op_map_assign<Arg>;
 
-//	template<auto Pos, auto Arg>
-//	NIK_POLICY auto nik_name(NIK_PREFIX, cat_assign)	= NIK_MODULE::template cat_assign<Pos, Arg>;
+	template<auto Arg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, act_map_assign)	= NIK_MODULE::template act_map_assign<Arg>;
 
-//	template<auto Pos, auto Arg>
-//	NIK_POLICY auto nik_name(NIK_PREFIX, zip_assign)	= NIK_MODULE::template zip_assign<Pos, Arg>;
+	template<auto Pos, auto Arg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, cat_assign)	= NIK_MODULE::template cat_assign<Pos, Arg>;
+
+	template<auto Pos, auto Arg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, op_zip_assign)	= NIK_MODULE::template op_zip_assign<Pos, Arg>;
+
+	template<auto Pos, auto Arg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, act_zip_assign)	= NIK_MODULE::template act_zip_assign<Pos, Arg>;
 
 /***********************************************************************************************************************/
 

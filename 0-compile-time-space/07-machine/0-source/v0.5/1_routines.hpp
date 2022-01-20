@@ -304,31 +304,15 @@ public:
 
 	// interface:
 
-		template<key_type Policy, index_type Pos, key_type Coname, key_type Conote>
+		template<key_type Policy, index_type Pos, key_type Conote>
 		static constexpr instr_type drop_r_segment = call_block_program
 		<
 			BN::move_r_segment,
 			Policy,
 			Pos,
-			Coname, Conote,
+			MN::value, Conote,
 			BP::drop
 		>;
-
-		//	template<key_type Policy, index_type Pos>
-		//	static constexpr instr_type left = drop_r_segment
-		//	<
-		//		Policy,
-		//		Pos,
-		//		MN::value, MT::heap_one
-		//	>;
-
-		//	template<key_type Policy, index_type Pos>
-		//	static constexpr instr_type right = drop_r_segment
-		//	<
-		//		Policy,
-		//		Pos,
-		//		MN::value, MT::registers
-		//	>;
 
 		template<index_type Pos>
 		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
@@ -343,12 +327,7 @@ public:
 	// syntactic sugar:
 
 		template<index_type Pos>
-		static constexpr instr_type value = drop_r_segment
-		<
-			CP::id, // return the value
-			Pos,
-			MN::value, MT::first
-		>;
+		static constexpr instr_type value = drop_r_segment<CP::id, Pos, MT::first>;
 
 			template<key_type Note, index_type Pos>
 			static constexpr auto dispatch_copy_r_pos()
@@ -360,22 +339,70 @@ public:
 								 CP::insert_at_h0_front          :
 								 CP::insert_at_h0_back           ;
 
-					return drop_r_segment<policy, Pos, MN::value, MT::first>;
+					return drop_r_segment<policy, Pos, MT::first>;
 				}
 			}
 
 		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_front = dispatch_copy_r_pos<MT::insert_at_h0_front, Pos>();
+		static constexpr instr_type copy_r_pos__insert_at_h0_front = dispatch_copy_r_pos
+		<
+			MT::insert_at_h0_front, Pos
+		>();
 
 		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_back = dispatch_copy_r_pos<MT::insert_at_h0_back, Pos>();
+		static constexpr instr_type copy_r_pos__insert_at_h0_back = dispatch_copy_r_pos
+		<
+			MT::insert_at_h0_back, Pos
+		>();
 
 /***********************************************************************************************************************/
 
-// fold register segment:
+// move register large segment:
 
 	template<key_type... filler>
-	struct block_program<BN::fold_r_segment, filler...> : public block_program<filler...>
+	struct block_program<BN::move_r_large_segment, filler...> : public large_block_program<filler...>
+	{
+		template<key_type Coname, key_type Conote, key_type BPolicy>
+		static constexpr instr_type lines = instruction
+		<
+			MN::move_r_block, Coname, Conote, BPolicy
+		>;
+	};
+
+	// interface:
+
+		template<index_type Pos, key_type Conote>
+		static constexpr instr_type drop_r_large_segment = call_block_program
+		<
+			BN::move_r_large_segment,
+			CP::id, // return the value
+			Pos,
+			MN::value, Conote,
+			BP::drop
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type move_r_large_segment__insert_at_h1_back = call_block_program
+		<
+			BN::move_r_large_segment,
+			CP::load,
+			Pos,
+			MN::machinate, MT::unwind,
+			BP::insert_at_h1_back
+		>;
+
+	// syntactic sugar:
+
+		template<index_type Pos> static constexpr instr_type at = drop_r_large_segment<Pos, MT::first>;
+		template<index_type Pos> static constexpr instr_type left = drop_r_large_segment<Pos, MT::h1>;
+		template<index_type Pos> static constexpr instr_type right = drop_r_large_segment<Pos, MT::registers>;
+
+/***********************************************************************************************************************/
+
+// fold register large segment:
+
+	template<key_type... filler>
+	struct block_program<BN::fold_r_large_segment, filler...> : public large_block_program<filler...>
 	{
 		template<key_type Coname, key_type Conote, key_type BPolicy>
 		static constexpr instr_type lines = instruction
@@ -384,26 +411,32 @@ public:
 		>;
 	};
 
+	// interface:
+
+		// The qualifier is ignored in the name as it is assumed "large".
+
+		template<index_type Pos, key_type BPolicy>
+		static constexpr instr_type fold_r_segment = call_block_program
+		<
+			BN::fold_r_large_segment,
+			CP::id, // return the value
+			Pos,
+			MN::value, MT::first,
+			BPolicy
+		>;
+
 	// syntactic sugar:
 
 		template<index_type Pos>
-		static constexpr instr_type fold_r_segment__op_at_h0_first = call_block_program
+		static constexpr instr_type fold_r_segment__op_at_h0_first = fold_r_segment
 		<
-			BN::fold_r_segment,
-			CP::id, // return the value
-			Pos,
-			MN::value, MT::first,
-			BP::op_at_h0_first
+			Pos, BP::op_at_h0_first
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type fold_r_segment__act_at_h0_first = call_block_program
+		static constexpr instr_type fold_r_segment__act_at_h0_first = fold_r_segment
 		<
-			BN::fold_r_segment,
-			CP::id, // return the value
-			Pos,
-			MN::value, MT::first,
-			BP::act_at_h0_first
+			Pos, BP::act_at_h0_first
 		>;
 
 /***********************************************************************************************************************/
@@ -413,41 +446,104 @@ public:
 
 /***********************************************************************************************************************/
 
-// swap argument zero and:
+// swap (one):
 
 		template<index_type Arg>
-		static constexpr auto dispatch_swap_a0_and()
+		static constexpr auto dispatch_swap1()
 		{
 			if constexpr (Arg == 1) return swap__a0_and_a1<>;
 			else                    return swap__a0_and_a2<>;
 		}
 
 	template<index_type Arg>
-	static constexpr auto swap_a0_and = dispatch_swap_a0_and<Arg>();
+	static constexpr auto swap1 = dispatch_swap1<Arg>();
 
 		template<index_type Arg>
-		static constexpr auto U_dispatch_swap_a0_and()
+		static constexpr auto U_dispatch_swap1()
 		{
 			if constexpr (Arg == 0) return U_null_Vs;
-			else                    return U_opt_pack_Vs<dispatch_swap_a0_and<Arg>()>;
+			else                    return U_opt_pack_Vs<dispatch_swap1<Arg>()>;
 		}
 
 	template<index_type Arg>
-	static constexpr auto U_swap_a0_and = U_dispatch_swap_a0_and<Arg>();
+	static constexpr auto U_swap1 = U_dispatch_swap1<Arg>();
 
 /***********************************************************************************************************************/
 
-// dispatch linear:
+// swap (two):
+
+		template<index_type Pos, index_type Arg, bool is_f>
+		static constexpr auto U_dispatch_swap2()
+		{
+			if constexpr (Pos == 0)
+			{
+				if constexpr (Arg == 1)		return U_null_Vs; // 2:
+				else				return U_opt_pack_Vs<swap__a1_and_a2<>>;
+			}
+			else if constexpr (Pos == 1)
+			{
+				if constexpr (Arg == 0)		return U_opt_pack_Vs<swap__a0_and_a1<>>;
+				else if constexpr (is_f)	return U_opt_pack_Vs // 2, f:
+								<
+									swap__a0_and_a1<>,
+									swap__a1_and_a2<>
+								>;
+				else				return U_opt_pack_Vs // 2, b:
+								<
+									swap__a1_and_a2<>,
+									swap__a0_and_a1<>
+								>;
+			}
+			else // 2:
+			{
+				if constexpr (Arg == 1)		return U_opt_pack_Vs<swap__a0_and_a2<>>;
+				else if constexpr (is_f)	return U_opt_pack_Vs // 0, f:
+								<
+									swap__a0_and_a2<>,
+									swap__a1_and_a2<>
+								>;
+				else				return U_opt_pack_Vs // 0, b:
+								<
+									swap__a1_and_a2<>,
+									swap__a0_and_a2<>
+								>;
+			}
+		}
+
+	template<index_type Pos, index_type Arg>
+	static constexpr auto U_fswap2 = U_dispatch_swap2<Pos, Arg, true>();
+
+	template<index_type Pos, index_type Arg>
+	static constexpr auto U_bswap2 = U_dispatch_swap2<Pos, Arg, false>();
+
+/***********************************************************************************************************************/
+
+// dispatch linear (one):
 
 	template
 	<
 		index_type Arg, auto action,
 		key_type Name, key_type Policy, key_type... Params
 	>
-	static constexpr auto dispatch_linear()
+	static constexpr auto dispatch_linear1()
 	{
 		if constexpr (Arg == 0)	return action;
 		else			return call_linear_program<Name, Policy, Arg, Params...>;
+	}
+
+/***********************************************************************************************************************/
+
+// dispatch linear (two):
+
+	template
+	<
+		index_type Pos, index_type Arg, auto action,
+		key_type Name, key_type Policy, key_type... Params
+	>
+	static constexpr auto dispatch_linear2()
+	{
+		if constexpr (Pos == 0 && Arg == 1)	return action;
+		else					return call_linear_program<Name, Policy, Pos, Arg, Params...>;
 	}
 
 /***********************************************************************************************************************/
@@ -460,9 +556,9 @@ public:
 		return ML::safe_label
 		(
 			U_opt_pack_Vs < copy_r_pos__insert_at_h0_back<Obj> >,
-			U_swap_a0_and < Arg                                >,
+			U_swap1       < Arg                                >,
 			U_opt_pack_Vs < action_r_a0__replace_at_a0         >,
-			U_swap_a0_and < Arg                                >,
+			U_swap1       < Arg                                >,
 			U_opt_pack_Vs < unwind<>                           >
 		);
 	}
@@ -477,7 +573,7 @@ public:
 		template<index_type Arg>
 		static constexpr label_type lines = label
 		<
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			argument_zero<>
 		>;
 	};
@@ -485,7 +581,7 @@ public:
 	// interface:
 
 		template<index_type Arg>
-		static constexpr instr_type argument = dispatch_linear
+		static constexpr instr_type argument = dispatch_linear1
 		<
 			Arg,
 			argument_zero<>,
@@ -503,9 +599,9 @@ public:
 		template<index_type Arg>
 		static constexpr label_type lines = label
 		<
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			a0_is_null__insert_at_h0_front<>,
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			unwind<>
 		>;
 	};
@@ -513,7 +609,7 @@ public:
 	// interface:
 
 		template<index_type Arg>
-		static constexpr instr_type is_null = dispatch_linear
+		static constexpr instr_type is_null = dispatch_linear1
 		<
 			Arg,
 			a0_is_null__insert_at_h0_front<>,
@@ -586,9 +682,9 @@ public:
 				move_r_segment__insert_at_h1_back<Pos>,
 				drop_r_first<>
 			>,
-			U_swap_a0_and < Arg                             >,
+			U_swap1       < Arg                             >,
 			U_opt_pack_Vs < car_a0__insert_at_r_front<>     >,
-			U_swap_a0_and < Arg                             >,
+			U_swap1       < Arg                             >,
 			U_opt_pack_Vs
 			<
 				move_h1_all__insert_at_r_front<>,
@@ -617,9 +713,9 @@ public:
 		template<index_type Arg>
 		static constexpr label_type lines = label
 		<
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			cdr_a0__replace_at_a0<>,
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			unwind<>
 		>;
 	};
@@ -627,7 +723,7 @@ public:
 	// interface:
 
 		template<index_type Arg>
-		static constexpr instr_type cdr_assign = dispatch_linear
+		static constexpr instr_type cdr_assign = dispatch_linear1
 		<
 			Arg,
 			cdr_a0__replace_at_a0<>,
@@ -645,9 +741,9 @@ public:
 		template<index_type Arg, key_type Action>
 		static constexpr label_type lines = label
 		<
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			map_a0__replace_at_a0<Action>,
-			swap_a0_and<Arg>,
+			swap1<Arg>,
 			unwind<>
 		>;
 	};
@@ -655,7 +751,7 @@ public:
 	// interface:
 
 		template<index_type Arg, key_type Action>
-		static constexpr instr_type map_assign = dispatch_linear
+		static constexpr instr_type map_assign = dispatch_linear1
 		<
 			Arg,
 			map_a0__replace_at_a0<Action>,
@@ -671,93 +767,70 @@ public:
 
 /***********************************************************************************************************************/
 
-// catenate argument zero argument two, replace at argument zero:
+// catenate argument position argument position, replace at argument position:
 
-/*
 	template<key_type... filler>
 	struct linear_program<LN::cat_a_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
 	{
 		template<index_type Pos, index_type Arg>
-		static constexpr label_type lines = label
-		<
-			rotate_forward<Pos>,
-			swap_forward<Arg>,
-			cat_a0_a1__replace_at_a0<>,
-			swap__backward<Arg>,
-			rotate_backward<Pos>,
-			unwind<>
-		>;
+		static constexpr label_type lines = ML::safe_label
+		(
+		 	U_null_Vs,
+			U_fswap2      < Pos                        , Arg >,
+			U_opt_pack_Vs < cat_a0_a1__replace_at_a0<>       >,
+			U_bswap2      < Pos                        , Arg >,
+			U_opt_pack_Vs < unwind<>                         >
+		);
 	};
 
 	// interface:
 
-			template<index_type Pos, index_type Arg>
-			static constexpr auto dispatch_cat_assign()
-			{
-				if constexpr (Arg == 1)	return cat_a0_a1__replace_at_a0<>;
-				else			return call_linear_program
-							<
-								LN::cat_a0_a2__replace_at_a0,
-								CP::load
-							>;
-			}
-
 		template<index_type Pos, index_type Arg>
-		static constexpr instr_type cat_assign = dispatch_cat_assign<Pos, Arg>();
-*/
+		static constexpr instr_type cat_assign = dispatch_linear2
+		<
+			Pos, Arg,
+			cat_a0_a1__replace_at_a0<>,
+			LN::cat_a_pos_a_pos__replace_at_a_pos,
+			CP::load
+		>();
 
 /***********************************************************************************************************************/
 
-// zip argument zero argument two, replace at argument zero:
+// zip argument position argument position, replace at argument position:
 
-/*
 	template<key_type... filler>
-	struct linear_program<LN::zip_a0_a2__replace_at_a0, filler...> : public T_linear_program
+	struct linear_program<LN::zip_a_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
 	{
-		template<key_type Action>
-		static constexpr label_type lines = label
-		<
-			swap__a1_and_a2<>,
-			zip_a0_a1__replace_at_a0<Action>,
-			swap__a1_and_a2<>,
-			unwind<>
-		>;
+		template<index_type Pos, index_type Arg, key_type Action>
+		static constexpr label_type lines = ML::safe_label
+		(
+		 	U_null_Vs,
+			U_fswap2      < Pos                              , Arg >,
+			U_opt_pack_Vs < zip_a0_a1__replace_at_a0<Action>       >,
+			U_bswap2      < Pos                              , Arg >,
+			U_opt_pack_Vs < unwind<>                               >
+		);
 	};
 
 	// interface:
 
-			template<index_type Pos, index_type Arg, key_type Action>
-			static constexpr auto dispatch_zip_assign()
-			{
-				if constexpr (Pos == 0)
-				{
-					if constexpr (Arg == 1)
+		template<index_type Pos, index_type Arg, key_type Action>
+		static constexpr instr_type zip_assign = dispatch_linear2
+		<
+			Pos, Arg,
+			zip_a0_a1__replace_at_a0<Action>,
+			LN::zip_a_pos_a_pos__replace_at_a_pos,
+			CP::load,
+			Action
+		>();
 
-						return zip_a0_a1__replace_at_a0<Action>;
-
-					else
-						return call_linear_program
-						<
-							LN::zip_a_pos_a_pos__replace_at_a_pos,
-							CP::load,
-							Pos, Arg, Action
-						>;
-				}
-				else
-					return call_linear_program
-					<
-						LN::zip_a_pos_a_pos__replace_at_a_pos,
-						CP::load,
-						Pos, Arg, Action
-					>;
-			}
+	// syntactic sugar:
 
 		template<index_type Pos, index_type Arg>
-		static constexpr instr_type op_zip_assign	= dispatch_zip_assign<Pos, Arg, FA::op_zip>();
+		static constexpr instr_type op_zip_assign	= zip_assign<Pos, Arg, FA::op_zip>;
 
 		template<index_type Pos, index_type Arg>
-		static constexpr instr_type act_zip_assign	= dispatch_zip_assign<Pos, Arg, FA::act_zip>();
-*/
+		static constexpr instr_type act_zip_assign	= zip_assign<Pos, Arg, FA::act_zip>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -40,7 +40,7 @@
 
 		static constexpr key_type left_v0	= 2;
 		static constexpr key_type right_v0	= 3;
-		static constexpr key_type merge_v0	= 0;
+		static constexpr key_type merge_v0	= 4;
 		static constexpr key_type sort_v0	= 5;
 	};
 
@@ -123,6 +123,13 @@
 //			real	0m1.425s                real	0m0.003s
 //			user	0m1.273s                user	0m0.001s
 //			sys	0m0.117s                sys	0m0.002s
+
+/***********************************************************************************************************************/
+
+// convenience functions:
+
+//	template<auto list>
+//	void print_reverse_v0() { printf("reverse: %d\n", reverse_v0<list>); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -298,12 +305,11 @@
 //			sys	0m0.350s        	sys	0m0.001s
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
 // convenience functions:
 
 //	template<auto list>
-//	void print_reverse() { printf("reverse(%d): %d\n", list, reverse<list>); }
+//	void print_reverse_v1() { printf("reverse: %d\n", reverse_v1<list>); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -312,7 +318,6 @@
 
 /***********************************************************************************************************************/
 
-/*
 	template<>
 	struct T_user_program_functional<FN::merge_v0> : public T_user_program
 	{
@@ -374,7 +379,31 @@
 			>
 		>;
 	};
-*/
+
+/***********************************************************************************************************************/
+
+	template<auto list1, auto list2, auto less_than>
+	static constexpr auto f_merge_v0()
+	{
+		constexpr auto l_front = _zero;
+		constexpr auto r_front = _zero;
+
+		return machine_module::template start
+		<
+			T_user_program_functional<FN::merge_v0>, l_front, r_front, less_than
+
+		>(U_null_Vs, U_null_Vs, list1, list2);
+	}
+
+	template<auto list1, auto list2, auto less_than>
+	constexpr auto merge_v0 = f_merge_v0<list1, list2, less_than>();
+
+/***********************************************************************************************************************/
+
+// convenience functions:
+
+//	template<auto list1, auto list2, auto less_than>
+//	void print_merge_v0() { printf("merge: %d\n", merge_v0<list1, list2, less_than>); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
