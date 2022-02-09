@@ -42,7 +42,7 @@
 
 //	#include"0-compile-time-space/07-machine/3-case-studies/0_factorial.hpp"
 //	#include"0-compile-time-space/07-machine/3-case-studies/1_fibonacci.hpp"
-	#include"0-compile-time-space/07-machine/3-case-studies/2_functional.hpp"
+//	#include"0-compile-time-space/07-machine/3-case-studies/2_functional.hpp"
 //	#include"0-compile-time-space/07-machine/4-testing/0_unit_tests.hpp"
 //	#include"0-compile-time-space/09-list/2-testing/unit_lists.hpp"
 
@@ -127,6 +127,7 @@
 
 /***********************************************************************************************************************/
 
+/*
 	using utype = unsigned long long;
 
 	struct LT { template<auto V1, auto V2> static constexpr bool result = (V1 < V2); };
@@ -136,12 +137,17 @@
 	void print_merge_v0() { printf("merge: %d\n", merge_v0<list1, list2, less_than>); }
 
 	constexpr auto l0 = U_pack_Vs<0, 1, 2, 3, 4, 5>;
+*/
+
+//	static constexpr unsigned arr[] = { 0, 1, 2, 3, 4 };
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		print_merge_v0<l0, l0, U_LT>();
+	//	printf("%d\n", machine_module::template test_val<arr>);
+
+	//	print_merge_v0<l0, l0, U_LT>();
 
 	//	printf("%d\n", list_module::template U_catenate_TxTxTs<auto_pack<0, 1>, auto_pack<2, 3>, auto_pack<4, 5>>);
 

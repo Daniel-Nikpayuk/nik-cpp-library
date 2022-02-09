@@ -407,5 +407,103 @@
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// sort (version 0):
+
+/***********************************************************************************************************************/
+
+	template<>
+	struct T_user_program_functional<FN::sort_v0> : public T_user_program
+	{
+		template
+		<
+			// registers:
+
+				index_type l_front	= 0,
+				index_type r_front	= 1,
+				index_type less_than	= 2,
+
+			// lists:
+
+				index_type out_list	= 0,
+				index_type left_list	= 1,
+				index_type right_list	= 2,
+
+			// labels:
+
+				index_type loop_l	= 1,
+				index_type loop_r	= 2,
+				index_type done_l	= 3,
+				index_type done_r	= 4
+		>
+		static constexpr auto lines = controller
+		<
+			label // loop_l:
+			<
+				is_null     < left_list                         >,
+				branch      < done_l                            >,
+				is_null     < right_list                        >,
+				branch      < done_r                            >,
+				car         < l_front    , left_list            >,
+				car         < r_front    , right_list           >,
+				check       < less_than  , l_front    , r_front >,
+				branch      < loop_r                            >,
+				push_assign < out_list   , r_front              >,
+				cdr_assign  < right_list                        >,
+				cycle       <                                   >
+
+				call        < res       , fact_prog , adj  , res
+				            , n         , is_zero   , dec  , mult
+				            , fact_prog , loop      , adj  , done >,
+			>,
+
+			label // loop_r:
+			<
+				push_assign < out_list   , l_front              >,
+				cdr_assign  < left_list                         >,
+				cycle       <                                   >
+			>,
+
+			label // done_l:
+			<
+				cat_assign  < out_list   , right_list           >,
+				argument    < out_list                          >
+			>,
+
+			label // done_r:
+			<
+				cat_assign  < out_list   , left_list            >,
+				argument    < out_list                          >
+			>
+		>;
+	};
+
+/***********************************************************************************************************************/
+
+	template<auto list1, auto list2, auto less_than>
+	static constexpr auto f_sort_v0()
+	{
+		constexpr auto l_front = _zero;
+		constexpr auto r_front = _zero;
+
+		return machine_module::template start
+		<
+			T_user_program_functional<FN::sort_v0>, l_front, r_front, less_than
+
+		>(U_null_Vs, U_null_Vs, list1, list2);
+	}
+
+	template<auto list1, auto list2, auto less_than>
+	constexpr auto sort_v0 = f_sort_v0<list1, list2, less_than>();
+
+/***********************************************************************************************************************/
+
+// convenience functions:
+
+//	template<auto list1, auto list2, auto less_than>
+//	void print_sort_v0() { printf("sort: %d\n", sort_v0<list1, list2, less_than>); }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 

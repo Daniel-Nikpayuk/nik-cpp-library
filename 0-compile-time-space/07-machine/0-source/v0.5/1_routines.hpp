@@ -34,80 +34,19 @@ public:
 	// value:
 
 	template<key_type Note>
-	static constexpr instr_type _value = instruction // *value* keyword is reserved for user use.
+	static constexpr instr_type _value = instruction // *value* keyword is reserved for recursive use.
 	<
 		MN::value, Note
 	>;
 
 		template<key_type...> static constexpr instr_type first			= _value < MT::first     >;
-		template<key_type...> static constexpr instr_type rest			= _value < MT::rest      >;
-		template<key_type...> static constexpr instr_type depth			= _value < MT::depth     >;
-		template<key_type...> static constexpr instr_type dump			= _value < MT::dump      >;
+		template<key_type...> static constexpr instr_type heap_zero		= _value < MT::h0        >;
+		template<key_type...> static constexpr instr_type heap_one		= _value < MT::h1        >;
+		template<key_type...> static constexpr instr_type arg_zero		= _value < MT::a0        >;
 		template<key_type...> static constexpr instr_type registers		= _value < MT::registers >;
 		template<key_type...> static constexpr instr_type arguments		= _value < MT::arguments >;
-
-		//
-
-		template<key_type...> static constexpr instr_type argument_zero		= _value < MT::a0        >;
-
-// interoperators:
-
-	// call:
-
-		// call instructions are required by the between machine to have mem, loc info.
-
-	template<key_type Note, key_type Subname, key_type Policy, index_type... Args>
-	static constexpr instr_type call_program = instruction
-	<
-		MN::call, Note, Subname, Policy, Args...
-	>;
-
-		template<key_type Subname, key_type Policy, index_type Pos, key_type Coname, key_type Conote, key_type BPolicy>
-		static constexpr instr_type call_block_program = call_program
-		<
-			MT::block, Subname, Policy, Pos, Coname, Conote, BPolicy
-		>;
-
-		template<key_type Subname, key_type Policy, index_type... Args>
-		static constexpr instr_type call_linear_program = call_program
-		<
-			MT::linear, Subname, Policy, Args...
-		>;
-
-		template<index_type Pos, index_type Prog, index_type... Args>
-		static constexpr instr_type call = call_program // call user program
-		<
-			MT::user, MN::id, MT::load, Pos, Prog, T_user_program::initial_i, Args...
-		>;
-
-		template<index_type Pos, index_type Prog, index_type Adj, index_type... Args>
-		static constexpr instr_type adj_call = call_program // call adjusted user program
-		<
-			MT::user, MN::call, MT::load, Pos, Prog, Adj, Args...
-		>;
-
-	// detour:
-
-	template<key_type Policy>
-	static constexpr instr_type detour_call = instruction
-	<
-		MN::detour, MT::call, MN::id, Policy
-	>;
-
-		template<key_type...>
-		static constexpr instr_type apply_user__insert_at_r_front = detour_call<CP::insert_at_r_front>;
-
-	// machinate:
-
-	template<key_type Note>
-	static constexpr instr_type machinate = instruction
-	<
-		MN::machinate, Note
-	>;
-
-		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause   >;
-		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind  >;
-		template<key_type...> static constexpr instr_type unmake		= machinate < MT::user    >;
+		template<key_type...> static constexpr instr_type depth			= _value < MT::depth     >;
+		template<key_type...> static constexpr instr_type dump			= _value < MT::dump      >;
 
 // passers:
 
@@ -116,16 +55,10 @@ public:
 	template<key_type...>
 	static constexpr instr_type drop_r_first = instruction	// optimization: We call the single block machine
 	<							// directly, but still provide computational context.
-		MN::move_r_block, _zero, MT::id, BP::drop
+		MN::move_r_block, _zero, MT::id, CP::drop
 	>;
 
 	// linear:
-
-	template<key_type...>
-	static constexpr instr_type move_h0_first__insert_at_r_front = instruction
-	<
-		MN::move_h0_first, MT::insert_at_r_front
-	>;
 
 	template<key_type...>
 	static constexpr instr_type move_h1_all__insert_at_r_front = instruction
@@ -135,79 +68,25 @@ public:
 
 	// near linear:
 
-	template<index_type...>
-	static constexpr instr_type swap__r_and_a0 = instruction
-	<
-		MN::swap, MT::r_and_a0
-	>;
+//	template<index_type Action>
+//	static constexpr instr_type map_a0__replace_at_a0 = instruction
+//	<
+//		MN::select_a0, MT::id, Action, FP::replace_at_a0
+//	>;
 
-	template<index_type...>
-	static constexpr instr_type swap__a0_and_a1 = instruction
-	<
-		MN::swap, MT::a0_and_a1
-	>;
+//	template<index_type...>
+//	static constexpr instr_type cat_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::catenate_a0_a1, MT::replace_at_a0
+//	>;
 
-	template<index_type...>
-	static constexpr instr_type swap__a0_and_a2 = instruction
-	<
-		MN::swap, MT::a0_and_a2
-	>;
+//	template<index_type Action>
+//	static constexpr instr_type zip_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::zip_a0_a1, MT::replace_at_a0, Action
+//	>;
 
-	template<index_type...>
-	static constexpr instr_type swap__a1_and_a2 = instruction
-	<
-		MN::swap, MT::a1_and_a2
-	>;
-
-	template<index_type...>
-	static constexpr instr_type a0_is_null__insert_at_h0_front = instruction
-	<
-		MN::a0_is_null, MT::insert_at_h0_front
-	>;
-
-	template<index_type...>
-	static constexpr instr_type cons_r_a0__replace_at_a0 = instruction
-	<
-		MN::construct_r_a0, MT::replace_at_a0, FA::cons
-	>;
-
-	template<index_type...>
-	static constexpr instr_type push_r_a0__replace_at_a0 = instruction
-	<
-		MN::construct_r_a0, MT::replace_at_a0, FA::push
-	>;
-
-	template<index_type...>
-	static constexpr instr_type car_a0__insert_at_r_front = instruction
-	<
-		MN::select_a0, MT::id, FA::car, FP::insert_at_r_front
-	>;
-
-	template<index_type...>
-	static constexpr instr_type cdr_a0__replace_at_a0 = instruction
-	<
-		MN::select_a0, MT::id, FA::cdr, FP::replace_at_a0
-	>;
-
-	template<index_type Action>
-	static constexpr instr_type map_a0__replace_at_a0 = instruction
-	<
-		MN::select_a0, MT::id, Action, FP::replace_at_a0
-	>;
-
-	template<index_type...>
-	static constexpr instr_type cat_a0_a1__replace_at_a0 = instruction
-	<
-		MN::catenate_a0_a1, MT::replace_at_a0
-	>;
-
-	template<index_type Action>
-	static constexpr instr_type zip_a0_a1__replace_at_a0 = instruction
-	<
-		MN::zip_a0_a1, MT::replace_at_a0, Action
-	>;
-
-	// user:
+	// recursive:
 
 	template<key_type...>
 	static constexpr instr_type cycle = instruction
@@ -224,25 +103,13 @@ public:
 	template<key_type...>
 	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
 	<
-		MN::apply_h0_all, MT::insert_at_r_front
-	>;
-
-	template<key_type...>
-	static constexpr instr_type apply_h0_all__replace_at_h0_front = instruction
-	<
-		MN::apply_h0_all, MT::replace_at_h0_front
+		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
 	>;
 
 	template<key_type...>
 	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
 	<
-		MN::compel_h0_all, MT::insert_at_r_front
-	>;
-
-	template<key_type...>
-	static constexpr instr_type compel_h0_all__replace_at_h0_front = instruction
-	<
-		MN::compel_h0_all, MT::replace_at_h0_front
+		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
 	>;
 
 	// optimizations:
@@ -256,6 +123,92 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// call:
+
+/***********************************************************************************************************************/
+
+// closed:
+
+		// The instruction length is the same as with open.
+		//         This is to allow for the refactoring of algorithms.
+
+	template
+	<
+		key_type RtnPolicy,
+		key_type CallerLoc, index_type Caller,
+		key_type ParamLoc, index_type... Params
+	>
+	static constexpr instr_type call_closed_program = instruction
+	<
+		MN::call, MT::id, RtnPolicy, CallerLoc, Caller, CL::h0, _zero, ParamLoc, Params...
+	>;
+
+/***********************************************************************************************************************/
+
+// open:
+
+	template
+	<
+		key_type RtnPolicy,
+		key_type CallerLoc, index_type Caller,
+		key_type NameLoc, index_type Name,
+		key_type ParamLoc, index_type... Params
+	>
+	static constexpr instr_type call_open_program = instruction
+	<
+		MN::call, CL::note(CallerLoc, NameLoc, ParamLoc, sizeof...(Params)),
+		RtnPolicy, CallerLoc, Caller, NameLoc, Name, ParamLoc, Params...
+	>;
+
+	// interface:
+
+		template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
+		static constexpr instr_type call_builtin_open_program = call_open_program
+		<
+			RtnPolicy,
+			CL::instr, Caller,
+			CL::instr, Name,
+			CL::all_instr, Params...
+		>;
+
+	// syntactic sugar:
+
+		template<key_type RtnPolicy, key_type Name, index_type Pos, key_type BPolicy, key_type Coname, key_type Conote>
+		static constexpr instr_type call_builtin_block_program = call_builtin_open_program
+		<
+			RtnPolicy, MP::block, Name, Pos, BPolicy, Coname, Conote
+		>;
+
+/***********************************************************************************************************************/
+
+// interoperators:
+
+	// detour:
+
+	template<key_type Policy>
+	static constexpr instr_type detour_call = instruction
+	<
+		MN::detour, MT::internal, MN::id, Policy
+	>;
+
+		template<key_type...>
+		static constexpr instr_type apply_recursive__insert_at_r_front = detour_call<CP::insert_at_r_front>;
+
+	// machinate:
+
+	template<key_type Note>
+	static constexpr instr_type machinate = instruction
+	<
+		MN::machinate, Note
+	>;
+
+		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause  >;
+		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind >;
+		template<key_type...> static constexpr instr_type rewind		= machinate < MT::rewind >;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // block:
 
 	// Block programs consist of two block instructions and some machine
@@ -263,180 +216,115 @@ public:
 
 /***********************************************************************************************************************/
 
-// unpack instruction segment (, insert at heap one back):
+// unpack instruction right (, insert at heap one back):
 
 	template<key_type... filler>
-	struct block_program<BN::unpack_i_segment, filler...> : public block_program<filler...>
+	struct program<MP::block, BN::unpack_i_right, filler...> : public block_program<filler...>
 	{
-		template<key_type Coname, key_type Conote, key_type BPolicy>
+		template<key_type BPolicy, key_type Coname, key_type Conote>
 		static constexpr instr_type lines = instruction
 		<
-			MN::unpack_i_block, Coname, Conote, BPolicy
+			MN::unpack_i_block, BPolicy, Coname, Conote
 		>;
 	};
 
 	// interface:
 
-		template<key_type Conote>
-		static constexpr instr_type bind_program = block_program<BN::unpack_i_segment>::template lines
+		template<index_type Size>
+		static constexpr auto unpack_i_right__replace_at_h1 = call_builtin_block_program
 		<
-			MN::machinate, Conote, BP::insert_at_h1_back
+			CP::replace_at_h1,
+			BN::unpack_i_right,
+			Size,
+			CP::insert_at_h1_back,
+			MN::value, MT::h1
 		>;
-
-	// syntactic sugar:
-
-		template<key_type...> static constexpr instr_type bind_linear_program	= bind_program < MT::linear >;
-		template<key_type...> static constexpr instr_type bind_user_program	= bind_program < MT::user1  >;
 
 /***********************************************************************************************************************/
 
 // move register segment:
 
 	template<key_type... filler>
-	struct block_program<BN::move_r_segment, filler...> : public block_program<filler...>
+	struct program<MP::block, BN::move_r_segment, filler...> : public block_program<filler...>
 	{
-		template<key_type Coname, key_type Conote, key_type BPolicy>
+		template<key_type BPolicy, key_type Coname, key_type Conote>
 		static constexpr instr_type lines = instruction
 		<
-			MN::move_r_block, Coname, Conote, BPolicy
+			MN::move_r_block, BPolicy, Coname, Conote
 		>;
 	};
 
 	// interface:
 
 		template<key_type Policy, index_type Pos, key_type Conote>
-		static constexpr instr_type drop_r_segment = call_block_program
+		static constexpr instr_type drop_r_segment = call_builtin_block_program
 		<
-			BN::move_r_segment,
 			Policy,
-			Pos,
-			MN::value, Conote,
-			BP::drop
-		>;
-
-		template<index_type Pos>
-		static constexpr instr_type move_r_segment__insert_at_h1_back = call_block_program
-		<
 			BN::move_r_segment,
+			Pos,
+			CP::drop,
+			MN::value, Conote
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type move_r_segment__insert_at_h1_back = call_builtin_block_program
+		<
 			CP::load,
+			BN::move_r_segment,
 			Pos,
-			MN::machinate, MT::unwind,
-			BP::insert_at_h1_back
+			CP::insert_at_h1_back,
+			MN::machinate, MT::unwind
 		>;
 
 	// syntactic sugar:
 
+	//	template<index_type Pos>
+	//	static constexpr instr_type value = drop_r_segment<CP::id, Pos, MT::first>;
+
+	//		template<key_type Note, index_type Pos>
+	//		static constexpr auto dispatch_copy_r_pos()
+	//		{
+	//			if constexpr (MI::is_opt(Pos)) return copy_r_pos<Note, Pos>;
+	//			else
+	//			{
+	//				constexpr auto policy = (Note == MT::insert_at_h0_front) ?
+	//							 CP::insert_at_h0_front          :
+	//							 CP::insert_at_h0_back           ;
+
+	//				return drop_r_segment<policy, Pos, MT::first>;
+	//			}
+	//		}
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type copy_r_pos__insert_at_h0_front = dispatch_copy_r_pos
+	//	<
+	//		MT::insert_at_h0_front, Pos
+	//	>();
+
+	//	template<index_type Pos>
+	//	static constexpr instr_type copy_r_pos__insert_at_h0_back = dispatch_copy_r_pos
+	//	<
+	//		MT::insert_at_h0_back, Pos
+	//	>();
+
 		template<index_type Pos>
-		static constexpr instr_type value = drop_r_segment<CP::id, Pos, MT::first>;
-
-			template<key_type Note, index_type Pos>
-			static constexpr auto dispatch_copy_r_pos()
-			{
-				if constexpr (MI::is_opt(Pos)) return copy_r_pos<Note, Pos>;
-				else
-				{
-					constexpr auto policy = (Note == MT::insert_at_h0_front) ?
-								 CP::insert_at_h0_front          :
-								 CP::insert_at_h0_back           ;
-
-					return drop_r_segment<policy, Pos, MT::first>;
-				}
-			}
-
-		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_front = dispatch_copy_r_pos
+		static constexpr instr_type copy_i_pos__insert_at_h0_back = instruction
 		<
-			MT::insert_at_h0_front, Pos
-		>();
-
-		template<index_type Pos>
-		static constexpr instr_type copy_r_pos__insert_at_h0_back = dispatch_copy_r_pos
-		<
-			MT::insert_at_h0_back, Pos
-		>();
-
-/***********************************************************************************************************************/
-
-// move register large segment:
-
-	template<key_type... filler>
-	struct block_program<BN::move_r_large_segment, filler...> : public large_block_program<filler...>
-	{
-		template<key_type Coname, key_type Conote, key_type BPolicy>
-		static constexpr instr_type lines = instruction
-		<
-			MN::move_r_block, Coname, Conote, BPolicy
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos, key_type Conote>
-		static constexpr instr_type drop_r_large_segment = call_block_program
-		<
-			BN::move_r_large_segment,
-			CP::id, // return the value
-			Pos,
-			MN::value, Conote,
-			BP::drop
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type move_r_large_segment__insert_at_h1_back = call_block_program
+		static constexpr instr_type copy_r_pos__insert_at_h0_back = instruction
 		<
-			BN::move_r_large_segment,
-			CP::load,
-			Pos,
-			MN::machinate, MT::unwind,
-			BP::insert_at_h1_back
-		>;
-
-	// syntactic sugar:
-
-		template<index_type Pos> static constexpr instr_type at = drop_r_large_segment<Pos, MT::first>;
-		template<index_type Pos> static constexpr instr_type left = drop_r_large_segment<Pos, MT::h1>;
-		template<index_type Pos> static constexpr instr_type right = drop_r_large_segment<Pos, MT::registers>;
-
-/***********************************************************************************************************************/
-
-// fold register large segment:
-
-	template<key_type... filler>
-	struct block_program<BN::fold_r_large_segment, filler...> : public large_block_program<filler...>
-	{
-		template<key_type Coname, key_type Conote, key_type BPolicy>
-		static constexpr instr_type lines = instruction
-		<
-			MN::fold_r_block, Coname, Conote, BPolicy
-		>;
-	};
-
-	// interface:
-
-		// The qualifier is ignored in the name as it is assumed "large".
-
-		template<index_type Pos, key_type BPolicy>
-		static constexpr instr_type fold_r_segment = call_block_program
-		<
-			BN::fold_r_large_segment,
-			CP::id, // return the value
-			Pos,
-			MN::value, MT::first,
-			BPolicy
-		>;
-
-	// syntactic sugar:
-
-		template<index_type Pos>
-		static constexpr instr_type fold_r_segment__op_at_h0_first = fold_r_segment
-		<
-			Pos, BP::op_at_h0_first
 		>;
 
 		template<index_type Pos>
-		static constexpr instr_type fold_r_segment__act_at_h0_first = fold_r_segment
+		static constexpr instr_type copy_a_pos__insert_at_h0_back = instruction
 		<
-			Pos, BP::act_at_h0_first
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_h4_pos__insert_at_h0_back = instruction
+		<
 		>;
 
 /***********************************************************************************************************************/
@@ -446,642 +334,442 @@ public:
 
 /***********************************************************************************************************************/
 
-// swap (one):
-
-		template<index_type Arg>
-		static constexpr auto dispatch_swap1()
-		{
-			if constexpr (Arg == 1) return swap__a0_and_a1<>;
-			else                    return swap__a0_and_a2<>;
-		}
-
-	template<index_type Arg>
-	static constexpr auto swap1 = dispatch_swap1<Arg>();
-
-		template<index_type Arg>
-		static constexpr auto U_dispatch_swap1()
-		{
-			if constexpr (Arg == 0) return U_null_Vs;
-			else                    return U_opt_pack_Vs<dispatch_swap1<Arg>()>;
-		}
-
-	template<index_type Arg>
-	static constexpr auto U_swap1 = U_dispatch_swap1<Arg>();
-
-/***********************************************************************************************************************/
-
-// swap (two):
-
-		template<index_type Pos, index_type Arg, bool is_f>
-		static constexpr auto U_dispatch_swap2()
-		{
-			if constexpr (Pos == 0)
-			{
-				if constexpr (Arg == 1)		return U_null_Vs; // 2:
-				else				return U_opt_pack_Vs<swap__a1_and_a2<>>;
-			}
-			else if constexpr (Pos == 1)
-			{
-				if constexpr (Arg == 0)		return U_opt_pack_Vs<swap__a0_and_a1<>>;
-				else if constexpr (is_f)	return U_opt_pack_Vs // 2, f:
-								<
-									swap__a0_and_a1<>,
-									swap__a1_and_a2<>
-								>;
-				else				return U_opt_pack_Vs // 2, b:
-								<
-									swap__a1_and_a2<>,
-									swap__a0_and_a1<>
-								>;
-			}
-			else // 2:
-			{
-				if constexpr (Arg == 1)		return U_opt_pack_Vs<swap__a0_and_a2<>>;
-				else if constexpr (is_f)	return U_opt_pack_Vs // 0, f:
-								<
-									swap__a0_and_a2<>,
-									swap__a1_and_a2<>
-								>;
-				else				return U_opt_pack_Vs // 0, b:
-								<
-									swap__a1_and_a2<>,
-									swap__a0_and_a2<>
-								>;
-			}
-		}
-
-	template<index_type Pos, index_type Arg>
-	static constexpr auto U_fswap2 = U_dispatch_swap2<Pos, Arg, true>();
-
-	template<index_type Pos, index_type Arg>
-	static constexpr auto U_bswap2 = U_dispatch_swap2<Pos, Arg, false>();
-
-/***********************************************************************************************************************/
-
-// dispatch linear (one):
-
-	template
-	<
-		index_type Arg, auto action,
-		key_type Name, key_type Policy, key_type... Params
-	>
-	static constexpr auto dispatch_linear1()
-	{
-		if constexpr (Arg == 0)	return action;
-		else			return call_linear_program<Name, Policy, Arg, Params...>;
-	}
-
-/***********************************************************************************************************************/
-
-// dispatch linear (two):
-
-	template
-	<
-		index_type Pos, index_type Arg, auto action,
-		key_type Name, key_type Policy, key_type... Params
-	>
-	static constexpr auto dispatch_linear2()
-	{
-		if constexpr (Pos == 0 && Arg == 1)	return action;
-		else					return call_linear_program<Name, Policy, Pos, Arg, Params...>;
-	}
-
-/***********************************************************************************************************************/
-
-// dispatch construct:
-
-	template<index_type Arg, index_type Obj, auto action_r_a0__replace_at_a0>
-	static constexpr auto dispatch_construct()
-	{
-		return ML::safe_label
-		(
-			U_opt_pack_Vs < copy_r_pos__insert_at_h0_back<Obj> >,
-			U_swap1       < Arg                                >,
-			U_opt_pack_Vs < action_r_a0__replace_at_a0         >,
-			U_swap1       < Arg                                >,
-			U_opt_pack_Vs < unwind<>                           >
-		);
-	}
-
-/***********************************************************************************************************************/
-
-// argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Arg>
-		static constexpr label_type lines = label
+		template<key_type...>
+		static constexpr auto fetch_rs__replace_at_h1 = instruction
 		<
-			swap1<Arg>,
-			argument_zero<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Arg>
-		static constexpr instr_type argument = dispatch_linear1
-		<
-			Arg,
-			argument_zero<>,
-			LN::a_pos,
-			CP::id
-		>();
-
-/***********************************************************************************************************************/
-
-// argument position is null, insert at heap zero front:
-
-	template<key_type... filler>
-	struct linear_program<LN::a_pos_is_null__insert_at_h0_front, filler...> : public T_linear_program
-	{
-		template<index_type Arg>
-		static constexpr label_type lines = label
-		<
-			swap1<Arg>,
-			a0_is_null__insert_at_h0_front<>,
-			swap1<Arg>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Arg>
-		static constexpr instr_type is_null = dispatch_linear1
-		<
-			Arg,
-			a0_is_null__insert_at_h0_front<>,
-			LN::a_pos_is_null__insert_at_h0_front,
-			CP::load
-		>();
-
-/***********************************************************************************************************************/
-
-// cons register position argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::cons_r_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Arg, index_type Obj>
-		static constexpr label_type lines = dispatch_construct
-		<
-			Arg, Obj,
-			cons_r_a0__replace_at_a0<>
-		>();
-	};
-
-	// interface:
-
-		template<index_type Arg, index_type Obj>
-		static constexpr instr_type cons_assign = call_linear_program
-		<
-			LN::cons_r_pos_a_pos__replace_at_a_pos,
-			CP::load,
-			Arg, Obj
 		>;
 
-/***********************************************************************************************************************/
-
-// push register position argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::push_r_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Arg, index_type Obj>
-		static constexpr label_type lines = dispatch_construct
+		template<key_type...>
+		static constexpr auto fetch_as__replace_at_h1 = instruction
 		<
-			Arg, Obj,
-			push_r_a0__replace_at_a0<>
-		>();
-	};
-
-	// interface:
-
-		template<index_type Arg, index_type Obj>
-		static constexpr instr_type push_assign = call_linear_program
-		<
-			LN::push_r_pos_a_pos__replace_at_a_pos,
-			CP::load,
-			Arg, Obj
 		>;
 
-/***********************************************************************************************************************/
-
-// car argument position, insert at register front:
-
-	template<key_type... filler>
-	struct linear_program<LN::car_a_pos__replace_at_r_pos, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Arg>
-		static constexpr label_type lines = ML::safe_label
-		(
-			U_opt_pack_Vs
-			<
-				move_r_segment__insert_at_h1_back<Pos>,
-				drop_r_first<>
-			>,
-			U_swap1       < Arg                             >,
-			U_opt_pack_Vs < car_a0__insert_at_r_front<>     >,
-			U_swap1       < Arg                             >,
-			U_opt_pack_Vs
-			<
-				move_h1_all__insert_at_r_front<>,
-				unwind<>
-			>
-		);
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Arg>
-		static constexpr instr_type car = call_linear_program
+		template<key_type...>
+		static constexpr auto fetch_h4s__replace_at_h1 = instruction
 		<
-			LN::car_a_pos__replace_at_r_pos,
-			CP::load,
-			Pos, Arg
-		>;
-
-/***********************************************************************************************************************/
-
-// cdr argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::cdr_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Arg>
-		static constexpr label_type lines = label
-		<
-			swap1<Arg>,
-			cdr_a0__replace_at_a0<>,
-			swap1<Arg>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Arg>
-		static constexpr instr_type cdr_assign = dispatch_linear1
-		<
-			Arg,
-			cdr_a0__replace_at_a0<>,
-			LN::cdr_a_pos__replace_at_a_pos,
-			CP::load
-		>();
-
-/***********************************************************************************************************************/
-
-// map argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::map_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Arg, key_type Action>
-		static constexpr label_type lines = label
-		<
-			swap1<Arg>,
-			map_a0__replace_at_a0<Action>,
-			swap1<Arg>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Arg, key_type Action>
-		static constexpr instr_type map_assign = dispatch_linear1
-		<
-			Arg,
-			map_a0__replace_at_a0<Action>,
-			LN::map_a_pos__replace_at_a_pos,
-			CP::load,
-			Action
-		>();
-
-	// syntactic sugar:
-
-		template<index_type Arg> static constexpr instr_type op_map_assign	= map_assign<Arg, FA::op_map>;
-		template<index_type Arg> static constexpr instr_type act_map_assign	= map_assign<Arg, FA::act_map>;
-
-/***********************************************************************************************************************/
-
-// catenate argument position argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::cat_a_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Arg>
-		static constexpr label_type lines = ML::safe_label
-		(
-		 	U_null_Vs,
-			U_fswap2      < Pos                        , Arg >,
-			U_opt_pack_Vs < cat_a0_a1__replace_at_a0<>       >,
-			U_bswap2      < Pos                        , Arg >,
-			U_opt_pack_Vs < unwind<>                         >
-		);
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Arg>
-		static constexpr instr_type cat_assign = dispatch_linear2
-		<
-			Pos, Arg,
-			cat_a0_a1__replace_at_a0<>,
-			LN::cat_a_pos_a_pos__replace_at_a_pos,
-			CP::load
-		>();
-
-/***********************************************************************************************************************/
-
-// zip argument position argument position, replace at argument position:
-
-	template<key_type... filler>
-	struct linear_program<LN::zip_a_pos_a_pos__replace_at_a_pos, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Arg, key_type Action>
-		static constexpr label_type lines = ML::safe_label
-		(
-		 	U_null_Vs,
-			U_fswap2      < Pos                              , Arg >,
-			U_opt_pack_Vs < zip_a0_a1__replace_at_a0<Action>       >,
-			U_bswap2      < Pos                              , Arg >,
-			U_opt_pack_Vs < unwind<>                               >
-		);
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Arg, key_type Action>
-		static constexpr instr_type zip_assign = dispatch_linear2
-		<
-			Pos, Arg,
-			zip_a0_a1__replace_at_a0<Action>,
-			LN::zip_a_pos_a_pos__replace_at_a_pos,
-			CP::load,
-			Action
-		>();
-
-	// syntactic sugar:
-
-		template<index_type Pos, index_type Arg>
-		static constexpr instr_type op_zip_assign	= zip_assign<Pos, Arg, FA::op_zip>;
-
-		template<index_type Pos, index_type Arg>
-		static constexpr instr_type act_zip_assign	= zip_assign<Pos, Arg, FA::act_zip>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// mutators:
-
-/***********************************************************************************************************************/
-
-// erase:
-
-	template<key_type... filler>
-	struct linear_program<LN::erase, filler...> : public linear_program<filler...>
-	{
-		template<index_type Pos>
-		static constexpr label_type lines = label
-		<
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_first<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos>
-		static constexpr instr_type erase = call_linear_program
-		<
-			LN::erase,
-			CP::load,
-			Pos
-		>;
-
-/***********************************************************************************************************************/
-
-// insert:
-
-	template<key_type... filler>
-	struct linear_program<LN::insert, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Obj>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_front<Obj>,
-			move_r_segment__insert_at_h1_back<Pos>,
-			move_h0_first__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type insert = call_linear_program
-		<
-			LN::insert,
-			CP::load,
-			Pos, Obj
-		>;
-
-/***********************************************************************************************************************/
-
-// replace:
-
-	template<key_type... filler>
-	struct linear_program<LN::replace, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Obj>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_front<Obj>,
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_first<>,
-			move_h0_first__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
-
-	// interface:
-
-		template<index_type Pos, index_type Obj>
-		static constexpr instr_type replace = call_linear_program
-		<
-			LN::replace,
-			CP::load,
-			Pos, Obj
 		>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// user:
+// recursive:
 
 /***********************************************************************************************************************/
 
 // make:
 
-	template<key_type... filler>
-	struct linear_program<LN::make, filler...> : public T_linear_program
-	{
-		template<index_type Prog>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_back<Prog>,
-			unmake<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::get_generic_program, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Pos>
+//		static constexpr label_type lines = label
+//		<
+//			copy_c_pos__insert_at_h0_back<Pos>,
+//			get_generic_params<>
+//		>;
+//	};
 
 	// interface:
-
-		template<index_type Prog>
-		static constexpr label_type make_user_program = linear_program<LN::make>::template lines<Prog>;
 
 /***********************************************************************************************************************/
 
-// run:
+// run generic program:
 
-	template<key_type... filler>
-	struct linear_program<LN::run, filler...> : public T_linear_program
-	{
-		template<index_type Pos>
-		static constexpr label_type lines = label
-		<
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_first<>,
-			apply_user__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::run_generic_program, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Pos>
+//		static constexpr label_type lines = label
+//		<
+//			move_r_segment__insert_at_h1_back<Pos>,
+//			drop_r_first<>,
+//			apply_recursive__insert_at_r_front<>,	// ?
+//			move_h1_all__insert_at_r_front<>,
+//			unwind<>
+//		>;
+//	};
 
 	// interface:
-
-		template<index_type Pos>
-		static constexpr label_type run_user_program = linear_program<LN::run>::template lines<Pos>;
 
 /***********************************************************************************************************************/
 
 // test:
 
-	template<key_type... filler>
-	struct linear_program<LN::test, filler...> : public T_linear_program
-	{
-		template<index_type Op, index_type... Args>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_back<Op>,
-			copy_r_pos__insert_at_h0_back<Args>...,
-			apply_h0_all__replace_at_h0_front<>,
-			unwind<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::test, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Op, index_type... Args>
+//		static constexpr label_type lines = label
+//		<
+//			copy_r_pos__insert_at_h0_back<Op>,
+//			copy_r_pos__insert_at_h0_back<Args>...,
+//			apply_h0_all__replace_at_h0_front<>,
+//			unwind<>
+//		>;
+//	};
 
 	// interface:
 
-		template<index_type Op, index_type... Args>
-		static constexpr instr_type test = call_linear_program
-		<
-			LN::test,
-			CP::load,
-			Op, Args...
-		>;
+	//	template<index_type Op, index_type... Args>
+	//	static constexpr instr_type test = call_linear_program
+	//	<
+	//		LN::test,
+	//		CP::load,
+	//		Op, Args...
+	//	>;
 
 /***********************************************************************************************************************/
 
 // check:
 
-	template<key_type... filler>
-	struct linear_program<LN::check, filler...> : public T_linear_program
-	{
-		template<index_type Op, index_type... Args>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_back<Op>,
-			copy_r_pos__insert_at_h0_back<Args>...,
-			compel_h0_all__replace_at_h0_front<>,
-			unwind<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::check, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Op, index_type... Args>
+//		static constexpr label_type lines = label
+//		<
+//			copy_r_pos__insert_at_h0_back<Op>,
+//			copy_r_pos__insert_at_h0_back<Args>...,
+//			compel_h0_all__replace_at_h0_front<>,
+//			unwind<>
+//		>;
+//	};
 
 	// interface:
 
-		template<index_type Op, index_type... Args>
-		static constexpr instr_type check = call_linear_program
-		<
-			LN::check,
-			CP::load,
-			Op, Args...
-		>;
+	//	template<index_type Op, index_type... Args>
+	//	static constexpr instr_type check = call_linear_program
+	//	<
+	//		LN::check,
+	//		CP::load,
+	//		Op, Args...
+	//	>;
 
 /***********************************************************************************************************************/
 
 // apply:
 
-	template<key_type... filler>
-	struct linear_program<LN::apply, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_back<Op>,
-			copy_r_pos__insert_at_h0_back<Args>...,
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_first<>,
-			apply_h0_all__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::apply, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Pos, index_type Op, index_type... Args>
+//		static constexpr label_type lines = label
+//		<
+//			copy_r_pos__insert_at_h0_back<Op>,
+//			copy_r_pos__insert_at_h0_back<Args>...,
+//			move_r_segment__insert_at_h1_back<Pos>,
+//			drop_r_first<>,
+//			apply_h0_all__insert_at_r_front<>,
+//			move_h1_all__insert_at_r_front<>,
+//			unwind<>
+//		>;
+//	};
 
 	// interface:
 
-		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr instr_type apply = call_linear_program
-		<
-			LN::apply,
-			CP::load,
-			Pos, Op, Args...
-		>;
+	//	template<index_type Pos, index_type Op, index_type... Args>
+	//	static constexpr instr_type apply = call_linear_program
+	//	<
+	//		LN::apply,
+	//		CP::load,
+	//		Pos, Op, Args...
+	//	>;
 
 /***********************************************************************************************************************/
 
 // compel:
 
-	template<key_type... filler>
-	struct linear_program<LN::compel, filler...> : public T_linear_program
-	{
-		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr label_type lines = label
-		<
-			copy_r_pos__insert_at_h0_back<Op>,
-			copy_r_pos__insert_at_h0_back<Args>...,
-			move_r_segment__insert_at_h1_back<Pos>,
-			drop_r_first<>,
-			compel_h0_all__insert_at_r_front<>,
-			move_h1_all__insert_at_r_front<>,
-			unwind<>
-		>;
-	};
+//	template<key_type... filler>
+//	struct program<MP::linear, LN::compel, filler...> : public linear_program<filler...>
+//	{
+//		template<index_type Pos, index_type Op, index_type... Args>
+//		static constexpr label_type lines = label
+//		<
+//			copy_r_pos__insert_at_h0_back<Op>,
+//			copy_r_pos__insert_at_h0_back<Args>...,
+//			move_r_segment__insert_at_h1_back<Pos>,
+//			drop_r_first<>,
+//			compel_h0_all__insert_at_r_front<>,
+//			move_h1_all__insert_at_r_front<>,
+//			unwind<>
+//		>;
+//	};
 
 	// interface:
 
-		template<index_type Pos, index_type Op, index_type... Args>
-		static constexpr instr_type compel = call_linear_program
+	//	template<index_type Pos, index_type Op, index_type... Args>
+	//	static constexpr instr_type compel = call_linear_program
+	//	<
+	//		LN::compel,
+	//		CP::load,
+	//		Pos, Op, Args...
+	//	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// get:
+
+private:
+
+/***********************************************************************************************************************/
+
+	template<key_type...>
+	struct Get
+	{
+			template<index_type... Is>
+			static constexpr auto copy_is__insert_at_h0_back = U_opt_pack_Vs
+			<
+				copy_i_pos__insert_at_h0_back<Is>...
+			>;
+
+			template<index_type... Is>
+			static constexpr label_type copy_rs__insert_at_h0_back = U_opt_pack_Vs
+			<
+				copy_r_pos__insert_at_h0_back<Is>...
+			>;
+
+			template<index_type... Is>
+			static constexpr label_type copy_as__insert_at_h0_back = U_opt_pack_Vs
+			<
+				copy_a_pos__insert_at_h0_back<Is>...
+			>;
+
+			template<index_type... Is>
+			static constexpr label_type copy_h4s__insert_at_h0_back = U_opt_pack_Vs
+			<
+				copy_h4_pos__insert_at_h0_back<Is>...
+			>;
+
+		// function:
+
+			static constexpr auto func_tail = U_opt_pack_Vs
+			<
+				unwind<>
+			>;
+
+		// program:
+
+			static constexpr auto prog_tail = U_opt_pack_Vs
+			<
+				rewind<>
+			>;
+	};
+
+	using GE = Get<>;
+
+/***********************************************************************************************************************/
+
+// caller:
+
+	template<key_type... filler>
+	struct Get<CI::caller, filler...> : public GE
+	{
+		template<auto ins>
+		static constexpr auto instrs()
+		{
+			constexpr auto caller_loc = ins[CI::caller_loc];
+
+			if constexpr (caller_loc == CL::instr) return copy_is__insert_at_h0_back<CI::caller>;
+			else
+			{
+				constexpr auto pos = ins[CI::caller];
+
+				if constexpr      (caller_loc == CL::regs) return copy_rs__insert_at_h0_back<pos>;
+				else if constexpr (caller_loc == CL::args) return copy_as__insert_at_h0_back<pos>;
+				else                                       return copy_h4s__insert_at_h0_back<pos>;
+			}
+		}
+	};
+
+	using GC = Get<CI::caller>;
+
+/***********************************************************************************************************************/
+
+// name:
+
+	template<key_type... filler>
+	struct Get<CI::name, filler...> : public GE
+	{
+		template<auto ins>
+		static constexpr auto instrs()
+		{
+			constexpr auto name_loc = ins[CI::name_loc];
+
+			if constexpr      (name_loc == CL::h0   ) return U_null_Vs; // closed.
+			else if constexpr (name_loc == CL::instr) return copy_is__insert_at_h0_back<CI::name>;
+			else
+			{
+				constexpr auto pos = ins[CI::name];
+
+				if constexpr      (name_loc == CL::regs) return copy_rs__insert_at_h0_back<pos>;
+				else if constexpr (name_loc == CL::args) return copy_as__insert_at_h0_back<pos>;
+				else                                     return copy_h4s__insert_at_h0_back<pos>;
+			}
+		}
+	};
+
+	using GN = Get<CI::name>;
+
+/***********************************************************************************************************************/
+
+// parameters:
+
+	template<key_type... filler>
+	struct Get<CI::param, filler...> : public Get<filler...>
+	{
+		template<auto Size>
+		static constexpr auto all_instr = U_opt_pack_Vs
 		<
-			LN::compel,
-			CP::load,
-			Pos, Op, Args...
+			unpack_i_right__replace_at_h1<Size>
 		>;
+
+		template<auto Size>
+		static constexpr auto all_regs = U_opt_pack_Vs
+		<
+			unpack_i_right__replace_at_h1<Size>,
+			fetch_rs__replace_at_h1<>
+		>;
+
+		template<auto Size>
+		static constexpr auto all_args = U_opt_pack_Vs
+		<
+			unpack_i_right__replace_at_h1<Size>,
+			fetch_as__replace_at_h1<>
+		>;
+
+		template<auto Size>
+		static constexpr auto all_h4 = U_opt_pack_Vs
+		<
+			unpack_i_right__replace_at_h1<Size>,
+			fetch_h4s__replace_at_h1<>
+		>;
+
+		template<auto ins>
+		static constexpr auto instrs()
+		{
+			constexpr auto param_loc	= ins[CI::param_loc];
+			constexpr auto size		= RG::template size<ins>;
+
+			if constexpr      (param_loc == CL::all_instr) return all_instr<size>;
+			else if constexpr (param_loc == CL::all_regs ) return all_regs<size>;
+			else if constexpr (param_loc == CL::all_args ) return all_args<size>;
+			else                                           return all_h4<size>;
+		}
+	};
+
+	using GP = Get<CI::param>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// build:
+
+/***********************************************************************************************************************/
+
+// label:
+
+	template<auto... Hs, auto... Is, auto... Js, auto... Ks>
+	static constexpr auto build_label
+	(
+		void(*)(auto_pack<Hs...>*),
+		void(*)(auto_pack<Is...>*),
+		void(*)(auto_pack<Js...>*),
+		void(*)(auto_pack<Ks...>*)
+	)
+	{
+		return label
+		<
+			Hs...,
+			Is...,
+			Js...,
+			Ks...
+		>;
+	}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machination:
+
+/***********************************************************************************************************************/
+
+	// Do not refactor using other templated structs. Although these definitions are potentially redundant,
+	// trampolining/detouring require a distinct keyword so there's no confusion with other returned values.
+
+	template<typename Stack1Cache, typename Stack2Cache>
+	struct machination
+	{
+		key_type m;
+
+		Stack1Cache h2;
+		Stack2Cache h3;
+
+		constexpr machination(key_type _m, const Stack1Cache & _h2, const Stack2Cache & _h3) :
+					m{_m}, h2{_h2}, h3{_h3} { }
+	};
+
+	//
+
+	template<typename T>
+	static constexpr bool is_machination(T) { return false; }
+
+	template<typename Stack1Cache, typename Stack2Cache>
+	static constexpr bool is_machination(const machination<Stack1Cache, Stack2Cache> &) { return true; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// fetch:
+
+/***********************************************************************************************************************/
+
+// function:
+
+	template<auto ins, auto H0, auto... Vs>
+	static constexpr auto fetch_func()
+	{
+		constexpr auto caller_ins	= GC::template instrs<ins>();
+		constexpr auto name_ins		= GN::template instrs<ins>();
+		constexpr auto param_ins	= GP::template instrs<ins>();
+		constexpr auto tail_ins		= GE::func_tail;
+
+		return build_label(caller_ins, name_ins, param_ins, tail_ins);
+	}
+
+/***********************************************************************************************************************/
+
+// program:
+
+	template<auto ins, auto... Vs, typename Heap0, typename Heap1, typename... Heaps>
+	static constexpr auto fetch_program(Heap0 H0, Heap1 H1, Heaps... Hs)
+	{
+		if constexpr (CL::is_h0_all(ins))
+		{
+			constexpr auto shape	= CL::shape(ins);
+			constexpr auto nH2	= Make<shape>::template h2<ins, Vs...>(H0);
+			constexpr auto nH3	= U_opt_pack_Vs<U_null_Vs, U_pretype_T<Heap1>, U_pretype_T<Heaps>...>;
+
+			return machination(nH2, nH3);
+		}
+		else
+		{
+			constexpr auto caller_ins	= GC::template instrs<ins>();
+			constexpr auto name_ins		= GN::template instrs<ins>();
+			constexpr auto param_ins	= GP::template instrs<ins>();
+			constexpr auto tail_ins		= GE::prog_tail;
+			constexpr auto c		= build_label(caller_ins, name_ins, param_ins, tail_ins);
+
+			constexpr auto length		= RG::template length<ins>;
+			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
+
+			constexpr auto nH2		= RL::template U_prog_h2<c, Vs...>;
+    			constexpr auto nH3		= U_opt_pack_Vs<nH0, U_null_Vs, Hs...>;
+
+			return machination(nH2, nH3);
+		}
+	}
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

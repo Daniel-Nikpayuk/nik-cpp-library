@@ -17,274 +17,289 @@
 **
 ************************************************************************************************************************/
 
-// undef all macros source:
+// undef macros source:
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// machine:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-	#undef NIK_DEFINE__COPY_R_POS
-
-	#undef NIK_DEFINE__FOLD_R_BLOCK
-	#undef NIK_DEFINE__MOVE_R_BLOCK
-	#undef NIK_DEFINE__UNPACK_I_BLOCK
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // preamble:
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-	#undef NIK_INTERNAL
-	#undef NIK_END_INTERNAL
-	#undef NIK_BEGIN_INTERNAL
+// punctuation:
 
-	#undef NIK_MACHINE
-	#undef NIK_END_MACHINE
-	#undef NIK_BEGIN_MACHINE
+	#undef NIK_0_COMMA
+	#undef NIK_1_COMMA
 
-	#undef NIK_AUTOMATA
-	#undef NIK_END_AUTOMATA
-	#undef NIK_BEGIN_AUTOMATA
+	#undef NIK_EMPTY
+	#undef NIK_L_PAR
+	#undef NIK_R_PAR
+	#undef NIK_L_ANG
+	#undef NIK_R_ANG
+	#undef NIK_L_BRAK
+	#undef NIK_R_BRAK
+
+	#undef NIK_AUTO
+	#undef NIK_TYPENAME
+	#undef NIK_LDOTS
+	#undef NIK_R_PAR_LDOTS
+	#undef NIK_PLUS
+
+	#undef NIK_L_CACHE
+	#undef NIK_R_CACHE
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// parameters:
+
+/***********************************************************************************************************************/
 
 	#undef NIK_CONTR_PARAMS
 
 /***********************************************************************************************************************/
+
+	#undef NIK_BEGIN_AUTOMATA
+	#undef NIK_END_AUTOMATA
+	#undef NIK_AUTOMATA
+
+/***********************************************************************************************************************/
+
+	#undef NIK_BEGIN_MACHINE
+	#undef NIK_END_MACHINE
+	#undef NIK_MACHINE
+
+/***********************************************************************************************************************/
+
+	#undef NIK_BEGIN_INTERNAL
+	#undef NIK_END_INTERNAL
+	#undef NIK_INTERNAL
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// parameter:
+// block variables:
 
 /***********************************************************************************************************************/
+
+// upper repetitions:
+
+	#undef NIK_UPPER_1_REPS
+	#undef NIK_UPPER_2_REPS
+	#undef NIK_UPPER_4_REPS
+	#undef NIK_UPPER_8_REPS
+	#undef NIK_UPPER_16_REPS
+	#undef NIK_UPPER_32_REPS
+	#undef NIK_UPPER_64_REPS
+	#undef NIK_UPPER_128_REPS
+	#undef NIK_UPPER_256_REPS
+	#undef NIK_UPPER_512_REPS
+
 /***********************************************************************************************************************/
+
+// repetitions:
+
+	#undef NIK_2_0_REPS
+	#undef NIK_2_1_REPS
+	#undef NIK_2_2_REPS
+	#undef NIK_2_3_REPS
+	#undef NIK_2_4_REPS
+	#undef NIK_2_5_REPS
+	#undef NIK_2_6_REPS
+	#undef NIK_2_7_REPS
+	#undef NIK_2_8_REPS
+	#undef NIK_2_9_REPS
+
+/***********************************************************************************************************************/
+
+// upper identifiers:
+
+	#undef NIK_UPPER_1_IDS
+	#undef NIK_UPPER_2_IDS
+	#undef NIK_UPPER_4_IDS
+	#undef NIK_UPPER_8_IDS
+	#undef NIK_UPPER_16_IDS
+	#undef NIK_UPPER_32_IDS
+	#undef NIK_UPPER_64_IDS
+	#undef NIK_UPPER_128_IDS
+	#undef NIK_UPPER_256_IDS
+	#undef NIK_UPPER_512_IDS
+
+/***********************************************************************************************************************/
+
+// identifiers:
+
+	#undef NIK_2_0_IDS
+	#undef NIK_2_1_IDS
+	#undef NIK_2_2_IDS
+	#undef NIK_2_3_IDS
+	#undef NIK_2_4_IDS
+	#undef NIK_2_5_IDS
+	#undef NIK_2_6_IDS
+	#undef NIK_2_7_IDS
+	#undef NIK_2_8_IDS
+	#undef NIK_2_9_IDS
+
+/***********************************************************************************************************************/
+
+// auto:
+
+	#undef NIK_2_N_AUTO_VARS
+
+// values:
+
+	#undef NIK_2_N_VARS
+
+// typename:
+
+	#undef NIK_2_N_TYPENAME_VARS
+
+// argument:
+
+	#undef NIK_2_N_PRETYPE_VARS
 
 // variadic:
 
-/***********************************************************************************************************************/
+	#undef NIK_2_N_VARIADIC_VARS
 
-// fast values:
+// cache:
 
-	#undef NIK_8_FAST_VS
-	#undef NIK_7_FAST_VS
-	#undef NIK_6_FAST_VS
-	#undef NIK_5_FAST_VS
-	#undef NIK_4_FAST_VS
-	#undef NIK_3_FAST_VS
-	#undef NIK_2_FAST_VS
-	#undef NIK_1_FAST_VS
-	#undef NIK_0_FAST_VS
+	#undef NIK_2_N_CACHE_VARS
 
-/***********************************************************************************************************************/
+// pack:
 
-// fast auto:
+	#undef NIK_2_N_PACK_VARS
 
-	#undef NIK_8_FAST_AUTO_VS
-	#undef NIK_7_FAST_AUTO_VS
-	#undef NIK_6_FAST_AUTO_VS
-	#undef NIK_5_FAST_AUTO_VS
-	#undef NIK_4_FAST_AUTO_VS
-	#undef NIK_3_FAST_AUTO_VS
-	#undef NIK_2_FAST_AUTO_VS
-	#undef NIK_1_FAST_AUTO_VS
-	#undef NIK_0_FAST_AUTO_VS
+// op map:
+
+	#undef NIK_2_N_OP_MAP_VARS
+
+// act map:
+
+	#undef NIK_2_N_ACT_MAP_VARS
+
+// array:
+
+	#undef NIK_2_N_ARRAY_VARS
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// block:
+// block monoid calls:
 
 /***********************************************************************************************************************/
 
-// block action values:
+// monoid calls:
 
-	#undef NIK_2_9_ACT_VS
-	#undef NIK_2_8_ACT_VS
-	#undef NIK_2_7_ACT_VS
-	#undef NIK_2_6_ACT_VS
-	#undef NIK_2_5_ACT_VS
-	#undef NIK_2_4_ACT_VS
-	#undef NIK_2_3_ACT_VS
-	#undef NIK_2_2_ACT_VS
-	#undef NIK_2_1_ACT_VS
-	#undef NIK_2_0_ACT_VS
+	#undef NIK_2_N_MONOID_CALLS
 
-/***********************************************************************************************************************/
+// monoid values:
 
-// block operation values:
+	#undef NIK_2_N_MONOID_VARS
 
-	#undef NIK_2_9_OP_VS
-	#undef NIK_2_8_OP_VS
-	#undef NIK_2_7_OP_VS
-	#undef NIK_2_6_OP_VS
-	#undef NIK_2_5_OP_VS
-	#undef NIK_2_4_OP_VS
-	#undef NIK_2_3_OP_VS
-	#undef NIK_2_2_OP_VS
-	#undef NIK_2_1_OP_VS
-	#undef NIK_2_0_OP_VS
+// monoid folds:
+
+	#undef NIK_2_N_MONOID_FOLDS
 
 /***********************************************************************************************************************/
 
-// block actions:
+// operation folds:
 
-	#undef NIK_2_9_ACTS
-	#undef NIK_2_8_ACTS
-	#undef NIK_2_7_ACTS
-	#undef NIK_2_6_ACTS
-	#undef NIK_2_5_ACTS
-	#undef NIK_2_4_ACTS
-	#undef NIK_2_3_ACTS
-	#undef NIK_2_2_ACTS
-	#undef NIK_2_1_ACTS
-	#undef NIK_2_0_ACTS
+	#undef NIK_2_N_OP_FOLDS
+
+// action folds:
+
+	#undef NIK_2_N_ACT_FOLDS
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// fast variables:
 
 /***********************************************************************************************************************/
 
-// block operations:
+// identifiers:
 
-	#undef NIK_2_9_OPS
-	#undef NIK_2_8_OPS
-	#undef NIK_2_7_OPS
-	#undef NIK_2_6_OPS
-	#undef NIK_2_5_OPS
-	#undef NIK_2_4_OPS
-	#undef NIK_2_3_OPS
-	#undef NIK_2_2_OPS
-	#undef NIK_2_1_OPS
-	#undef NIK_2_0_OPS
-
-/***********************************************************************************************************************/
-
-// block values:
-
-	#undef NIK_2_9_VS
-	#undef NIK_2_8_VS
-	#undef NIK_2_7_VS
-	#undef NIK_2_6_VS
-	#undef NIK_2_5_VS
-	#undef NIK_2_4_VS
-	#undef NIK_2_3_VS
-	#undef NIK_2_2_VS
-	#undef NIK_2_1_VS
-	#undef NIK_2_0_VS
+	#undef NIK_0_FAST_IDS
+	#undef NIK_1_FAST_IDS
+	#undef NIK_2_FAST_IDS
+	#undef NIK_3_FAST_IDS
+	#undef NIK_4_FAST_IDS
+	#undef NIK_5_FAST_IDS
+	#undef NIK_6_FAST_IDS
+	#undef NIK_7_FAST_IDS
+	#undef NIK_8_FAST_IDS
 
 /***********************************************************************************************************************/
 
-// block auto:
+// auto:
 
-	#undef NIK_2_9_AUTO_VS
-	#undef NIK_2_8_AUTO_VS
-	#undef NIK_2_7_AUTO_VS
-	#undef NIK_2_6_AUTO_VS
-	#undef NIK_2_5_AUTO_VS
-	#undef NIK_2_4_AUTO_VS
-	#undef NIK_2_3_AUTO_VS
-	#undef NIK_2_2_AUTO_VS
-	#undef NIK_2_1_AUTO_VS
-	#undef NIK_2_0_AUTO_VS
+	#undef NIK_N_FAST_AUTO_VARS
 
 /***********************************************************************************************************************/
 
-// block indices:
+// heap:
 
-	#undef NIK_2_9_ARRAY_BLOCK
-	#undef NIK_2_8_ARRAY_BLOCK
-	#undef NIK_2_7_ARRAY_BLOCK
-	#undef NIK_2_6_ARRAY_BLOCK
-	#undef NIK_2_5_ARRAY_BLOCK
-	#undef NIK_2_4_ARRAY_BLOCK
-	#undef NIK_2_3_ARRAY_BLOCK
-	#undef NIK_2_2_ARRAY_BLOCK
-	#undef NIK_2_1_ARRAY_BLOCK
-	#undef NIK_2_0_ARRAY_BLOCK
+	#undef NIK_HEAP_TYPENAMES
+	#undef NIK_HEAP_TYPES
+	#undef NIK_HEAP_VARS
+	#undef NIK_HEAP_ARGS
+	#undef NIK_HEAP_CARGS
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machines:
 
 /***********************************************************************************************************************/
 
-// upper action values:
+// unpack instruction block (, insert at argument zero back) (2^N):
 
-	#undef NIK_UPPER_512_ACT_VS
-	#undef NIK_UPPER_256_ACT_VS
-	#undef NIK_UPPER_128_ACT_VS
-	#undef NIK_UPPER_64_ACT_VS
-	#undef NIK_UPPER_32_ACT_VS
-	#undef NIK_UPPER_16_ACT_VS
-	#undef NIK_UPPER_8_ACT_VS
-	#undef NIK_UPPER_4_ACT_VS
-	#undef NIK_UPPER_2_ACT_VS
-	#undef NIK_UPPER_1_ACT_VS
+	#undef NIK_DEFINE__UNPACK_I_BLOCK
 
 /***********************************************************************************************************************/
 
-// upper operation values:
+// move register block (2^N):
 
-	#undef NIK_UPPER_512_OP_VS
-	#undef NIK_UPPER_256_OP_VS
-	#undef NIK_UPPER_128_OP_VS
-	#undef NIK_UPPER_64_OP_VS
-	#undef NIK_UPPER_32_OP_VS
-	#undef NIK_UPPER_16_OP_VS
-	#undef NIK_UPPER_8_OP_VS
-	#undef NIK_UPPER_4_OP_VS
-	#undef NIK_UPPER_2_OP_VS
-	#undef NIK_UPPER_1_OP_VS
+	#undef NIK_DEFINE__MOVE_R_BLOCK
 
 /***********************************************************************************************************************/
 
-// upper values:
+// move argument block (2^N):
 
-	#undef NIK_UPPER_512_VS
-	#undef NIK_UPPER_256_VS
-	#undef NIK_UPPER_128_VS
-	#undef NIK_UPPER_64_VS
-	#undef NIK_UPPER_32_VS
-	#undef NIK_UPPER_16_VS
-	#undef NIK_UPPER_8_VS
-	#undef NIK_UPPER_4_VS
-	#undef NIK_UPPER_2_VS
-	#undef NIK_UPPER_1_VS
+	#undef NIK_DEFINE__MOVE_A_BLOCK
 
 /***********************************************************************************************************************/
 
-// upper auto:
+// fold register block (2^N):
 
-	#undef NIK_UPPER_512_AUTO_VS
-	#undef NIK_UPPER_256_AUTO_VS
-	#undef NIK_UPPER_128_AUTO_VS
-	#undef NIK_UPPER_64_AUTO_VS
-	#undef NIK_UPPER_32_AUTO_VS
-	#undef NIK_UPPER_16_AUTO_VS
-	#undef NIK_UPPER_8_AUTO_VS
-	#undef NIK_UPPER_4_AUTO_VS
-	#undef NIK_UPPER_2_AUTO_VS
-	#undef NIK_UPPER_1_AUTO_VS
+	#undef NIK_DEFINE__FOLD_R_BLOCK
 
 /***********************************************************************************************************************/
 
-// upper indices:
+// catenate argument block (2^N):
 
-	#undef NIK_UPPER_512_ARRAY_BLOCK
-	#undef NIK_UPPER_256_ARRAY_BLOCK
-	#undef NIK_UPPER_128_ARRAY_BLOCK
-	#undef NIK_UPPER_64_ARRAY_BLOCK
-	#undef NIK_UPPER_32_ARRAY_BLOCK
-	#undef NIK_UPPER_16_ARRAY_BLOCK
-	#undef NIK_UPPER_8_ARRAY_BLOCK
-	#undef NIK_UPPER_4_ARRAY_BLOCK
-	#undef NIK_UPPER_2_ARRAY_BLOCK
-	#undef NIK_UPPER_1_ARRAY_BLOCK
+	#undef NIK_DEFINE__CATENATE_A_BLOCK
 
 /***********************************************************************************************************************/
 
-// preamble:
+// map argument block (2^N):
 
-	#undef NIK_1_COMMA
-	#undef NIK_0_COMMA
+	#undef NIK_DEFINE__MAP_A_BLOCK
+
+/***********************************************************************************************************************/
+
+// zip argument block (2^N):
+
+	#undef NIK_DEFINE__ZIP_A_BLOCK
+
+/***********************************************************************************************************************/
+
+// fast at (optimization):
+
+	#undef NIK_DEFINE__FAST_AT
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -48,19 +48,17 @@ namespace nik
 			nik_module(interpret, cache, architect, v_0_5, clang)::template
 				type_map<auto_pack<Vs...>*>;
 
-		#include"v0.5/define_parameter_macros.hpp"
-		#include"v0.5/define_machine_macros.hpp"
+		#include"v0.5/define_macros.hpp"
 
 		//
 
 		#include"v0.5/0_programs.hpp"
 		#include"v0.5/1_routines.hpp"
-		#include"v0.5/2_machines_0.hpp"
-		#include"v0.5/3_machines_1.hpp"
+		#include"v0.5/2_machines.hpp"
 
 		//
 
-		#include"v0.5/undef_all_macros.hpp"
+		#include"v0.5/undef_macros.hpp"
 
 		friend nik_module(interpret, pack, architect, v_0_5, clang);
 
