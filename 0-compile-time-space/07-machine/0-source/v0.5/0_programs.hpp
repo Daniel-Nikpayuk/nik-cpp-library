@@ -19,18 +19,6 @@
 
 // programs source:
 
-	// nesting depth policy:
-
-		// It is assumed each function nesting depth is chosen to be less than the compiler's nesting depth.
-		// This is to say that in practice there should be small buffer of nesting depths/calls available.
-
-		// Consequences: If d == 0 during a given machine call,
-
-		// A) It is able to call the next machine. In turn the iterators will
-		//    dispatch it to MN::pause which does not require any further depths.
-
-		// B) It is able to call single depth functions within its scope.
-
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -52,12 +40,6 @@ public:
 /***********************************************************************************************************************/
 
 // names:
-
-	// I would prefer to implement these as enums, but I don't know how
-	// to get gcc/clang to pattern match the register machine when I do.
-
-	// block machines break the nomenclature design by catenating their
-	// name x note indices. This is done to allow for reuse of their notes.
 
 	struct MachineName
 	{
@@ -146,37 +128,43 @@ public:
 
 			// call:
 
-			static constexpr key_type fast					=  9; // opt
-
-			// machinate:
-
-			static constexpr key_type pause					= 10;
-			static constexpr key_type unwind				= 11;
-			static constexpr key_type rewind				= 12;
+			static constexpr key_type fetch					=  9; // opt
+			static constexpr key_type fast					= 10; // opt
 
 			// detour:
 
-			static constexpr key_type internal				= 13;
-			static constexpr key_type load					= 14;
+			static constexpr key_type internal				= 11;
+			static constexpr key_type load					= 12;
+
+			// machinate:
+
+			static constexpr key_type pause					= 13;
+			static constexpr key_type unwind				= 14;
+			static constexpr key_type rewind				= 15;
 
 		// passers:
 
-			static constexpr key_type insert_at_r_front			= 15;
+			static constexpr key_type insert_at_r_front			= 16;
 
-			static constexpr key_type insert_at_h0_front			= 16;
 			static constexpr key_type insert_at_h0_back			= 17;
+			static constexpr key_type insert_at_h1_back			= 18;
 
-			static constexpr key_type replace_at_h0				= 18;
+			static constexpr key_type append_at_h0_back			= 19;
+
+			static constexpr key_type replace_at_h0				= 20;
 
 			// near linear:
 
-			static constexpr key_type insert_at_a_front			= 19;
+			static constexpr key_type insert_at_a_front			= 21;
 
-			static constexpr key_type replace_at_a0				= 20;
+			static constexpr key_type insert_at_a0_back			= 22;
+			static constexpr key_type append_at_a0_back			= 23;
+
+			static constexpr key_type replace_at_a0				= 24;
 
 			// recursive:
 
-			static constexpr key_type conditional				= 21;
+			static constexpr key_type conditional				= 25;
 	};
 
 	using MT = MachineNote;
@@ -190,7 +178,7 @@ public:
 
 	struct MachineInstr
 	{
-		using type							= index_type const*;
+		using type							= index_type const * const;
 
 		static constexpr key_type size					= 0;
 		static constexpr key_type name					= 1;
@@ -217,7 +205,7 @@ public:
 
 	struct MachineLabel
 	{
-		using type							= instr_type const*;
+		using type							= instr_type const * const;
 
 		static constexpr key_type size					= 0;
 
@@ -241,7 +229,7 @@ public:
 
 	struct MachineContr
 	{
-		using type							= label_type const*;
+		using type							= label_type const * const;
 
 		static constexpr key_type size					= 0;
 
@@ -261,15 +249,6 @@ public:
 /***********************************************************************************************************************/
 
 // programs:
-
-	// Programs are base level or derived.
-
-	// Base level: Block, Linear, Recursive.
-
-	// Generic programs are either base level or derived.
-
-	// User programs are generic programs that
-	// are specifically stored in Heap four.
 
 /***********************************************************************************************************************/
 
@@ -296,15 +275,6 @@ public:
 /***********************************************************************************************************************/
 
 // block:
-
-	// Block programs are intended *only* to be called by linear/recursive programs. 
-
-	// Block programs consist of two block instructions. Minimally, in order to call
-	// these programs only "unpack i segment, insert at h1 back" is required to bootstrap
-	// the calling/loading process for the others. As the minimum number of required
-	// programs all have the same form they are optimized into a single-call loader.
-
-	// As an optimization the two co-instructions are encoded as a single one instead.
 
 /***********************************************************************************************************************/
 
@@ -405,8 +375,6 @@ public:
 /***********************************************************************************************************************/
 
 // linear:
-
-	// Optimized to use a single label as the controller.
 
 /***********************************************************************************************************************/
 
@@ -720,20 +688,25 @@ private:
 		static constexpr key_type all_args	= 11;
 		static constexpr key_type all_h4	= 12;
 
-		static constexpr key_type note(key_type cloc, key_type nloc, key_type ploc, index_type psize)
+		static constexpr key_type cnote(key_type cloc, key_type ploc)
 		{
+			const bool is_h0_all = (cloc == h0) && (ploc == all_h0);
+
+			return is_h0_all ? MT::id : MT::fetch;
+		}
+
+		static constexpr key_type onote(key_type cloc, key_type nloc, key_type ploc, index_type psize)
+		{
+			const bool is_h0_all    = (cloc == h0)    && (nloc == h0)    && (ploc == all_h0);
 			const bool is_instr_all = (cloc == instr) && (nloc == instr) && (ploc == all_instr);
 			const bool is_param_opt	= MI::is_opt(psize);
 
-			return (is_instr_all && is_param_opt) ? MT::fast : MT::id;
+			if      (is_h0_all)                    return MT::id;
+			else if (is_instr_all && is_param_opt) return MT::fast;
+			else                                   return MT::fetch;
 		}
 
-		static constexpr key_type shape(instr_type ins) { return (ins[CI::name_loc] == h0) ? closed : open; }
-
-		static constexpr bool is_h0_all(instr_type ins)
-		{
-			return (ins[CI::caller_loc] == h0) && (ins[CI::name_loc] == h0) && (ins[CI::param_loc] == all_h0);
-		}
+		static constexpr key_type shape(instr_type ins) { return (ins[CI::name_loc] == id) ? closed : open; }
 	};
 
 	using CL = CallLocation;
@@ -748,17 +721,6 @@ private:
 	template<key_type...>
 	struct Resolve
 	{
-		// fast at:
-
-		NIK_DEFINE__FAST_AT(1, 0)
-		NIK_DEFINE__FAST_AT(2, 1)
-		NIK_DEFINE__FAST_AT(3, 2)
-		NIK_DEFINE__FAST_AT(4, 3)
-		NIK_DEFINE__FAST_AT(5, 4)
-		NIK_DEFINE__FAST_AT(6, 5)
-		NIK_DEFINE__FAST_AT(7, 6)
-		NIK_DEFINE__FAST_AT(8, 7)
-
 		static constexpr auto range_size_0 = U_null_Vs;
 		static constexpr auto range_size_1 = U_opt_pack_Vs<0>;
 		static constexpr auto range_size_2 = U_opt_pack_Vs<0, 1>;
@@ -941,16 +903,22 @@ private:
 	template<key_type... filler>
 	struct Make<CL::open, filler...>
 	{
-		template<auto name, template<auto...> class B>
-		static constexpr auto bind(void(*)(auto_template_pack<B>*))
+		template<auto caller, auto name>
+		static constexpr auto make(key_type)
+		{
+			return U_type_T<program<caller, name>>;
+		}
+
+		template<auto caller, auto name, template<auto...> class B>
+		static constexpr auto make(void(*)(auto_template_pack<B>*))
 		{
 			return U_type_T<B<name>>;
 		}
 
-		template<auto ins, auto... Vs, auto tpack, auto name, auto... ps>
-		static constexpr auto h2(void(*)(auto_pack<tpack, name, ps...>*))
+		template<auto ins, auto... Vs, auto caller, auto name, auto... ps>
+		static constexpr auto h2(void(*)(auto_pack<caller, name, ps...>*))
 		{
-			constexpr auto prog	= bind<name>(tpack);
+			constexpr auto prog	= make<caller, name>(caller);
 			constexpr auto params	= U_opt_pack_Vs<ps...>;
 			constexpr auto base	= T_type_U<prog>::base;
 

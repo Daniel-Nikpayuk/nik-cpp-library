@@ -17,88 +17,28 @@
 **
 ************************************************************************************************************************/
 
-// machines zero source:
-
-	// The narrative design is for policies to be nested:
-
-	// We dispatch <detour, call> by policy, but the policy embedded in the call instruction is intended
-	// only for the final value returned from the call. In order to dispatch correctly within generalized
-	// detour chains, we would need a way of specifying subpolicies. This would be done using machinations.
-
-	// With that said, in this specific context, such nesting can be optimized away using careful designs.
+// machines source:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-	// Heap anatomy:
+// fast at (optimization):
 
-		// Heap zero:
-
-			// Staging area to store objects
-			// for calls and applications.
-
-		// Heap one:
-
-			// Stores pack segments, used for
-			// register or argument access.
-
-		// Heap two:
-
-			// Stores stack1 info,
-			// used for program calls.
-
-		// Heap three:
-
-			// Stores stack2 info,
-			// used for program calls.
-
-		// Heap four:
-
-			// Stores constant info,
-			// used for values, operators, programs.
-
-		// Heap five:
-
-			// Saves and restores stack1,
-			// used for functional programs.
+	template<index_type, index_type...> struct FastAt;
 
 /***********************************************************************************************************************/
 
-	// constexpr monad (design):
+// (2^N):
 
-//		template<key_type... filler>
-//		struct machine<MN::(((name))), (((note))), filler...>
-//		{
-//			template
-//			<
-//				// stack1:
-
-//					auto d, auto m, auto n, auto c, auto i, auto j, auto... Vs,
-
-//				// stack2:
-
-//					typename... Heaps
-//			>
-//			static constexpr auto result(Heaps... Hs)
-//			{
-//				return machine
-//				<
-//					next_name<T_type_U<n>>(d, m, c, i, j),
-//					next_note<T_type_U<n>>(d, m, c, i, j)
-
-//				>::template result
-//				<
-//					next_depth(d),
-//					m, n, c,
-//					next_index1<T_type_U<n>>(d, m, c, i, j),
-//					next_index2<T_type_U<n>>(d, m, c, i, j)
-
-//					Vs...	// The behaviour of each
-//						// machine is such that it
-//				>(Hs...);	// mutates these packs.
-//			}
-//		};
+	NIK_DEFINE__FAST_AT(1, 0);
+	NIK_DEFINE__FAST_AT(2, 1);
+	NIK_DEFINE__FAST_AT(3, 2);
+	NIK_DEFINE__FAST_AT(4, 3);
+	NIK_DEFINE__FAST_AT(5, 4);
+	NIK_DEFINE__FAST_AT(6, 5);
+	NIK_DEFINE__FAST_AT(7, 6);
+	NIK_DEFINE__FAST_AT(8, 7);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -285,8 +225,6 @@
 
 #endif // GCC_IMPLEMENTATION
 
-		// clang: bracket nesting level defaults to a maximum of 256
-
 	template<key_type... filler>
 	struct machine<MN::fold_r_block, _nine, filler...>
 	{
@@ -325,65 +263,6 @@
 
 /***********************************************************************************************************************/
 
-// copy register position (optimization):
-
-	template<key_type Note, key_type... filler>
-	struct machine<MN::copy_r_pos, Note, filler...>
-	{
-		static constexpr index_type pos = 3;
-
-		template<NIK_CONTR_PARAMS, auto... Vs, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<Ws...>*), Heaps... Hs)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto val	= RE::template fast_at<Vs...>(U_opt_pack_Vs<ins[pos]>);
-
-			if constexpr (Note == MT::insert_at_h0_back)
-
-				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<Ws..., val>, Hs...);
-			else
-				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<val, Ws...>, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// copy argument position (optimization):
-
-	template<key_type Note, key_type... filler>
-	struct machine<MN::copy_a_pos, Note, filler...>
-	{
-		static constexpr index_type pos = 3;
-
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto... Ws, typename Heap1, typename Heap2, typename Heap3,
-			auto... Ps, typename... Heaps
-		>
-		static constexpr auto result
-		(
-			void(*H0)(auto_pack<Ws...>*),
-			Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*H4)(auto_pack<Ps...>*),
-			Heaps... Hs
-		)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto val	= RE::template fast_at<Ps...>(U_opt_pack_Vs<ins[pos]>);
-
-			if constexpr (Note == MT::insert_at_h0_back)
-
-				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<Ws..., val>, H1, H2, H3, H4, Hs...);
-			else
-				return NIK_MACHINE(d, n, c, i, j, Vs)(U_opt_pack_Vs<val, Ws...>, H1, H2, H3, H4, Hs...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
 // move argument block (2^N):
 
 	NIK_DEFINE__MOVE_A_BLOCK(0);
@@ -396,6 +275,63 @@
 	NIK_DEFINE__MOVE_A_BLOCK(7);
 	NIK_DEFINE__MOVE_A_BLOCK(8);
 	NIK_DEFINE__MOVE_A_BLOCK(9);
+
+/***********************************************************************************************************************/
+
+// copy register position (optimization):
+
+	template<key_type Note, key_type... filler>
+	struct machine<MN::copy_r_pos, Note, filler...>
+	{
+		static constexpr index_type pos = 3;
+
+		template<NIK_CONTR_PARAMS, auto... Vs, typename Heap0, typename Heap1, typename... Heaps>
+		static constexpr auto result(Heap0, Heap1, Heaps... Hs)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto val	= FastAt<ins[pos]>::template result<Vs...>;
+
+			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH1	= U_pretype_T<Heap1>;
+
+			constexpr auto index	= (Note == MT::insert_at_h0_back) ? _zero : _one;
+			constexpr auto cHn	= FastAt<index>::template result<cH0, cH1>;
+
+			constexpr auto nH0	= PackAppend::template append<val>(cHn);
+
+			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, Hs...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// copy argument position (optimization):
+
+	template<key_type Note, key_type... filler>
+	struct machine<MN::copy_a_pos, Note, filler...>
+	{
+		static constexpr index_type pos = 3;
+
+		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		static constexpr auto result(NIK_HEAP_VARS, Args... As)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto val	= FastAt<ins[pos]>::template result<U_pretype_T<Args>...>;
+
+			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH1	= U_pretype_T<Heap1>;
+
+			constexpr auto index	= (Note == MT::insert_at_h0_back) ? _zero : _one;
+			constexpr auto cHn	= FastAt<index>::template result<cH0, cH1>;
+
+			constexpr auto algo	= PE::transport(Note);
+			constexpr auto nH0	= Pack<algo>::template result<cHn, val>;
+
+			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, H4, H5, As...);
+		}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -516,7 +452,35 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto mac	= fetch_program<ins, Vs...>(H0, H1, H2, H3, H4, H5, As...);
+			constexpr auto shape	= CL::shape(ins);
+
+			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH1	= U_pretype_T<Heap1>;
+			constexpr auto cH2	= U_pretype_T<Heap2>;
+			constexpr auto cH3	= U_pretype_T<Heap3>;
+			constexpr auto cH4	= U_pretype_T<Heap4>;
+			constexpr auto cH5	= U_pretype_T<Heap5>;
+
+			constexpr auto nH2	= Make<shape>::template h2<ins, Vs...>(cH0);
+			constexpr auto nH3	= U_opt_pack_Vs<U_null_Vs, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, H4, H5, As...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// fetch:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::fetch, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		static constexpr auto result(NIK_HEAP_VARS, Args... As)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			const     auto mac	= Fetch::template program<ins, Vs...>(H0, H1, H2, H3, H4, H5, As...);
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
@@ -539,12 +503,12 @@
 			constexpr auto prog	= RG::template fast_program<ins>;
 			constexpr auto params	= RG::template fast_params<ins>;
 
-			constexpr auto cH0	= U_pretype_T<decltype(H0)>;
-			constexpr auto cH1	= U_pretype_T<decltype(H1)>;
-			constexpr auto cH2	= U_pretype_T<decltype(H2)>;
-			constexpr auto cH3	= U_pretype_T<decltype(H3)>;
-			constexpr auto cH4	= U_pretype_T<decltype(H4)>;
-			constexpr auto cH5	= U_pretype_T<decltype(H5)>;
+			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH1	= U_pretype_T<Heap1>;
+			constexpr auto cH2	= U_pretype_T<Heap2>;
+			constexpr auto cH3	= U_pretype_T<Heap3>;
+			constexpr auto cH4	= U_pretype_T<Heap4>;
+			constexpr auto cH5	= U_pretype_T<Heap5>;
 
 			constexpr auto nH2	= Resolve<caller>::template h2<ins, Vs...>(prog, params);
 			constexpr auto nH3	= U_opt_pack_Vs<NIK_HEAP_CARGS, U_pretype_T<Args>...>;
@@ -698,25 +662,23 @@
 		<
 			NIK_CONTR_PARAMS, auto... Vs,
 			auto ins, auto length, auto... Ws,
-			auto... Xs, typename... Heaps
+			auto... Xs, auto... Ys,
+			typename Heap3, typename... Heaps
 		>
 		static constexpr auto result
 		(
 			void(*H0)(auto_pack<ins, length, Ws...>*),
 			void(*H1)(auto_pack<Xs...>*),
-			Heaps...
+			void(*H2)(auto_pack<Ys...>*),
+			Heap3 H3, Heaps...
 		)
 		{
 			constexpr auto shape = CL::shape(ins);
-			constexpr auto pack  = U_opt_pack_Vs<Ws..., Xs...>;
-
-			// In order to make h3 from this location I need the original H0, H1.
+			constexpr auto pack  = U_opt_pack_Vs<Ws..., Xs..., Ys...>;
 
 			constexpr auto h2    = Make<shape>::template h2<ins, Vs...>(pack);
-			constexpr auto h3    = U_opt_pack_Vs<U_null_Vs, U_null_Vs, U_pretype_T<Heaps>...>;
-		//	constexpr auto h3    = U_opt_pack_Vs<nH0, U_null_Vs, U_pretype_T<Heaps>...>;
 
-			return machination(MT::internal, h2, h3);
+			return machination(MT::internal, h2, H3);
 		}
 	};
 

@@ -732,6 +732,19 @@
 
 /***********************************************************************************************************************/
 
+// fast at:
+
+	#define NIK_DEFINE__FAST_AT(_s_, _n_)										\
+															\
+		template<index_type... filler>										\
+		struct FastAt<_n_, filler...>										\
+		{													\
+			template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>						\
+			static constexpr auto result = V ## _n_;							\
+		}
+
+/***********************************************************************************************************************/
+
 // unpack instruction block (, insert at heap one back) (2^N):
 
 		// This machine is not general purpose, and so is optimized accordingly.
@@ -1024,18 +1037,6 @@
 					As...										\
 				);											\
 			}												\
-		}
-
-/***********************************************************************************************************************/
-
-// fast at (optimization):
-
-	#define NIK_DEFINE__FAST_AT(_s_, _n_)										\
-															\
-		template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>							\
-		static constexpr auto fast_at(void(*)(auto_pack<index_type{_n_}>*))					\
-		{													\
-			return V ## _n_;										\
 		}
 
 /***********************************************************************************************************************/

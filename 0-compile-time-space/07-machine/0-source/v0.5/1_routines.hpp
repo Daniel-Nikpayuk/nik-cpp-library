@@ -100,17 +100,17 @@ public:
 		MN::go_to, MT::conditional, Index
 	>;
 
-	template<key_type...>
-	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
-	<
-		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
-	>;
+//	template<key_type...>
+//	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
+//	>;
 
-	template<key_type...>
-	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
-	<
-		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
-	>;
+//	template<key_type...>
+//	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
+//	>;
 
 	// optimizations:
 
@@ -130,7 +130,7 @@ public:
 // closed:
 
 		// The instruction length is the same as with open.
-		//         This is to allow for the refactoring of algorithms.
+		// This is to allow for the refactoring of algorithms.
 
 	template
 	<
@@ -140,8 +140,19 @@ public:
 	>
 	static constexpr instr_type call_closed_program = instruction
 	<
-		MN::call, MT::id, RtnPolicy, CallerLoc, Caller, CL::h0, _zero, ParamLoc, Params...
+		MN::call, CL::cnote(CallerLoc, ParamLoc),
+		RtnPolicy, CallerLoc, Caller, CL::id, _zero, ParamLoc, Params...
 	>;
+
+	// interface:
+
+		template<key_type RtnPolicy, index_type Caller, index_type... Params>
+		static constexpr instr_type call_local_closed_program = call_closed_program
+		<
+			RtnPolicy,
+			CL::h0, Caller,
+			CL::all_h0, Params...
+		>;
 
 /***********************************************************************************************************************/
 
@@ -156,11 +167,20 @@ public:
 	>
 	static constexpr instr_type call_open_program = instruction
 	<
-		MN::call, CL::note(CallerLoc, NameLoc, ParamLoc, sizeof...(Params)),
+		MN::call, CL::onote(CallerLoc, NameLoc, ParamLoc, sizeof...(Params)),
 		RtnPolicy, CallerLoc, Caller, NameLoc, Name, ParamLoc, Params...
 	>;
 
 	// interface:
+
+		template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
+		static constexpr instr_type call_local_open_program = call_open_program
+		<
+			RtnPolicy,
+			CL::h0, Caller,
+			CL::h0, Name,
+			CL::all_h0, Params...
+		>;
 
 		template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
 		static constexpr instr_type call_builtin_open_program = call_open_program
@@ -180,10 +200,11 @@ public:
 		>;
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// interoperators:
+// detour:
 
-	// detour:
+/***********************************************************************************************************************/
 
 	template<key_type Policy>
 	static constexpr instr_type detour_call = instruction
@@ -191,16 +212,25 @@ public:
 		MN::detour, MT::internal, MN::id, Policy
 	>;
 
+	// syntactic sugar:
+
 		template<key_type...>
 		static constexpr instr_type apply_recursive__insert_at_r_front = detour_call<CP::insert_at_r_front>;
 
-	// machinate:
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machinate:
+
+/***********************************************************************************************************************/
 
 	template<key_type Note>
 	static constexpr instr_type machinate = instruction
 	<
 		MN::machinate, Note
 	>;
+
+	// syntactic sugar:
 
 		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause  >;
 		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind >;
@@ -210,9 +240,6 @@ public:
 /***********************************************************************************************************************/
 
 // block:
-
-	// Block programs consist of two block instructions and some machine
-	// modifiers: As such they can be optimized into a single instruction.
 
 /***********************************************************************************************************************/
 
@@ -518,26 +545,28 @@ private:
 	template<key_type...>
 	struct Get
 	{
+		// copy:
+
 			template<index_type... Is>
-			static constexpr auto copy_is__insert_at_h0_back = U_opt_pack_Vs
+			static constexpr auto U_copy_is__insert_at_h0_back = U_opt_pack_Vs
 			<
 				copy_i_pos__insert_at_h0_back<Is>...
 			>;
 
 			template<index_type... Is>
-			static constexpr label_type copy_rs__insert_at_h0_back = U_opt_pack_Vs
+			static constexpr auto U_copy_rs__insert_at_h0_back = U_opt_pack_Vs
 			<
 				copy_r_pos__insert_at_h0_back<Is>...
 			>;
 
 			template<index_type... Is>
-			static constexpr label_type copy_as__insert_at_h0_back = U_opt_pack_Vs
+			static constexpr auto U_copy_as__insert_at_h0_back = U_opt_pack_Vs
 			<
 				copy_a_pos__insert_at_h0_back<Is>...
 			>;
 
 			template<index_type... Is>
-			static constexpr label_type copy_h4s__insert_at_h0_back = U_opt_pack_Vs
+			static constexpr auto U_copy_h4s__insert_at_h0_back = U_opt_pack_Vs
 			<
 				copy_h4_pos__insert_at_h0_back<Is>...
 			>;
@@ -571,14 +600,15 @@ private:
 		{
 			constexpr auto caller_loc = ins[CI::caller_loc];
 
-			if constexpr (caller_loc == CL::instr) return copy_is__insert_at_h0_back<CI::caller>;
+			if constexpr (caller_loc == CL::instr) return U_copy_is__insert_at_h0_back<CI::caller>;
 			else
 			{
 				constexpr auto pos = ins[CI::caller];
 
-				if constexpr      (caller_loc == CL::regs) return copy_rs__insert_at_h0_back<pos>;
-				else if constexpr (caller_loc == CL::args) return copy_as__insert_at_h0_back<pos>;
-				else                                       return copy_h4s__insert_at_h0_back<pos>;
+				if constexpr      (caller_loc == CL::regs) return U_copy_rs__insert_at_h0_back<pos>;
+				else if constexpr (caller_loc == CL::args) return U_copy_as__insert_at_h0_back<pos>;
+				else if constexpr (caller_loc == CL::h4)   return U_copy_h4s__insert_at_h0_back<pos>;
+				else                                       return U_null_Vs; // h0
 			}
 		}
 	};
@@ -597,15 +627,15 @@ private:
 		{
 			constexpr auto name_loc = ins[CI::name_loc];
 
-			if constexpr      (name_loc == CL::h0   ) return U_null_Vs; // closed.
-			else if constexpr (name_loc == CL::instr) return copy_is__insert_at_h0_back<CI::name>;
+			if constexpr      (name_loc == CL::id   ) return U_null_Vs; // closed.
+			else if constexpr (name_loc == CL::instr) return U_copy_is__insert_at_h0_back<CI::name>;
 			else
 			{
 				constexpr auto pos = ins[CI::name];
 
-				if constexpr      (name_loc == CL::regs) return copy_rs__insert_at_h0_back<pos>;
-				else if constexpr (name_loc == CL::args) return copy_as__insert_at_h0_back<pos>;
-				else                                     return copy_h4s__insert_at_h0_back<pos>;
+				if constexpr      (name_loc == CL::regs) return U_copy_rs__insert_at_h0_back<pos>;
+				else if constexpr (name_loc == CL::args) return U_copy_as__insert_at_h0_back<pos>;
+				else                                     return U_copy_h4s__insert_at_h0_back<pos>;
 			}
 		}
 	};
@@ -620,27 +650,27 @@ private:
 	struct Get<CI::param, filler...> : public Get<filler...>
 	{
 		template<auto Size>
-		static constexpr auto all_instr = U_opt_pack_Vs
+		static constexpr auto U_get_is__replace_at_h1 = U_opt_pack_Vs
 		<
 			unpack_i_right__replace_at_h1<Size>
 		>;
 
 		template<auto Size>
-		static constexpr auto all_regs = U_opt_pack_Vs
+		static constexpr auto U_get_rs__replace_at_h1 = U_opt_pack_Vs
 		<
 			unpack_i_right__replace_at_h1<Size>,
 			fetch_rs__replace_at_h1<>
 		>;
 
 		template<auto Size>
-		static constexpr auto all_args = U_opt_pack_Vs
+		static constexpr auto U_get_as__replace_at_h1 = U_opt_pack_Vs
 		<
 			unpack_i_right__replace_at_h1<Size>,
 			fetch_as__replace_at_h1<>
 		>;
 
 		template<auto Size>
-		static constexpr auto all_h4 = U_opt_pack_Vs
+		static constexpr auto U_get_h4s__replace_at_h1 = U_opt_pack_Vs
 		<
 			unpack_i_right__replace_at_h1<Size>,
 			fetch_h4s__replace_at_h1<>
@@ -652,10 +682,10 @@ private:
 			constexpr auto param_loc	= ins[CI::param_loc];
 			constexpr auto size		= RG::template size<ins>;
 
-			if constexpr      (param_loc == CL::all_instr) return all_instr<size>;
-			else if constexpr (param_loc == CL::all_regs ) return all_regs<size>;
-			else if constexpr (param_loc == CL::all_args ) return all_args<size>;
-			else                                           return all_h4<size>;
+			if constexpr      (param_loc == CL::all_instr) return U_get_is__replace_at_h1<size>;
+			else if constexpr (param_loc == CL::all_regs ) return U_get_rs__replace_at_h1<size>;
+			else if constexpr (param_loc == CL::all_args ) return U_get_as__replace_at_h1<size>;
+			else                                           return U_get_h4s__replace_at_h1<size>;
 		}
 	};
 
@@ -664,29 +694,176 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// pack:
+
+/***********************************************************************************************************************/
+
+// names:
+
+	template<key_type...>
+	struct Pack
+	{
+		static constexpr key_type id		= 0;
+
+		static constexpr key_type split_one	= 1;
+		static constexpr key_type split_two	= 2;
+
+		static constexpr key_type append	= 3;
+		static constexpr key_type catenate	= 4;
+
+		static constexpr key_type transport(key_type n)
+		{
+			if      (n == MT::insert_at_h0_back) return append;
+			else if (n == MT::insert_at_h1_back) return append;
+			else                                 return catenate; // MT::append_at_h0_back
+		}
+	};
+
+	using PE = Pack<>;
+
+	// split one:
+
+		template<key_type... filler>
+		struct Pack<PE::split_one, filler...>
+		{
+			template<auto V0, auto... Vs>
+			static constexpr auto upper(void(*)(auto_pack<V0, Vs...>*))
+				{ return U_pack_Vs<V0>; }
+
+			template<auto V0, auto... Vs>
+			static constexpr auto rest(void(*)(auto_pack<V0, Vs...>*))
+				{ return U_pack_Vs<Vs...>; }
+		};
+
+		using PackSplit1 = Pack<PE::split_one>;
+
+	// split two:
+
+		template<key_type... filler>
+		struct Pack<PE::split_two, filler...>
+		{
+			template<auto V0, auto V1, auto... Vs>
+			static constexpr auto upper(void(*)(auto_pack<V0, V1, Vs...>*))
+				{ return U_pack_Vs<V1>; }
+
+			template<auto V0, auto V1, auto... Vs>
+			static constexpr auto rest(void(*)(auto_pack<V0, V1, Vs...>*))
+				{ return U_pack_Vs<Vs...>; }
+		};
+
+		using PackSplit2 = Pack<PE::split_two>;
+
+	// append:
+
+		template<key_type... filler>
+		struct Pack<PE::append, filler...>
+		{
+			template<auto V, auto... Vs>
+			static constexpr auto append(void(*)(auto_pack<Vs...>*))
+				{ return U_opt_pack_Vs<Vs..., V>; }
+
+			template<auto U, auto V>
+			static constexpr auto result = append<V>(U);
+		};
+
+		using PackAppend = Pack<PE::append>;
+
+	// catenate:
+
+		template<key_type... filler>
+		struct Pack<PE::catenate, filler...>
+		{
+			template<auto... Vs, auto... Ws>
+			static constexpr auto catenate(void(*)(auto_pack<Vs...>*), void(*)(auto_pack<Ws...>*))
+				{ return U_opt_pack_Vs<Vs..., Ws...>; }
+
+			template<auto U1, auto U2>
+			static constexpr auto result = catenate(U1, U2);
+		};
+
+		using PackCatenate = Pack<PE::catenate>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // build:
 
 /***********************************************************************************************************************/
 
-// label:
-
-	template<auto... Hs, auto... Is, auto... Js, auto... Ks>
-	static constexpr auto build_label
-	(
-		void(*)(auto_pack<Hs...>*),
-		void(*)(auto_pack<Is...>*),
-		void(*)(auto_pack<Js...>*),
-		void(*)(auto_pack<Ks...>*)
-	)
+	struct Build
 	{
-		return label
-		<
-			Hs...,
-			Is...,
-			Js...,
-			Ks...
-		>;
-	}
+		// lines:
+
+			template<auto... Hs, auto... Is, auto... Js, auto... Ks>
+			static constexpr label_type lines
+			(
+				void(*)(auto_pack<Hs...>*),
+				void(*)(auto_pack<Is...>*),
+				void(*)(auto_pack<Js...>*),
+				void(*)(auto_pack<Ks...>*)
+			)
+			{
+				return label
+				<
+					Hs...,
+					Is...,
+					Js...,
+					Ks...
+				>;
+			}
+
+		// h0:
+
+			template<auto ins, typename Heap>
+			static constexpr auto h0(Heap H)
+			{
+				constexpr auto caller_loc	= ins[CI::caller_loc];
+				constexpr auto length		= RG::template length<ins>;
+
+				if constexpr (caller_loc != CL::h0) return U_opt_pack_Vs<ins, length>;
+				else return U_opt_pack_Vs<ins, length, PackSplit1::upper(H)>;
+			}
+
+		// h1:
+
+			template<auto ins, typename Heap>
+			static constexpr auto h1(Heap H)
+			{
+				constexpr auto name_loc = ins[CI::name_loc];
+
+				if constexpr (name_loc != CL::h0) return U_null_Vs;
+				else
+				{
+					constexpr auto caller_loc = ins[CI::caller_loc];
+
+					if constexpr (caller_loc != CL::h0) return PackSplit1::upper(H);
+					else                                return PackSplit2::upper(H);
+				}
+			}
+
+		// h2: We can optimize knowing that h0_all is dispatched separately.
+
+			template<auto ins, typename Heap>
+			static constexpr auto h2(Heap H)
+			{
+				constexpr auto param_loc = ins[CI::param_loc];
+
+				if constexpr (param_loc != CL::all_h0) return U_null_Vs;
+				else
+				{
+					constexpr auto caller_loc = ins[CI::caller_loc];
+
+					if constexpr (caller_loc == CL::h0) return PackSplit1::rest(H);
+					else
+					{
+						constexpr auto name_loc = ins[CI::name_loc];
+
+						if constexpr (name_loc == CL::h0) return PackSplit1::rest(H);
+						else                              return H;
+					}
+				}
+			}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -694,9 +871,6 @@ private:
 // machination:
 
 /***********************************************************************************************************************/
-
-	// Do not refactor using other templated structs. Although these definitions are potentially redundant,
-	// trampolining/detouring require a distinct keyword so there's no confusion with other returned values.
 
 	template<typename Stack1Cache, typename Stack2Cache>
 	struct machination
@@ -725,51 +899,50 @@ private:
 
 /***********************************************************************************************************************/
 
-// function:
-
-	template<auto ins, auto H0, auto... Vs>
-	static constexpr auto fetch_func()
+	struct Fetch
 	{
-		constexpr auto caller_ins	= GC::template instrs<ins>();
-		constexpr auto name_ins		= GN::template instrs<ins>();
-		constexpr auto param_ins	= GP::template instrs<ins>();
-		constexpr auto tail_ins		= GE::func_tail;
+		// program:
 
-		return build_label(caller_ins, name_ins, param_ins, tail_ins);
-	}
+			template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+			static constexpr auto program(NIK_HEAP_VARS, Args... As)
+			{
+				constexpr auto caller_ins	= GC::template instrs<ins>();
+				constexpr auto name_ins		= GN::template instrs<ins>();
+				constexpr auto param_ins	= GP::template instrs<ins>();
+				constexpr auto tail_ins		= GE::prog_tail;
+				constexpr auto c		= Build::lines(caller_ins, name_ins, param_ins, tail_ins);
 
-/***********************************************************************************************************************/
+				constexpr auto cH0		= U_pretype_T<Heap0>;
+				constexpr auto cH1		= U_pretype_T<Heap1>;
+				constexpr auto cH2		= U_pretype_T<Heap2>;
+				constexpr auto cH3		= U_pretype_T<Heap3>;
+				constexpr auto cH4		= U_pretype_T<Heap4>;
+				constexpr auto cH5		= U_pretype_T<Heap5>;
 
-// program:
+				constexpr auto nH0		= Build::template h0<ins>(cH0);
+				constexpr auto nH1		= Build::template h1<ins>(cH0);
+				constexpr auto nH2		= Build::template h2<ins>(cH0);
+				constexpr auto nH3		= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
 
-	template<auto ins, auto... Vs, typename Heap0, typename Heap1, typename... Heaps>
-	static constexpr auto fetch_program(Heap0 H0, Heap1 H1, Heaps... Hs)
-	{
-		if constexpr (CL::is_h0_all(ins))
-		{
-			constexpr auto shape	= CL::shape(ins);
-			constexpr auto nH2	= Make<shape>::template h2<ins, Vs...>(H0);
-			constexpr auto nH3	= U_opt_pack_Vs<U_null_Vs, U_pretype_T<Heap1>, U_pretype_T<Heaps>...>;
+				constexpr auto h2		= RL::template U_prog_h2<c, Vs...>;
+    				constexpr auto h3		= U_opt_pack_Vs<nH0, nH1, nH2, nH3, cH4, cH5, U_pretype_T<Args>...>;
 
-			return machination(nH2, nH3);
-		}
-		else
-		{
-			constexpr auto caller_ins	= GC::template instrs<ins>();
-			constexpr auto name_ins		= GN::template instrs<ins>();
-			constexpr auto param_ins	= GP::template instrs<ins>();
-			constexpr auto tail_ins		= GE::prog_tail;
-			constexpr auto c		= build_label(caller_ins, name_ins, param_ins, tail_ins);
+				return machination(MT::id, h2, h3);
+			}
 
-			constexpr auto length		= RG::template length<ins>;
-			constexpr auto nH0		= U_opt_pack_Vs<ins, length>;
+		// function:
 
-			constexpr auto nH2		= RL::template U_prog_h2<c, Vs...>;
-    			constexpr auto nH3		= U_opt_pack_Vs<nH0, U_null_Vs, Hs...>;
+			template<auto ins, auto H0, auto... Vs>
+			static constexpr auto function()
+			{
+				constexpr auto caller_ins	= GC::template instrs<ins>();
+				constexpr auto name_ins		= GN::template instrs<ins>();
+				constexpr auto param_ins	= GP::template instrs<ins>();
+				constexpr auto tail_ins		= GE::func_tail;
 
-			return machination(nH2, nH3);
-		}
-	}
+				return Build::lines(caller_ins, name_ins, param_ins, tail_ins);
+			}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
