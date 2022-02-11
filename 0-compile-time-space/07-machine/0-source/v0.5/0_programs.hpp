@@ -128,8 +128,8 @@ public:
 
 			// call:
 
-			static constexpr key_type fetch					=  9; // opt
-			static constexpr key_type fast					= 10; // opt
+			static constexpr key_type fast					=  9; // opt
+			static constexpr key_type fetch					= 10; // opt
 
 			// detour:
 
@@ -148,23 +148,24 @@ public:
 
 			static constexpr key_type insert_at_h0_back			= 17;
 			static constexpr key_type insert_at_h1_back			= 18;
+			static constexpr key_type insert_at_h2_back			= 19;
 
-			static constexpr key_type append_at_h0_back			= 19;
+			static constexpr key_type append_at_h0_back			= 20;
 
-			static constexpr key_type replace_at_h0				= 20;
+			static constexpr key_type replace_at_h0				= 21;
 
 			// near linear:
 
-			static constexpr key_type insert_at_a_front			= 21;
+			static constexpr key_type insert_at_a_front			= 22;
 
-			static constexpr key_type insert_at_a0_back			= 22;
-			static constexpr key_type append_at_a0_back			= 23;
+			static constexpr key_type insert_at_a0_back			= 23;
+			static constexpr key_type append_at_a0_back			= 24;
 
-			static constexpr key_type replace_at_a0				= 24;
+			static constexpr key_type replace_at_a0				= 25;
 
 			// recursive:
 
-			static constexpr key_type conditional				= 25;
+			static constexpr key_type conditional				= 26;
 	};
 
 	using MT = MachineNote;
@@ -658,7 +659,9 @@ private:
 		static constexpr key_type insert_at_h1_back			=  7;
 		static constexpr key_type replace_at_h1				=  8;
 
-		static constexpr key_type load					=  9;
+		static constexpr key_type replace_at_h2				=  9;
+
+		static constexpr key_type load					= 10;
 	};
 
 	using CP = CallPolicy;

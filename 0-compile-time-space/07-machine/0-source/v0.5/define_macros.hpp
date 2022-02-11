@@ -813,6 +813,27 @@
 			}												\
 		}
 
+// move stack block, insert at heap one back (2^N):
+
+/*
+	#define NIK_DEFINE__MOVE_S_BLOCK__INSERT_AT_H1_BACK(_n_)							\
+															\
+		template<key_type... filler>										\
+		struct machine<MN::move_s_block__insert_at_h1_back, _n_, filler...>					\
+		{													\
+			template											\
+			<												\
+				NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs,				\
+				typename Heap0, auto... Ws, typename... Heaps						\
+			>												\
+			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
+			{												\
+				return NIK_MACHINE(n, c, d, i, j)							\
+					(H0, U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
+			}												\
+		}
+*/
+
 /***********************************************************************************************************************/
 
 // fold register block (2^N):

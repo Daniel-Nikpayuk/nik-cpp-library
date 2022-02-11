@@ -470,24 +470,6 @@
 
 /***********************************************************************************************************************/
 
-// fetch:
-
-	template<key_type... filler>
-	struct machine<MN::call, MT::fetch, filler...>
-	{
-		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
-		static constexpr auto result(NIK_HEAP_VARS, Args... As)
-		{
-			using tn		= T_type_U<n>;
-			constexpr auto ins	= tn::instr(c, i, j);
-			const     auto mac	= Fetch::template program<ins, Vs...>(H0, H1, H2, H3, H4, H5, As...);
-
-			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
-		}
-	};
-
-/***********************************************************************************************************************/
-
 // fast:
 
 	template<key_type... filler>
@@ -514,6 +496,24 @@
 			constexpr auto nH3	= U_opt_pack_Vs<NIK_HEAP_CARGS, U_pretype_T<Args>...>;
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, H4, H5, As...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// fetch:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::fetch, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		static constexpr auto result(NIK_HEAP_VARS, Args... As)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			const     auto mac	= Fetch::template program<ins, Vs...>(H0, H1, H2, H3, H4, H5, As...);
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
 	};
 
@@ -679,6 +679,37 @@
 			constexpr auto h2    = Make<shape>::template h2<ins, Vs...>(pack);
 
 			return machination(MT::internal, h2, H3);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// fetch:
+
+	template<key_type... filler>
+	struct machine<MN::machinate, MT::fetch, filler...>
+	{
+		static constexpr index_type pos = 3;
+
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			typename Heap0, typename Heap1, auto... Ys, typename... Heaps
+		>
+		static constexpr auto result(Heap0, Heap1, void(*H2)(auto_pack<Ys...>*), Heaps...)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+			constexpr auto loc	= ins[pos];
+			constexpr auto nc	= Build::template locations<Ys...>(loc);
+
+			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH1	= U_pretype_T<Heap1>;
+
+			constexpr auto h2	= RL::template U_prog_h2<nc, Vs...>;
+			constexpr auto h3	= U_opt_pack_Vs<cH0, cH1, U_null_Vs, U_pretype_T<Heaps>...>;
+
+			return machination(MT::internal, h2, h3);
 		}
 	};
 

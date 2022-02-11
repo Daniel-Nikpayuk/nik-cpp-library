@@ -224,17 +224,24 @@ public:
 
 /***********************************************************************************************************************/
 
-	template<key_type Note>
+	template<key_type Note, key_type... Params>
 	static constexpr instr_type machinate = instruction
 	<
-		MN::machinate, Note
+		MN::machinate, Note, Params...
 	>;
+
+	// interface:
+
+		template<key_type...>  static constexpr instr_type pause		= machinate < MT::pause      >;
+		template<key_type...>  static constexpr instr_type unwind		= machinate < MT::unwind     >;
+		template<key_type...>  static constexpr instr_type rewind		= machinate < MT::rewind     >;
+		template<key_type Loc> static constexpr instr_type fetch		= machinate < MT::fetch, Loc >;
 
 	// syntactic sugar:
 
-		template<key_type...> static constexpr instr_type pause			= machinate < MT::pause  >;
-		template<key_type...> static constexpr instr_type unwind		= machinate < MT::unwind >;
-		template<key_type...> static constexpr instr_type rewind		= machinate < MT::rewind >;
+		template<key_type...> static constexpr instr_type fetch_rs__replace_at_h2	= fetch < CL::all_regs >;
+		template<key_type...> static constexpr instr_type fetch_as__replace_at_h2	= fetch < CL::all_args >;
+		template<key_type...> static constexpr instr_type fetch_h4s__replace_at_h2	= fetch < CL::all_h4   >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -258,9 +265,9 @@ public:
 	// interface:
 
 		template<index_type Size>
-		static constexpr auto unpack_i_right__replace_at_h1 = call_builtin_block_program
+		static constexpr auto unpack_i_right__replace_at_h2 = call_builtin_block_program
 		<
-			CP::replace_at_h1,
+			CP::replace_at_h2,
 			BN::unpack_i_right,
 			Size,
 			CP::insert_at_h1_back,
@@ -334,6 +341,8 @@ public:
 	//		MT::insert_at_h0_back, Pos
 	//	>();
 
+	// h0:
+
 		template<index_type Pos>
 		static constexpr instr_type copy_i_pos__insert_at_h0_back = instruction
 		<
@@ -354,27 +363,56 @@ public:
 		<
 		>;
 
+	// h1:
+
+		template<index_type Pos>
+		static constexpr instr_type copy_i_pos__insert_at_h1_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_r_pos__insert_at_h1_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_a_pos__insert_at_h1_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_h4_pos__insert_at_h1_back = instruction
+		<
+		>;
+
+	// h2:
+
+		template<index_type Pos>
+		static constexpr instr_type copy_i_pos__insert_at_h2_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_r_pos__insert_at_h2_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_a_pos__insert_at_h2_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_h4_pos__insert_at_h2_back = instruction
+		<
+		>;
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // linear:
 
 /***********************************************************************************************************************/
-
-		template<key_type...>
-		static constexpr auto fetch_rs__replace_at_h1 = instruction
-		<
-		>;
-
-		template<key_type...>
-		static constexpr auto fetch_as__replace_at_h1 = instruction
-		<
-		>;
-
-		template<key_type...>
-		static constexpr auto fetch_h4s__replace_at_h1 = instruction
-		<
-		>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -542,45 +580,21 @@ private:
 
 /***********************************************************************************************************************/
 
+// empty:
+
 	template<key_type...>
 	struct Get
 	{
-		// copy:
-
-			template<index_type... Is>
-			static constexpr auto U_copy_is__insert_at_h0_back = U_opt_pack_Vs
-			<
-				copy_i_pos__insert_at_h0_back<Is>...
-			>;
-
-			template<index_type... Is>
-			static constexpr auto U_copy_rs__insert_at_h0_back = U_opt_pack_Vs
-			<
-				copy_r_pos__insert_at_h0_back<Is>...
-			>;
-
-			template<index_type... Is>
-			static constexpr auto U_copy_as__insert_at_h0_back = U_opt_pack_Vs
-			<
-				copy_a_pos__insert_at_h0_back<Is>...
-			>;
-
-			template<index_type... Is>
-			static constexpr auto U_copy_h4s__insert_at_h0_back = U_opt_pack_Vs
-			<
-				copy_h4_pos__insert_at_h0_back<Is>...
-			>;
-
 		// function:
 
-			static constexpr auto func_tail = U_opt_pack_Vs
+			static constexpr auto function_tail_instrs = U_opt_pack_Vs
 			<
 				unwind<>
 			>;
 
 		// program:
 
-			static constexpr auto prog_tail = U_opt_pack_Vs
+			static constexpr auto program_tail_instrs = U_opt_pack_Vs
 			<
 				rewind<>
 			>;
@@ -593,22 +607,46 @@ private:
 // caller:
 
 	template<key_type... filler>
-	struct Get<CI::caller, filler...> : public GE
+	struct Get<CI::caller, filler...>
 	{
+		template<index_type pos>
+		static constexpr auto U_copy_i_pos__insert_at_h0_back = U_opt_pack_Vs
+		<
+			copy_i_pos__insert_at_h0_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_r_pos__insert_at_h0_back = U_opt_pack_Vs
+		<
+			copy_r_pos__insert_at_h0_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_a_pos__insert_at_h0_back = U_opt_pack_Vs
+		<
+			copy_a_pos__insert_at_h0_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_h4_pos__insert_at_h0_back = U_opt_pack_Vs
+		<
+			copy_h4_pos__insert_at_h0_back<pos>
+		>;
+
 		template<auto ins>
 		static constexpr auto instrs()
 		{
 			constexpr auto caller_loc = ins[CI::caller_loc];
 
-			if constexpr (caller_loc == CL::instr) return U_copy_is__insert_at_h0_back<CI::caller>;
+			if constexpr      (caller_loc == CL::h0   ) return U_null_Vs;
+			else if constexpr (caller_loc == CL::instr) return U_copy_i_pos__insert_at_h0_back<CI::caller>;
 			else
 			{
 				constexpr auto pos = ins[CI::caller];
 
-				if constexpr      (caller_loc == CL::regs) return U_copy_rs__insert_at_h0_back<pos>;
-				else if constexpr (caller_loc == CL::args) return U_copy_as__insert_at_h0_back<pos>;
-				else if constexpr (caller_loc == CL::h4)   return U_copy_h4s__insert_at_h0_back<pos>;
-				else                                       return U_null_Vs; // h0
+				if constexpr      (caller_loc == CL::regs) return U_copy_r_pos__insert_at_h0_back<pos>;
+				else if constexpr (caller_loc == CL::args) return U_copy_a_pos__insert_at_h0_back<pos>;
+				else                                       return U_copy_h4_pos__insert_at_h0_back<pos>;
 			}
 		}
 	};
@@ -620,22 +658,47 @@ private:
 // name:
 
 	template<key_type... filler>
-	struct Get<CI::name, filler...> : public GE
+	struct Get<CI::name, filler...>
 	{
+		template<index_type pos>
+		static constexpr auto U_copy_i_pos__insert_at_h1_back = U_opt_pack_Vs
+		<
+			copy_i_pos__insert_at_h1_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_r_pos__insert_at_h1_back = U_opt_pack_Vs
+		<
+			copy_r_pos__insert_at_h1_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_a_pos__insert_at_h1_back = U_opt_pack_Vs
+		<
+			copy_a_pos__insert_at_h1_back<pos>
+		>;
+
+		template<index_type pos>
+		static constexpr auto U_copy_h4_pos__insert_at_h1_back = U_opt_pack_Vs
+		<
+			copy_h4_pos__insert_at_h1_back<pos>
+		>;
+
 		template<auto ins>
 		static constexpr auto instrs()
 		{
 			constexpr auto name_loc = ins[CI::name_loc];
 
-			if constexpr      (name_loc == CL::id   ) return U_null_Vs; // closed.
-			else if constexpr (name_loc == CL::instr) return U_copy_is__insert_at_h0_back<CI::name>;
+			if constexpr      (name_loc == CL::id   ) return U_null_Vs; // closed: not applicable.
+			else if constexpr (name_loc == CL::h0   ) return U_null_Vs;
+			else if constexpr (name_loc == CL::instr) return U_copy_i_pos__insert_at_h1_back<CI::name>;
 			else
 			{
 				constexpr auto pos = ins[CI::name];
 
-				if constexpr      (name_loc == CL::regs) return U_copy_rs__insert_at_h0_back<pos>;
-				else if constexpr (name_loc == CL::args) return U_copy_as__insert_at_h0_back<pos>;
-				else                                     return U_copy_h4s__insert_at_h0_back<pos>;
+				if constexpr      (name_loc == CL::regs) return U_copy_r_pos__insert_at_h1_back<pos>;
+				else if constexpr (name_loc == CL::args) return U_copy_a_pos__insert_at_h1_back<pos>;
+				else                                     return U_copy_h4_pos__insert_at_h1_back<pos>;
 			}
 		}
 	};
@@ -647,45 +710,50 @@ private:
 // parameters:
 
 	template<key_type... filler>
-	struct Get<CI::param, filler...> : public Get<filler...>
+	struct Get<CI::param, filler...>
 	{
-		template<auto Size>
-		static constexpr auto U_get_is__replace_at_h1 = U_opt_pack_Vs
+		template<index_type Size>
+		static constexpr auto U_copy_is__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h1<Size>
+			unpack_i_right__replace_at_h2<Size>
 		>;
 
-		template<auto Size>
-		static constexpr auto U_get_rs__replace_at_h1 = U_opt_pack_Vs
+		template<index_type Size>
+		static constexpr auto U_copy_rs__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h1<Size>,
-			fetch_rs__replace_at_h1<>
+			unpack_i_right__replace_at_h2<Size>,
+			fetch_rs__replace_at_h2<>
 		>;
 
-		template<auto Size>
-		static constexpr auto U_get_as__replace_at_h1 = U_opt_pack_Vs
+		template<index_type Size>
+		static constexpr auto U_copy_as__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h1<Size>,
-			fetch_as__replace_at_h1<>
+			unpack_i_right__replace_at_h2<Size>,
+			fetch_as__replace_at_h2<>
 		>;
 
-		template<auto Size>
-		static constexpr auto U_get_h4s__replace_at_h1 = U_opt_pack_Vs
+		template<index_type Size>
+		static constexpr auto U_copy_h4s__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h1<Size>,
-			fetch_h4s__replace_at_h1<>
+			unpack_i_right__replace_at_h2<Size>,
+			fetch_h4s__replace_at_h2<>
 		>;
 
 		template<auto ins>
 		static constexpr auto instrs()
 		{
-			constexpr auto param_loc	= ins[CI::param_loc];
-			constexpr auto size		= RG::template size<ins>;
+			constexpr auto param_loc = ins[CI::param_loc];
 
-			if constexpr      (param_loc == CL::all_instr) return U_get_is__replace_at_h1<size>;
-			else if constexpr (param_loc == CL::all_regs ) return U_get_rs__replace_at_h1<size>;
-			else if constexpr (param_loc == CL::all_args ) return U_get_as__replace_at_h1<size>;
-			else                                           return U_get_h4s__replace_at_h1<size>;
+			if constexpr (param_loc == CL::all_h0) return U_null_Vs;
+			else
+			{
+				constexpr auto size = RG::template size<ins>;
+
+				if constexpr      (param_loc == CL::all_instr) return U_copy_is__insert_at_h2_back<size>;
+				else if constexpr (param_loc == CL::all_regs ) return U_copy_rs__insert_at_h2_back<size>;
+				else if constexpr (param_loc == CL::all_args ) return U_copy_as__insert_at_h2_back<size>;
+				else                                           return U_copy_h4s__insert_at_h2_back<size>;
+			}
 		}
 	};
 
@@ -812,6 +880,16 @@ private:
 				>;
 			}
 
+		// locations:
+
+			template<index_type... Ys>
+			static constexpr label_type locations(key_type loc)
+			{
+				if      (loc == CL::regs) return label < copy_r_pos__insert_at_h2_back<Ys>...  >;
+				else if (loc == CL::args) return label < copy_a_pos__insert_at_h2_back<Ys>...  >;
+				else                      return label < copy_h4_pos__insert_at_h2_back<Ys>... >;
+			}
+
 		// h0:
 
 			template<auto ins, typename Heap>
@@ -909,7 +987,7 @@ private:
 				constexpr auto caller_ins	= GC::template instrs<ins>();
 				constexpr auto name_ins		= GN::template instrs<ins>();
 				constexpr auto param_ins	= GP::template instrs<ins>();
-				constexpr auto tail_ins		= GE::prog_tail;
+				constexpr auto tail_ins		= GE::program_tail_instrs;
 				constexpr auto c		= Build::lines(caller_ins, name_ins, param_ins, tail_ins);
 
 				constexpr auto cH0		= U_pretype_T<Heap0>;
@@ -938,7 +1016,7 @@ private:
 				constexpr auto caller_ins	= GC::template instrs<ins>();
 				constexpr auto name_ins		= GN::template instrs<ins>();
 				constexpr auto param_ins	= GP::template instrs<ins>();
-				constexpr auto tail_ins		= GE::func_tail;
+				constexpr auto tail_ins		= GE::function_tail_instrs;
 
 				return Build::lines(caller_ins, name_ins, param_ins, tail_ins);
 			}
