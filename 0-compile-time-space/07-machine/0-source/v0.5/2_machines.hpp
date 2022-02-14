@@ -501,6 +501,35 @@
 
 /***********************************************************************************************************************/
 
+// retrieve:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::retrieve, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto locs, auto poses, auto h0,
+			typename Heap1, typename Heap2, typename Heap3,
+			typename Heap4, typename Heap5, typename... Args
+		>
+		static constexpr auto result
+		(
+			void(*H0)(auto_pack<locs, poses, h0>*),
+			Heap1 H1, Heap2 H2, Heap3 H3,
+			Heap4 H4, Heap5 H5, Args... As
+		)
+		{
+			const auto mac = Retrieve::template program<locs, poses, h0, Vs...>(H2, H3, H4, As...);
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, Hs...);
+				// here we need c's current location to be a call instruction
+				// with policy to replace h0.
+		}
+	};
+
+/***********************************************************************************************************************/
+
 // fetch:
 
 	template<key_type... filler>
@@ -536,18 +565,18 @@
 			NIK_CONTR_PARAMS, auto... Vs,
 			auto... Ws, typename Heap1,
 			auto _m, auto _n, auto _c, auto _i, auto _j, auto... _Vs,
-			auto _H0, auto _H1, auto _H2, auto _H3, auto... _As, typename... Args
+			auto _H0, auto _H1, auto _H2, auto _H3, auto... _Hs, typename... Args
 		>
 		static constexpr auto result
 		(
 			void(*H0)(auto_pack<Ws...>*), Heap1 H1,
 			void(*H2)(auto_pack<_m, _n, _c, _i, _j, _Vs...>*),
-			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _As...>*), Args... As
+			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _Hs...>*), Args... As
 		)
 		{
 			using tn			= T_type_U<n>;
 			constexpr auto val		= NIK_AUTOMATA(d, _m, _n, _c, _i, _j, _Vs)
-								(_H0, _H1, _H2, _H3, _As...);
+								(_H0, _H1, U_null_Vs, U_null_Vs, _Hs...);
 			constexpr auto call_ins		= tn::instr(c, i, j);
 			constexpr key_type policy	= call_ins[CI::policy];
 
@@ -686,6 +715,7 @@
 
 // fetch:
 
+/*
 	template<key_type... filler>
 	struct machine<MN::machinate, MT::fetch, filler...>
 	{
@@ -712,6 +742,7 @@
 			return machination(MT::internal, h2, h3);
 		}
 	};
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

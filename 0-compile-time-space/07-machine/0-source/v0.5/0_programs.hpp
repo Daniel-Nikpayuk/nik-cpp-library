@@ -129,43 +129,44 @@ public:
 			// call:
 
 			static constexpr key_type fast					=  9; // opt
-			static constexpr key_type fetch					= 10; // opt
+			static constexpr key_type retrieve				= 10;
+			static constexpr key_type fetch					= 11;
 
 			// detour:
 
-			static constexpr key_type internal				= 11;
-			static constexpr key_type load					= 12;
+			static constexpr key_type internal				= 12;
+			static constexpr key_type load					= 13;
 
 			// machinate:
 
-			static constexpr key_type pause					= 13;
-			static constexpr key_type unwind				= 14;
-			static constexpr key_type rewind				= 15;
+			static constexpr key_type pause					= 14;
+			static constexpr key_type unwind				= 15;
+			static constexpr key_type rewind				= 16;
 
 		// passers:
 
-			static constexpr key_type insert_at_r_front			= 16;
+			static constexpr key_type insert_at_r_front			= 17;
 
-			static constexpr key_type insert_at_h0_back			= 17;
-			static constexpr key_type insert_at_h1_back			= 18;
-			static constexpr key_type insert_at_h2_back			= 19;
+			static constexpr key_type insert_at_h0_back			= 18;
+			static constexpr key_type insert_at_h1_back			= 19;
+			static constexpr key_type insert_at_h2_back			= 20;
 
-			static constexpr key_type append_at_h0_back			= 20;
+			static constexpr key_type append_at_h0_back			= 21;
 
-			static constexpr key_type replace_at_h0				= 21;
+			static constexpr key_type replace_at_h0				= 22;
 
 			// near linear:
 
-			static constexpr key_type insert_at_a_front			= 22;
+			static constexpr key_type insert_at_a_front			= 23;
 
-			static constexpr key_type insert_at_a0_back			= 23;
-			static constexpr key_type append_at_a0_back			= 24;
+			static constexpr key_type insert_at_a0_back			= 24;
+			static constexpr key_type append_at_a0_back			= 25;
 
-			static constexpr key_type replace_at_a0				= 25;
+			static constexpr key_type replace_at_a0				= 26;
 
 			// recursive:
 
-			static constexpr key_type conditional				= 26;
+			static constexpr key_type conditional				= 27;
 	};
 
 	using MT = MachineNote;

@@ -200,6 +200,21 @@ public:
 		>;
 
 /***********************************************************************************************************************/
+
+// retrieve:
+
+	template<key_type Policy>
+	static constexpr instr_type retrieve = instruction<MN::call, MT::retrieve, Policy>;
+
+/***********************************************************************************************************************/
+
+// fetch:
+
+	template<key_type...> static constexpr instr_type fetch_rs__replace_at_h2	= fetch < CL::all_regs >;
+	template<key_type...> static constexpr instr_type fetch_as__replace_at_h2	= fetch < CL::all_args >;
+	template<key_type...> static constexpr instr_type fetch_h4s__replace_at_h2	= fetch < CL::all_h4   >;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // detour:
@@ -230,18 +245,11 @@ public:
 		MN::machinate, Note, Params...
 	>;
 
-	// interface:
+	// syntactic sugar:
 
 		template<key_type...>  static constexpr instr_type pause		= machinate < MT::pause      >;
 		template<key_type...>  static constexpr instr_type unwind		= machinate < MT::unwind     >;
 		template<key_type...>  static constexpr instr_type rewind		= machinate < MT::rewind     >;
-		template<key_type Loc> static constexpr instr_type fetch		= machinate < MT::fetch, Loc >;
-
-	// syntactic sugar:
-
-		template<key_type...> static constexpr instr_type fetch_rs__replace_at_h2	= fetch < CL::all_regs >;
-		template<key_type...> static constexpr instr_type fetch_as__replace_at_h2	= fetch < CL::all_args >;
-		template<key_type...> static constexpr instr_type fetch_h4s__replace_at_h2	= fetch < CL::all_h4   >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -885,9 +893,27 @@ private:
 			template<index_type... Ys>
 			static constexpr label_type locations(key_type loc)
 			{
-				if      (loc == CL::regs) return label < copy_r_pos__insert_at_h2_back<Ys>...  >;
-				else if (loc == CL::args) return label < copy_a_pos__insert_at_h2_back<Ys>...  >;
-				else                      return label < copy_h4_pos__insert_at_h2_back<Ys>... >;
+				if (loc == CL::regs)
+
+					return label
+					<
+						copy_r_pos__insert_at_h2_back<Ys>...,
+						rewind<>
+					>;
+
+				else if (loc == CL::args)
+
+					return label
+					<
+						copy_a_pos__insert_at_h2_back<Ys>...,
+						rewind<>
+					>;
+				else
+					return label
+					<
+						copy_h4_pos__insert_at_h2_back<Ys>...,
+						rewind<>
+					>;
 			}
 
 		// h0:
@@ -969,6 +995,51 @@ private:
 
 	template<typename Stack1Cache, typename Stack2Cache>
 	static constexpr bool is_machination(const machination<Stack1Cache, Stack2Cache> &) { return true; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// retrieve:
+
+/***********************************************************************************************************************/
+
+	struct Retrieve
+	{
+		template<auto pos>
+		static constexpr auto copy_l_pos__insert_at_h1_back(key_type loc)
+		{
+			if      (loc == CL::regs) return copy_r_pos__insert_at_h1_back<pos>;
+			else if (loc == CL::args) return copy_a_pos__insert_at_h1_back<pos>;
+			else if (loc == CL::h4)   return copy_h4_pos__insert_at_h1_back<pos>;
+			else                      return copy_h0_pos__insert_at_h1_back<pos>;
+		}
+
+		template
+		<
+			auto locs, auto poses, auto h0, auto... Vs,
+			typename Heap2, typename Heap3, typename Heap4, typename... Args
+		>
+		static constexpr auto program(Heap2 H2, Heap3 H3, Heap4 H4, Args... As)
+		{
+			constexpr auto c	= label
+						<
+							copy_l_pos__insert_at_h1_back<poses>(locs)...,
+							heap_one<>
+						>;
+
+			constexpr auto cH0	= h0;
+			constexpr auto cH1	= U_null_Vs;
+			constexpr auto cH2	= U_pretype_T<Heap2>;
+			constexpr auto cH3	= U_pretype_T<Heap3>;
+			constexpr auto cH4	= U_pretype_T<Heap4>;
+			constexpr auto cH5	= U_null_Vs;
+
+			constexpr auto h2	= RL::template U_prog_h2<c, Vs...>;
+    			constexpr auto h3	= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
+
+			return machination(MT::id, h2, h3);
+		}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
