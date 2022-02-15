@@ -520,9 +520,9 @@
 			Heap4 H4, Heap5 H5, Args... As
 		)
 		{
-			const auto mac = Retrieve::template program<locs, poses, h0, Vs...>(H2, H3, H4, As...);
+			const auto mac = Retrieve::template program<h0, Vs...>(locs, poses, H2, H3, H4, As...);
 
-			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, Hs...);
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, H4, H5, As...);
 				// here we need c's current location to be a call instruction
 				// with policy to replace h0.
 		}

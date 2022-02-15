@@ -27,7 +27,7 @@
 
 // compile time space:
 
-//	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
+	#include nik_import(., interpret, cache, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, constant, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, pair, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., interpret, boolean, architect, v_0_5, gcc, dynamic, name)
@@ -143,8 +143,102 @@
 
 /***********************************************************************************************************************/
 
+	using index_type = unsigned;
+	using array_type = index_type const*;
+
+/***********************************************************************************************************************/
+
+	template<index_type... Vs>
+	constexpr index_type array[] = { Vs... };
+
+	template<index_type... Vs>
+	constexpr auto make_array_v1()
+	{
+		constexpr index_type local_array[] = { Vs... };
+
+		return local_array;
+	}
+
+	template<index_type... Vs>
+	constexpr auto make_array_v2()
+	{
+		return array<Vs...>;
+	}
+
+	constexpr auto arr2 = make_array_v2<1, 2, 3>();
+
+/***********************************************************************************************************************/
+
+	constexpr auto range_3 = U_pack_Vs<0, 1, 2>;
+
+	template<index_type N>
+	struct split_array
+	{
+		index_type locs[N];
+		index_type poses[N];
+
+		constexpr split_array(array_type arr, index_type offset) : locs{}, poses{}
+		{
+			for (index_type j=0, k=offset; j < N; ++j, k+=2)
+			{
+				locs[j]  = arr[k];
+				poses[j] = arr[k+1];
+			}
+		}
+	};
+
+	template<array_type arr>
+	constexpr auto splay()
+	{
+		constexpr index_type size = (arr[0] >> 1);
+
+		return split_array<size>(arr, 1);
+	}
+
+	template<auto sa, auto... Is>
+	constexpr auto unpack(void(*)(auto_pack<Is...>*))
+	{
+		constexpr auto val = sa();
+
+		return U_pack_Vs
+		<
+			array<val.locs[Is]...>,
+			array<val.poses[Is]...>
+		>;
+	}
+
+	template<array_type arr>
+	constexpr auto split()
+	{
+		constexpr auto sa = splay<arr>;
+
+		return unpack<sa>(range_3);
+	}
+
+	template<auto locs, auto poses> constexpr auto car(void(*)(auto_pack<locs, poses>*)) { return locs; }
+	template<auto locs, auto poses> constexpr auto cdr(void(*)(auto_pack<locs, poses>*)) { return poses; }
+
+	constexpr index_type arr[]	= { 6, 0, 1, 2, 3, 4, 5 };
+
+	constexpr auto split_arr	= split<arr>();
+
+/***********************************************************************************************************************/
+
 	int main(int argc, char *argv[])
 	{
+		printf("%u\n", car(split_arr)[0]);
+		printf("%u\n", car(split_arr)[1]);
+		printf("%u\n", car(split_arr)[2]);
+
+		printf("%u\n", cdr(split_arr)[0]);
+		printf("%u\n", cdr(split_arr)[1]);
+		printf("%u\n", cdr(split_arr)[2]);
+
+		return 0;
+	}
+
+	//	printf("%u\n", pos<&(split_arr.locs), 0>);
+
 	//	printf("%d\n", machine_module::template test_val<arr>);
 
 	//	print_merge_v0<l0, l0, U_LT>();
@@ -156,7 +250,4 @@
 	//	printf("%s\n", function_module::template attr_is_variable<attr> ? "true" : "false");
 
 	//	printf("%d\n", apply<J_add>(5, 7));
-
-		return 0;
-	}
 

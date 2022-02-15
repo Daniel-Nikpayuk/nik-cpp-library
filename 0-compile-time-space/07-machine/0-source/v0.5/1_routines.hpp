@@ -206,13 +206,8 @@ public:
 	template<key_type Policy>
 	static constexpr instr_type retrieve = instruction<MN::call, MT::retrieve, Policy>;
 
-/***********************************************************************************************************************/
-
-// fetch:
-
-	template<key_type...> static constexpr instr_type fetch_rs__replace_at_h2	= fetch < CL::all_regs >;
-	template<key_type...> static constexpr instr_type fetch_as__replace_at_h2	= fetch < CL::all_args >;
-	template<key_type...> static constexpr instr_type fetch_h4s__replace_at_h2	= fetch < CL::all_h4   >;
+	//	template<key_type...> static constexpr instr_type retrieve__return_value  = retrieve<CP::id>;
+	//	template<key_type...> static constexpr instr_type retrieve__replace_at_h0 = retrieve<CP::replace_at_h0>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -273,9 +268,9 @@ public:
 	// interface:
 
 		template<index_type Size>
-		static constexpr auto unpack_i_right__replace_at_h2 = call_builtin_block_program
+		static constexpr auto unpack_i_right__replace_at_h0 = call_builtin_block_program
 		<
-			CP::replace_at_h2,
+			CP::replace_at_h0,
 			BN::unpack_i_right,
 			Size,
 			CP::insert_at_h1_back,
@@ -385,6 +380,11 @@ public:
 
 		template<index_type Pos>
 		static constexpr instr_type copy_a_pos__insert_at_h1_back = instruction
+		<
+		>;
+
+		template<index_type Pos>
+		static constexpr instr_type copy_h0_pos__insert_at_h1_back = instruction
 		<
 		>;
 
@@ -590,6 +590,7 @@ private:
 
 // empty:
 
+/*
 	template<key_type...>
 	struct Get
 	{
@@ -609,11 +610,13 @@ private:
 	};
 
 	using GE = Get<>;
+*/
 
 /***********************************************************************************************************************/
 
 // caller:
 
+/*
 	template<key_type... filler>
 	struct Get<CI::caller, filler...>
 	{
@@ -660,11 +663,13 @@ private:
 	};
 
 	using GC = Get<CI::caller>;
+*/
 
 /***********************************************************************************************************************/
 
 // name:
 
+/*
 	template<key_type... filler>
 	struct Get<CI::name, filler...>
 	{
@@ -712,39 +717,41 @@ private:
 	};
 
 	using GN = Get<CI::name>;
+*/
 
 /***********************************************************************************************************************/
 
 // parameters:
 
+/*
 	template<key_type... filler>
 	struct Get<CI::param, filler...>
 	{
 		template<index_type Size>
 		static constexpr auto U_copy_is__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h2<Size>
+			unpack_i_right__replace_at_h0<Size>
 		>;
 
 		template<index_type Size>
 		static constexpr auto U_copy_rs__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h2<Size>,
-			fetch_rs__replace_at_h2<>
+			unpack_i_right__replace_at_h0<Size>,
+			retrieve__replace_at_h0<>
 		>;
 
 		template<index_type Size>
 		static constexpr auto U_copy_as__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h2<Size>,
-			fetch_as__replace_at_h2<>
+			unpack_i_right__replace_at_h0<Size>,
+			retrieve__replace_at_h0<>
 		>;
 
 		template<index_type Size>
 		static constexpr auto U_copy_h4s__insert_at_h2_back = U_opt_pack_Vs
 		<
-			unpack_i_right__replace_at_h2<Size>,
-			fetch_h4s__replace_at_h2<>
+			unpack_i_right__replace_at_h0<Size>,
+			retrieve__replace_at_h0<>
 		>;
 
 		template<auto ins>
@@ -766,6 +773,7 @@ private:
 	};
 
 	using GP = Get<CI::param>;
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -866,6 +874,7 @@ private:
 
 /***********************************************************************************************************************/
 
+/*
 	struct Build
 	{
 		// lines:
@@ -968,6 +977,7 @@ private:
 				}
 			}
 	};
+*/
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -1016,10 +1026,16 @@ private:
 
 		template
 		<
-			auto locs, auto poses, auto h0, auto... Vs,
+			auto h0, auto... Vs,
+			auto... locs, auto... poses,
 			typename Heap2, typename Heap3, typename Heap4, typename... Args
 		>
-		static constexpr auto program(Heap2 H2, Heap3 H3, Heap4 H4, Args... As)
+		static constexpr auto program
+		(
+		 	void(*)(auto_pack<locs...>*),
+		 	void(*)(auto_pack<poses...>*),
+			Heap2 H2, Heap3 H3, Heap4 H4, Args... As
+		)
 		{
 			constexpr auto c	= label
 						<
@@ -1055,28 +1071,29 @@ private:
 			template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
 			static constexpr auto program(NIK_HEAP_VARS, Args... As)
 			{
-				constexpr auto caller_ins	= GC::template instrs<ins>();
-				constexpr auto name_ins		= GN::template instrs<ins>();
-				constexpr auto param_ins	= GP::template instrs<ins>();
-				constexpr auto tail_ins		= GE::program_tail_instrs;
-				constexpr auto c		= Build::lines(caller_ins, name_ins, param_ins, tail_ins);
+			//	constexpr auto caller_ins	= GC::template instrs<ins>();
+			//	constexpr auto name_ins		= GN::template instrs<ins>();
+			//	constexpr auto param_ins	= GP::template instrs<ins>();
+			//	constexpr auto tail_ins		= GE::program_tail_instrs;
+			//	constexpr auto c		= Build::lines(caller_ins, name_ins, param_ins, tail_ins);
 
-				constexpr auto cH0		= U_pretype_T<Heap0>;
-				constexpr auto cH1		= U_pretype_T<Heap1>;
-				constexpr auto cH2		= U_pretype_T<Heap2>;
-				constexpr auto cH3		= U_pretype_T<Heap3>;
-				constexpr auto cH4		= U_pretype_T<Heap4>;
-				constexpr auto cH5		= U_pretype_T<Heap5>;
+			//	constexpr auto cH0		= U_pretype_T<Heap0>;
+			//	constexpr auto cH1		= U_pretype_T<Heap1>;
+			//	constexpr auto cH2		= U_pretype_T<Heap2>;
+			//	constexpr auto cH3		= U_pretype_T<Heap3>;
+			//	constexpr auto cH4		= U_pretype_T<Heap4>;
+			//	constexpr auto cH5		= U_pretype_T<Heap5>;
 
-				constexpr auto nH0		= Build::template h0<ins>(cH0);
-				constexpr auto nH1		= Build::template h1<ins>(cH0);
-				constexpr auto nH2		= Build::template h2<ins>(cH0);
-				constexpr auto nH3		= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
+			//	constexpr auto nH0		= Build::template h0<ins>(cH0);
+			//	constexpr auto nH1		= Build::template h1<ins>(cH0);
+			//	constexpr auto nH2		= Build::template h2<ins>(cH0);
+			//	constexpr auto nH3		= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
 
-				constexpr auto h2		= RL::template U_prog_h2<c, Vs...>;
-    				constexpr auto h3		= U_opt_pack_Vs<nH0, nH1, nH2, nH3, cH4, cH5, U_pretype_T<Args>...>;
+			//	constexpr auto h2		= RL::template U_prog_h2<c, Vs...>;
+    			//	constexpr auto h3		= U_opt_pack_Vs<nH0, nH1, nH2, nH3, cH4, cH5, U_pretype_T<Args>...>;
 
-				return machination(MT::id, h2, h3);
+			//	return machination(MT::id, h2, h3);
+				return 0;
 			}
 
 		// function:
@@ -1084,12 +1101,13 @@ private:
 			template<auto ins, auto H0, auto... Vs>
 			static constexpr auto function()
 			{
-				constexpr auto caller_ins	= GC::template instrs<ins>();
-				constexpr auto name_ins		= GN::template instrs<ins>();
-				constexpr auto param_ins	= GP::template instrs<ins>();
-				constexpr auto tail_ins		= GE::function_tail_instrs;
+			//	constexpr auto caller_ins	= GC::template instrs<ins>();
+			//	constexpr auto name_ins		= GN::template instrs<ins>();
+			//	constexpr auto param_ins	= GP::template instrs<ins>();
+			//	constexpr auto tail_ins		= GE::function_tail_instrs;
 
-				return Build::lines(caller_ins, name_ins, param_ins, tail_ins);
+			//	return Build::lines(caller_ins, name_ins, param_ins, tail_ins);
+				return 0;
 			}
 	};
 

@@ -656,11 +656,10 @@ private:
 
 		static constexpr key_type insert_at_h0_front			=  5;
 		static constexpr key_type insert_at_h0_back			=  6;
+		static constexpr key_type replace_at_h0				=  7;
 
-		static constexpr key_type insert_at_h1_back			=  7;
-		static constexpr key_type replace_at_h1				=  8;
-
-		static constexpr key_type replace_at_h2				=  9;
+		static constexpr key_type insert_at_h1_back			=  8;
+		static constexpr key_type replace_at_h1				=  9;
 
 		static constexpr key_type load					= 10;
 	};
