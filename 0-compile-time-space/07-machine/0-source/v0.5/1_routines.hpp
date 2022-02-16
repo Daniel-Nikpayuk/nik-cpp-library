@@ -790,10 +790,10 @@ private:
 			template<auto... Hs, auto... Is, auto... Js, auto... Ks>
 			static constexpr label_type lines
 			(
-				void(*)(auto_pack<Hs...>*),
-				void(*)(auto_pack<Is...>*),
-				void(*)(auto_pack<Js...>*),
-				void(*)(auto_pack<Ks...>*)
+				nik_avpcr(auto_pack<Hs...>*),
+				nik_avpcr(auto_pack<Is...>*),
+				nik_avpcr(auto_pack<Js...>*),
+				nik_avpcr(auto_pack<Ks...>*)
 			)
 			{
 				return label
@@ -940,8 +940,8 @@ private:
 		>
 		static constexpr auto program
 		(
-		 	void(*)(auto_pack<locs...>*),
-		 	void(*)(auto_pack<poses...>*),
+		 	nik_avpcr(auto_pack<locs...>*),
+		 	nik_avpcr(auto_pack<poses...>*),
 			Heap2 H2, Heap3 H3, Heap4 H4, Args... As
 		)
 		{
@@ -1033,7 +1033,7 @@ private:
 			{
 			//	constexpr auto param_loc = ins[CI::param_loc];
 
-			//	if constexpr (is_all_loc(param_loc))
+			//	if constexpr (is_loc_all(param_loc))
 
 			//		return full_param_program<ins, Vs...>(NIK_HEAP_ARGS, As...);
 			//	else

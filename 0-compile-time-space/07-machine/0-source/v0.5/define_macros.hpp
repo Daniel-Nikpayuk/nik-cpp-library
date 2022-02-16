@@ -92,7 +92,7 @@
 
 	#define NIK_L_CACHE()												\
 															\
-		void(*)(auto_pack<
+		nik_avpcr(auto_pack<
 
 	#define NIK_R_CACHE()												\
 															\
@@ -787,8 +787,8 @@
 			>												\
 			static constexpr auto result									\
 			(												\
-				void(*H0)(auto_pack<ins, length, Ws...>*),						\
-				void(*H1)(auto_pack<Xs...>*), Heap2 H2, Heap3 H3,					\
+				nik_vpcr(H0)(auto_pack<ins, length, Ws...>*),						\
+				nik_vpcr(H1)(auto_pack<Xs...>*), Heap2 H2, Heap3 H3,					\
 				Heap4 H4, Heap5 H5, Args... As								\
 			)												\
 			{												\
@@ -823,7 +823,7 @@
 				NIK_CONTR_PARAMS, NIK_2_N_AUTO_VARS(_n_, V), auto... Vs,				\
 				typename Heap0, auto... Xs, typename... Heaps						\
 			>												\
-			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Xs...>*), Heaps... Hs)		\
+			static constexpr auto result(Heap0 H0, nik_vpcr(H1)(auto_pack<Xs...>*), Heaps... Hs)		\
 			{												\
 				using tn		= T_type_U<n>;							\
 				constexpr auto ins	= tn::instr(c, i, j);						\
@@ -850,7 +850,7 @@
 				NIK_CONTR_PARAMS, NIK_2_ ## _n_ ## _AUTO_VS, auto... Vs,				\
 				typename Heap0, auto... Ws, typename... Heaps						\
 			>												\
-			static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Ws...>*), Heaps... Hs)		\
+			static constexpr auto result(Heap0 H0, nik_vpcr(H1)(auto_pack<Ws...>*), Heaps... Hs)		\
 			{												\
 				return NIK_MACHINE(n, c, d, i, j)							\
 					(H0, U_opt_pack_Vs<Ws..., NIK_2_ ## _n_ ## _VS>, Hs...);			\
@@ -872,7 +872,7 @@
 				NIK_CONTR_PARAMS, auto V, NIK_2_N_AUTO_VARS(_n_, V), auto... Vs,			\
 				auto W0, auto... Ws, typename... Heaps							\
 			>												\
-			static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)			\
+			static constexpr auto result(nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heaps... Hs)			\
 			{												\
 				using tn		= T_type_U<n>;							\
 				constexpr auto ins	= tn::instr(c, i, j);						\
@@ -912,7 +912,7 @@
 			>												\
 			static constexpr auto result									\
 			(												\
-				Heap0 H0, Heap1 H1, void(*H2)(auto_pack<Ys...>*), Heap3 H3, Heap4 H4,			\
+				Heap0 H0, Heap1 H1, nik_vpcr(H2)(auto_pack<Ys...>*), Heap3 H3, Heap4 H4,		\
 				NIK_2_N_VARS(_n_, Arg), Args... As							\
 			)												\
 			{												\
@@ -956,7 +956,7 @@
 			static constexpr auto result									\
 			(												\
 				Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3, Heap4 H4,					\
-				void(*A0)(auto_pack<Ps...>*), NIK_2_N_CACHE_VARS(_n_, Ps), Args... As			\
+				nik_vpcr(A0)(auto_pack<Ps...>*), NIK_2_N_CACHE_VARS(_n_, Ps), Args... As		\
 			)												\
 			{												\
 				return NIK_MACHINE(d, n, c, i, j, Vs)							\
@@ -992,7 +992,7 @@
 			>												\
 			static constexpr auto result									\
 			(												\
-				void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heap4 H4,		\
+				nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heap4 H4,		\
 				NIK_2_N_CACHE_VARS(_n_, Ps), Args... As							\
 			)												\
 			{												\
@@ -1047,8 +1047,8 @@
 			>												\
 			static constexpr auto result									\
 			(												\
-				void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heap4 H4,		\
-				void(*A0)(auto_pack<Ps...>*), NIK_2_N_CACHE_VARS(_n_, Ps), Args... As			\
+				nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3, Heap4 H4,		\
+				nik_vpcr(A0)(auto_pack<Ps...>*), NIK_2_N_CACHE_VARS(_n_, Ps), Args... As		\
 			)												\
 			{												\
 				using tn		= T_type_U<n>;							\

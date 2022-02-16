@@ -92,7 +92,7 @@ private:
 			template<auto...> class ListName, template<auto...> class... LNs,
 			auto... Vs, typename... Ts
 		>
-		static constexpr auto result(void(*)(auto_template_pack<ListName, LNs...>*), Ts... As)
+		static constexpr auto result(nik_avpcr(auto_template_pack<ListName, LNs...>*), Ts... As)
 		{
 			constexpr auto sc = U_pack_Vs<U_type_T<n>, c, i, j, U_pack_Bs<ListName, LNs...>, Vs...>;
 			constexpr auto hc = U_pack_Vs<U_type_T<T_pretype_T<Ts>>...>;
@@ -116,7 +116,7 @@ private:
 			template<auto...> class ListName, template<auto...> class... LNs,
 			auto... Vs, typename... Ts
 		>
-		static constexpr auto result(void(*)(auto_template_pack<ListName, LNs...>*), Ts... As)
+		static constexpr auto result(nik_avpcr(auto_template_pack<ListName, LNs...>*), Ts... As)
 		{
 			return U_type_T<ListName<Vs...>>;
 		}
@@ -204,7 +204,7 @@ private:
 			template<auto...> class ListName, template<auto...> class... LNs,
 			auto... Vs, typename... Ts
 		>
-		static constexpr auto result(void(*A0)(auto_template_pack<ListName, LNs...>*), Ts... As)
+		static constexpr auto result(nik_vpcp(A0)(auto_template_pack<ListName, LNs...>*), Ts... As)
 		{
 			return A0;
 		}
@@ -298,7 +298,7 @@ private:
 			typename n, auto c, auto d, auto i, auto j, auto... Vs,
 			template<auto...> class... LNs, typename... Ts
 		>
-		static constexpr auto push_front(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		static constexpr auto push_front(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 		{
 			return machine
 			<
@@ -323,7 +323,7 @@ private:
 			typename n, auto c, auto d, auto i, auto j, auto... Vs,
 			template<auto...> class... LNs, typename... Ts
 		>
-		static constexpr auto push_back(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		static constexpr auto push_back(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 		{
 			return machine
 			<
@@ -348,7 +348,7 @@ private:
 			typename n, auto c, auto d, auto i, auto j, auto Op, auto... Vs,
 			template<auto...> class... LNs, typename... Ts
 		>
-		static constexpr auto zip(void(*)(auto_template_pack<LNs...>*), Ts... As)
+		static constexpr auto zip(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 		{
 			return machine
 			<
@@ -383,7 +383,7 @@ private:
 				typename n, auto c, auto d, auto i, auto j, auto... Vs,
 				template<auto...> class... LNs, typename... Ts
 			>
-			static constexpr auto result(void(*)(auto_template_pack<LNs...>*), Ts... As)
+			static constexpr auto result(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 			{
 				return machine
 				<
@@ -412,7 +412,7 @@ private:
 				typename n, auto c, auto d, auto i, auto j, auto... Vs,
 				template<auto...> class... LNs, typename... Ts
 			>
-			static constexpr auto result(void(*)(auto_template_pack<LNs...>*), Ts... As)
+			static constexpr auto result(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 			{
 				return machine
 				<
@@ -441,7 +441,7 @@ private:
 				typename n, auto c, auto d, auto i, auto j, auto Op, auto... Vs,
 				template<auto...> class... LNs, typename... Ts
 			>
-			static constexpr auto result(void(*)(auto_template_pack<LNs...>*), Ts... As)
+			static constexpr auto result(nik_avpcr(auto_template_pack<LNs...>*), Ts... As)
 			{
 				return machine
 				<
@@ -521,9 +521,9 @@ public:
 	template<auto d, auto un, auto c, auto i, auto... Vs, template<auto...> class ListName, auto... Ws, auto... As>
 	static constexpr auto trampoline
 	(
-		void(*)(auto_pack<un, c, i, Vs...>*),
-		void(*)(ListName<Ws...>*),
-		void(*)(auto_pack<As...>*)
+		nik_avpcr(auto_pack<un, c, i, Vs...>*),
+		nik_avpcr(ListName<Ws...>*),
+		nik_avpcr(auto_pack<As...>*)
 	)
 	{
 		static_assert(bool(d), "list trampolining nesting depth exceeded.");

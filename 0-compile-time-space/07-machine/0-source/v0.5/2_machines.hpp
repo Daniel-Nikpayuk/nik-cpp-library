@@ -212,7 +212,7 @@
 			NIK_CONTR_PARAMS, auto V, NIK_2_N_AUTO_VARS(9, V), auto... Vs,
 			auto W0, auto... Ws, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
+		static constexpr auto result(nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
@@ -330,7 +330,7 @@
 			NIK_CONTR_PARAMS, auto... Vs,
 			auto W0, auto... Ws, typename... Heaps
 		>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
+		static constexpr auto result(nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
@@ -353,7 +353,7 @@
 			NIK_CONTR_PARAMS, auto... Vs,
 			typename Heap0, auto... Xs, typename... Heaps
 		>
-		static constexpr auto result(Heap0 H0, void(*H1)(auto_pack<Xs...>*), Heaps... Hs)
+		static constexpr auto result(Heap0 H0, nik_vpcr(H1)(auto_pack<Xs...>*), Heaps... Hs)
 		{
 			return NIK_BEGIN_MACHINE(d, n, c, i, j),
 
@@ -395,7 +395,7 @@
 	struct machine<MN::call_h0_all, MT::insert_at_r_front, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, auto W0, auto... Ws, typename... Heaps>
-		static constexpr auto result(void(*H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
+		static constexpr auto result(nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heaps... Hs)
 		{
 			if constexpr (policy == )
 
@@ -494,7 +494,7 @@
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<locs, poses, h0>*),
+			nik_vpcr(H0)(auto_pack<locs, poses, h0>*),
 			Heap1 H1, Heap2 H2, Heap3 H3,
 			Heap4 H4, Heap5 H5, Args... As
 		)
@@ -548,9 +548,9 @@
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<Ws...>*), Heap1 H1,
-			void(*H2)(auto_pack<_m, _n, _c, _i, _j, _Vs...>*),
-			void(*H3)(auto_pack<_H0, _H1, _H2, _H3, _Hs...>*), Args... As
+			nik_vpcr(H0)(auto_pack<Ws...>*), Heap1 H1,
+			nik_vpcr(H2)(auto_pack<_m, _n, _c, _i, _j, _Vs...>*),
+			nik_vpcr(H3)(auto_pack<_H0, _H1, _H2, _H3, _Hs...>*), Args... As
 		)
 		{
 			using tn			= T_type_U<n>;
@@ -612,8 +612,8 @@
 		static constexpr auto result
 		(
 			Heap0 H0, Heap1 H1,
-			void(*H2)(auto_pack<_Vs...>*),
-			void(*H3)(auto_pack<_Hs...>*), Args... As
+			nik_vpcr(H2)(auto_pack<_Vs...>*),
+			nik_vpcr(H3)(auto_pack<_Hs...>*), Args... As
 		)
 		{
 			return NIK_MACHINE(d, n, c, i, j, _Vs)(_Hs...);
@@ -675,9 +675,9 @@
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<ins, length, Ws...>*),
-			void(*H1)(auto_pack<Xs...>*),
-			void(*H2)(auto_pack<Ys...>*),
+			nik_vpcr(H0)(auto_pack<ins, length, Ws...>*),
+			nik_vpcr(H1)(auto_pack<Xs...>*),
+			nik_vpcr(H2)(auto_pack<Ys...>*),
 			Heap3 H3, Heaps...
 		)
 		{
@@ -705,7 +705,7 @@
 			NIK_CONTR_PARAMS, auto... Vs,
 			typename Heap0, typename Heap1, auto... Ys, typename... Heaps
 		>
-		static constexpr auto result(Heap0, Heap1, void(*H2)(auto_pack<Ys...>*), Heaps...)
+		static constexpr auto result(Heap0, Heap1, nik_vpcr(H2)(auto_pack<Ys...>*), Heaps...)
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
@@ -732,7 +732,7 @@ public:
 
 /*
 	template<typename program, auto... Vs, auto... Is, typename... Args>
-	static constexpr auto start(void(*)(auto_pack<Is...>*), Args...)
+	static constexpr auto start(nik_avpcr(auto_pack<Is...>*), Args...)
 	{
 		constexpr auto d	= program::depth;
 		constexpr auto n	= U_linear_program;

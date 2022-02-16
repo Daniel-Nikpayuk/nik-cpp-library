@@ -43,7 +43,7 @@ private:
 		static constexpr auto result
 		(
 			Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<Ps...>*), Args... As
+			nik_vpcr(A0)(auto_pack<Ps...>*), Args... As
 		)
 		{
 			constexpr auto nA0 = U_opt_pack_Vs<Vs...>;
@@ -136,8 +136,8 @@ private:
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<Ps...>*), Args... As
+			nik_vpcr(H0)(auto_pack<Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
+			nik_vpcr(A0)(auto_pack<Ps...>*), Args... As
 		)
 		{
 			constexpr bool is_null	= (sizeof...(Ps) == 0);
@@ -162,8 +162,8 @@ private:
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<Ps...>*), Args... As
+			nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
+			nik_vpcr(A0)(auto_pack<Ps...>*), Args... As
 		)
 		{
 			using tn			= T_type_U<n>;
@@ -214,7 +214,7 @@ private:
 		static constexpr auto result
 		(
 			Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<P0, Ps...>*), Args... As
+			nik_vpcr(A0)(auto_pack<P0, Ps...>*), Args... As
 		)
 		{
 			using tn				= T_type_U<n>;
@@ -254,7 +254,7 @@ private:
 		static constexpr auto result
 		(
 			Heap0 H0, Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<Ps...>*), void(*A1)(auto_pack<Qs...>*), Args... As
+			nik_vpcr(A0)(auto_pack<Ps...>*), nik_vpcr(A1)(auto_pack<Qs...>*), Args... As
 		)
 		{
 			constexpr auto val = U_opt_pack_Vs<Ps..., Qs...>;
@@ -278,8 +278,8 @@ private:
 		>
 		static constexpr auto result
 		(
-			void(*H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
-			void(*A0)(auto_pack<Ps...>*), void(*A1)(auto_pack<Qs...>*), Args... As
+			nik_vpcr(H0)(auto_pack<W0, Ws...>*), Heap1 H1, Heap2 H2, Heap3 H3,
+			nik_vpcr(A0)(auto_pack<Ps...>*), nik_vpcr(A1)(auto_pack<Qs...>*), Args... As
 		)
 		{
 			using tn			= T_type_U<n>;

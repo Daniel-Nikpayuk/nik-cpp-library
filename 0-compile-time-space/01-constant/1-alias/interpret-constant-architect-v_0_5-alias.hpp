@@ -66,6 +66,7 @@
 // numeric:
 
 	using key_type							= typename NIK_MODULE::key_type;
+	using ckey_type							= typename NIK_MODULE::ckey_type;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, _zero)			= NIK_MODULE::_zero;
 	NIK_POLICY auto nik_name(NIK_PREFIX, _one)			= NIK_MODULE::_one;
@@ -80,6 +81,7 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX, _ten)			= NIK_MODULE::_ten;
 
 	using index_type						= typename NIK_MODULE::index_type;
+	using cindex_type						= typename NIK_MODULE::cindex_type;
 
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_0)			= NIK_MODULE::_2_0;
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_1)			= NIK_MODULE::_2_1;
@@ -93,6 +95,7 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX,_2_9)			= NIK_MODULE::_2_9;
 
 	using depth_type						= typename NIK_MODULE::depth_type;
+	using cdepth_type						= typename NIK_MODULE::cdepth_type;
 
 /***********************************************************************************************************************/
 

@@ -148,9 +148,9 @@ public:
 	template<auto d, auto un, auto c, auto i, auto... Vs, template<auto...> class ListName, auto... Ws, auto... As>
 	static constexpr auto trampoline
 	(
-		void(*)(auto_pack<un, c, i, Vs...>*),
-		void(*)(ListName<Ws...>*),
-		void(*)(auto_pack<As...>*)
+		nik_avpcr(auto_pack<un, c, i, Vs...>*),
+		nik_avpcr(ListName<Ws...>*),
+		nik_avpcr(auto_pack<As...>*)
 	)
 	{
 		static_assert(bool(d), "list trampolining nesting depth exceeded.");
@@ -180,9 +180,9 @@ public:
 	template<auto d, auto un, auto c, auto i, auto... Vs, template<auto...> class ListName, auto... As>
 	static constexpr auto trampoline
 	(
-		void(*)(auto_pack<un, c, i, Vs...>*),
-		void(*)(auto_template_pack<ListName>*),
-		void(*)(auto_pack<As...>*)
+		nik_avpcr(auto_pack<un, c, i, Vs...>*),
+		nik_avpcr(auto_template_pack<ListName>*),
+		nik_avpcr(auto_pack<As...>*)
 	)
 	{
 		static_assert(bool(d), "list trampolining nesting depth exceeded.");
@@ -214,7 +214,7 @@ public:
 	// induction:
 
 	template<typename n, auto c, auto d, auto... Vs, typename L, typename... Ts>
-	static constexpr auto induction_start(void(*)(L*), Ts... As)
+	static constexpr auto induction_start(nik_avpcr(L*), Ts... As)
 	{
 		constexpr auto result = pattern_match_list<L>::template induction
 		<
@@ -350,7 +350,7 @@ private:
 		struct induction<IN::zip, filler...>
 		{
 			template<typename n, auto c, auto d, auto i, auto... Vs, typename Op, typename... Ts>
-			static constexpr auto result(void(*op)(Op*), Ts... As)
+			static constexpr auto result(nik_vpcr(op)(Op*), Ts... As)
 			{
 				return continuation
 				<
@@ -550,7 +550,7 @@ private:
 			typename n, auto c, auto d, auto i,
 			template<auto...> class ListName, auto... Vs, typename L, typename... Ts
 		>
-		static constexpr auto result(void(*)(L*), Ts... As)
+		static constexpr auto result(nik_avpcr(L*), Ts... As)
 		{
 			return pattern_match_list<L>::template induction
 			<
@@ -601,7 +601,7 @@ private:
 			typename n, auto c, auto d, auto i,
 			template<auto...> class ListName, auto... Vs, typename Op, typename L, typename... Ts
 		>
-		static constexpr auto result(Op op, void(*)(L*), Ts... As)
+		static constexpr auto result(Op op, nik_avpcr(L*), Ts... As)
 		{
 			return pattern_match_list<L>::template induction
 			<

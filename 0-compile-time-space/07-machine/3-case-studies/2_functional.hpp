@@ -143,7 +143,7 @@
 	struct E_is_null
 	{
 		template<auto... Vs>
-		static constexpr bool is_null(void(*)(auto_pack<Vs...>*)) { return (sizeof...(Vs) == 0); }
+		static constexpr bool is_null(nik_avpcr(auto_pack<Vs...>*)) { return (sizeof...(Vs) == 0); }
 
 		template<auto List>
 		static constexpr bool result = is_null(List);
@@ -158,7 +158,7 @@
 	struct E_cons
 	{
 		template<auto V, auto... Vs>
-		static constexpr auto cons(void(*)(auto_pack<Vs...>*)) { return U_pack_Vs<V, Vs...>; }
+		static constexpr auto cons(nik_avpcr(auto_pack<Vs...>*)) { return U_pack_Vs<V, Vs...>; }
 
 		template<auto V, auto List>
 		static constexpr auto result = cons<V>(List);
@@ -173,7 +173,7 @@
 	struct E_push
 	{
 		template<auto V, auto... Vs>
-		static constexpr auto push(void(*)(auto_pack<Vs...>*)) { return U_pack_Vs<Vs..., V>; }
+		static constexpr auto push(nik_avpcr(auto_pack<Vs...>*)) { return U_pack_Vs<Vs..., V>; }
 
 		template<auto V, auto List>
 		static constexpr auto result = push<V>(List);
@@ -188,7 +188,7 @@
 	struct E_car
 	{
 		template<auto V, auto... Vs>
-		static constexpr auto car(void(*)(auto_pack<V, Vs...>*)) { return V; }
+		static constexpr auto car(nik_avpcr(auto_pack<V, Vs...>*)) { return V; }
 
 		template<auto List>
 		static constexpr auto result = car(List);
@@ -203,7 +203,7 @@
 	struct E_cdr
 	{
 		template<auto V, auto... Vs>
-		static constexpr auto cdr(void(*)(auto_pack<V, Vs...>*)) { return U_pack_Vs<Vs...>; }
+		static constexpr auto cdr(nik_avpcr(auto_pack<V, Vs...>*)) { return U_pack_Vs<Vs...>; }
 
 		template<auto List>
 		static constexpr auto result = cdr(List);

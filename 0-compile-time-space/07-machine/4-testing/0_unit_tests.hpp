@@ -30,7 +30,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d, auto... Vs>
-	constexpr auto f_list_drop_s_pos(void(*)(auto_pack<Vs...>*))
+	constexpr auto f_list_drop_s_pos(nik_avpcr(auto_pack<Vs...>*))
 	{
 		using LD = typename machine_module::LD;
 
@@ -49,7 +49,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d, auto... Vs>
-	constexpr auto f_list_at(void(*)(auto_pack<Vs...>*))
+	constexpr auto f_list_at(nik_avpcr(auto_pack<Vs...>*))
 	{
 		using LD = typename machine_module::LD;
 
@@ -86,7 +86,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto d, auto... Vs>
-	constexpr auto f_list_erase(void(*)(auto_pack<Vs...>*))
+	constexpr auto f_list_erase(nik_avpcr(auto_pack<Vs...>*))
 	{
 		using LD = typename machine_module::LD;
 
@@ -105,7 +105,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto m, auto d, auto... Vs>
-	constexpr auto f_list_insert(void(*)(auto_pack<Vs...>*))
+	constexpr auto f_list_insert(nik_avpcr(auto_pack<Vs...>*))
 	{
 		using LD = typename machine_module::LD;
 
@@ -124,7 +124,7 @@
 /***********************************************************************************************************************/
 
 	template<auto n, auto m, auto d, auto... Vs>
-	constexpr auto f_list_replace(void(*)(auto_pack<Vs...>*))
+	constexpr auto f_list_replace(nik_avpcr(auto_pack<Vs...>*))
 	{
 		using LD = typename machine_module::LD;
 

@@ -199,7 +199,7 @@ public:
 private:
 
 	template<auto J, template<typename...> class ListName, typename... Ts>
-	static constexpr auto f_resolve(void(*)(ListName<Ts...>*))
+	static constexpr auto f_resolve(nik_avpcr(ListName<Ts...>*))
 	{
 		return cache_module::T_type_U<J>::template result<Ts...>;
 	}

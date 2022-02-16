@@ -64,6 +64,12 @@
 
 /***********************************************************************************************************************/
 
+// controller:
+
+	// instruction, label, controller arrays store their respective lengths as their own initial values.
+
+/***********************************************************************************************************************/
+
 // space:
 
 	// Programs are base level or derived.

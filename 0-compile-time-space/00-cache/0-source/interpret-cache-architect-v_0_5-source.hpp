@@ -31,19 +31,19 @@
 
 private:
 
-	template<typename T>			// Unsafe to use directly,
-	static constexpr void type_map(T) { }	// as T cannot equal void.
-						// use U_type_T instead:
+	template<typename T>						// Unsafe to use directly,
+	static constexpr void type_map(T) { }				// as T cannot equal void.
+									// use U_type_T instead:
 
-	template<typename T>					// This works because as a variable template it has
-	static constexpr auto get_type_map = type_map<T*>;	// a partial specialization defined outside of this module.
-								// It pattern matches references and handles them separately.
+	template<typename T>						// This works because as a variable template it has
+	static constexpr auto get_type_map = type_map<T*>;		// a partial specialization defined outside of this module.
+									// It pattern matches references and handles them separately.
 
 public:
 
-	template<typename T>					// This implementation was chosen
-	static constexpr auto U_type_T = get_type_map<T>;	// as it simplifies the special
-								// case when T == void.
+	template<typename T>						// This implementation was chosen
+	static constexpr auto U_type_T = get_type_map<T>;		// as it simplifies the special
+									// case when T == void.
 
 	template<typename T>				// T_decltype(_type)_T:
 	using T_decltype_T				= decltype(U_type_T<T>);
@@ -60,25 +60,13 @@ private:
 	template<typename> struct pattern_match_map_type;
 
 	template<typename T>
-	struct pattern_match_map_type<void(*)(T*)>
+	struct pattern_match_map_type<nik_avpcr(T*)>
 	{
 		using pretype = T;
 	};
 
 	template<typename T>
-	struct pattern_match_map_type<void(*const)(T*)>
-	{
-		using pretype = T;
-	};
-
-	template<typename T>
-	struct pattern_match_map_type<void(*)(T&)>
-	{
-		using pretype = T&;
-	};
-
-	template<typename T>
-	struct pattern_match_map_type<void(*const)(T&)>
+	struct pattern_match_map_type<nik_avpcr(T&)>
 	{
 		using pretype = T&;
 	};
@@ -100,7 +88,7 @@ public:
 private:
 
 	template<typename T>
-	static constexpr T type_map_to_init_type(void(*)(T*))
+	static constexpr T type_map_to_init_type(nik_avpcr(T*))
 	{
 		return { };
 	}
@@ -122,7 +110,7 @@ public:
 
 // typename:
 
-	template<typename...> struct typename_pack			{ };
+	template<typename...> struct typename_pack { };
 
 	template<typename... Ts>
 	using R_pack_Ts = typename_pack<Ts...>;
@@ -144,7 +132,7 @@ public:
 
 // auto:
 
-	template<auto...> struct auto_pack				{ };
+	template<auto...> struct auto_pack { };
 
 	template<auto... Vs>
 	using S_pack_Vs = auto_pack<Vs...>;
@@ -166,7 +154,7 @@ public:
 
 // typename template:
 
-	template<template<typename...> class...> struct typename_template_pack	{ };
+	template<template<typename...> class...> struct typename_template_pack { };
 
 	template<template<typename...> class... As>
 	using C_pack_As = typename_template_pack<As...>;
@@ -188,7 +176,7 @@ public:
 
 // auto template:
 
-	template<template<auto...> class...> struct auto_template_pack	{ };
+	template<template<auto...> class...> struct auto_template_pack { };
 
 	template<template<auto...> class... Bs>
 	using D_pack_Bs = auto_template_pack<Bs...>;

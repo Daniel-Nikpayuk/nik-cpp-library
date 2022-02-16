@@ -121,7 +121,8 @@ public:
 
 	// [0-10]:
 
-	using key_type = unsigned char;
+	using key_type  = unsigned char;
+	using ckey_type = key_type const;
 
 	static constexpr key_type _zero		=   0;
 	static constexpr key_type _one		=   1;
@@ -137,7 +138,8 @@ public:
 
 	// [2^0-2^9]:
 
-	using index_type = unsigned short;
+	using index_type  = unsigned short;
+	using cindex_type = index_type const;
 
 	static constexpr index_type _2_0	=   1;
 	static constexpr index_type _2_1	=   2;
@@ -150,7 +152,8 @@ public:
 	static constexpr index_type _2_8	= 256;
 	static constexpr index_type _2_9	= 512;
 
-	using depth_type = unsigned short;
+	using depth_type  = unsigned short;
+	using cdepth_type = depth_type const;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
