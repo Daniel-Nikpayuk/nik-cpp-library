@@ -60,39 +60,43 @@
 
 	#define NIK_L_BRAK()												\
 															\
-		[                                                                                                       
+		[
 
 	#define NIK_R_BRAK()												\
 															\
-		]                                                                                                       
+		]
 
 	#define NIK_AUTO()												\
 															\
-		auto                                                                                                    
+		auto
 
 	#define NIK_TYPENAME()												\
 															\
-		typename                                                                                                
+		typename
 
 	#define NIK_LDOTS()												\
 															\
-		...                                                                                                     
+		...
 
 	#define NIK_R_PAR_LDOTS()											\
 															\
-		)...                                                                                            	
+		)...
 
 	#define NIK_PLUS()												\
 															\
-		+                                                                                                       
+		+
+
+	#define NIK_TWO_STAR()												\
+															\
+		2*
 
 	#define NIK_L_CACHE()												\
 															\
-		void(*)(auto_pack<                                                                                      
+		void(*)(auto_pack<
 
 	#define NIK_R_CACHE()												\
 															\
-		...>*)                                                                                          	
+		...>*)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -700,6 +704,39 @@
 															\
 		NIK_ ## _n_ ## _FAST_IDS(NIK_AUTO, _v_, NIK_EMPTY)
 
+// index sequence:
+
+	#define NIK_N_FAST_INDEX_SEQUENCE(_n_)										\
+															\
+		NIK_ ## _n_ ## _FAST_IDS(NIK_EMPTY, , NIK_EMPTY)
+
+// even index sequence:
+
+	#define NIK_N_FAST_EVEN_INDEX_SEQUENCE(_n_)									\
+															\
+		NIK_ ## _n_ ## _FAST_IDS(NIK_TWO_STAR, , NIK_EMPTY)
+
+// struct:
+
+	#define NIK_DEFINE__FAST_STRUCT(_s_, _n_)									\
+															\
+		template<index_type... filler>										\
+		struct Fast<_n_, filler...>										\
+		{													\
+			static constexpr auto U_index_sequence		= U_opt_pack_Vs					\
+									<						\
+										NIK_N_FAST_INDEX_SEQUENCE(_n_)		\
+									>;						\
+															\
+			static constexpr auto U_even_index_sequence	= U_opt_pack_Vs					\
+									<						\
+										NIK_N_FAST_EVEN_INDEX_SEQUENCE(_n_)	\
+									>;						\
+															\
+			template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>						\
+			static constexpr auto at = V ## _n_;								\
+		}
+
 /***********************************************************************************************************************/
 
 // heap:
@@ -729,19 +766,6 @@
 /***********************************************************************************************************************/
 
 // machines:
-
-/***********************************************************************************************************************/
-
-// fast at:
-
-	#define NIK_DEFINE__FAST_AT(_s_, _n_)										\
-															\
-		template<index_type... filler>										\
-		struct FastAt<_n_, filler...>										\
-		{													\
-			template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>						\
-			static constexpr auto result = V ## _n_;							\
-		}
 
 /***********************************************************************************************************************/
 

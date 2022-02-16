@@ -594,14 +594,16 @@ private:
 		static constexpr key_type policy	=  3;
 
 		static constexpr key_type caller_loc	=  4;
-		static constexpr key_type caller	=  5;
+		static constexpr key_type caller_pos	=  5;
 
 		static constexpr key_type name_loc	=  6;
-		static constexpr key_type name		=  7;
+		static constexpr key_type name_pos	=  7;
 
 		static constexpr key_type param_loc	=  8;
-		static constexpr key_type param		=  9;
-		static constexpr key_type offset	=  param;
+		static constexpr key_type param_pos	=  9;
+
+		static constexpr key_type loc_offset	= param_loc;
+		static constexpr key_type pos_offset	= param_pos;
 	};
 
 	using CI = CallInstr<>;
@@ -717,45 +719,94 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// resolve:
+// fast (optimization):
+
+	template<index_type, index_type...> struct Fast;
 
 /***********************************************************************************************************************/
 
+// (2^N):
+
+	NIK_DEFINE__FAST_STRUCT(1, 0);
+	NIK_DEFINE__FAST_STRUCT(2, 1);
+	NIK_DEFINE__FAST_STRUCT(3, 2);
+	NIK_DEFINE__FAST_STRUCT(4, 3);
+	NIK_DEFINE__FAST_STRUCT(5, 4);
+	NIK_DEFINE__FAST_STRUCT(6, 5);
+	NIK_DEFINE__FAST_STRUCT(7, 6);
+	NIK_DEFINE__FAST_STRUCT(8, 7);
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// pack:
+
+/***********************************************************************************************************************/
+
+// names:
+
 	template<key_type...>
-	struct Resolve
+	struct Pack
 	{
-		static constexpr auto range_size_0 = U_null_Vs;
-		static constexpr auto range_size_1 = U_opt_pack_Vs<0>;
-		static constexpr auto range_size_2 = U_opt_pack_Vs<0, 1>;
-		static constexpr auto range_size_3 = U_opt_pack_Vs<0, 1, 2>;
-		static constexpr auto range_size_4 = U_opt_pack_Vs<0, 1, 2, 3>;
-		static constexpr auto range_size_5 = U_opt_pack_Vs<0, 1, 2, 3, 4>;
-		static constexpr auto range_size_6 = U_opt_pack_Vs<0, 1, 2, 3, 4, 5>;
-		static constexpr auto range_size_7 = U_opt_pack_Vs<0, 1, 2, 3, 4, 5, 6>;
-		static constexpr auto range_size_8 = U_opt_pack_Vs<0, 1, 2, 3, 4, 5, 6, 7>;
+		static constexpr key_type id			= 0;
 
-		template<auto size>
-		static constexpr auto U_fast_range()
-		{
-			if constexpr      (size == 0) return range_size_0;
-			else if constexpr (size == 1) return range_size_1;
-			else if constexpr (size == 2) return range_size_2;
-			else if constexpr (size == 3) return range_size_3;
-			else if constexpr (size == 4) return range_size_4;
-			else if constexpr (size == 5) return range_size_5;
-			else if constexpr (size == 6) return range_size_6;
-			else if constexpr (size == 7) return range_size_7;
-			else                          return range_size_8;
-		}
+		static constexpr key_type generic_append	= 1;
+		static constexpr key_type generic_catenate	= 2;
 
-		template<auto arr, auto offset, auto... Is>
-		static constexpr auto U_subarray(void(*)(auto_pack<Is...>*))
-		{
-			return U_opt_pack_Vs<arr[offset+Is]...>;
-		}
+		// append:
+
+			template<auto V, auto... Vs>
+			static constexpr auto append(void(*)(auto_pack<Vs...>*))
+				{ return U_opt_pack_Vs<Vs..., V>; }
+
+		// catenate:
+
+			template<auto... Vs, auto... Ws>
+			static constexpr auto catenate(void(*)(auto_pack<Vs...>*), void(*)(auto_pack<Ws...>*))
+				{ return U_opt_pack_Vs<Vs..., Ws...>; }
+
+		// map array:
+
+			template<auto arr, auto offset, auto... Is>
+			static constexpr auto map_array(void(*)(auto_pack<Is...>*))
+				{ return U_opt_pack_Vs<arr[offset+Is]...>; }
+
+		// translate:
+
+			static constexpr key_type translate(key_type n)
+			{
+				if      (n == MT::insert_at_h0_back) return generic_append;
+				else if (n == MT::insert_at_h1_back) return generic_append;
+				else                                 return generic_catenate; // MT::append_at_h0_back
+			}
 	};
 
-	using RE = Resolve<>;
+	using PE = Pack<>;
+
+	// append:
+
+		template<key_type... filler>
+		struct Pack<PE::generic_append, filler...> : public PE
+			{ template<auto U, auto V> static constexpr auto result = append<V>(U); };
+
+		using PackAppend = Pack<PE::generic_append>;
+
+	// catenate:
+
+		template<key_type... filler>
+		struct Pack<PE::generic_catenate, filler...> : public PE
+			{ template<auto U1, auto U2> static constexpr auto result = catenate(U1, U2); };
+
+		using PackCatenate = Pack<PE::generic_catenate>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// resolve:
+
+	template<key_type...> struct Resolve;
+
+/***********************************************************************************************************************/
 
 // block:
 
@@ -846,31 +897,47 @@ private:
 	template<key_type... filler>
 	struct Resolve<MP::generic, filler...>
 	{
-		template<instr_type ins> static constexpr index_type length = MI::length(ins) + 1;
-		template<instr_type ins> static constexpr index_type size   = length<ins> - CI::offset;
+		template<instr_type ins> static constexpr index_type length		= MI::length(ins) + 1;
+		template<instr_type ins> static constexpr index_type param_size		= length<ins> - CI::pos_offset;
+		template<instr_type ins> static constexpr index_type half_param_size	= (param_size<ins> + 1) >> 1;
 
 		template<instr_type ins>
 		static constexpr auto fast_program = U_type_T
 		<
 			program
 			<
-				ins[CI::caller],
-				ins[CI::name]
+				ins[CI::caller_pos],
+				ins[CI::name_pos]
 			>
 		>;
+
+		// fast params:
 
 		template<instr_type ins>
 		static constexpr auto let_fast_params()
 		{
-			constexpr auto o = CI::offset;
-			constexpr auto s = size<ins>;
-			constexpr auto r = RE::template U_fast_range<s>();
+			constexpr auto s = param_size<ins>;
+			constexpr auto r = Fast<s>::U_index_sequence;
 
-			return RE::template U_subarray<ins, o>(r);
+			return PE::template map_array<ins, CI::pos_offset>(r);
 		}
 
 		template<instr_type ins>
 		static constexpr auto fast_params = let_fast_params<ins>();
+
+		// fast half params:
+
+		template<instr_type ins, index_type offset>
+		static constexpr auto let_fast_half_params()
+		{
+			constexpr auto s = half_param_size<ins>;
+			constexpr auto r = Fast<s>::U_even_index_sequence;
+
+			return PE::template map_array<ins, offset>(r);
+		}
+
+		template<instr_type ins> static constexpr auto fast_even_params = let_fast_half_params<ins, CI::loc_offset>();
+		template<instr_type ins> static constexpr auto fast_odd_params  = let_fast_half_params<ins, CI::pos_offset>();
 	};
 
 	using RG = Resolve<MP::generic>;
@@ -907,16 +974,10 @@ private:
 	struct Make<CL::open, filler...>
 	{
 		template<auto caller, auto name>
-		static constexpr auto make(key_type)
-		{
-			return U_type_T<program<caller, name>>;
-		}
+		static constexpr auto make(key_type) { return U_type_T<program<caller, name>>; }
 
 		template<auto caller, auto name, template<auto...> class B>
-		static constexpr auto make(void(*)(auto_template_pack<B>*))
-		{
-			return U_type_T<B<name>>;
-		}
+		static constexpr auto make(void(*)(auto_template_pack<B>*)) { return U_type_T<B<name>>; }
 
 		template<auto ins, auto... Vs, auto caller, auto name, auto... ps>
 		static constexpr auto h2(void(*)(auto_pack<caller, name, ps...>*))

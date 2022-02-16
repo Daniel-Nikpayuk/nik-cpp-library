@@ -653,7 +653,7 @@ private:
 			else if constexpr (caller_loc == CL::instr) return U_copy_i_pos__insert_at_h0_back<CI::caller>;
 			else
 			{
-				constexpr auto pos = ins[CI::caller];
+				constexpr auto pos = ins[CI::caller_pos];
 
 				if constexpr      (caller_loc == CL::regs) return U_copy_r_pos__insert_at_h0_back<pos>;
 				else if constexpr (caller_loc == CL::args) return U_copy_a_pos__insert_at_h0_back<pos>;
@@ -704,10 +704,10 @@ private:
 
 			if constexpr      (name_loc == CL::id   ) return U_null_Vs; // closed: not applicable.
 			else if constexpr (name_loc == CL::h0   ) return U_null_Vs;
-			else if constexpr (name_loc == CL::instr) return U_copy_i_pos__insert_at_h1_back<CI::name>;
+			else if constexpr (name_loc == CL::instr) return U_copy_i_pos__insert_at_h1_back<CI::name_pos>;
 			else
 			{
-				constexpr auto pos = ins[CI::name];
+				constexpr auto pos = ins[CI::name_pos];
 
 				if constexpr      (name_loc == CL::regs) return U_copy_r_pos__insert_at_h1_back<pos>;
 				else if constexpr (name_loc == CL::args) return U_copy_a_pos__insert_at_h1_back<pos>;
@@ -774,98 +774,6 @@ private:
 
 	using GP = Get<CI::param>;
 */
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// pack:
-
-/***********************************************************************************************************************/
-
-// names:
-
-	template<key_type...>
-	struct Pack
-	{
-		static constexpr key_type id		= 0;
-
-		static constexpr key_type split_one	= 1;
-		static constexpr key_type split_two	= 2;
-
-		static constexpr key_type append	= 3;
-		static constexpr key_type catenate	= 4;
-
-		static constexpr key_type transport(key_type n)
-		{
-			if      (n == MT::insert_at_h0_back) return append;
-			else if (n == MT::insert_at_h1_back) return append;
-			else                                 return catenate; // MT::append_at_h0_back
-		}
-	};
-
-	using PE = Pack<>;
-
-	// split one:
-
-		template<key_type... filler>
-		struct Pack<PE::split_one, filler...>
-		{
-			template<auto V0, auto... Vs>
-			static constexpr auto upper(void(*)(auto_pack<V0, Vs...>*))
-				{ return U_pack_Vs<V0>; }
-
-			template<auto V0, auto... Vs>
-			static constexpr auto rest(void(*)(auto_pack<V0, Vs...>*))
-				{ return U_pack_Vs<Vs...>; }
-		};
-
-		using PackSplit1 = Pack<PE::split_one>;
-
-	// split two:
-
-		template<key_type... filler>
-		struct Pack<PE::split_two, filler...>
-		{
-			template<auto V0, auto V1, auto... Vs>
-			static constexpr auto upper(void(*)(auto_pack<V0, V1, Vs...>*))
-				{ return U_pack_Vs<V1>; }
-
-			template<auto V0, auto V1, auto... Vs>
-			static constexpr auto rest(void(*)(auto_pack<V0, V1, Vs...>*))
-				{ return U_pack_Vs<Vs...>; }
-		};
-
-		using PackSplit2 = Pack<PE::split_two>;
-
-	// append:
-
-		template<key_type... filler>
-		struct Pack<PE::append, filler...>
-		{
-			template<auto V, auto... Vs>
-			static constexpr auto append(void(*)(auto_pack<Vs...>*))
-				{ return U_opt_pack_Vs<Vs..., V>; }
-
-			template<auto U, auto V>
-			static constexpr auto result = append<V>(U);
-		};
-
-		using PackAppend = Pack<PE::append>;
-
-	// catenate:
-
-		template<key_type... filler>
-		struct Pack<PE::catenate, filler...>
-		{
-			template<auto... Vs, auto... Ws>
-			static constexpr auto catenate(void(*)(auto_pack<Vs...>*), void(*)(auto_pack<Ws...>*))
-				{ return U_opt_pack_Vs<Vs..., Ws...>; }
-
-			template<auto U1, auto U2>
-			static constexpr auto result = catenate(U1, U2);
-		};
-
-		using PackCatenate = Pack<PE::catenate>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -1068,9 +976,71 @@ private:
 	{
 		// program:
 
+			// full param:
+
+		//	template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		//	static constexpr auto full_param_program(NIK_HEAP_VARS, Args... As)
+		//	{
+		//		constexpr auto caller_loc	= ins[CI::caller_loc];
+		//		constexpr auto name_loc		= ins[CI::name_loc];
+		//		constexpr auto param_loc	= ins[CI::param_loc];
+
+		//		constexpr index_type size	= RG::template size<ins>;
+
+		//		if constexpr (is_opt(size))
+		//		{
+		//			constexpr auto locs	= U_opt_pack_Vs<>;
+		//			constexpr auto poses	= U_opt_pack_Vs<>;
+
+		//			constexpr auto h2	= U_opt_pack_Vs<>;
+		//			constexpr auto h3	= U_opt_pack_Vs<>;
+
+		//			return machination(MT::id, h2, h3);
+		//		}
+		//		else
+		//		{
+		//			return machination(MT::id, h2, h3);
+		//		}
+		//	}
+
+			// half param:
+
+		//	template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		//	static constexpr auto half_param_program(NIK_HEAP_VARS, Args... As)
+		//	{
+		//		constexpr index_type size = (RG::template size<ins> + 1) >> 1;
+
+		//		if constexpr (is_opt(size))
+		//		{
+		//			constexpr auto locs	= U_opt_pack_Vs<>;
+		//			constexpr auto poses	= U_opt_pack_Vs<>;
+
+		//			constexpr auto h2	= U_opt_pack_Vs<>;
+		//			constexpr auto h3	= U_opt_pack_Vs<>;
+
+		//			return machination(MT::id, h2, h3);
+		//		}
+		//		else
+		//		{
+		//			return machination(MT::id, h2, h3);
+		//		}
+		//	}
+
+			// dispatch:
+
 			template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
 			static constexpr auto program(NIK_HEAP_VARS, Args... As)
 			{
+			//	constexpr auto param_loc = ins[CI::param_loc];
+
+			//	if constexpr (is_all_loc(param_loc))
+
+			//		return full_param_program<ins, Vs...>(NIK_HEAP_ARGS, As...);
+			//	else
+			//		return half_param_program<ins, Vs...>(NIK_HEAP_ARGS, As...);
+				return 0;
+			}
+
 			//	constexpr auto caller_ins	= GC::template instrs<ins>();
 			//	constexpr auto name_ins		= GN::template instrs<ins>();
 			//	constexpr auto param_ins	= GP::template instrs<ins>();
@@ -1093,8 +1063,6 @@ private:
     			//	constexpr auto h3		= U_opt_pack_Vs<nH0, nH1, nH2, nH3, cH4, cH5, U_pretype_T<Args>...>;
 
 			//	return machination(MT::id, h2, h3);
-				return 0;
-			}
 
 		// function:
 

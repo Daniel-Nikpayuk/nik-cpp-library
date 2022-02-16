@@ -46,6 +46,7 @@
 	#undef NIK_LDOTS
 	#undef NIK_R_PAR_LDOTS
 	#undef NIK_PLUS
+	#undef NIK_TWO_STAR
 
 	#undef NIK_L_CACHE
 	#undef NIK_R_CACHE
@@ -238,6 +239,18 @@
 
 	#undef NIK_N_FAST_AUTO_VARS
 
+// index sequence:
+
+	#undef NIK_N_FAST_INDEX_SEQUENCE
+
+// even index sequence:
+
+	#undef NIK_N_FAST_EVEN_INDEX_SEQUENCE
+
+// struct:
+
+	#undef NIK_DEFINE__FAST_STRUCT
+
 /***********************************************************************************************************************/
 
 // heap:
@@ -252,12 +265,6 @@
 /***********************************************************************************************************************/
 
 // machines:
-
-/***********************************************************************************************************************/
-
-// fast (optimizers):
-
-	#undef NIK_DEFINE__FAST
 
 /***********************************************************************************************************************/
 

@@ -23,27 +23,6 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// fast at (optimization):
-
-	template<index_type, index_type...> struct FastAt;
-
-/***********************************************************************************************************************/
-
-// (2^N):
-
-	NIK_DEFINE__FAST_AT(1, 0);
-	NIK_DEFINE__FAST_AT(2, 1);
-	NIK_DEFINE__FAST_AT(3, 2);
-	NIK_DEFINE__FAST_AT(4, 3);
-	NIK_DEFINE__FAST_AT(5, 4);
-	NIK_DEFINE__FAST_AT(6, 5);
-	NIK_DEFINE__FAST_AT(7, 6);
-	NIK_DEFINE__FAST_AT(8, 7);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // machines:
 
 	template<key_type, key_type, key_type...> struct machine;
@@ -290,15 +269,15 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto val	= FastAt<ins[pos]>::template result<Vs...>;
+			constexpr auto val	= Fast<ins[pos]>::template at<Vs...>;
 
 			constexpr auto cH0	= U_pretype_T<Heap0>;
 			constexpr auto cH1	= U_pretype_T<Heap1>;
 
 			constexpr auto index	= (Note == MT::insert_at_h0_back) ? _zero : _one;
-			constexpr auto cHn	= FastAt<index>::template result<cH0, cH1>;
+			constexpr auto cHn	= Fast<index>::template at<cH0, cH1>;
 
-			constexpr auto nH0	= PackAppend::template append<val>(cHn);
+			constexpr auto nH0	= PE::template append<val>(cHn);
 
 			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, Hs...);
 		}
@@ -318,15 +297,15 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto val	= FastAt<ins[pos]>::template result<U_pretype_T<Args>...>;
+			constexpr auto val	= Fast<ins[pos]>::template at<U_pretype_T<Args>...>;
 
 			constexpr auto cH0	= U_pretype_T<Heap0>;
 			constexpr auto cH1	= U_pretype_T<Heap1>;
 
 			constexpr auto index	= (Note == MT::insert_at_h0_back) ? _zero : _one;
-			constexpr auto cHn	= FastAt<index>::template result<cH0, cH1>;
+			constexpr auto cHn	= Fast<index>::template at<cH0, cH1>;
 
-			constexpr auto algo	= PE::transport(Note);
+			constexpr auto algo	= PE::translate(Note);
 			constexpr auto nH0	= Pack<algo>::template result<cHn, val>;
 
 			return NIK_MACHINE(d, n, c, i, j, Vs)(nH0, H1, H2, H3, H4, H5, As...);
@@ -481,7 +460,7 @@
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
 
-			constexpr auto caller	= ins[CI::caller];
+			constexpr auto caller	= ins[CI::caller_pos];
 			constexpr auto prog	= RG::template fast_program<ins>;
 			constexpr auto params	= RG::template fast_params<ins>;
 
