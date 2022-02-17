@@ -114,6 +114,15 @@
 
 /***********************************************************************************************************************/
 
+// call:
+
+	// closed:
+
+		// The instruction length is the same as with open.
+		// This is to allow for the refactoring of algorithms.
+
+/***********************************************************************************************************************/
+
 // machination:
 
 	// Do not refactor using other templated structs. Although these definitions are potentially redundant,

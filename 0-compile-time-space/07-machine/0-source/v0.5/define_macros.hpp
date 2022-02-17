@@ -606,11 +606,11 @@
 															\
 		NIK_2_ ## _n_ ## _IDS(_m_::template result NIK_L_ANG, _v_, > NIK_LDOTS)
 
-// array:
+// index segment:
 
-	#define NIK_2_N_ARRAY_VARS(_n_, _i_, _s_)									\
+	#define NIK_2_N_INDEX_SEGMENT(_n_, _s_)										\
 															\
-		NIK_2_ ## _n_ ## _IDS(_i_[_s_ NIK_PLUS,, NIK_R_BRAK)
+		NIK_2_ ## _n_ ## _IDS(_s_ NIK_PLUS,, NIK_EMPTY)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -704,17 +704,17 @@
 															\
 		NIK_ ## _n_ ## _FAST_IDS(NIK_AUTO, _v_, NIK_EMPTY)
 
-// index sequence:
+// index segment:
 
-	#define NIK_N_FAST_INDEX_SEQUENCE(_n_)										\
+	#define NIK_N_FAST_INDEX_SEGMENT(_n_)										\
 															\
-		NIK_ ## _n_ ## _FAST_IDS(NIK_EMPTY, , NIK_EMPTY)
+		NIK_ ## _n_ ## _FAST_IDS(NIK_EMPTY,, NIK_EMPTY)
 
-// even index sequence:
+// even index segment:
 
-	#define NIK_N_FAST_EVEN_INDEX_SEQUENCE(_n_)									\
+	#define NIK_N_FAST_EVEN_INDEX_SEGMENT(_n_)									\
 															\
-		NIK_ ## _n_ ## _FAST_IDS(NIK_TWO_STAR, , NIK_EMPTY)
+		NIK_ ## _n_ ## _FAST_IDS(NIK_TWO_STAR,, NIK_EMPTY)
 
 // struct:
 
@@ -723,14 +723,14 @@
 		template<index_type... filler>										\
 		struct Fast<_n_, filler...>										\
 		{													\
-			static constexpr auto U_index_sequence		= U_opt_pack_Vs					\
+			static constexpr auto U_index_segment		= U_opt_pack_Vs					\
 									<						\
-										NIK_N_FAST_INDEX_SEQUENCE(_n_)		\
+										NIK_N_FAST_INDEX_SEGMENT(_n_)		\
 									>;						\
 															\
-			static constexpr auto U_even_index_sequence	= U_opt_pack_Vs					\
+			static constexpr auto U_even_index_segment	= U_opt_pack_Vs					\
 									<						\
-										NIK_N_FAST_EVEN_INDEX_SEQUENCE(_n_)	\
+										NIK_N_FAST_EVEN_INDEX_SEGMENT(_n_)	\
 									>;						\
 															\
 			template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>						\
@@ -758,6 +758,10 @@
 															\
 		NIK_6_FAST_IDS(NIK_EMPTY, H, NIK_EMPTY)
 
+	#define NIK_HEAP_AUTO_CARGS											\
+															\
+		NIK_6_FAST_IDS(NIK_AUTO, cH, NIK_EMPTY)
+
 	#define NIK_HEAP_CARGS												\
 															\
 		NIK_6_FAST_IDS(NIK_EMPTY, cH, NIK_EMPTY)
@@ -769,25 +773,25 @@
 
 /***********************************************************************************************************************/
 
-// unpack instruction block (, insert at heap one back) (2^N):
+// index block (, insert at heap one back) (2^N):
 
 		// This machine is not general purpose, and so is optimized accordingly.
 
-	#define NIK_DEFINE__UNPACK_I_BLOCK(_n_)										\
+	#define NIK_DEFINE__INDEX_BLOCK(_n_)										\
 															\
 		template<key_type... filler>										\
-		struct machine<MN::unpack_i_block, _n_, filler...>							\
+		struct machine<MN::index_block, _n_, filler...>								\
 		{													\
 			template											\
 			<												\
 				NIK_CONTR_PARAMS, auto... Vs,								\
-				auto ins, auto length, auto... Ws,							\
+				auto length, auto... Ws,								\
 				auto... Xs, typename Heap2, typename Heap3,						\
 				typename Heap4, typename Heap5, typename... Args					\
 			>												\
 			static constexpr auto result									\
 			(												\
-				nik_vpcr(H0)(auto_pack<ins, length, Ws...>*),						\
+				nik_vpcr(H0)(auto_pack<length, Ws...>*),						\
 				nik_vpcr(H1)(auto_pack<Xs...>*), Heap2 H2, Heap3 H3,					\
 				Heap4 H4, Heap5 H5, Args... As								\
 			)												\
@@ -801,7 +805,7 @@
 					U_opt_pack_Vs									\
 					<										\
 						Xs...,									\
-						NIK_2_N_ARRAY_VARS(_n_, ins, offset)					\
+						NIK_2_N_INDEX_SEGMENT(_n_, offset)					\
 					>,										\
 															\
 					H2, H3, H4, H5, As...								\

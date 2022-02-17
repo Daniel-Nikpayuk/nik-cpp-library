@@ -59,7 +59,7 @@ public:
 
 			// block:
 
-			static constexpr key_type unpack_i_block			=  5;
+			static constexpr key_type index_block				=  5;
 
 			static constexpr key_type move_r_block				=  6;
 			static constexpr key_type fold_r_block				=  7;
@@ -279,7 +279,7 @@ public:
 		static constexpr key_type id					=  0;
 		static constexpr key_type identity				= id; // convenience for
 										      // default params.
-		static constexpr key_type unpack_i_right			=  1;
+		static constexpr key_type index_segment				=  1;
 		static constexpr key_type move_r_segment			=  2;
 		static constexpr key_type move_a_segment			=  3;
 	};
@@ -670,25 +670,23 @@ private:
 		static constexpr key_type identity		= id;	// convenience for
 									// default params.
 
-		static constexpr key_type closed		=  1;
-		static constexpr key_type open			=  2;
+		static constexpr key_type h0			=  1;
+		static constexpr key_type instr			=  2;
+		static constexpr key_type regs			=  3;
+		static constexpr key_type args			=  4;
+		static constexpr key_type h4			=  5;
 
-		static constexpr key_type h0			=  3;
-		static constexpr key_type instr			=  4;
-		static constexpr key_type regs			=  5;
-		static constexpr key_type args			=  6;
-		static constexpr key_type h4			=  7;
-
-		static constexpr key_type all_h0		=  8;
-		static constexpr key_type all_instr		=  9;
-		static constexpr key_type all_regs		= 10;
-		static constexpr key_type all_args		= 11;
-		static constexpr key_type all_h4		= 12;
+		static constexpr key_type all_h0		=  6;
+		static constexpr key_type all_instr		=  7;
+		static constexpr key_type all_regs		=  8;
+		static constexpr key_type all_args		=  9;
+		static constexpr key_type all_h4		= 10;
 
 		//
 
-		static constexpr key_type to_all(ckey_type n) { return n + _five; }			// optimization
-		static constexpr bool is_all_loc(ckey_type l) { return (all_h0 <= l && l <= all_h4); }	// optimization
+		static constexpr key_type to_all(ckey_type n)   { return n + _five; }			 // opt
+		static constexpr key_type from_all(ckey_type n) { return n - _five; }			 // opt
+		static constexpr bool is_all_loc(ckey_type l)   { return (all_h0 <= l && l <= all_h4); } // opt
 
 		static constexpr bool is_closed_all(ckey_type c, ckey_type p, ckey_type v)
 			{ return (c == v) && (p == to_all(v)); }
@@ -708,18 +706,25 @@ private:
 
 		//
 
-		static constexpr bool is_closed_h0_all(ckey_type c, ckey_type p) { return is_closed_all(c, p, h0); }
-		static constexpr bool is_closed_h0_all(instr_type ins)           { return is_loc_all(ins, CI::param_loc, h0); }
+		static constexpr bool is_closed_h0_all(ckey_type c, ckey_type p)
+			{ return is_closed_all(c, p, h0); }
 
-		static constexpr bool is_open_h0_all(ckey_type c, ckey_type n, ckey_type p) { return is_open_all(c, p, n, h0); }
-		static constexpr bool is_open_h0_all(instr_type ins)                        { return is_loc_all(ins, CI::name_loc, h0); }
+		static constexpr bool is_closed_h0_all(instr_type ins)
+			{ return is_loc_all(ins, CI::param_loc, h0); }
 
-		static constexpr bool is_open_instr_all(ckey_type c, ckey_type n, ckey_type p) { return is_open_all(c, p, n, instr); }
+		static constexpr bool is_open_h0_all(ckey_type c, ckey_type n, ckey_type p)
+			{ return is_open_all(c, p, n, h0); }
+
+		static constexpr bool is_open_h0_all(instr_type ins)
+			{ return is_loc_all(ins, CI::name_loc, h0); }
+
+		static constexpr bool is_open_instr_all(ckey_type c, ckey_type n, ckey_type p)
+			{ return is_open_all(c, p, n, instr); }
 
 		//
 
-		static constexpr key_type shape(instr_type ins)           { return (ins[CI::name_loc] == id) ? closed : open; }
-		static constexpr key_type cnote(ckey_type c, ckey_type p) { return is_closed_h0_all(c, p) ? MT::id : MT::fetch; }
+		static constexpr key_type cnote(ckey_type c, ckey_type p)
+			{ return is_closed_h0_all(c, p) ? MT::id : MT::fetch; }
 
 		static constexpr key_type onote(ckey_type c, ckey_type n, ckey_type p, cindex_type psize)
 		{
@@ -730,6 +735,38 @@ private:
 	};
 
 	using CL = CallLocation;
+
+/***********************************************************************************************************************/
+
+// traits:
+
+	struct CallTrait
+	{
+		static constexpr key_type id		=  0;
+		static constexpr key_type identity	= id;	// convenience for
+								// default params.
+		static constexpr key_type closed	=  1;
+		static constexpr key_type open		=  2;
+
+		static constexpr key_type factored	=  3;
+		static constexpr key_type overt		=  4;
+
+		static constexpr key_type dispatch	=  5;
+
+		static constexpr key_type shape(instr_type ins)
+		{
+			return (ins[CI::name_loc] == id) ? closed : open;
+		}
+
+		static constexpr key_type opacity(instr_type ins)
+		{
+			ckey_type param_loc = ins[CI::param_loc];
+
+			return CL::is_all_loc(param_loc) ? factored : overt;
+		}
+	};
+
+	using CT = CallTrait;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -777,6 +814,12 @@ private:
 		template<auto... Vs, auto... Ws>
 		static constexpr auto catenate(nik_avpcr(auto_pack<Vs...>*), nik_avpcr(auto_pack<Ws...>*))
 			{ return U_opt_pack_Vs<Vs..., Ws...>; }
+
+		//
+
+		template<auto value, auto... Is>
+		static constexpr auto to_constant(nik_avpcr(auto_pack<Is...>*))
+			{ return U_opt_pack_Vs<((Is-Is)+value)...>; }
 
 		template<auto arr, auto offset, auto... Is>
 		static constexpr auto map_array(nik_avpcr(auto_pack<Is...>*))
@@ -906,91 +949,11 @@ private:
 	template<key_type... filler>
 	struct Resolve<MP::generic, filler...>
 	{
-		template<instr_type ins> static constexpr index_type length		= MI::length(ins) + 1;
-		template<instr_type ins> static constexpr index_type param_size		= length<ins> - CI::pos_offset;
-		template<instr_type ins> static constexpr index_type half_param_size	= (param_size<ins> + 1) >> 1;
-
 		template<instr_type ins>
-		static constexpr auto fast_program = U_type_T<program<ins[CI::caller_pos], ins[CI::name_pos]>>;
-
-		// fast params:
-
-		template<instr_type ins>
-		static constexpr auto let_fast_params()
-		{
-			constexpr auto s = param_size<ins>;
-			constexpr auto r = Fast<s>::U_index_sequence;
-
-			return PE::template map_array<ins, CI::pos_offset>(r);
-		}
-
-		template<instr_type ins>
-		static constexpr auto fast_params = let_fast_params<ins>();
-
-		// fast half params:
-
-		template<instr_type ins, index_type offset>
-		static constexpr auto let_fast_half_params()
-		{
-			constexpr auto s = half_param_size<ins>;
-			constexpr auto r = Fast<s>::U_even_index_sequence;
-
-			return PE::template map_array<ins, offset>(r);
-		}
-
-		template<instr_type ins> static constexpr auto fast_even_params = let_fast_half_params<ins, CI::loc_offset>();
-		template<instr_type ins> static constexpr auto fast_odd_params  = let_fast_half_params<ins, CI::pos_offset>();
+		static constexpr auto U_program = U_type_T<program<ins[CI::caller_pos], ins[CI::name_pos]>>;
 	};
 
 	using RG = Resolve<MP::generic>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// make:
-
-	template<key_type...> struct Make;
-
-/***********************************************************************************************************************/
-
-// closed:
-
-	template<key_type... filler>
-	struct Make<CL::closed, filler...>
-	{
-		template<auto ins, auto... Vs, auto prog, auto... Ws>
-		static constexpr auto h2(nik_avpcr(auto_pack<prog, Ws...>*))
-		{
-			constexpr auto params	= U_opt_pack_Vs<Ws...>;
-			constexpr auto base	= T_type_U<prog>::base;
-
-			return Resolve<base>::template h2<ins, Vs...>(prog, params);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// open:
-
-	template<key_type... filler>
-	struct Make<CL::open, filler...>
-	{
-		template<auto caller, auto name>
-		static constexpr auto make(key_type) { return U_type_T<program<caller, name>>; }
-
-		template<auto caller, auto name, template<auto...> class B>
-		static constexpr auto make(nik_avpcr(auto_template_pack<B>*)) { return U_type_T<B<name>>; }
-
-		template<auto ins, auto... Vs, auto caller, auto name, auto... ps>
-		static constexpr auto h2(nik_avpcr(auto_pack<caller, name, ps...>*))
-		{
-			constexpr auto prog	= make<caller, name>(caller);
-			constexpr auto params	= U_opt_pack_Vs<ps...>;
-			constexpr auto base	= T_type_U<prog>::base;
-
-			return Resolve<base>::template h2<ins, Vs...>(prog, params);
-		}
-	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -162,12 +162,12 @@
 
 /***********************************************************************************************************************/
 
-// unpack instruction block (2^N):
+// index block (2^N):
 
-	NIK_DEFINE__UNPACK_I_BLOCK(0);
-	NIK_DEFINE__UNPACK_I_BLOCK(1);
-	NIK_DEFINE__UNPACK_I_BLOCK(2);
-	NIK_DEFINE__UNPACK_I_BLOCK(3);
+	NIK_DEFINE__INDEX_BLOCK(0);
+	NIK_DEFINE__INDEX_BLOCK(1);
+	NIK_DEFINE__INDEX_BLOCK(2);
+	NIK_DEFINE__INDEX_BLOCK(3);
 
 /***********************************************************************************************************************/
 
@@ -431,17 +431,17 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto shape	= CL::shape(ins);
+			constexpr auto shape	= CT::shape(ins);
 
-			constexpr auto cH0	= U_pretype_T<Heap0>;
+			constexpr auto cH0	= U_null_Vs;
 			constexpr auto cH1	= U_pretype_T<Heap1>;
 			constexpr auto cH2	= U_pretype_T<Heap2>;
 			constexpr auto cH3	= U_pretype_T<Heap3>;
 			constexpr auto cH4	= U_pretype_T<Heap4>;
 			constexpr auto cH5	= U_pretype_T<Heap5>;
 
-			constexpr auto nH2	= Make<shape>::template h2<ins, Vs...>(cH0);
-			constexpr auto nH3	= U_opt_pack_Vs<U_null_Vs, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
+			constexpr auto nH2	= Make<shape>::template h2<ins, Vs...>(U_pretype_T<Heap0>);
+			constexpr auto nH3	= U_opt_pack_Vs<NIK_HEAP_CARGS, U_pretype_T<Args>...>;
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, H4, H5, As...);
 		}
@@ -461,18 +461,11 @@
 			constexpr auto ins	= tn::instr(c, i, j);
 
 			constexpr auto caller	= ins[CI::caller_pos];
-			constexpr auto prog	= RG::template fast_program<ins>;
-			constexpr auto params	= RG::template fast_params<ins>;
-
-			constexpr auto cH0	= U_pretype_T<Heap0>;
-			constexpr auto cH1	= U_pretype_T<Heap1>;
-			constexpr auto cH2	= U_pretype_T<Heap2>;
-			constexpr auto cH3	= U_pretype_T<Heap3>;
-			constexpr auto cH4	= U_pretype_T<Heap4>;
-			constexpr auto cH5	= U_pretype_T<Heap5>;
+			constexpr auto prog	= RG::template U_program<ins>;
+			constexpr auto params	= QF::template U_params<ins>();
 
 			constexpr auto nH2	= Resolve<caller>::template h2<ins, Vs...>(prog, params);
-			constexpr auto nH3	= U_opt_pack_Vs<NIK_HEAP_CARGS, U_pretype_T<Args>...>;
+			constexpr auto nH3	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, H4, H5, As...);
 		}
@@ -499,7 +492,8 @@
 			Heap4 H4, Heap5 H5, Args... As
 		)
 		{
-			const auto mac = Retrieve::template program<h0, Vs...>(locs, poses, H2, H3, H4, As...);
+			constexpr auto cHs	= U_prepack_Ts<Heap2, Heap3, Heap4, Args...>;
+			const auto mac		= Retrieve::template program<h0, Vs...>(locs, poses, cHs);
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, H4, H5, As...);
 				// here we need c's current location to be a call instruction
@@ -519,7 +513,10 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			const     auto mac	= Fetch::template program<ins, Vs...>(H0, H1, H2, H3, H4, H5, As...);
+
+			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
+			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
+			constexpr auto mac	= Fetch::template program<ins>(cVs, cHs);
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
@@ -681,7 +678,7 @@
 			Heap3 H3, Heaps...
 		)
 		{
-			constexpr auto shape = CL::shape(ins);
+			constexpr auto shape = CT::shape(ins);
 			constexpr auto pack  = U_opt_pack_Vs<Ws..., Xs..., Ys...>;
 
 			constexpr auto h2    = Make<shape>::template h2<ins, Vs...>(pack);

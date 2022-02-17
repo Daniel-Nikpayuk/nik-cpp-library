@@ -129,9 +129,6 @@ public:
 
 // closed:
 
-		// The instruction length is the same as with open.
-		// This is to allow for the refactoring of algorithms.
-
 	template
 	<
 		key_type RtnPolicy,
@@ -203,11 +200,14 @@ public:
 
 // retrieve:
 
-	template<key_type Policy>
-	static constexpr instr_type retrieve = instruction<MN::call, MT::retrieve, Policy>;
+	template<key_type...>
+	static constexpr instr_type retrieve = instruction<MN::call, MT::retrieve, CP::replace_at_h1>;
 
-	//	template<key_type...> static constexpr instr_type retrieve__return_value  = retrieve<CP::id>;
-	//	template<key_type...> static constexpr instr_type retrieve__replace_at_h0 = retrieve<CP::replace_at_h0>;
+//	template<key_type Policy>
+//	static constexpr instr_type retrieve = instruction<MN::call, MT::retrieve, Policy>;
+
+//		template<key_type...> static constexpr instr_type retrieve__return_value  = retrieve<CP::id>;
+//		template<key_type...> static constexpr instr_type retrieve__replace_at_h0 = retrieve<CP::replace_at_h0>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -253,25 +253,25 @@ public:
 
 /***********************************************************************************************************************/
 
-// unpack instruction right (, insert at heap one back):
+// index sequence segment (, insert at heap one back):
 
 	template<key_type... filler>
-	struct program<MP::block, BN::unpack_i_right, filler...> : public block_program<filler...>
+	struct program<MP::block, BN::index_segment, filler...> : public block_program<filler...>
 	{
 		template<key_type BPolicy, key_type Coname, key_type Conote>
 		static constexpr instr_type lines = instruction
 		<
-			MN::unpack_i_block, BPolicy, Coname, Conote
+			MN::index_block, BPolicy, Coname, Conote
 		>;
 	};
 
 	// interface:
 
 		template<index_type Size>
-		static constexpr auto unpack_i_right__replace_at_h0 = call_builtin_block_program
+		static constexpr auto index_segment__replace_at_h0 = call_builtin_block_program
 		<
 			CP::replace_at_h0,
-			BN::unpack_i_right,
+			BN::index_segment,
 			Size,
 			CP::insert_at_h1_back,
 			MN::value, MT::h1
@@ -582,317 +582,11 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// get:
-
-private:
-
-/***********************************************************************************************************************/
-
-// empty:
-
-/*
-	template<key_type...>
-	struct Get
-	{
-		// function:
-
-			static constexpr auto function_tail_instrs = U_opt_pack_Vs
-			<
-				unwind<>
-			>;
-
-		// program:
-
-			static constexpr auto program_tail_instrs = U_opt_pack_Vs
-			<
-				rewind<>
-			>;
-	};
-
-	using GE = Get<>;
-*/
-
-/***********************************************************************************************************************/
-
-// caller:
-
-/*
-	template<key_type... filler>
-	struct Get<CI::caller, filler...>
-	{
-		template<index_type pos>
-		static constexpr auto U_copy_i_pos__insert_at_h0_back = U_opt_pack_Vs
-		<
-			copy_i_pos__insert_at_h0_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_r_pos__insert_at_h0_back = U_opt_pack_Vs
-		<
-			copy_r_pos__insert_at_h0_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_a_pos__insert_at_h0_back = U_opt_pack_Vs
-		<
-			copy_a_pos__insert_at_h0_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_h4_pos__insert_at_h0_back = U_opt_pack_Vs
-		<
-			copy_h4_pos__insert_at_h0_back<pos>
-		>;
-
-		template<auto ins>
-		static constexpr auto instrs()
-		{
-			constexpr auto caller_loc = ins[CI::caller_loc];
-
-			if constexpr      (caller_loc == CL::h0   ) return U_null_Vs;
-			else if constexpr (caller_loc == CL::instr) return U_copy_i_pos__insert_at_h0_back<CI::caller>;
-			else
-			{
-				constexpr auto pos = ins[CI::caller_pos];
-
-				if constexpr      (caller_loc == CL::regs) return U_copy_r_pos__insert_at_h0_back<pos>;
-				else if constexpr (caller_loc == CL::args) return U_copy_a_pos__insert_at_h0_back<pos>;
-				else                                       return U_copy_h4_pos__insert_at_h0_back<pos>;
-			}
-		}
-	};
-
-	using GC = Get<CI::caller>;
-*/
-
-/***********************************************************************************************************************/
-
-// name:
-
-/*
-	template<key_type... filler>
-	struct Get<CI::name, filler...>
-	{
-		template<index_type pos>
-		static constexpr auto U_copy_i_pos__insert_at_h1_back = U_opt_pack_Vs
-		<
-			copy_i_pos__insert_at_h1_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_r_pos__insert_at_h1_back = U_opt_pack_Vs
-		<
-			copy_r_pos__insert_at_h1_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_a_pos__insert_at_h1_back = U_opt_pack_Vs
-		<
-			copy_a_pos__insert_at_h1_back<pos>
-		>;
-
-		template<index_type pos>
-		static constexpr auto U_copy_h4_pos__insert_at_h1_back = U_opt_pack_Vs
-		<
-			copy_h4_pos__insert_at_h1_back<pos>
-		>;
-
-		template<auto ins>
-		static constexpr auto instrs()
-		{
-			constexpr auto name_loc = ins[CI::name_loc];
-
-			if constexpr      (name_loc == CL::id   ) return U_null_Vs; // closed: not applicable.
-			else if constexpr (name_loc == CL::h0   ) return U_null_Vs;
-			else if constexpr (name_loc == CL::instr) return U_copy_i_pos__insert_at_h1_back<CI::name_pos>;
-			else
-			{
-				constexpr auto pos = ins[CI::name_pos];
-
-				if constexpr      (name_loc == CL::regs) return U_copy_r_pos__insert_at_h1_back<pos>;
-				else if constexpr (name_loc == CL::args) return U_copy_a_pos__insert_at_h1_back<pos>;
-				else                                     return U_copy_h4_pos__insert_at_h1_back<pos>;
-			}
-		}
-	};
-
-	using GN = Get<CI::name>;
-*/
-
-/***********************************************************************************************************************/
-
-// parameters:
-
-/*
-	template<key_type... filler>
-	struct Get<CI::param, filler...>
-	{
-		template<index_type Size>
-		static constexpr auto U_copy_is__insert_at_h2_back = U_opt_pack_Vs
-		<
-			unpack_i_right__replace_at_h0<Size>
-		>;
-
-		template<index_type Size>
-		static constexpr auto U_copy_rs__insert_at_h2_back = U_opt_pack_Vs
-		<
-			unpack_i_right__replace_at_h0<Size>,
-			retrieve__replace_at_h0<>
-		>;
-
-		template<index_type Size>
-		static constexpr auto U_copy_as__insert_at_h2_back = U_opt_pack_Vs
-		<
-			unpack_i_right__replace_at_h0<Size>,
-			retrieve__replace_at_h0<>
-		>;
-
-		template<index_type Size>
-		static constexpr auto U_copy_h4s__insert_at_h2_back = U_opt_pack_Vs
-		<
-			unpack_i_right__replace_at_h0<Size>,
-			retrieve__replace_at_h0<>
-		>;
-
-		template<auto ins>
-		static constexpr auto instrs()
-		{
-			constexpr auto param_loc = ins[CI::param_loc];
-
-			if constexpr (param_loc == CL::all_h0) return U_null_Vs;
-			else
-			{
-				constexpr auto size = RG::template size<ins>;
-
-				if constexpr      (param_loc == CL::all_instr) return U_copy_is__insert_at_h2_back<size>;
-				else if constexpr (param_loc == CL::all_regs ) return U_copy_rs__insert_at_h2_back<size>;
-				else if constexpr (param_loc == CL::all_args ) return U_copy_as__insert_at_h2_back<size>;
-				else                                           return U_copy_h4s__insert_at_h2_back<size>;
-			}
-		}
-	};
-
-	using GP = Get<CI::param>;
-*/
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// build:
-
-/***********************************************************************************************************************/
-
-/*
-	struct Build
-	{
-		// lines:
-
-			template<auto... Hs, auto... Is, auto... Js, auto... Ks>
-			static constexpr label_type lines
-			(
-				nik_avpcr(auto_pack<Hs...>*),
-				nik_avpcr(auto_pack<Is...>*),
-				nik_avpcr(auto_pack<Js...>*),
-				nik_avpcr(auto_pack<Ks...>*)
-			)
-			{
-				return label
-				<
-					Hs...,
-					Is...,
-					Js...,
-					Ks...
-				>;
-			}
-
-		// locations:
-
-			template<index_type... Ys>
-			static constexpr label_type locations(key_type loc)
-			{
-				if (loc == CL::regs)
-
-					return label
-					<
-						copy_r_pos__insert_at_h2_back<Ys>...,
-						rewind<>
-					>;
-
-				else if (loc == CL::args)
-
-					return label
-					<
-						copy_a_pos__insert_at_h2_back<Ys>...,
-						rewind<>
-					>;
-				else
-					return label
-					<
-						copy_h4_pos__insert_at_h2_back<Ys>...,
-						rewind<>
-					>;
-			}
-
-		// h0:
-
-			template<auto ins, typename Heap>
-			static constexpr auto h0(Heap H)
-			{
-				constexpr auto caller_loc	= ins[CI::caller_loc];
-				constexpr auto length		= RG::template length<ins>;
-
-				if constexpr (caller_loc != CL::h0) return U_opt_pack_Vs<ins, length>;
-				else return U_opt_pack_Vs<ins, length, PackSplit1::upper(H)>;
-			}
-
-		// h1:
-
-			template<auto ins, typename Heap>
-			static constexpr auto h1(Heap H)
-			{
-				constexpr auto name_loc = ins[CI::name_loc];
-
-				if constexpr (name_loc != CL::h0) return U_null_Vs;
-				else
-				{
-					constexpr auto caller_loc = ins[CI::caller_loc];
-
-					if constexpr (caller_loc != CL::h0) return PackSplit1::upper(H);
-					else                                return PackSplit2::upper(H);
-				}
-			}
-
-		// h2: We can optimize knowing that h0_all is dispatched separately.
-
-			template<auto ins, typename Heap>
-			static constexpr auto h2(Heap H)
-			{
-				constexpr auto param_loc = ins[CI::param_loc];
-
-				if constexpr (param_loc != CL::all_h0) return U_null_Vs;
-				else
-				{
-					constexpr auto caller_loc = ins[CI::caller_loc];
-
-					if constexpr (caller_loc == CL::h0) return PackSplit1::rest(H);
-					else
-					{
-						constexpr auto name_loc = ins[CI::name_loc];
-
-						if constexpr (name_loc == CL::h0) return PackSplit1::rest(H);
-						else                              return H;
-					}
-				}
-			}
-	};
-*/
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
 // machination:
 
 /***********************************************************************************************************************/
+
+private:
 
 	template<typename Stack1Cache, typename Stack2Cache>
 	struct machination
@@ -917,6 +611,229 @@ private:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
+// parameter:
+
+	template<key_type...> struct Parameter;
+
+/***********************************************************************************************************************/
+
+// factored (all):
+
+	template<key_type... filler>
+	struct Parameter<CT::factored, filler...>
+	{
+		template<instr_type ins>
+		static constexpr index_type param_size = MI::length(ins) - CI::loc_offset;
+
+		// parse:
+
+			template<instr_type ins>
+			static constexpr auto parse()
+			{
+				constexpr auto l	= ins[CI::param_loc];
+				constexpr auto p	= CL::from_all(l);
+
+				constexpr auto s	= param_size<ins>;
+				constexpr auto r	= Fast<s>::U_index_segment;
+
+				constexpr auto locs	= PE::template to_constant<p>(r);
+				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(r);
+
+				return machination(MN::id, locs, poses);
+			}
+
+		// params:
+
+			template<instr_type ins>
+			static constexpr auto U_params()
+			{
+				constexpr auto s = param_size<ins>;
+				constexpr auto r = Fast<s>::U_index_segment;
+
+				return PE::template map_array<ins, CI::pos_offset>(r);
+			}
+	};
+
+	using QF = Parameter<CT::factored>;
+
+/***********************************************************************************************************************/
+
+// overt (half):
+
+	template<key_type... filler>
+	struct Parameter<CT::overt, filler...>
+	{
+		template<instr_type ins>
+		static constexpr index_type param_size = (QF::template param_size<ins> + 1) >> 1;
+
+		// parse:
+
+			template<instr_type ins>
+			static constexpr auto parse()
+			{
+				constexpr auto s	= param_size<ins>;
+				constexpr auto r	= Fast<s>::U_even_index_segment;
+
+				constexpr auto locs	= PE::template map_array<ins, CI::loc_offset>(r);
+				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(r);
+
+				return machination(MN::id, locs, poses);
+			}
+	};
+
+	using QO = Parameter<CT::overt>;
+
+/***********************************************************************************************************************/
+
+// dispatch:
+
+	template<key_type... filler>
+	struct Parameter<CT::dispatch, filler...>
+	{
+		// is h4:
+
+			template<auto size, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			static constexpr bool is_h4
+			(
+		 		nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*)
+			)
+			{
+				return false;
+			}
+
+		// opt program:
+
+			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			static constexpr auto opt_program
+			(
+		 		nik_avpcr(auto_pack<Vs...>*),
+		 		nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*)
+			)
+			{
+				constexpr label_type c		= label
+								<
+									retrieve<>,
+									rewind<>
+								>;
+
+				constexpr auto parsed		= Q::template parse<ins>();
+				constexpr auto locs		= parsed.h2;
+				constexpr auto poses		= parsed.h3;
+
+				constexpr auto nH0		= U_opt_pack_Vs<locs, poses, cH0>;
+
+				constexpr auto h2		= RL::template U_prog_h2<c, Vs...>;
+    				constexpr auto h3		= U_opt_pack_Vs<nH0, cH1, cH2, cH3, cH4, cH5, cAs...>;
+
+				return machination(MT::id, h2, h3);
+			}
+
+		// h4 program:
+
+			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			static constexpr auto h4_program
+			(
+		 		nik_avpcr(auto_pack<Vs...>*),
+		 		nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*)
+			)
+			{
+				return 0;
+			}
+
+		// program:
+
+			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			static constexpr auto program
+			(
+		 		nik_avpcr(auto_pack<Vs...>*),
+		 		nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*)
+			)
+			{
+				return 0;
+			}
+	};
+
+	using QD = Parameter<CT::dispatch>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// make:
+
+	template<key_type...> struct Make;
+
+/***********************************************************************************************************************/
+
+// closed:
+
+	template<key_type... filler>
+	struct Make<CT::closed, filler...>
+	{
+		template<auto ins, auto... Vs, auto prog, auto... Ws>
+		static constexpr auto h2(nik_avpcr(auto_pack<prog, Ws...>*))
+		{
+			constexpr auto params	= U_opt_pack_Vs<Ws...>;
+			constexpr auto base	= T_type_U<prog>::base;
+
+			return Resolve<base>::template h2<ins, Vs...>(prog, params);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// open:
+
+	template<key_type... filler>
+	struct Make<CT::open, filler...>
+	{
+		template<auto caller, auto name>
+		static constexpr auto make(key_type) { return U_type_T<program<caller, name>>; }
+
+		template<auto caller, auto name, template<auto...> class B>
+		static constexpr auto make(nik_avpcr(auto_template_pack<B>*)) { return U_type_T<B<name>>; }
+
+		template<auto ins, auto... Vs, auto caller, auto name, auto... ps>
+		static constexpr auto h2(nik_avpcr(auto_pack<caller, name, ps...>*))
+		{
+			constexpr auto prog	= make<caller, name>(caller);
+			constexpr auto params	= U_opt_pack_Vs<ps...>;
+			constexpr auto base	= T_type_U<prog>::base;
+
+			return Resolve<base>::template h2<ins, Vs...>(prog, params);
+		}
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// build:
+
+/***********************************************************************************************************************/
+
+	struct Build
+	{
+		template<auto... Hs, auto... Is, auto... Js, auto... Ks>
+		static constexpr label_type lines
+		(
+			nik_avpcr(auto_pack<Hs...>*),
+			nik_avpcr(auto_pack<Is...>*),
+			nik_avpcr(auto_pack<Js...>*),
+			nik_avpcr(auto_pack<Ks...>*)
+		)
+		{
+			return label
+			<
+				Hs...,
+				Is...,
+				Js...,
+				Ks...
+			>;
+		}
+	};
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
 // retrieve:
 
 /***********************************************************************************************************************/
@@ -936,13 +853,13 @@ private:
 		<
 			auto h0, auto... Vs,
 			auto... locs, auto... poses,
-			typename Heap2, typename Heap3, typename Heap4, typename... Args
+			auto cH2, auto cH3, auto cH4, auto... cAs
 		>
 		static constexpr auto program
 		(
 		 	nik_avpcr(auto_pack<locs...>*),
 		 	nik_avpcr(auto_pack<poses...>*),
-			Heap2 H2, Heap3 H3, Heap4 H4, Args... As
+			nik_avpcr(auto_pack<cH2, cH3, cH4, cAs...>*)
 		)
 		{
 			constexpr auto c	= label
@@ -953,13 +870,10 @@ private:
 
 			constexpr auto cH0	= h0;
 			constexpr auto cH1	= U_null_Vs;
-			constexpr auto cH2	= U_pretype_T<Heap2>;
-			constexpr auto cH3	= U_pretype_T<Heap3>;
-			constexpr auto cH4	= U_pretype_T<Heap4>;
 			constexpr auto cH5	= U_null_Vs;
 
 			constexpr auto h2	= RL::template U_prog_h2<c, Vs...>;
-    			constexpr auto h3	= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
+    			constexpr auto h3	= U_opt_pack_Vs<NIK_HEAP_CARGS, cAs...>;
 
 			return machination(MT::id, h2, h3);
 		}
@@ -974,95 +888,18 @@ private:
 
 	struct Fetch
 	{
-		// program:
+		// dispatch:
 
-			// full param:
-
-		//	template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
-		//	static constexpr auto full_param_program(NIK_HEAP_VARS, Args... As)
-		//	{
-		//		constexpr auto caller_loc	= ins[CI::caller_loc];
-		//		constexpr auto name_loc		= ins[CI::name_loc];
-		//		constexpr auto param_loc	= ins[CI::param_loc];
-
-		//		constexpr index_type size	= RG::template size<ins>;
-
-		//		if constexpr (is_opt(size))
-		//		{
-		//			constexpr auto locs	= U_opt_pack_Vs<>;
-		//			constexpr auto poses	= U_opt_pack_Vs<>;
-
-		//			constexpr auto h2	= U_opt_pack_Vs<>;
-		//			constexpr auto h3	= U_opt_pack_Vs<>;
-
-		//			return machination(MT::id, h2, h3);
-		//		}
-		//		else
-		//		{
-		//			return machination(MT::id, h2, h3);
-		//		}
-		//	}
-
-			// half param:
-
-		//	template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
-		//	static constexpr auto half_param_program(NIK_HEAP_VARS, Args... As)
-		//	{
-		//		constexpr index_type size = (RG::template size<ins> + 1) >> 1;
-
-		//		if constexpr (is_opt(size))
-		//		{
-		//			constexpr auto locs	= U_opt_pack_Vs<>;
-		//			constexpr auto poses	= U_opt_pack_Vs<>;
-
-		//			constexpr auto h2	= U_opt_pack_Vs<>;
-		//			constexpr auto h3	= U_opt_pack_Vs<>;
-
-		//			return machination(MT::id, h2, h3);
-		//		}
-		//		else
-		//		{
-		//			return machination(MT::id, h2, h3);
-		//		}
-		//	}
-
-			// dispatch:
-
-			template<auto ins, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
-			static constexpr auto program(NIK_HEAP_VARS, Args... As)
+			template<auto ins, typename Heap0, typename Heap1>
+			static constexpr auto program(Heap0 H0, Heap1 H1)
 			{
-			//	constexpr auto param_loc = ins[CI::param_loc];
+				using Q			= Parameter<CT::opacity(ins)>;
+				constexpr auto size	= Q::template param_size<ins>;
 
-			//	if constexpr (is_loc_all(param_loc))
-
-			//		return full_param_program<ins, Vs...>(NIK_HEAP_ARGS, As...);
-			//	else
-			//		return half_param_program<ins, Vs...>(NIK_HEAP_ARGS, As...);
-				return 0;
+				if constexpr      (CI::is_opt(size))    return QD::template opt_program<Q, ins>(H0, H1);
+				else if constexpr (QD::is_h4<size>(H1)) return QD::template h4_program<Q, ins>(H0, H1);
+				else                                    return QD::template program<Q, ins>(H0, H1);
 			}
-
-			//	constexpr auto caller_ins	= GC::template instrs<ins>();
-			//	constexpr auto name_ins		= GN::template instrs<ins>();
-			//	constexpr auto param_ins	= GP::template instrs<ins>();
-			//	constexpr auto tail_ins		= GE::program_tail_instrs;
-			//	constexpr auto c		= Build::lines(caller_ins, name_ins, param_ins, tail_ins);
-
-			//	constexpr auto cH0		= U_pretype_T<Heap0>;
-			//	constexpr auto cH1		= U_pretype_T<Heap1>;
-			//	constexpr auto cH2		= U_pretype_T<Heap2>;
-			//	constexpr auto cH3		= U_pretype_T<Heap3>;
-			//	constexpr auto cH4		= U_pretype_T<Heap4>;
-			//	constexpr auto cH5		= U_pretype_T<Heap5>;
-
-			//	constexpr auto nH0		= Build::template h0<ins>(cH0);
-			//	constexpr auto nH1		= Build::template h1<ins>(cH0);
-			//	constexpr auto nH2		= Build::template h2<ins>(cH0);
-			//	constexpr auto nH3		= U_opt_pack_Vs<cH0, cH1, cH2, cH3, cH4, cH5, U_pretype_T<Args>...>;
-
-			//	constexpr auto h2		= RL::template U_prog_h2<c, Vs...>;
-    			//	constexpr auto h3		= U_opt_pack_Vs<nH0, nH1, nH2, nH3, cH4, cH5, U_pretype_T<Args>...>;
-
-			//	return machination(MT::id, h2, h3);
 
 		// function:
 

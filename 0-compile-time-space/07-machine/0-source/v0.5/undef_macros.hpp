@@ -177,13 +177,13 @@
 
 	#undef NIK_2_N_OP_MAP_VARS
 
-// act map:
+// al map:
 
-	#undef NIK_2_N_ACT_MAP_VARS
+	#undef NIK_2_N_AL_MAP_VARS
 
-// array:
+// index segment:
 
-	#undef NIK_2_N_ARRAY_VARS
+	#undef NIK_2_N_INDEX_SEGMENT
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -210,9 +210,9 @@
 
 	#undef NIK_2_N_OP_FOLDS
 
-// action folds:
+// alias folds:
 
-	#undef NIK_2_N_ACT_FOLDS
+	#undef NIK_2_N_AL_FOLDS
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -239,13 +239,13 @@
 
 	#undef NIK_N_FAST_AUTO_VARS
 
-// index sequence:
+// index segement:
 
-	#undef NIK_N_FAST_INDEX_SEQUENCE
+	#undef NIK_N_FAST_INDEX_SEGMENT
 
-// even index sequence:
+// even index segment:
 
-	#undef NIK_N_FAST_EVEN_INDEX_SEQUENCE
+	#undef NIK_N_FAST_EVEN_INDEX_SEGMENT
 
 // struct:
 
@@ -259,6 +259,7 @@
 	#undef NIK_HEAP_TYPES
 	#undef NIK_HEAP_VARS
 	#undef NIK_HEAP_ARGS
+	#undef NIK_HEAP_AUTO_CARGS
 	#undef NIK_HEAP_CARGS
 
 /***********************************************************************************************************************/
@@ -268,9 +269,9 @@
 
 /***********************************************************************************************************************/
 
-// unpack instruction block (, insert at argument zero back) (2^N):
+// index block (, insert at heap one back) (2^N):
 
-	#undef NIK_DEFINE__UNPACK_I_BLOCK
+	#undef NIK_DEFINE__INDEX_BLOCK
 
 /***********************************************************************************************************************/
 
@@ -280,15 +281,15 @@
 
 /***********************************************************************************************************************/
 
-// move argument block (2^N):
-
-	#undef NIK_DEFINE__MOVE_A_BLOCK
-
-/***********************************************************************************************************************/
-
 // fold register block (2^N):
 
 	#undef NIK_DEFINE__FOLD_R_BLOCK
+
+/***********************************************************************************************************************/
+
+// move argument block (2^N):
+
+	#undef NIK_DEFINE__MOVE_A_BLOCK
 
 /***********************************************************************************************************************/
 
