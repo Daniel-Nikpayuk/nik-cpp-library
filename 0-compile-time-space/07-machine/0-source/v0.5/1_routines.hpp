@@ -94,12 +94,6 @@ public:
 		MN::go_to, MT::first
 	>;
 
-	template<key_type Index>
-	static constexpr instr_type branch = instruction
-	<
-		MN::go_to, MT::conditional, Index
-	>;
-
 //	template<key_type...>
 //	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
 //	<
@@ -127,74 +121,115 @@ public:
 
 /***********************************************************************************************************************/
 
-// closed:
+// dispatch:
 
 	template
 	<
 		key_type RtnPolicy,
-		key_type CallerLoc, index_type Caller,
-		key_type ParamLoc, index_type... Params
+		key_type CallerLoc, index_type CallerPos,
+		key_type NameLoc, index_type NamePos,
+		key_type PackLoc, index_type PackPos,
+		key_type ParamTrait, index_type... Params
 	>
-	static constexpr instr_type call_closed_program = instruction
-	<
-		MN::call, CL::cnote(CallerLoc, ParamLoc),
-		RtnPolicy, CallerLoc, Caller, CL::id, _zero, ParamLoc, Params...
-	>;
+	static constexpr instr_type dispatch_call_program()
+	{
+		constexpr index_type Name		= MN::call;
 
-	// interface:
+		constexpr index_type ParamSize		= sizeof...(Params);
+		constexpr index_type PackSize		= CD::pack_size(ParamTrait, ParamSize);
+		constexpr index_type param_array[]	= { Params... };
 
-		template<key_type RtnPolicy, index_type Caller, index_type... Params>
-		static constexpr instr_type call_local_closed_program = call_closed_program
+		// assertions:
+
+		constexpr bool caller_assert		= (CallerLoc  != CL::id);
+		constexpr bool pack_assert		= (PackLoc    != CL::id);
+		constexpr bool trait_assert		= (ParamTrait == CT::id || ParamTrait == CT::all);
+		constexpr bool params_assert		= CD::assert_no_param_locs_equal_id(PackSize, param_array);
+
+		static_assert( caller_assert , "[call instruction] caller location cannot be id."  );
+		static_assert( pack_assert   , "[call instruction] pack location cannot be instr." );
+		static_assert( trait_assert  , "[call instruction] param trait must be id or all." );
+		static_assert( params_assert , "[call instruction] param locations cannot be id."  );
+
+		// is id note:
+
+		constexpr bool all_nonparams_equal_h0	= CD::all_nonparam_locs_equal_h0(CallerLoc, NameLoc, PackLoc);
+		constexpr bool all_params_equal_h0	= CD::all_param_locs_equal_h0<ParamTrait>(PackSize, param_array);
+
+		constexpr bool is_identity_note		= all_nonparams_equal_h0 && all_params_equal_h0;
+
+		// is optimal note:
+
+		constexpr bool is_caller_optimal	= CD::is_generic_optimal ( CallerLoc , CallerPos            );
+		constexpr bool is_name_optimal		= CD::is_generic_optimal ( NameLoc   , NamePos              );
+		constexpr bool is_pack_optimal		= CD::is_pack_optimal    ( PackLoc   , PackPos   , PackSize );
+		constexpr bool is_params_optimal	= CD::is_params_optimal<ParamTrait>(PackSize, param_array);
+
+		constexpr bool is_optimal_note		= is_caller_optimal && is_name_optimal &&
+							  is_pack_optimal && is_params_optimal ;
+
+		//
+
+		constexpr index_type Note		= is_identity_note ? MT::id      :
+							  is_optimal_note  ? MT::optimal : MT::fetch;
+
+		return instruction
 		<
+			Name, Note,
 			RtnPolicy,
-			CL::h0, Caller,
-			CL::all_h0, Params...
+			CallerLoc, CallerPos,
+			NameLoc, NamePos,
+			PackLoc, PackPos, PackSize,
+			ParamTrait, Params...
 		>;
+	}
 
-/***********************************************************************************************************************/
-
-// open:
+// program:
 
 	template
 	<
 		key_type RtnPolicy,
-		key_type CallerLoc, index_type Caller,
-		key_type NameLoc, index_type Name,
-		key_type ParamLoc, index_type... Params
+		key_type CallerLoc, index_type CallerPos,
+		key_type NameLoc, index_type NamePos,
+		key_type PackLoc, index_type PackPos,
+		key_type ParamTrait, index_type... Params
 	>
-	static constexpr instr_type call_open_program = instruction
+	static constexpr instr_type call_program = dispatch_call_program
 	<
-		MN::call, CL::onote(CallerLoc, NameLoc, ParamLoc, sizeof...(Params)),
-		RtnPolicy, CallerLoc, Caller, NameLoc, Name, ParamLoc, Params...
+		RtnPolicy,
+		CallerLoc, CallerPos,
+		NameLoc, NamePos,
+		PackLoc, PackPos,
+		ParamTrait, Params...
+	>();
+
+// interface:
+
+	template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
+	static constexpr instr_type call_local_program = call_program
+	<
+		RtnPolicy,
+		CL::h0, Caller,
+		CL::h0, Name,
+		CT::all, CL::h0, Params...
 	>;
 
-	// interface:
+	template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
+	static constexpr instr_type call_builtin_program = call_program
+	<
+		RtnPolicy,
+		CL::instr, Caller,
+		CL::instr, Name,
+		CT::all, CL::instr, Params...
+	>;
 
-		template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
-		static constexpr instr_type call_local_open_program = call_open_program
-		<
-			RtnPolicy,
-			CL::h0, Caller,
-			CL::h0, Name,
-			CL::all_h0, Params...
-		>;
+// syntactic sugar:
 
-		template<key_type RtnPolicy, index_type Caller, index_type Name, index_type... Params>
-		static constexpr instr_type call_builtin_open_program = call_open_program
-		<
-			RtnPolicy,
-			CL::instr, Caller,
-			CL::instr, Name,
-			CL::all_instr, Params...
-		>;
-
-	// syntactic sugar:
-
-		template<key_type RtnPolicy, key_type Name, index_type Pos, key_type BPolicy, key_type Coname, key_type Conote>
-		static constexpr instr_type call_builtin_block_program = call_builtin_open_program
-		<
-			RtnPolicy, MP::block, Name, Pos, BPolicy, Coname, Conote
-		>;
+	template<key_type RtnPolicy, key_type Name, index_type Pos, key_type BPolicy, key_type Coname, key_type Conote>
+	static constexpr instr_type call_builtin_block_program = call_builtin_program
+	<
+		RtnPolicy, MP::block, Name, Pos, BPolicy, Coname, Conote
+	>;
 
 /***********************************************************************************************************************/
 
@@ -321,7 +356,7 @@ public:
 	//		template<key_type Note, index_type Pos>
 	//		static constexpr auto dispatch_copy_r_pos()
 	//		{
-	//			if constexpr (MI::is_opt(Pos)) return copy_r_pos<Note, Pos>;
+	//			if constexpr (MI::is_optimal(Pos)) return copy_r_pos<Note, Pos>;
 	//			else
 	//			{
 	//				constexpr auto policy = (Note == MT::insert_at_h0_front) ?
@@ -617,27 +652,27 @@ private:
 
 /***********************************************************************************************************************/
 
-// factored (all):
+// all:
 
 	template<key_type... filler>
-	struct Parameter<CT::factored, filler...>
+	struct Parameter<CT::all, filler...>
 	{
 		template<instr_type ins>
-		static constexpr index_type param_size = MI::length(ins) - CI::loc_offset;
+		static constexpr index_type param_size	= MI::length(ins) - CI::loc_offset;
+
+		template<auto size>
+		static constexpr auto index_segment	= Fast<size>::U_index_segment;
 
 		// parse:
 
-			template<instr_type ins>
+			template<instr_type ins, auto index_segment>
 			static constexpr auto parse()
 			{
-				constexpr auto l	= ins[CI::param_loc];
-				constexpr auto p	= CL::from_all(l);
+				constexpr auto l	= ins[CI::loc_offset]; // tmp
+				constexpr auto p	= ins[CI::pos_offset]; // tmp
 
-				constexpr auto s	= param_size<ins>;
-				constexpr auto r	= Fast<s>::U_index_segment;
-
-				constexpr auto locs	= PE::template to_constant<p>(r);
-				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(r);
+				constexpr auto locs	= PE::template to_constant<p>(index_segment);
+				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(index_segment);
 
 				return machination(MN::id, locs, poses);
 			}
@@ -654,34 +689,34 @@ private:
 			}
 	};
 
-	using QF = Parameter<CT::factored>;
+	using QF = Parameter<CT::all>;
 
 /***********************************************************************************************************************/
 
-// overt (half):
+// identity:
 
 	template<key_type... filler>
-	struct Parameter<CT::overt, filler...>
+	struct Parameter<CT::id, filler...>
 	{
 		template<instr_type ins>
-		static constexpr index_type param_size = (QF::template param_size<ins> + 1) >> 1;
+		static constexpr index_type param_size	= (QF::template param_size<ins> + 1) >> 1;
+
+		template<auto size>
+		static constexpr auto index_segment	= Fast<size>::U_even_index_segment;
 
 		// parse:
 
-			template<instr_type ins>
+			template<instr_type ins, auto index_segment>
 			static constexpr auto parse()
 			{
-				constexpr auto s	= param_size<ins>;
-				constexpr auto r	= Fast<s>::U_even_index_segment;
-
-				constexpr auto locs	= PE::template map_array<ins, CI::loc_offset>(r);
-				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(r);
+				constexpr auto locs	= PE::template map_array<ins, CI::loc_offset>(index_segment);
+				constexpr auto poses	= PE::template map_array<ins, CI::pos_offset>(index_segment);
 
 				return machination(MN::id, locs, poses);
 			}
 	};
 
-	using QO = Parameter<CT::overt>;
+	using QO = Parameter<CT::id>;
 
 /***********************************************************************************************************************/
 
@@ -690,20 +725,25 @@ private:
 	template<key_type... filler>
 	struct Parameter<CT::dispatch, filler...>
 	{
-		// is h4:
+		// find from h4:
 
-			template<auto size, NIK_HEAP_AUTO_CARGS, auto... cAs>
-			static constexpr bool is_h4
-			(
-		 		nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*)
-			)
+			template<auto n, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			static constexpr auto find_from_h4(nik_avpcr(auto_pack<NIK_HEAP_CARGS, cAs...>*))
 			{
-				return false;
+				auto record		= PE::template at<0>(cH4);
+				cindex_type size	= MI::length(record);
+				bool not_found		= true;
+				index_type pos		= _zero;
+
+				while (not_found && pos < size) not_found = (record[++pos] != n);
+
+				return array<index_type, false, 0>;
+			//	return array<index_type, !not_found, pos>;
 			}
 
 		// opt program:
 
-			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			template<typename Q, auto ins, auto index_segment, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
 			static constexpr auto opt_program
 			(
 		 		nik_avpcr(auto_pack<Vs...>*),
@@ -716,7 +756,7 @@ private:
 									rewind<>
 								>;
 
-				constexpr auto parsed		= Q::template parse<ins>();
+				constexpr auto parsed		= Q::template parse<ins, index_segment>();
 				constexpr auto locs		= parsed.h2;
 				constexpr auto poses		= parsed.h3;
 
@@ -730,7 +770,7 @@ private:
 
 		// h4 program:
 
-			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			template<typename Q, auto ins, auto pos, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
 			static constexpr auto h4_program
 			(
 		 		nik_avpcr(auto_pack<Vs...>*),
@@ -742,7 +782,7 @@ private:
 
 		// program:
 
-			template<typename Q, auto ins, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
+			template<typename Q, auto ins, auto size, auto... Vs, NIK_HEAP_AUTO_CARGS, auto... cAs>
 			static constexpr auto program
 			(
 		 		nik_avpcr(auto_pack<Vs...>*),
@@ -893,12 +933,28 @@ private:
 			template<auto ins, typename Heap0, typename Heap1>
 			static constexpr auto program(Heap0 H0, Heap1 H1)
 			{
-				using Q			= Parameter<CT::opacity(ins)>;
+				using Q			= Parameter<_zero>; // tmp
 				constexpr auto size	= Q::template param_size<ins>;
 
-				if constexpr      (CI::is_opt(size))    return QD::template opt_program<Q, ins>(H0, H1);
-				else if constexpr (QD::is_h4<size>(H1)) return QD::template h4_program<Q, ins>(H0, H1);
-				else                                    return QD::template program<Q, ins>(H0, H1);
+				if constexpr (CI::is_optimal(size))
+				{
+					constexpr auto index_segment = Q::template index_segment<size>;
+
+					return QD::template opt_program<Q, ins, index_segment>(H0, H1);
+				}
+				else
+				{
+					constexpr auto result = QD::find_from_h4<size>(H1);
+					constexpr bool h4_has = result[_zero];
+
+					if constexpr (h4_has)
+					{
+						constexpr auto pos = result[_one];
+
+						return QD::template h4_program<Q, ins, pos>(H0, H1);
+					}
+					else return QD::template program<Q, ins, size>(H0, H1);
+				}
 			}
 
 		// function:

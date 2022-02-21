@@ -107,6 +107,66 @@
 
 /***********************************************************************************************************************/
 
+// is optimal:
+
+	// locations: id, instr, regs, h0, h4, args
+
+	// it's optimal if:
+
+		// CallerLoc     != id       (error)
+		// CallerLoc     == instr
+		// CallerLoc     == regs  && CallerPos  < eight
+		// CallerLoc     == h0    && CallerPos  < eight
+		// CallerLoc     == h4    && CallerPos  < eight
+		// CallerLoc     == args  && CallerPos  < eight
+
+		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == instr
+		// NameLoc       == regs  && NamePos    < eight
+		// NameLoc       == h0    && NamePos    < eight
+		// NameLoc       == h4    && NamePos    < eight
+		// NameLoc       == args  && NamePos    < eight
+
+		// PackLoc       == id    && PackSize   < eight
+		// PackLoc       != instr    (error)
+		// PackLoc       == regs  && PackPos    < eight
+		// PackLoc       == h0    && PackPos    < eight
+		// PackLoc       == h4    && PackPos    < eight
+		// PackLoc       == args  && PackPos    < eight
+
+		// ParamTrait    == id
+		// ParamTrait    == all
+
+		// ParamLoc[0-7] != id       (error)
+		// ParamLoc[0-7] == instr
+		// ParamLoc[0-7] == regs  && ParamPos[] < eight
+		// ParamLoc[0-7] == h0    && ParamPos[] < eight
+		// ParamLoc[0-7] == h4    && ParamPos[] < eight
+		// ParamLoc[0-7] == args  && ParamPos[] < eight
+
+	// it's optimal if (refactored):
+
+		// CallerLoc     != id       (error)
+		// CallerLoc     == instr
+		// CallerPos     <  eight
+
+		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == instr
+		// NamePos       <  eight
+
+		// PackLoc       == id    && PackSize   < eight
+		// PackLoc       != instr    (error)
+		// PackPos       <  eight
+
+		// ParamTrait    == id
+		// ParamTrait    == all
+
+		// ParamLoc[0-7] != id       (error)
+		// ParamLoc[0-7] == instr
+		// ParamPos[0-7] <  eight
+
+/***********************************************************************************************************************/
+
 // block:
 
 	// Block programs consist of two block instructions and some machine

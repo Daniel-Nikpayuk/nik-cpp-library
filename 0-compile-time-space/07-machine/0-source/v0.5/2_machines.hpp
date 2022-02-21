@@ -431,7 +431,7 @@
 		{
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
-			constexpr auto shape	= CT::shape(ins);
+			constexpr auto shape	= CT::open; // CT::shape(ins);
 
 			constexpr auto cH0	= U_null_Vs;
 			constexpr auto cH1	= U_pretype_T<Heap1>;
@@ -449,10 +449,10 @@
 
 /***********************************************************************************************************************/
 
-// fast:
+// optimal:
 
 	template<key_type... filler>
-	struct machine<MN::call, MT::fast, filler...>
+	struct machine<MN::call, MT::optimal, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
 		static constexpr auto result(NIK_HEAP_VARS, Args... As)
@@ -678,7 +678,7 @@
 			Heap3 H3, Heaps...
 		)
 		{
-			constexpr auto shape = CT::shape(ins);
+			constexpr auto shape = CT::open; // CT::shape(ins);
 			constexpr auto pack  = U_opt_pack_Vs<Ws..., Xs..., Ys...>;
 
 			constexpr auto h2    = Make<shape>::template h2<ins, Vs...>(pack);

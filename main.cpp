@@ -228,19 +228,12 @@
 
 /***********************************************************************************************************************/
 
-	constexpr auto pack = U_pack_Vs<5>;
-
-	template<auto value>
-	constexpr auto get_value(nik_vpcr(A)(auto_pack<value>*)) { return value; }
-
-/***********************************************************************************************************************/
-
 	int main(int argc, char *argv[])
 	{
-		printf("%d\n", get_value(pack));
-
 		return 0;
 	}
+
+	//	printf("%d\n", get_value(pack));
 
 	//	printf("%d\n", machine_module::template Fast<3>::U_even_index_sequence);
 

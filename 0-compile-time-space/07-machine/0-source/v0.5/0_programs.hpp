@@ -126,7 +126,7 @@ public:
 
 			// call:
 
-			static constexpr key_type fast					=  9; // opt
+			static constexpr key_type optimal				=  9; // opt
 			static constexpr key_type retrieve				= 10;
 			static constexpr key_type fetch					= 11;
 
@@ -161,10 +161,6 @@ public:
 			static constexpr key_type append_at_a0_back			= 25;
 
 			static constexpr key_type replace_at_a0				= 26;
-
-			// recursive:
-
-			static constexpr key_type conditional				= 27;
 	};
 
 	using MT = MachineNote;
@@ -184,8 +180,8 @@ public:
 		static constexpr key_type name					= 1;
 		static constexpr key_type note					= 2;
 
-		static constexpr index_type length  (type i)			{ return i[size]; }
-		static constexpr bool       is_opt  (cindex_type n)		{ return (n < _eight); }
+		static constexpr index_type length     (type i)			{ return i[size]; }
+		static constexpr bool       is_optimal (cindex_type n)		{ return (n < _eight); }
 	};
 
 	using MI								= MachineInstr;
@@ -591,11 +587,14 @@ private:
 		static constexpr key_type name_loc	=  6;
 		static constexpr key_type name_pos	=  7;
 
-		static constexpr key_type param_loc	=  8;
-		static constexpr key_type param_pos	=  9;
+		static constexpr key_type pack_loc	=  8;
+		static constexpr key_type pack_pos	=  9;
+		static constexpr key_type pack_size	= 10;
 
-		static constexpr key_type loc_offset	= param_loc;
-		static constexpr key_type pos_offset	= param_pos;
+		static constexpr key_type param_trait	= 11;
+
+		static constexpr key_type loc_offset	= 12;
+		static constexpr key_type pos_offset	= 13;
 	};
 
 	using CI = CallInstr<>;
@@ -605,11 +604,11 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::block, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos		=  9;
-		static constexpr key_type policy	= 10;
+		static constexpr key_type pos		= 12;
+		static constexpr key_type policy	= 13;
 
-		static constexpr key_type coname	= 11;
-		static constexpr key_type conote	= 12;
+		static constexpr key_type coname	= 14;
+		static constexpr key_type conote	= 15;
 	};
 
 	using BCI = CallInstr<MP::block>;
@@ -626,8 +625,8 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::recursive, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos		=  9;
-		static constexpr key_type adj		= 10;
+		static constexpr key_type pos		= 12;
+		static constexpr key_type adj		= 13;
 	};
 
 	using RCI = CallInstr<MP::recursive>;
@@ -670,68 +669,11 @@ private:
 		static constexpr key_type identity		= id;	// convenience for
 									// default params.
 
-		static constexpr key_type h0			=  1;
-		static constexpr key_type instr			=  2;
-		static constexpr key_type regs			=  3;
-		static constexpr key_type args			=  4;
-		static constexpr key_type h4			=  5;
-
-		static constexpr key_type all_h0		=  6;
-		static constexpr key_type all_instr		=  7;
-		static constexpr key_type all_regs		=  8;
-		static constexpr key_type all_args		=  9;
-		static constexpr key_type all_h4		= 10;
-
-		//
-
-		static constexpr key_type to_all(ckey_type n)   { return n + _five; }			 // opt
-		static constexpr key_type from_all(ckey_type n) { return n - _five; }			 // opt
-		static constexpr bool is_all_loc(ckey_type l)   { return (all_h0 <= l && l <= all_h4); } // opt
-
-		static constexpr bool is_closed_all(ckey_type c, ckey_type p, ckey_type v)
-			{ return (c == v) && (p == to_all(v)); }
-
-		static constexpr bool is_open_all(ckey_type c, ckey_type n, ckey_type p, ckey_type v)
-			{ return (n == v) && is_closed_all(c, p, v); }
-
-		static constexpr bool is_loc_all(instr_type ins, cindex_type offset, ckey_type value)
-		{
-			cindex_type size	= MI::length(ins) + 1;
-			bool result		= (ins[CI::caller_loc] == value);
-
-			for (index_type k=offset; result && k < size; k+=2) result = (ins[k] == value);
-
-			return result;
-		}
-
-		//
-
-		static constexpr bool is_closed_h0_all(ckey_type c, ckey_type p)
-			{ return is_closed_all(c, p, h0); }
-
-		static constexpr bool is_closed_h0_all(instr_type ins)
-			{ return is_loc_all(ins, CI::param_loc, h0); }
-
-		static constexpr bool is_open_h0_all(ckey_type c, ckey_type n, ckey_type p)
-			{ return is_open_all(c, p, n, h0); }
-
-		static constexpr bool is_open_h0_all(instr_type ins)
-			{ return is_loc_all(ins, CI::name_loc, h0); }
-
-		static constexpr bool is_open_instr_all(ckey_type c, ckey_type n, ckey_type p)
-			{ return is_open_all(c, p, n, instr); }
-
-		//
-
-		static constexpr key_type cnote(ckey_type c, ckey_type p)
-			{ return is_closed_h0_all(c, p) ? MT::id : MT::fetch; }
-
-		static constexpr key_type onote(ckey_type c, ckey_type n, ckey_type p, cindex_type psize)
-		{
-			if      (is_open_h0_all(c, n, p))                         return MT::id;
-			else if (is_open_instr_all(c, n, p) && MI::is_opt(psize)) return MT::fast;
-			else                                                      return MT::fetch;
-		}
+		static constexpr key_type instr			=  1;
+		static constexpr key_type regs			=  2;
+		static constexpr key_type h0			=  3;
+		static constexpr key_type h4			=  4;
+		static constexpr key_type args			=  5;
 	};
 
 	using CL = CallLocation;
@@ -748,25 +690,133 @@ private:
 		static constexpr key_type closed	=  1;
 		static constexpr key_type open		=  2;
 
-		static constexpr key_type factored	=  3;
-		static constexpr key_type overt		=  4;
+		static constexpr key_type all		=  3;
 
-		static constexpr key_type dispatch	=  5;
-
-		static constexpr key_type shape(instr_type ins)
-		{
-			return (ins[CI::name_loc] == id) ? closed : open;
-		}
-
-		static constexpr key_type opacity(instr_type ins)
-		{
-			ckey_type param_loc = ins[CI::param_loc];
-
-			return CL::is_all_loc(param_loc) ? factored : overt;
-		}
+		static constexpr key_type dispatch	=  4;
 	};
 
 	using CT = CallTrait;
+
+/***********************************************************************************************************************/
+
+// dispatch:
+
+	struct CallDispatch
+	{
+		template<auto V, typename T> static constexpr bool is_value  (T v) { return (v == V); }
+		template<auto V, typename T> static constexpr bool not_value (T v) { return (v != V); }
+
+		template<typename T, typename... Ts>
+		static constexpr bool all_equal(T v, Ts... vs) { return (... && (v == vs)); }
+
+		// locations:
+
+			template<auto test, ckey_type trait, bool safe_return>
+			static constexpr bool all_param_locs_test(cindex_type size, cindex_type *params)
+			{
+				if (size == 0) return safe_return;
+				else
+				{
+					if constexpr (trait == CT::all) return test(*params);
+					else
+					{
+						const index_type *end	= params + (size << 1);
+						bool result		= true;
+
+						for (cindex_type *k = params; result && k < end; k += 2)
+							result = test(*k);
+
+						return result;
+					}
+				}
+			}
+
+		// id:
+
+			template<ckey_type trait>
+			static constexpr bool assert_no_param_locs_equal_id(cindex_type size, cindex_type *params)
+			{
+				return all_param_locs_test<not_value<CL::id>, trait, true>(size, params);
+			}
+
+		// h0:
+
+			static constexpr bool all_nonparam_locs_equal_h0(ckey_type cloc, ckey_type nloc, ckey_type ploc)
+			{
+				return all_equal(CL::h0, cloc, nloc, ploc);
+			}
+
+			template<ckey_type trait>
+			static constexpr bool all_param_locs_equal_h0(cindex_type size, cindex_type *params)
+			{
+				return all_param_locs_test<is_value<CL::h0>, trait, true>(size, params);
+			}
+
+		// optimal:
+
+			// caller, name:
+
+			static constexpr bool is_generic_optimal(ckey_type loc, cindex_type pos)
+			{
+				return (loc == CL::instr) || MI::is_optimal(pos);
+			}
+
+			// pack:
+
+			static constexpr bool is_pack_optimal(ckey_type loc, cindex_type pos, cindex_type size)
+			{
+				if (loc == CL::id) return MI::is_optimal(size);
+				else               return MI::is_optimal(pos);
+			}
+
+			static constexpr index_type pack_size(ckey_type trait, cindex_type param_size)
+			{
+				if      (param_size == 0)  return 0;
+				else if (trait == CT::all) return param_size - 1;
+				else                       return param_size >> 1;
+			}
+
+			// params:
+
+			static constexpr bool is_all_params_optimal(cindex_type size, cindex_type *params)
+			{
+				if (*params == CL::instr) return true;
+				else
+				{
+					bool result = true;
+
+					for (cindex_type *k = params + 1; result && k < params + size; ++k)
+						result = MI::is_optimal(*k);
+
+					return result;
+				}
+			}
+
+			static constexpr bool is_id_params_optimal(cindex_type size, cindex_type *params)
+			{
+				const index_type *end	= params + (size << 1);
+				bool result		= true;
+
+				for (cindex_type *j = params, *k = j+1; result && j < end; j += 2, k += 2)
+					result = (*j == CL::instr) || MI::is_optimal(*k);
+
+				return result;
+			}
+
+			template<ckey_type trait>
+			static constexpr bool is_params_optimal(cindex_type size, cindex_type *params)
+			{
+				if (!MI::is_optimal(size)) return false;
+				else if (size == 0) return true;
+				else
+				{
+					if constexpr (trait == CT::all) return is_all_params_optimal(size, params);
+					else                            return is_id_params_optimal(size, params);
+				}
+			}
+	};
+
+	using CD = CallDispatch;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -816,6 +866,10 @@ private:
 			{ return U_opt_pack_Vs<Vs..., Ws...>; }
 
 		//
+
+		template<auto pos, auto... Vs>
+		static constexpr auto at(nik_avpcr(auto_pack<Vs...>*))
+			{ return Fast<pos>::template at<Vs...>; }
 
 		template<auto value, auto... Is>
 		static constexpr auto to_constant(nik_avpcr(auto_pack<Is...>*))
