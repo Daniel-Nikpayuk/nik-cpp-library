@@ -126,9 +126,9 @@ public:
 
 			// call:
 
-			static constexpr key_type optimal				=  9; // opt
-			static constexpr key_type retrieve				= 10;
-			static constexpr key_type fetch					= 11;
+			static constexpr key_type cache_level_0				=  9;
+			static constexpr key_type cache_level_1				= 10;
+			static constexpr key_type cache_level_2				= 11;
 
 			// detour:
 
@@ -581,8 +581,8 @@ private:
 	{
 		static constexpr key_type policy	=  3;
 
-		static constexpr key_type caller_loc	=  4;
-		static constexpr key_type caller_pos	=  5;
+		static constexpr key_type handle_loc	=  4;
+		static constexpr key_type handle_pos	=  5;
 
 		static constexpr key_type name_loc	=  6;
 		static constexpr key_type name_pos	=  7;
@@ -687,136 +687,10 @@ private:
 		static constexpr key_type id		=  0;
 		static constexpr key_type identity	= id;	// convenience for
 								// default params.
-		static constexpr key_type closed	=  1;
-		static constexpr key_type open		=  2;
-
-		static constexpr key_type all		=  3;
-
-		static constexpr key_type dispatch	=  4;
+		static constexpr key_type all		=  1;
 	};
 
 	using CT = CallTrait;
-
-/***********************************************************************************************************************/
-
-// dispatch:
-
-	struct CallDispatch
-	{
-		template<auto V, typename T> static constexpr bool is_value  (T v) { return (v == V); }
-		template<auto V, typename T> static constexpr bool not_value (T v) { return (v != V); }
-
-		template<typename T, typename... Ts>
-		static constexpr bool all_equal(T v, Ts... vs) { return (... && (v == vs)); }
-
-		// locations:
-
-			template<auto test, ckey_type trait, bool safe_return>
-			static constexpr bool all_param_locs_test(cindex_type size, cindex_type *params)
-			{
-				if (size == 0) return safe_return;
-				else
-				{
-					if constexpr (trait == CT::all) return test(*params);
-					else
-					{
-						const index_type *end	= params + (size << 1);
-						bool result		= true;
-
-						for (cindex_type *k = params; result && k < end; k += 2)
-							result = test(*k);
-
-						return result;
-					}
-				}
-			}
-
-		// id:
-
-			template<ckey_type trait>
-			static constexpr bool assert_no_param_locs_equal_id(cindex_type size, cindex_type *params)
-			{
-				return all_param_locs_test<not_value<CL::id>, trait, true>(size, params);
-			}
-
-		// h0:
-
-			static constexpr bool all_nonparam_locs_equal_h0(ckey_type cloc, ckey_type nloc, ckey_type ploc)
-			{
-				return all_equal(CL::h0, cloc, nloc, ploc);
-			}
-
-			template<ckey_type trait>
-			static constexpr bool all_param_locs_equal_h0(cindex_type size, cindex_type *params)
-			{
-				return all_param_locs_test<is_value<CL::h0>, trait, true>(size, params);
-			}
-
-		// optimal:
-
-			// caller, name:
-
-			static constexpr bool is_generic_optimal(ckey_type loc, cindex_type pos)
-			{
-				return (loc == CL::instr) || MI::is_optimal(pos);
-			}
-
-			// pack:
-
-			static constexpr bool is_pack_optimal(ckey_type loc, cindex_type pos, cindex_type size)
-			{
-				if (loc == CL::id) return MI::is_optimal(size);
-				else               return MI::is_optimal(pos);
-			}
-
-			static constexpr index_type pack_size(ckey_type trait, cindex_type param_size)
-			{
-				if      (param_size == 0)  return 0;
-				else if (trait == CT::all) return param_size - 1;
-				else                       return param_size >> 1;
-			}
-
-			// params:
-
-			static constexpr bool is_all_params_optimal(cindex_type size, cindex_type *params)
-			{
-				if (*params == CL::instr) return true;
-				else
-				{
-					bool result = true;
-
-					for (cindex_type *k = params + 1; result && k < params + size; ++k)
-						result = MI::is_optimal(*k);
-
-					return result;
-				}
-			}
-
-			static constexpr bool is_id_params_optimal(cindex_type size, cindex_type *params)
-			{
-				const index_type *end	= params + (size << 1);
-				bool result		= true;
-
-				for (cindex_type *j = params, *k = j+1; result && j < end; j += 2, k += 2)
-					result = (*j == CL::instr) || MI::is_optimal(*k);
-
-				return result;
-			}
-
-			template<ckey_type trait>
-			static constexpr bool is_params_optimal(cindex_type size, cindex_type *params)
-			{
-				if (!MI::is_optimal(size)) return false;
-				else if (size == 0) return true;
-				else
-				{
-					if constexpr (trait == CT::all) return is_all_params_optimal(size, params);
-					else                            return is_id_params_optimal(size, params);
-				}
-			}
-	};
-
-	using CD = CallDispatch;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -843,10 +717,6 @@ private:
 
 // pack:
 
-/***********************************************************************************************************************/
-
-// names:
-
 	template<key_type...>
 	struct Pack
 	{
@@ -868,7 +738,7 @@ private:
 		//
 
 		template<auto pos, auto... Vs>
-		static constexpr auto at(nik_avpcr(auto_pack<Vs...>*))
+		static constexpr auto fast_at(nik_avpcr(auto_pack<Vs...>*))
 			{ return Fast<pos>::template at<Vs...>; }
 
 		template<auto value, auto... Is>
@@ -904,110 +774,6 @@ private:
 		{ template<auto U1, auto U2> static constexpr auto result = catenate(U1, U2); };
 
 	using PackCatenate = Pack<PE::generic_catenate>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// resolve:
-
-	template<key_type...> struct Resolve;
-
-/***********************************************************************************************************************/
-
-// block:
-
-	template<key_type... filler>
-	struct Resolve<MP::block, filler...>
-	{
-		template<auto c, auto pos, auto... Vs>
-		static constexpr auto U_resolve_prog_h2()
-		{
-			constexpr auto m = MT::id;
-			constexpr auto n = U_block_program;
-			constexpr auto j = T_block_program::max_index2(pos);
-			constexpr auto i = pos + j;
-
-			return U_opt_pack_Vs<m, n, c, i, j, Vs...>;
-		}
-
-		template<auto c, auto pos, auto... Vs>
-		static constexpr auto U_prog_h2 = U_resolve_prog_h2<c, pos, Vs...>();
-
-		template<auto... Vs, typename T_specific, auto pos, auto... Is>
-		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<pos, Is...>*))
-		{
-			constexpr auto c = T_specific::template lines<Is...>;
-
-			return U_resolve_prog_h2<c, pos, Vs...>();
-		}
-	};
-
-	using RB = Resolve<MP::block>;
-
-// linear:
-
-	template<key_type... filler>
-	struct Resolve<MP::linear, filler...>
-	{
-		template<auto c, auto... Vs>
-		static constexpr auto U_prog_h2 = U_opt_pack_Vs
-		<
-			MT::id,
-			U_linear_program,
-			c,
-			T_linear_program::initial_i,
-			T_linear_program::initial_j,
-			Vs...
-		>;
-
-		template<auto... Vs, typename T_specific, auto... Is>
-		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<Is...>*))
-		{
-			constexpr auto c = T_specific::template lines<Is...>;
-
-			return U_prog_h2<c, Vs...>;
-		}
-	};
-
-	using RL = Resolve<MP::linear>;
-
-// recursive:
-
-	template<key_type... filler>
-	struct Resolve<MP::recursive, filler...>
-	{
-		template<auto c, auto... Vs>
-		static constexpr auto U_prog_h2 = U_opt_pack_Vs
-		<
-			MT::id,
-			U_recursive_program,
-			c,
-			T_recursive_program::initial_i,
-			T_recursive_program::initial_j,
-			Vs...
-		>;
-
-		template<auto... Vs, typename T_specific, auto... Is>
-		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<Is...>*))
-		{
-			constexpr auto c = T_specific::template lines<Is...>;
-
-			return U_prog_h2<c, Vs...>;
-		}
-	};
-
-	using RR = Resolve<MP::recursive>;
-
-// generic:
-
-	template<key_type... filler>
-	struct Resolve<MP::generic, filler...>
-	{
-		template<instr_type ins>
-		static constexpr auto U_program = U_type_T<program<ins[CI::caller_pos], ins[CI::name_pos]>>;
-	};
-
-	using RG = Resolve<MP::generic>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

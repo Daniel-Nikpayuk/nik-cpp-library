@@ -460,14 +460,12 @@
 			using tn		= T_type_U<n>;
 			constexpr auto ins	= tn::instr(c, i, j);
 
-			constexpr auto caller	= ins[CI::caller_pos];
-			constexpr auto prog	= RG::template U_program<ins>;
-			constexpr auto params	= QF::template U_params<ins>();
+			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
+			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES>;
+			constexpr auto cAs	= U_prepack_Ts<Args...>;
+			constexpr auto mac	= OptimalFetch::template program<ins, cVs, cAs>(cHs);
 
-			constexpr auto nH2	= Resolve<caller>::template h2<ins, Vs...>(prog, params);
-			constexpr auto nH3	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
-
-			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, nH2, nH3, H4, H5, As...);
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
 	};
 
@@ -516,7 +514,7 @@
 
 			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
 			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
-			constexpr auto mac	= Fetch::template program<ins>(cVs, cHs);
+			constexpr auto mac	= GeneralFetch::template program<ins, cVs, cHs>();
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}

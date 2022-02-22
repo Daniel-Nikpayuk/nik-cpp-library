@@ -167,6 +167,28 @@
 
 /***********************************************************************************************************************/
 
+// is id params optimal:
+
+	// clang complains about the following:
+
+		//	for (cindex_type *j = params, *k = j+1; result && j < end; j += 2, k += 2)
+		//		result = (*j == CL::instr) || MI::is_optimal(*k);
+
+	// the concern is UB indexing, but otherwise allows this:
+
+		//	for (cindex_type *k = params; result && k < end; k += 2)
+		//		result = (*k == CL::instr) || MI::is_optimal(*(k+1));
+
+	// or even this:
+
+		//	cindex_type *k	= params;
+		//	bool result	= true;
+
+		//	for (index_type j = 0; result && j < size; ++j, ++k)
+		//		result = (*k == CL::instr) || MI::is_optimal(*++k);
+
+/***********************************************************************************************************************/
+
 // block:
 
 	// Block programs consist of two block instructions and some machine
