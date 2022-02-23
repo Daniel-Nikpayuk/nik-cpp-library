@@ -101,6 +101,22 @@
 	// Optimized to use a single label as the controller.
 
 /***********************************************************************************************************************/
+
+// call specification:
+
+	// param:
+
+		// is cache level 1:
+
+			// at least one of the following is false if is_opt is false:
+
+				//  param_size <  eight
+				//       Trait == all
+				// *parameters == instr
+
+			// if is optimal and Trait == all then *parameters != instr
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // routines:
@@ -127,7 +143,7 @@
 		// NameLoc       == h4    && NamePos    < eight
 		// NameLoc       == args  && NamePos    < eight
 
-		// PackLoc       == id    && PackSize   < eight
+		// PackLoc       == id
 		// PackLoc       != instr    (error)
 		// PackLoc       == regs  && PackPos    < eight
 		// PackLoc       == h0    && PackPos    < eight
@@ -136,6 +152,8 @@
 
 		// ParamTrait    == id
 		// ParamTrait    == all
+
+		// ParamSize     <  eight
 
 		// ParamLoc[0-7] != id       (error)
 		// ParamLoc[0-7] == instr
@@ -154,9 +172,11 @@
 		// NameLoc       == instr
 		// NamePos       <  eight
 
-		// PackLoc       == id    && PackSize   < eight
+		// PackLoc       == id
 		// PackLoc       != instr    (error)
 		// PackPos       <  eight
+
+		// ParamSize     <  eight
 
 		// ParamTrait    == id
 		// ParamTrait    == all

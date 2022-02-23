@@ -129,38 +129,39 @@ public:
 			static constexpr key_type cache_level_0				=  9;
 			static constexpr key_type cache_level_1				= 10;
 			static constexpr key_type cache_level_2				= 11;
+			static constexpr key_type cache_level_3				= 12;
 
 			// detour:
 
-			static constexpr key_type internal				= 12;
-			static constexpr key_type load					= 13;
+			static constexpr key_type internal				= 13;
+			static constexpr key_type load					= 14;
 
 			// machinate:
 
-			static constexpr key_type pause					= 14;
-			static constexpr key_type unwind				= 15;
-			static constexpr key_type rewind				= 16;
+			static constexpr key_type pause					= 15;
+			static constexpr key_type unwind				= 16;
+			static constexpr key_type rewind				= 17;
 
 		// passers:
 
-			static constexpr key_type insert_at_r_front			= 17;
+			static constexpr key_type insert_at_r_front			= 18;
 
-			static constexpr key_type insert_at_h0_back			= 18;
-			static constexpr key_type insert_at_h1_back			= 19;
-			static constexpr key_type insert_at_h2_back			= 20;
+			static constexpr key_type insert_at_h0_back			= 19;
+			static constexpr key_type insert_at_h1_back			= 20;
+			static constexpr key_type insert_at_h2_back			= 21;
 
-			static constexpr key_type append_at_h0_back			= 21;
+			static constexpr key_type append_at_h0_back			= 22;
 
-			static constexpr key_type replace_at_h0				= 22;
+			static constexpr key_type replace_at_h0				= 23;
 
 			// near linear:
 
-			static constexpr key_type insert_at_a_front			= 23;
+			static constexpr key_type insert_at_a_front			= 24;
 
-			static constexpr key_type insert_at_a0_back			= 24;
-			static constexpr key_type append_at_a0_back			= 25;
+			static constexpr key_type insert_at_a0_back			= 25;
+			static constexpr key_type append_at_a0_back			= 26;
 
-			static constexpr key_type replace_at_a0				= 26;
+			static constexpr key_type replace_at_a0				= 27;
 	};
 
 	using MT = MachineNote;
@@ -345,18 +346,13 @@ public:
 			}
 
 			static constexpr index_type next_index1(ctr_type c, cindex_type i, cindex_type j)
-			{
-				return i - j;
-			}
+				{ return i - j; }
 
 			static constexpr index_type next_index2(ctr_type c, cindex_type i, cindex_type j)
-			{
-				return max_index2(i - j);
-			}
+				{ return max_index2(i - j); }
 	};
 
-	template<key_type... Is>
-	using block_program				= program<MP::block, Is...>;
+	template<key_type... Is> using block_program	= program<MP::block, Is...>;
 
 	using T_block_program				= block_program<>;
 	static constexpr auto U_block_program		= U_type_T<T_block_program>;
@@ -419,28 +415,19 @@ public:
 		// navigators:
 
 			static constexpr key_type next_name(ctr_type c, cindex_type, cindex_type j)
-			{
-				return c[j+1][MI::name];
-			}
+				{ return c[j+1][MI::name]; }
 
 			static constexpr key_type next_note(ctr_type c, cindex_type, cindex_type j)
-			{
-				return c[j+1][MI::note];
-			}
+				{ return c[j+1][MI::note]; }
 
 			static constexpr index_type next_index1(ctr_type, cindex_type i, cindex_type)
-			{
-				return i;
-			}
+				{ return i; }
 
 			static constexpr index_type next_index2(ctr_type, cindex_type, cindex_type j)
-			{
-				return j+1;
-			}
+				{ return j+1; }
 	};
 
-	template<key_type... Is>
-	using linear_program				= program<MP::linear, Is...>;
+	template<key_type... Is> using linear_program	= program<MP::linear, Is...>;
 
 	using T_linear_program				= linear_program<>;
 	static constexpr auto U_linear_program		= U_type_T<T_linear_program>;
@@ -514,11 +501,10 @@ public:
 			}
 	};
 
-	template<key_type... Is>
-	using recursive_program				= program<MP::recursive, Is...>;
+	template<key_type... Is> using recursive_program	= program<MP::recursive, Is...>;
 
-	using T_recursive_program			= recursive_program<>;
-	static constexpr auto U_recursive_program	= U_type_T<T_recursive_program>;
+	using T_recursive_program				= recursive_program<>;
+	static constexpr auto U_recursive_program		= U_type_T<T_recursive_program>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -589,9 +575,9 @@ private:
 
 		static constexpr key_type pack_loc	=  8;
 		static constexpr key_type pack_pos	=  9;
-		static constexpr key_type pack_size	= 10;
 
-		static constexpr key_type param_trait	= 11;
+		static constexpr key_type param_trait	= 10;
+		static constexpr key_type param_size	= 11;
 
 		static constexpr key_type loc_offset	= 12;
 		static constexpr key_type pos_offset	= 13;

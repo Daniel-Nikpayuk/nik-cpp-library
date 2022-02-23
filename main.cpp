@@ -228,16 +228,16 @@
 
 /***********************************************************************************************************************/
 
-	constexpr auto test_spec = machine_module::template test_spec<>;
+//	constexpr auto test_spec = machine_module::template test_spec<>;
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		printf("%u\n", test_spec[10]);
-
 		return 0;
 	}
+
+	//	printf("%u\n", test_spec[10]);
 
 	//	printf("%d\n", get_value(pack));
 

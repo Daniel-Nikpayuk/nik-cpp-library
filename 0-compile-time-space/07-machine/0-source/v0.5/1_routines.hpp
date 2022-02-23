@@ -23,12 +23,7 @@
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// call:
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// specifications:
+// call specifications:
 
 	template<key_type...>
 	struct CallSpecification
@@ -59,14 +54,10 @@
 		// predicates:
 
 			constexpr bool is_cache_level_0() const
-			{
-				return (location == CL::instr);
-			}
+				{ return (location == CL::instr); }
 
 			constexpr bool is_cache_level_1(const bool is_cl0) const
-			{
-				return is_cl0 || MI::is_optimal(position);
-			}
+				{ return is_cl0 || MI::is_optimal(position); }
 	};
 
 	using HandleSpec = CallSpecification<CS::handle>;
@@ -89,14 +80,10 @@
 		// predicates:
 
 			constexpr bool is_cache_level_0() const
-			{
-				return (location == CL::instr);
-			}
+				{ return (location == CL::instr); }
 
-			constexpr bool is_cache_level_1(const bool is_cl0) const
-			{
-				return is_cl0 || MI::is_optimal(position); // assumes if loc == id then pos = 0.
-			}
+			constexpr bool is_cache_level_1(const bool is_cl0) const // assumes if loc == id then pos = 0.
+				{ return is_cl0 || MI::is_optimal(position); }
 	};
 
 	using NameSpec = CallSpecification<CS::name>;
@@ -110,30 +97,21 @@
 	{
 		const key_type location;
 		const index_type position;
-		const index_type size;
 
-		constexpr CallSpecification(ckey_type l, cindex_type p, cindex_type pt, cindex_type ps) :
-			location(l), position(p), size(length(pt, ps)) { }
-
-		// size:
-
-			constexpr index_type length(cindex_type param_trait, cindex_type param_size)
-			{
-				if      (param_size == 0)        return 0;
-				else if (param_trait == CT::all) return param_size - 1;
-				else                             return param_size >> 1;
-			}
+		constexpr CallSpecification(ckey_type l, cindex_type p) : location(l), position(p) { }
 
 		// predicates:
 
 			constexpr bool is_cache_level_0() const
-			{
-				return (location == CL::id) && MI::is_optimal(size);
-			}
+				{ return (location == CL::id); }
 
 			constexpr bool is_cache_level_1(const bool is_opt) const
+				{ return is_opt || MI::is_optimal(position); }
+
+			constexpr bool is_cache_level_2(cindex_type size) const
 			{
-				return is_opt || MI::is_optimal(position);
+				if (location == CL::id) return MI::is_optimal(size);
+				else                    return MI::is_optimal(position);
 			}
 	};
 
@@ -146,10 +124,10 @@
 	template<key_type Trait, key_type... filler>
 	struct CallSpecification<CS::param, Trait, filler...>
 	{
-		const key_type trait; // temporary (may be unneeded)
-		const index_type *parameters;
+		const index_type size;
+		const index_type *params;
 
-		constexpr CallSpecification(cindex_type *ps) : trait(Trait), parameters(ps) { }
+		constexpr CallSpecification(cindex_type s, cindex_type *p) : size(length(s)), params(p) { }
 
 		// matchers:
 
@@ -159,18 +137,18 @@
 		// all locs match:
 
 			template<auto match>
-			constexpr bool all_locs_match(cindex_type pack_size) const
+			constexpr bool all_locs_match() const
 			{
-				if (pack_size == 0) return true;
+				if (size == 0) return true;
 				else
 				{
-					if constexpr (Trait == CT::all) return match(*parameters);
+					if constexpr (Trait == CT::all) return match(*params);
 					else
 					{
-						const index_type *end	= parameters + (pack_size << 1);
+						const index_type *end	= params + (size << 1);
 						bool result		= true;
 
-						for (cindex_type *k = parameters; result && k < end; k += 2)
+						for (cindex_type *k = params; result && k < end; k += 2)
 							result = match(*k);
 
 						return result;
@@ -178,79 +156,76 @@
 				}
 			}
 
+		// size:
+
+			constexpr index_type length(cindex_type param_size)
+			{
+				if (param_size == 0)  return 0;
+				else
+				{
+					if constexpr (Trait == CT::all) return param_size - 1;
+					else                            return param_size >> 1;
+				}
+			}
+
 		// predicates:
 
-			constexpr bool no_locs_equal_id(cindex_type pack_size) const
-			{
-				return all_locs_match<not_value<CL::id>>(pack_size);
-			}
+			constexpr bool no_locs_equal_id() const
+				{ return all_locs_match<not_value<CL::id>>(); }
 
-			constexpr bool all_locs_equal_h0(cindex_type pack_size) const
-			{
-				return all_locs_match<is_value<CL::h0>>(pack_size);
-			}
+			constexpr bool all_locs_equal_h0() const
+				{ return all_locs_match<is_value<CL::h0>>(); }
 
-			// is cache 0:
+			// is cache level 0:
 
-				constexpr bool is_cache_level_0(cindex_type pack_size) const
+				constexpr bool is_cache_level_0() const
 				{
-					if (!MI::is_optimal(pack_size)) return false;
+					if (!MI::is_optimal(size)) return false;
 					else
 					{
 						if constexpr (Trait != CT::all) return false;
-						else                            return (*parameters == CL::instr);
+						else                            return (*params == CL::instr);
 					}
 				}
 
-			// is cache 1:
+			// is cache level 1:
 
-				constexpr bool is_all_cache_level_1(cindex_type pack_size) const
+				constexpr bool is_all_cache_level_1() const
 				{
 					bool result = true;
 
-					for (cindex_type *k = parameters + 1; result && k < parameters + pack_size; ++k)
+					for (cindex_type *k = params + 1; result && k < params + size; ++k)
 						result = MI::is_optimal(*k);
 
 					return result;
 				}
 
-				constexpr bool is_id_cache_level_1(cindex_type pack_size) const
+				constexpr bool is_id_cache_level_1() const
 				{
-					cindex_type *k	= parameters;
+					cindex_type *k	= params;
 					bool result	= true;
 
-					for (index_type j = 0; result && j < pack_size; ++j, ++k)
+					for (index_type j = 0; result && j < size; ++j, ++k)
 						result = (*k == CL::instr) || MI::is_optimal(*++k);
 
 					return result;
 				}
 
-				constexpr bool is_cache_level_1(const bool is_opt, cindex_type pack_size) const
+				constexpr bool is_cache_level_1(const bool is_opt) const
 				{
 					if (is_opt) return true;
+					else if (!MI::is_optimal(size)) return false;
 
-					// at least one of the following is false:
-
-						//   pack_size <  eight
-						//       Trait == all
-						// *parameters == instr
-
-					else if (!MI::is_optimal(pack_size)) return false;
-
-					if constexpr (Trait == CT::all) // implies *parameters != instr
-					{
-						return is_all_cache_level_1(pack_size);
-					}
+					if constexpr (Trait == CT::all) return is_all_cache_level_1();
 					else
 					{
-						if (pack_size == 0) return true;
-						else return is_id_cache_level_1(pack_size);
+						if (size == 0) return true;
+						else return is_id_cache_level_1();
 					}
 				}
 	};
 
-	template<key_type Trait>
-	using ParamSpec = CallSpecification<CS::param, Trait>;
+	template<key_type Trait> using ParamSpec = CallSpecification<CS::param, Trait>;
 
 /***********************************************************************************************************************/
 
@@ -268,7 +243,7 @@
 		(
 			const HandleSpec & h, const NameSpec & n, const PackSpec & p, const ParamSpec<Trait> & ps
 
-		) :	handle_spec(h), name_spec(n), pack_spec(p), param_spec(ps) { }
+		) : handle_spec(h), name_spec(n), pack_spec(p), param_spec(ps) { }
 
 		// matchers:
 
@@ -283,14 +258,14 @@
 			constexpr bool assert_handle () const { return handle_spec.location != CL::id; }
 			constexpr bool assert_name   () const { return true; }
 			constexpr bool assert_pack   () const { return pack_spec.location != CL::instr; }
-			constexpr bool assert_trait  () const { return param_spec.trait == CL::id || param_spec.trait == CT::all; }
-			constexpr bool assert_param  () const { return param_spec.no_locs_equal_id(pack_spec.size); }
+			constexpr bool assert_trait  () const { return Trait == CL::id || Trait == CT::all; }
+			constexpr bool assert_param  () const { return param_spec.no_locs_equal_id(); }
 
 					// should assert that if trait == all, then a single loc must follow.
 
 		// pack size:
 
-			constexpr auto pack_size() const { return pack_spec.size; }
+			constexpr auto param_size() const { return param_spec.size; }
 
 		// predicates:
 
@@ -301,35 +276,43 @@
 
 		// note:
 
-			constexpr auto cache_level_1_note(const bool h_is_cl0,
-					const bool n_is_cl0, const bool p_is_cl0, const bool ps_is_cl0) const
+			constexpr auto cache_level_2_note() const
 			{
-				const bool  h_is_cl1		= handle_spec.is_cache_level_1(h_is_cl0);
-				const bool  n_is_cl1		=   name_spec.is_cache_level_1(n_is_cl0);
-				const bool  p_is_cl1		=   pack_spec.is_cache_level_1(p_is_cl0);
-				const bool ps_is_cl1		=  param_spec.is_cache_level_1(ps_is_cl0, pack_spec.size);
+				const bool is_cache_level_2 = pack_spec.is_cache_level_2(param_spec.size);
 
-				const bool is_cache_level_1	= all(h_is_cl1, n_is_cl1, p_is_cl1, ps_is_cl1);
+				return is_cache_level_2 ? MT::cache_level_2 : MT::cache_level_3;
+			}
 
-				return is_cache_level_1 ? MT::cache_level_1 : MT::cache_level_2;
+			constexpr auto cache_level_1_note(const bool h_is_cl0,
+					const bool n_is_cl0, const bool p_is_cl0, const bool r_is_cl0) const
+			{
+				const bool h_is_cl1		= handle_spec.is_cache_level_1(h_is_cl0);
+				const bool n_is_cl1		=   name_spec.is_cache_level_1(n_is_cl0);
+				const bool p_is_cl1		=   pack_spec.is_cache_level_1(p_is_cl0);
+				const bool r_is_cl1		=  param_spec.is_cache_level_1(r_is_cl0);
+
+				const bool is_cache_level_1	= all(h_is_cl1, n_is_cl1, p_is_cl1, r_is_cl1);
+
+				if (is_cache_level_1) return MT::cache_level_1;
+				else                  return cache_level_2_note();
 			}
 
 			constexpr auto cache_level_0_note() const
 			{
-				const bool  h_is_cl0		= handle_spec.is_cache_level_0();
-				const bool  n_is_cl0		=   name_spec.is_cache_level_0();
-				const bool  p_is_cl0		=   pack_spec.is_cache_level_0();
-				const bool ps_is_cl0		=  param_spec.is_cache_level_0(pack_spec.size);
+				const bool h_is_cl0		= handle_spec.is_cache_level_0();
+				const bool n_is_cl0		=   name_spec.is_cache_level_0();
+				const bool p_is_cl0		=   pack_spec.is_cache_level_0();
+				const bool r_is_cl0		=  param_spec.is_cache_level_0();
 
-				const bool is_cache_level_0	= all(h_is_cl0, n_is_cl0, p_is_cl0, ps_is_cl0);
+				const bool is_cache_level_0	= all(h_is_cl0, n_is_cl0, p_is_cl0, r_is_cl0);
 
 				if (is_cache_level_0) return MT::cache_level_0;
-				else                  return cache_level_1_note(h_is_cl0, n_is_cl0, p_is_cl0, ps_is_cl0);
+				else                  return cache_level_1_note(h_is_cl0, n_is_cl0, p_is_cl0, r_is_cl0);
 			}
 
 			constexpr auto is_identity_note() const
 			{
-				return all_nonparam_locs_equal_h0() && param_spec.all_locs_equal_h0(pack_spec.size);
+				return all_nonparam_locs_equal_h0() && param_spec.all_locs_equal_h0();
 			}
 
 			constexpr auto note() const
@@ -358,10 +341,10 @@
 	{
 		constexpr auto Handle		= HandleSpec(HandleLoc, HandlePos);
 		constexpr auto Name		= NameSpec(NameLoc, NamePos);
-		constexpr auto Pack		= PackSpec(PackLoc, PackPos, ParamTrait, sizeof...(Params));
+		constexpr auto Pack		= PackSpec(PackLoc, PackPos);
 
 		constexpr auto ParamArray	= array<index_type, Params...>;
-		constexpr auto Param		= ParamSpec<ParamTrait>(ParamArray);
+		constexpr auto Param		= ParamSpec<ParamTrait>(sizeof...(Params), ParamArray);
 
 		constexpr auto Spec		= IdSpec<ParamTrait>(Handle, Name, Pack, Param);
 
@@ -376,8 +359,8 @@
 			RtnPolicy,
 			HandleLoc, HandlePos,
 			NameLoc, NamePos,
-			PackLoc, PackPos, Spec.pack_size(),
-			ParamTrait, Params...
+			PackLoc, PackPos,
+			ParamTrait, Spec.param_size(), Params...
 		>;
 	}
 
@@ -450,6 +433,324 @@ public:
 		CL::id, _zero,
 		CT::all, CL::instr, 0, 1, 2, 5, 4, 3
 	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machination:
+
+private:
+
+/***********************************************************************************************************************/
+
+	template<typename Stack1Cache, typename Stack2Cache>
+	struct machination
+	{
+		key_type m;
+
+		Stack1Cache h2;
+		Stack2Cache h3;
+
+		constexpr machination(key_type _m, const Stack1Cache & _h2, const Stack2Cache & _h3) :
+					m{_m}, h2{_h2}, h3{_h3} { }
+	};
+
+	//
+
+	template<typename T>
+	static constexpr bool is_machination(T) { return false; }
+
+	template<typename Stack1Cache, typename Stack2Cache>
+	static constexpr bool is_machination(const machination<Stack1Cache, Stack2Cache> &) { return true; }
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// call build:
+
+	template<key_type...>
+	struct CallBuild
+	{
+		// program:
+
+			template<instr_type ins>
+			static constexpr auto U_program = U_type_T<program<ins[CI::handle_pos], ins[CI::name_pos]>>;
+
+		// params:
+
+			template<instr_type ins>
+			static constexpr auto index_segment()
+			{
+				constexpr auto trait	= ins[CI::param_trait];
+				constexpr auto size	= ins[CI::param_size];
+
+				if constexpr (trait == CT::all) return Fast<size>::U_index_segment;
+				else                            return Fast<size>::U_even_index_segment;
+			}
+
+			template<instr_type ins>
+			static constexpr auto U_params = PE::template map_array<ins, CI::pos_offset>(index_segment<ins>());
+	};
+
+	using CB0 = CallBuild<>;
+
+/***********************************************************************************************************************/
+
+// block:
+
+	template<key_type... filler>
+	struct CallBuild<MP::block, filler...>
+	{
+		template<auto c, auto pos, auto... Vs>
+		static constexpr auto U_resolve_prog_h2()
+		{
+			constexpr auto m = MT::id;
+			constexpr auto n = U_block_program;
+			constexpr auto j = T_block_program::max_index2(pos);
+			constexpr auto i = pos + j;
+
+			return U_opt_pack_Vs<m, n, c, i, j, Vs...>;
+		}
+
+		template<auto c, auto pos, auto... Vs>
+		static constexpr auto U_prog_h2 = U_resolve_prog_h2<c, pos, Vs...>();
+
+		template<auto... Vs, typename T_specific, auto pos, auto... Is>
+		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<pos, Is...>*))
+		{
+			constexpr auto c = T_specific::template lines<Is...>;
+
+			return U_resolve_prog_h2<c, pos, Vs...>();
+		}
+	};
+
+	using CBB = CallBuild<MP::block>;
+
+/***********************************************************************************************************************/
+
+// linear:
+
+	template<key_type... filler>
+	struct CallBuild<MP::linear, filler...>
+	{
+		template<auto c, auto... Vs>
+		static constexpr auto U_prog_h2 = U_opt_pack_Vs
+		<
+			MT::id,
+			U_linear_program,
+			c,
+			T_linear_program::initial_i,
+			T_linear_program::initial_j,
+			Vs...
+		>;
+
+		template<auto... Vs, typename T_specific, auto... Is>
+		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<Is...>*))
+		{
+			constexpr auto c = T_specific::template lines<Is...>;
+
+			return U_prog_h2<c, Vs...>;
+		}
+	};
+
+	using CBL = CallBuild<MP::linear>;
+
+/***********************************************************************************************************************/
+
+// recursive:
+
+	template<key_type... filler>
+	struct CallBuild<MP::recursive, filler...>
+	{
+		template<auto c, auto... Vs>
+		static constexpr auto U_prog_h2 = U_opt_pack_Vs
+		<
+			MT::id,
+			U_recursive_program,
+			c,
+			T_recursive_program::initial_i,
+			T_recursive_program::initial_j,
+			Vs...
+		>;
+
+		template<auto... Vs, typename T_specific, auto... Is>
+		static constexpr auto h2(nik_avpcr(T_specific*), nik_avpcr(auto_pack<Is...>*))
+		{
+			constexpr auto c = T_specific::template lines<Is...>;
+
+			return U_prog_h2<c, Vs...>;
+		}
+	};
+
+	using CBR = CallBuild<MP::recursive>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// call get:
+
+	template<key_type...> struct CallGet;
+
+/***********************************************************************************************************************/
+
+// cache level 0:
+
+	template<key_type... filler>
+	struct CallGet<MT::cache_level_0, filler...>
+	{
+	};
+
+	using CallGet0 = CallGet<MT::cache_level_0>;
+
+/***********************************************************************************************************************/
+
+// cache level 1:
+
+	template<key_type... filler>
+	struct CallGet<MT::cache_level_1, filler...>
+	{
+	};
+
+	using CallGet1 = CallGet<MT::cache_level_1>;
+
+/***********************************************************************************************************************/
+
+// cache level 2:
+
+	template<key_type... filler>
+	struct CallGet<MT::cache_level_2, filler...>
+	{
+	};
+
+	using CallGet2 = CallGet<MT::cache_level_2>;
+
+/***********************************************************************************************************************/
+
+// cache level 3:
+
+	template<key_type... filler>
+	struct CallGet<MT::cache_level_3, filler...>
+	{
+	};
+
+	using CallGet3 = CallGet<MT::cache_level_3>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// call make:
+
+	template<key_type...> struct CallMake;
+
+/***********************************************************************************************************************/
+
+// cache level 0:
+
+	template<key_type... filler>
+	struct CallMake<MT::cache_level_0, filler...>
+	{
+		template<auto ins, auto h3, auto... Vs>
+		static constexpr auto program()
+		{
+			constexpr auto handle	= ins[CI::handle_pos];
+			constexpr auto prog	= CB0::template U_program<ins>;
+			constexpr auto params	= CB0::template U_params<ins>;
+
+			constexpr auto h2	= CallBuild<handle>::template h2<ins, Vs...>(prog, params);
+
+			return machination(MT::id, h2, h3);
+		}
+	};
+
+	using CallMake0 = CallMake<MT::cache_level_0>;
+
+/***********************************************************************************************************************/
+
+// cache level 1:
+
+	template<key_type... filler>
+	struct CallMake<MT::cache_level_1, filler...>
+	{
+	//	template<auto ins, auto cVs, auto cAs, NIK_HEAP_AUTO_CARGS>
+	//	static constexpr auto program(nik_vpcr(cHs)(auto_pack<NIK_HEAP_CARGS>*))
+	//	{
+	//		constexpr auto caller	= RetrieveHandle::template result<ins, cVs, cH0, cH4, cAs>();
+	//		constexpr auto name	= RetrieveName::template result<ins, cVs, cH0, cH4, cAs>();
+	//		constexpr auto pack	= RetrievePack::template result<ins, cVs, cH0, cH4, cAs>();
+	//		constexpr auto params	= RetrieveParams::template result<ins, cVs, cH0, cH4, cAs>();
+
+	//		constexpr auto h2	= Make::h2<ins>(caller, name, pack, params, cVs);
+	//		constexpr auto h3	= Make::h3<ins>(cHs, cAs);
+
+	//		return machination(MT::id, h2, h3);
+	//	}
+	};
+
+	using CallMake1 = CallMake<MT::cache_level_1>;
+
+/***********************************************************************************************************************/
+
+// cache level 2:
+
+	template<key_type... filler>
+	struct CallMake<MT::cache_level_2, filler...>
+	{
+	};
+
+	using CallMake2 = CallMake<MT::cache_level_2>;
+
+/***********************************************************************************************************************/
+
+// cache level 3:
+
+	template<key_type... filler>
+	struct CallMake<MT::cache_level_3, filler...>
+	{
+		// dispatch:
+
+	//		template<auto ins, typename Heap0, typename Heap1>
+	//		static constexpr auto program(Heap0 H0, Heap1 H1)
+	//		{
+	//			using Q			= Parameter<_zero>; // tmp
+	//			constexpr auto size	= Q::template param_size<ins>;
+
+	//			if constexpr (CI::is_optimal(size))
+	//			{
+	//				constexpr auto index_segment = Q::template index_segment<size>;
+
+	//				return QD::template opt_program<Q, ins, index_segment>(H0, H1);
+	//			}
+	//			else
+	//			{
+	//				constexpr auto result = QD::find_from_h4<size>(H1);
+	//				constexpr bool h4_has = result[_zero];
+
+	//				if constexpr (h4_has)
+	//				{
+	//					constexpr auto pos = result[_one];
+
+	//					return QD::template h4_program<Q, ins, pos>(H0, H1);
+	//				}
+	//				else return QD::template program<Q, ins, size>(H0, H1);
+	//			}
+	//		}
+
+	//	// function:
+
+	//		template<auto ins, auto H0, auto... Vs>
+	//		static constexpr auto function()
+	//		{
+	//		//	constexpr auto caller_ins	= GC::template instrs<ins>();
+	//		//	constexpr auto name_ins		= GN::template instrs<ins>();
+	//		//	constexpr auto param_ins	= GP::template instrs<ins>();
+	//		//	constexpr auto tail_ins		= GE::function_tail_instrs;
+
+	//		//	return Build::lines(caller_ins, name_ins, param_ins, tail_ins);
+	//			return 0;
+	//		}
+	};
+
+	using CallMake3 = CallMake<MT::cache_level_3>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

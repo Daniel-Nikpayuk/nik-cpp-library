@@ -449,10 +449,30 @@
 
 /***********************************************************************************************************************/
 
-// optimal:
+// cache level 0:
 
 	template<key_type... filler>
-	struct machine<MN::call, MT::optimal, filler...>
+	struct machine<MN::call, MT::cache_level_0, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		static constexpr auto result(NIK_HEAP_VARS, Args... As)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+
+			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
+			constexpr auto prog	= CallMake0::template program<ins, cHs, Vs...>();
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, prog.h2, prog.h3, H4, H5, As...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// cache level 1:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::cache_level_1, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
 		static constexpr auto result(NIK_HEAP_VARS, Args... As)
@@ -463,7 +483,7 @@
 			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
 			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES>;
 			constexpr auto cAs	= U_prepack_Ts<Args...>;
-			constexpr auto mac	= OptimalFetch::template program<ins, cVs, cAs>(cHs);
+			constexpr auto mac	= CallMake1::template program<ins, cVs, cAs>(cHs);
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
@@ -471,40 +491,10 @@
 
 /***********************************************************************************************************************/
 
-// retrieve:
+// cache level 2:
 
 	template<key_type... filler>
-	struct machine<MN::call, MT::retrieve, filler...>
-	{
-		template
-		<
-			NIK_CONTR_PARAMS, auto... Vs,
-			auto locs, auto poses, auto h0,
-			typename Heap1, typename Heap2, typename Heap3,
-			typename Heap4, typename Heap5, typename... Args
-		>
-		static constexpr auto result
-		(
-			nik_vpcr(H0)(auto_pack<locs, poses, h0>*),
-			Heap1 H1, Heap2 H2, Heap3 H3,
-			Heap4 H4, Heap5 H5, Args... As
-		)
-		{
-			constexpr auto cHs	= U_prepack_Ts<Heap2, Heap3, Heap4, Args...>;
-			const auto mac		= Retrieve::template program<h0, Vs...>(locs, poses, cHs);
-
-			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, H4, H5, As...);
-				// here we need c's current location to be a call instruction
-				// with policy to replace h0.
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// fetch:
-
-	template<key_type... filler>
-	struct machine<MN::call, MT::fetch, filler...>
+	struct machine<MN::call, MT::cache_level_2, filler...>
 	{
 		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
 		static constexpr auto result(NIK_HEAP_VARS, Args... As)
@@ -514,7 +504,28 @@
 
 			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
 			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
-			constexpr auto mac	= GeneralFetch::template program<ins, cVs, cHs>();
+			constexpr auto mac	= CallMake2::template program<ins, cVs, cHs>();
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// cache level 3:
+
+	template<key_type... filler>
+	struct machine<MN::call, MT::cache_level_3, filler...>
+	{
+		template<NIK_CONTR_PARAMS, auto... Vs, NIK_HEAP_TYPENAMES, typename... Args>
+		static constexpr auto result(NIK_HEAP_VARS, Args... As)
+		{
+			using tn		= T_type_U<n>;
+			constexpr auto ins	= tn::instr(c, i, j);
+
+			constexpr auto cVs	= U_opt_pack_Vs<Vs...>;
+			constexpr auto cHs	= U_prepack_Ts<NIK_HEAP_TYPES, Args...>;
+			constexpr auto mac	= CallMake2::template program<ins, cVs, cHs>();
 
 			return NIK_INTERNAL(d, n, c, i, j, Vs)(H0, H1, mac.h2, mac.h3, H4, H5, As...);
 		}
@@ -684,6 +695,38 @@
 			return machination(MT::internal, h2, H3);
 		}
 	};
+
+/***********************************************************************************************************************/
+
+// retrieve:
+
+/*
+	template<key_type... filler>
+	struct machine<MN::call, MT::retrieve, filler...>
+	{
+		template
+		<
+			NIK_CONTR_PARAMS, auto... Vs,
+			auto locs, auto poses, auto h0,
+			typename Heap1, typename Heap2, typename Heap3,
+			typename Heap4, typename Heap5, typename... Args
+		>
+		static constexpr auto result
+		(
+			nik_vpcr(H0)(auto_pack<locs, poses, h0>*),
+			Heap1 H1, Heap2 H2, Heap3 H3,
+			Heap4 H4, Heap5 H5, Args... As
+		)
+		{
+			constexpr auto cHs	= U_prepack_Ts<Heap2, Heap3, Heap4, Args...>;
+			const auto mac		= Retrieve::template program<h0, Vs...>(locs, poses, cHs);
+
+			return NIK_INTERNAL(d, n, c, i, j, Vs)(h0, H1, mac.h2, mac.h3, H4, H5, As...);
+				// here we need c's current location to be a call instruction
+				// with policy to replace h0.
+		}
+	};
+*/
 
 /***********************************************************************************************************************/
 
