@@ -177,7 +177,11 @@
 		// cache levels:
 
 			template<auto Loc0, auto... Poses>
-			constexpr auto cache_levels(nik_avpcr(auto_pack<Loc0>*), nik_avpcr(auto_pack<Poses...>*)) const
+			static constexpr auto cache_levels
+			(
+				nik_avpcr(auto_pack<Loc0>*),
+				nik_avpcr(auto_pack<Poses...>*)
+			)
 			{
 				if constexpr (Loc0 == CL::instr)
 
@@ -248,8 +252,12 @@
 		// cache levels:
 
 			template<auto... Locs, auto... Poses>
-			constexpr auto cache_levels(nik_avpcr(auto_pack<Locs...>*), nik_avpcr(auto_pack<Poses...>*)) const
-				{ return U_opt_pack_Vs<CS::cache_level(Locs, Poses)...>; }
+			static constexpr auto cache_levels
+			(
+				nik_avpcr(auto_pack<Locs...>*),
+				nik_avpcr(auto_pack<Poses...>*)
+
+			) { return U_opt_pack_Vs<CS::cache_level(Locs, Poses)...>; }
 	};
 
 	template<key_type Trait>
@@ -297,9 +305,31 @@
 				return current_max;
 			}
 
+		// note:
+
+			template<auto... param_cls>
+			constexpr auto note(nik_avpcr(auto_pack<param_cls...>*)) const
+			{
+				const auto handle_cl	= handle_spec.cache_level();
+				const auto name_cl	= name_spec.cache_level();
+				const auto pack_cl	= pack_spec.cache_level(param_spec.size);
+
+				ckey_type cl_array[]	= { handle_cl, name_cl, pack_cl, param_cls... };
+				const auto total_cl	= array_max(cl_array);
+
+				if      (total_cl == 0) return MT::cache_level_0;
+				else if (total_cl == 1) return MT::cache_level_1;
+				else if (total_cl == 2) return MT::cache_level_2;
+				else                    return MT::cache_level_3;
+			}
+	};
+
+	template<key_type Trait>
+	using IdSpec = CallSpecification<CS::id, Trait>;
+
+/*
 		// machine note:
 
-			template<auto IndSpec>
 			constexpr auto machine_note(ckey_type total_cache_level) const
 			{
 				if      (total_cache_level == 0) return MT::cache_level_0;
@@ -350,10 +380,36 @@
 
 				return cache_level_instruction(ParamCLsPack, LocsPack, PosesPack);
 			}
-	};
+*/
 
-	template<key_type Trait>
-	using IdSpec = CallSpecification<CS::id, Trait>;
+/***********************************************************************************************************************/
+
+// call instruction:
+
+	template
+	<
+		key_type Note, key_type RtnPolicy,
+		key_type HandleCL, key_type HandleLoc, index_type HandlePos,
+		key_type NameCL, key_type NameLoc, index_type NamePos,
+		key_type PackCL, key_type PackLoc, index_type PackPos, key_type PackKey,
+		index_type ParamSize, auto... ParamCLs, auto... ParamLocs, auto... ParamPoses
+	>
+	static constexpr auto call_instruction
+	(
+		nik_avpcr(auto_pack<ParamCLs...>*),
+		nik_avpcr(auto_pack<ParamLocs...>*),
+		nik_avpcr(auto_pack<ParamPoses...>*)
+	)
+	{
+		return instruction
+		<
+			MN::call, Note, RtnPolicy,
+			HandleCL, HandleLoc, HandlePos,
+			NameCL, NameLoc, NamePos,
+			PackCL, PackLoc, PackPos, PackKey,
+			ParamSize, ParamCLs..., ParamLocs..., ParamPoses...
+		>;
+	}
 
 /***********************************************************************************************************************/
 
@@ -378,9 +434,9 @@
 		constexpr auto ParamLocs	= ParamSpec<ParamTrait>::template locations<Params...>(IndSeg);
 		constexpr auto ParamPoses	= ParamSpec<ParamTrait>::template positions<Params...>(IndSeg);
 
-		constexpr auto ParamLocsArray	= PE::template to_array<index_type>(ParamLocs);
-		constexpr auto ParamLocsSize	= PE::template length(ParamLocs);
-		constexpr auto Param		= ParamSpec<ParamTrait>(ParamLocsSize, ParamLocsArray);
+		constexpr auto ParamLocsArray	= PE::template to_array<key_type>(ParamLocs);
+		constexpr auto ParamSize	= PE::template length(ParamLocs);
+		constexpr auto Param		= ParamSpec<ParamTrait>(ParamSize, ParamLocsArray);
 
 		constexpr auto Spec		= IdSpec<ParamTrait>(RtnPolicy, Handle, Name, Pack, Param);
 
@@ -392,7 +448,22 @@
 		// assert that if trait == all, then there is a single loc, and at least one pos.
 		// assert that if trait == id, then there is an even number of parameters.
 
-		return Spec.construct_instruction(ParamLocs, ParamPoses);
+		constexpr auto HandleCL		= Handle.cache_level();
+		constexpr auto NameCL		= Name.cache_level();
+		constexpr auto PackCL		= Pack.cache_level(ParamSize);
+		constexpr auto ParamCLs		= ParamSpec<ParamTrait>::cache_levels(ParamLocs, ParamPoses);
+
+		constexpr auto Note		= Spec.note(ParamCLs);
+
+		return call_instruction
+		<
+			Note, RtnPolicy,
+			HandleCL, HandleLoc, HandlePos,
+			NameCL, NameLoc, NamePos,
+			PackCL, PackLoc, PackPos, PackKey,
+			ParamSize
+
+		>(ParamCLs, ParamLocs, ParamPoses);
 	}
 
 /***********************************************************************************************************************/

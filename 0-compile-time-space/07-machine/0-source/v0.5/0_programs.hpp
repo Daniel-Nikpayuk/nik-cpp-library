@@ -567,25 +567,24 @@ private:
 	{
 		static constexpr key_type policy		=  3;
 
-		static constexpr key_type handle_loc		=  4;
-		static constexpr key_type handle_pos		=  5;
+		static constexpr key_type handle_cl		=  4;
+		static constexpr key_type handle_loc		=  5;
+		static constexpr key_type handle_pos		=  6;
 
-		static constexpr key_type name_loc		=  6;
-		static constexpr key_type name_pos		=  7;
+		static constexpr key_type name_cl		=  7;
+		static constexpr key_type name_loc		=  8;
+		static constexpr key_type name_pos		=  9;
 
-		static constexpr key_type pack_loc		=  8;
-		static constexpr key_type pack_pos		=  9;
-		static constexpr key_type pack_key		= 10;
+		static constexpr key_type pack_cl		= 10;
+		static constexpr key_type pack_loc		= 11;
+		static constexpr key_type pack_pos		= 12;
+		static constexpr key_type pack_key		= 13;
 
-		static constexpr key_type param_trait		= 11;
-		static constexpr key_type param_size		= 12;
+		static constexpr key_type param_trait		= 14;
+		static constexpr key_type param_size		= 15;
+		static constexpr key_type param_cl		= 16;
 
-		static constexpr key_type offset		= 13;
-
-		static constexpr key_type handle_cl		= 13; // == offset
-		static constexpr key_type name_cl		= 14;
-		static constexpr key_type pack_cl		= 15;
-		static constexpr key_type param_cl		= 15;
+		static constexpr key_type offset		= 16;
 	};
 
 	using CI = CallInstr<>;
@@ -595,11 +594,14 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::block, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos			= 13;
-		static constexpr key_type policy		= 14;
+		// cls  = [16-19]
+		// locs = [20-23]
 
-		static constexpr key_type coname		= 15;
-		static constexpr key_type conote		= 16;
+		static constexpr key_type pos			= 24;
+		static constexpr key_type policy		= 25;
+
+		static constexpr key_type coname		= 26;
+		static constexpr key_type conote		= 27;
 	};
 
 	using BCI = CallInstr<MP::block>;

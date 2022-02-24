@@ -66,7 +66,19 @@ private:
 	};
 
 	template<typename T>
+	struct pattern_match_map_type<void(*)(T*)>
+	{
+		using pretype = T;
+	};
+
+	template<typename T>
 	struct pattern_match_map_type<nik_avpcr(T&)>
+	{
+		using pretype = T&;
+	};
+
+	template<typename T>
+	struct pattern_match_map_type<void(*)(T&)>
 	{
 		using pretype = T&;
 	};
