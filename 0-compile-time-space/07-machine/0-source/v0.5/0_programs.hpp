@@ -565,22 +565,27 @@ private:
 	template<key_type...>
 	struct CallInstr : public MachineInstr
 	{
-		static constexpr key_type policy	=  3;
+		static constexpr key_type policy		=  3;
 
-		static constexpr key_type handle_loc	=  4;
-		static constexpr key_type handle_pos	=  5;
+		static constexpr key_type handle_loc		=  4;
+		static constexpr key_type handle_pos		=  5;
 
-		static constexpr key_type name_loc	=  6;
-		static constexpr key_type name_pos	=  7;
+		static constexpr key_type name_loc		=  6;
+		static constexpr key_type name_pos		=  7;
 
-		static constexpr key_type pack_loc	=  8;
-		static constexpr key_type pack_pos	=  9;
+		static constexpr key_type pack_loc		=  8;
+		static constexpr key_type pack_pos		=  9;
+		static constexpr key_type pack_key		= 10;
 
-		static constexpr key_type param_trait	= 10;
-		static constexpr key_type param_size	= 11;
+		static constexpr key_type param_trait		= 11;
+		static constexpr key_type param_size		= 12;
 
-		static constexpr key_type loc_offset	= 12;
-		static constexpr key_type pos_offset	= 13;
+		static constexpr key_type offset		= 13;
+
+		static constexpr key_type handle_cl		= 13; // == offset
+		static constexpr key_type name_cl		= 14;
+		static constexpr key_type pack_cl		= 15;
+		static constexpr key_type param_cl		= 15;
 	};
 
 	using CI = CallInstr<>;
@@ -590,11 +595,11 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::block, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos		= 12;
-		static constexpr key_type policy	= 13;
+		static constexpr key_type pos			= 13;
+		static constexpr key_type policy		= 14;
 
-		static constexpr key_type coname	= 14;
-		static constexpr key_type conote	= 15;
+		static constexpr key_type coname		= 15;
+		static constexpr key_type conote		= 16;
 	};
 
 	using BCI = CallInstr<MP::block>;
@@ -611,8 +616,8 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::recursive, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos		= 12;
-		static constexpr key_type adj		= 13;
+		static constexpr key_type pos		= 13;
+		static constexpr key_type adj		= 14;
 	};
 
 	using RCI = CallInstr<MP::recursive>;
@@ -711,7 +716,30 @@ private:
 		static constexpr key_type generic_append	= 1;
 		static constexpr key_type generic_catenate	= 2;
 
-		//
+		static constexpr key_type translate(key_type n)
+		{
+			if      (n == MT::insert_at_h0_back) return generic_append;
+			else if (n == MT::insert_at_h1_back) return generic_append;
+			else                                 return generic_catenate; // MT::append_at_h0_back
+		}
+
+		// pack:
+
+			template<auto V0, auto... Vs> static constexpr auto first = V0;
+
+		// list:
+
+		template<auto... Vs>
+		static constexpr auto length(nik_avpcr(auto_pack<Vs...>*))
+			{ return sizeof...(Vs); }
+
+		template<auto pos, auto... Vs>
+		static constexpr auto fast_at(nik_avpcr(auto_pack<Vs...>*))
+			{ return Fast<pos>::template at<Vs...>; }
+
+		template<auto op, auto... Is>
+		static constexpr auto map(nik_avpcr(auto_pack<Is...>*))
+			{ return U_opt_pack_Vs<op(Is)...>; }
 
 		template<auto V, auto... Vs>
 		static constexpr auto append(nik_avpcr(auto_pack<Vs...>*))
@@ -721,26 +749,15 @@ private:
 		static constexpr auto catenate(nik_avpcr(auto_pack<Vs...>*), nik_avpcr(auto_pack<Ws...>*))
 			{ return U_opt_pack_Vs<Vs..., Ws...>; }
 
-		//
+		// array:
 
-		template<auto pos, auto... Vs>
-		static constexpr auto fast_at(nik_avpcr(auto_pack<Vs...>*))
-			{ return Fast<pos>::template at<Vs...>; }
-
-		template<auto value, auto... Is>
-		static constexpr auto to_constant(nik_avpcr(auto_pack<Is...>*))
-			{ return U_opt_pack_Vs<((Is-Is)+value)...>; }
+		template<typename T, auto... Is>
+		static constexpr auto to_array(nik_avpcr(auto_pack<Is...>*))
+			{ return array<T, Is...>; }
 
 		template<auto arr, auto offset, auto... Is>
-		static constexpr auto map_array(nik_avpcr(auto_pack<Is...>*))
+		static constexpr auto from_array(nik_avpcr(auto_pack<Is...>*))
 			{ return U_opt_pack_Vs<arr[offset+Is]...>; }
-
-		static constexpr key_type translate(key_type n)
-		{
-			if      (n == MT::insert_at_h0_back) return generic_append;
-			else if (n == MT::insert_at_h1_back) return generic_append;
-			else                                 return generic_catenate; // MT::append_at_h0_back
-		}
 	};
 
 	using PE = Pack<>;
@@ -760,6 +777,135 @@ private:
 		{ template<auto U1, auto U2> static constexpr auto result = catenate(U1, U2); };
 
 	using PackCatenate = Pack<PE::generic_catenate>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machine instructions:
+
+/***********************************************************************************************************************/
+
+// halters:
+
+	// value:
+
+	template<key_type Note>
+	static constexpr instr_type _value = instruction // *value* keyword is reserved for recursive use.
+	<
+		MN::value, Note
+	>;
+
+		template<key_type...> static constexpr instr_type first			= _value < MT::first     >;
+		template<key_type...> static constexpr instr_type heap_zero		= _value < MT::h0        >;
+		template<key_type...> static constexpr instr_type heap_one		= _value < MT::h1        >;
+		template<key_type...> static constexpr instr_type arg_zero		= _value < MT::a0        >;
+		template<key_type...> static constexpr instr_type registers		= _value < MT::registers >;
+		template<key_type...> static constexpr instr_type arguments		= _value < MT::arguments >;
+		template<key_type...> static constexpr instr_type depth			= _value < MT::depth     >;
+		template<key_type...> static constexpr instr_type dump			= _value < MT::dump      >;
+
+// passers:
+
+	// block:
+
+	template<key_type...>
+	static constexpr instr_type drop_r_first = instruction	// optimization: We call the single block machine
+	<							// directly, but still provide computational context.
+		MN::move_r_block, _zero, MT::id, CP::drop
+	>;
+
+	// linear:
+
+	template<key_type...>
+	static constexpr instr_type move_h1_all__insert_at_r_front = instruction
+	<
+		MN::move_h1_all, MT::insert_at_r_front
+	>;
+
+	// near linear:
+
+//	template<index_type Action>
+//	static constexpr instr_type map_a0__replace_at_a0 = instruction
+//	<
+//		MN::select_a0, MT::id, Action, FP::replace_at_a0
+//	>;
+
+//	template<index_type...>
+//	static constexpr instr_type cat_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::catenate_a0_a1, MT::replace_at_a0
+//	>;
+
+//	template<index_type Action>
+//	static constexpr instr_type zip_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::zip_a0_a1, MT::replace_at_a0, Action
+//	>;
+
+	// recursive:
+
+	template<key_type...>
+	static constexpr instr_type cycle = instruction
+	<
+		MN::go_to, MT::first
+	>;
+
+//	template<key_type...>
+//	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
+//	>;
+
+//	template<key_type...>
+//	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
+//	>;
+
+	// optimizations:
+
+	template<key_type Note, key_type Pos>
+	static constexpr instr_type copy_r_pos = instruction
+	<
+		MN::copy_r_pos, Note, Pos
+	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// detour:
+
+/***********************************************************************************************************************/
+
+	template<key_type Policy>
+	static constexpr instr_type detour_call = instruction
+	<
+		MN::detour, MT::internal, MN::id, Policy
+	>;
+
+	// syntactic sugar:
+
+		template<key_type...>
+		static constexpr instr_type apply_recursive__insert_at_r_front = detour_call<CP::insert_at_r_front>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machinate:
+
+/***********************************************************************************************************************/
+
+	template<key_type Note, key_type... Params>
+	static constexpr instr_type machinate = instruction
+	<
+		MN::machinate, Note, Params...
+	>;
+
+	// syntactic sugar:
+
+		template<key_type...>  static constexpr instr_type pause	= machinate < MT::pause  >;
+		template<key_type...>  static constexpr instr_type unwind	= machinate < MT::unwind >;
+		template<key_type...>  static constexpr instr_type rewind	= machinate < MT::rewind >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

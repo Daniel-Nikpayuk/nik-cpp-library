@@ -710,12 +710,6 @@
 															\
 		NIK_ ## _n_ ## _FAST_IDS(NIK_EMPTY,, NIK_EMPTY)
 
-// even index segment:
-
-	#define NIK_N_FAST_EVEN_INDEX_SEGMENT(_n_)									\
-															\
-		NIK_ ## _n_ ## _FAST_IDS(NIK_TWO_STAR,, NIK_EMPTY)
-
 // struct:
 
 	#define NIK_DEFINE__FAST_STRUCT(_s_, _n_)									\
@@ -723,15 +717,10 @@
 		template<index_type... filler>										\
 		struct Fast<_n_, filler...>										\
 		{													\
-			static constexpr auto U_index_segment		= U_opt_pack_Vs					\
-									<						\
-										NIK_N_FAST_INDEX_SEGMENT(_n_)		\
-									>;						\
-															\
-			static constexpr auto U_even_index_segment	= U_opt_pack_Vs					\
-									<						\
-										NIK_N_FAST_EVEN_INDEX_SEGMENT(_n_)	\
-									>;						\
+			static constexpr auto U_index_segment	= U_opt_pack_Vs						\
+								<							\
+									NIK_N_FAST_INDEX_SEGMENT(_n_)			\
+								>;							\
 															\
 			template<NIK_N_FAST_AUTO_VARS(_s_, V), auto... Vs>						\
 			static constexpr auto at = V ## _n_;								\

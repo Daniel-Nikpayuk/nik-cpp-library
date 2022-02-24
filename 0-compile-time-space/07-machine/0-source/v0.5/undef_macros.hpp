@@ -243,10 +243,6 @@
 
 	#undef NIK_N_FAST_INDEX_SEGMENT
 
-// even index segment:
-
-	#undef NIK_N_FAST_EVEN_INDEX_SEGMENT
-
 // struct:
 
 	#undef NIK_DEFINE__FAST_STRUCT
