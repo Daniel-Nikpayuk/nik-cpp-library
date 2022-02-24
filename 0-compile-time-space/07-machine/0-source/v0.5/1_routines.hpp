@@ -57,6 +57,29 @@
 				else if (MI::is_optimal(position)) return _one;
 				else                               return _two;
 			}
+
+		// array max:
+
+			static constexpr auto array_max(ckey_type *begin, ckey_type *end)
+			{
+				key_type current_max = _zero;
+
+				for (ckey_type *k = begin; k < end; ++k)
+					if (*k > current_max) current_max = *k;
+
+				return current_max;
+			}
+
+		// total cache level:
+
+			template<auto... CLs>
+			static constexpr auto total_cache_level(nik_avpcr(auto_pack<CLs...>*))
+			{
+				ckey_type cl_array[]	= { CLs... };
+				cindex_type cl_size	= sizeof...(CLs);
+
+				return array_max(cl_array, cl_array + cl_size);
+			}
 	};
 
 	using CS = CallSpecification<>;
@@ -162,7 +185,7 @@
 		// locations:
 
 			template<key_type Loc0, index_type... Poses, typename T>
-			static constexpr auto locations(T) { return U_opt_pack_Vs<Loc0>; }
+			static constexpr auto locations(T) { return U_opt_pack_Vs<PE::template first<Loc0, Poses>...>; }
 
 		// positions:
 
@@ -176,16 +199,18 @@
 
 		// cache levels:
 
-			template<auto Loc0, auto... Poses>
+			template<auto... Locs, auto... Poses>
 			static constexpr auto cache_levels
 			(
-				nik_avpcr(auto_pack<Loc0>*),
+				nik_avpcr(auto_pack<Locs...>*),
 				nik_avpcr(auto_pack<Poses...>*)
 			)
 			{
+				constexpr auto Loc0 = PE::template first<Locs...>;
+
 				if constexpr (Loc0 == CL::instr)
 
-					return U_opt_pack_Vs<PE::template first<_zero, Poses>...>;
+					return U_opt_pack_Vs<PE::template first<_zero, Locs>...>;
 				else
 					return U_opt_pack_Vs<(MI::is_optimal(Poses) ? _one : _two)...>;
 			}
@@ -292,30 +317,16 @@
 			constexpr bool assert_trait  () const { return Trait == CL::id || Trait == CT::all; }
 			constexpr bool assert_param  () const { return param_spec.no_locs_equal_id(); }
 
-		// array max:
-
-			constexpr auto array_max(ckey_type *cache_levels) const
-			{
-				index_type size		= param_spec.size + _three;
-				key_type current_max	= _zero;
-
-				for (ckey_type *k = cache_levels; k < cache_levels + size; ++k)
-					if (*k > current_max) current_max = *k;
-
-				return current_max;
-			}
-
 		// note:
 
-			template<auto... param_cls>
-			constexpr auto note(nik_avpcr(auto_pack<param_cls...>*)) const
+			constexpr auto note(ckey_type param_cl) const
 			{
 				const auto handle_cl	= handle_spec.cache_level();
 				const auto name_cl	= name_spec.cache_level();
 				const auto pack_cl	= pack_spec.cache_level(param_spec.size);
 
-				ckey_type cl_array[]	= { handle_cl, name_cl, pack_cl, param_cls... };
-				const auto total_cl	= array_max(cl_array);
+				ckey_type cl_array[]	= { handle_cl, name_cl, pack_cl, param_cl };
+				const auto total_cl	= CS::array_max(cl_array, cl_array + _four);
 
 				if      (total_cl == 0) return MT::cache_level_0;
 				else if (total_cl == 1) return MT::cache_level_1;
@@ -392,7 +403,7 @@
 		key_type HandleCL, key_type HandleLoc, index_type HandlePos,
 		key_type NameCL, key_type NameLoc, index_type NamePos,
 		key_type PackCL, key_type PackLoc, index_type PackPos, key_type PackKey,
-		index_type ParamSize, auto... ParamCLs, auto... ParamLocs, auto... ParamPoses
+		key_type ParamCL, index_type ParamSize, auto... ParamCLs, auto... ParamLocs, auto... ParamPoses
 	>
 	static constexpr auto call_instruction
 	(
@@ -401,13 +412,15 @@
 		nik_avpcr(auto_pack<ParamPoses...>*)
 	)
 	{
+		// Todo: dispatch on level
+
 		return instruction
 		<
 			MN::call, Note, RtnPolicy,
 			HandleCL, HandleLoc, HandlePos,
 			NameCL, NameLoc, NamePos,
 			PackCL, PackLoc, PackPos, PackKey,
-			ParamSize, ParamCLs..., ParamLocs..., ParamPoses...
+			ParamCL, ParamSize, ParamCLs..., ParamLocs..., ParamPoses...
 		>;
 	}
 
@@ -452,8 +465,9 @@
 		constexpr auto NameCL		= Name.cache_level();
 		constexpr auto PackCL		= Pack.cache_level(ParamSize);
 		constexpr auto ParamCLs		= ParamSpec<ParamTrait>::cache_levels(ParamLocs, ParamPoses);
+		constexpr auto ParamCL		= CS::total_cache_level(ParamCLs);
 
-		constexpr auto Note		= Spec.note(ParamCLs);
+		constexpr auto Note		= Spec.note(ParamCL);
 
 		return call_instruction
 		<
@@ -461,7 +475,7 @@
 			HandleCL, HandleLoc, HandlePos,
 			NameCL, NameLoc, NamePos,
 			PackCL, PackLoc, PackPos, PackKey,
-			ParamSize
+			ParamCL, ParamSize
 
 		>(ParamCLs, ParamLocs, ParamPoses);
 	}
