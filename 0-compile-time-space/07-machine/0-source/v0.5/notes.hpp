@@ -123,11 +123,11 @@
 
 /***********************************************************************************************************************/
 
-// is optimal:
+// is cache level 0:
 
 	// locations: id, instr, regs, h0, h4, args
 
-	// it's optimal if:
+	// it's cache level 0 if:
 
 		// CallerLoc     != id       (error)
 		// CallerLoc     == instr
@@ -162,7 +162,71 @@
 		// ParamLoc[0-7] == h4    && ParamPos[] < eight
 		// ParamLoc[0-7] == args  && ParamPos[] < eight
 
-	// it's optimal if (refactored):
+	// it's cache level 0 if (refactored):
+
+		// CallerLoc     != id       (error)
+		// CallerLoc     == instr
+		// CallerPos     <  eight
+
+		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == instr
+		// NamePos       <  eight
+
+		// PackLoc       == id
+		// PackLoc       != instr    (error)
+		// PackPos       <  eight
+
+		// ParamSize     <  eight
+
+		// ParamTrait    == id
+		// ParamTrait    == all
+
+		// ParamLoc[0-7] != id       (error)
+		// ParamLoc[0-7] == instr
+		// ParamPos[0-7] <  eight
+
+/***********************************************************************************************************************/
+
+// is cache level 1:
+
+	// locations: id, instr, regs, h0, h4, args
+
+	// it's cache level 1 if:
+
+		// CallerLoc     != id       (error)
+		// CallerLoc     == instr
+		// CallerLoc     == regs  && CallerPos  < eight
+		// CallerLoc     == h0    && CallerPos  < eight
+		// CallerLoc     == h4    && CallerPos  < eight
+		// CallerLoc     == args  && CallerPos  < eight
+
+		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == instr
+		// NameLoc       == regs  && NamePos    < eight
+		// NameLoc       == h0    && NamePos    < eight
+		// NameLoc       == h4    && NamePos    < eight
+		// NameLoc       == args  && NamePos    < eight
+
+		// PackLoc       == id
+		// PackLoc       != instr    (error)
+		// PackLoc       == regs  && PackPos    < eight
+		// PackLoc       == h0    && PackPos    < eight
+		// PackLoc       == h4    && PackPos    < eight
+		// PackLoc       == args  && PackPos    < eight
+
+		// ParamTrait    == id
+		// ParamTrait    == all
+
+		// ParamSize     <  eight
+
+		// ParamLoc[0-7] != id       (error)
+		// ParamLoc[0-7] == instr
+		// ParamLoc[0-7] == regs  && ParamPos[] < eight
+		// ParamLoc[0-7] == h0    && ParamPos[] < eight
+		// ParamLoc[0-7] == h4    && ParamPos[] < eight
+		// ParamLoc[0-7] == args  && ParamPos[] < eight
+
+	// it's cache level 1 if (refactored):
 
 		// CallerLoc     != id       (error)
 		// CallerLoc     == instr
@@ -229,6 +293,16 @@
 
 	// Do not refactor using other templated structs. Although these definitions are potentially redundant,
 	// trampolining/detouring require a distinct keyword so there's no confusion with other returned values.
+
+/***********************************************************************************************************************/
+
+// needed any more?
+
+		//	template<typename... Ts>
+		//	static constexpr bool all(Ts... vs) { return (... && vs); }
+
+		//	template<typename T, typename... Ts>
+		//	static constexpr bool all_equal(T v, Ts... vs) { return all((v == vs)...); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -580,9 +580,8 @@ private:
 		static constexpr key_type pack_pos		= 12;
 		static constexpr key_type pack_key		= 13;
 
-		static constexpr key_type param_trait		= 14;
+		static constexpr key_type param_cl		= 14;
 		static constexpr key_type param_size		= 15;
-		static constexpr key_type param_cl		= 16;
 
 		static constexpr key_type offset		= 16;
 	};
@@ -594,14 +593,11 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::block, filler...> : public CallInstr<filler...>
 	{
-		// cls  = [16-19]
-		// locs = [20-23]
+		static constexpr key_type pos			= 16;
+		static constexpr key_type policy		= 17;
 
-		static constexpr key_type pos			= 24;
-		static constexpr key_type policy		= 25;
-
-		static constexpr key_type coname		= 26;
-		static constexpr key_type conote		= 27;
+		static constexpr key_type coname		= 18;
+		static constexpr key_type conote		= 19;
 	};
 
 	using BCI = CallInstr<MP::block>;
@@ -618,8 +614,8 @@ private:
 	template<key_type... filler>
 	struct CallInstr<MP::recursive, filler...> : public CallInstr<filler...>
 	{
-		static constexpr key_type pos		= 13;
-		static constexpr key_type adj		= 14;
+		static constexpr key_type pos			= 16;
+		static constexpr key_type adj			= 17;
 	};
 
 	using RCI = CallInstr<MP::recursive>;
