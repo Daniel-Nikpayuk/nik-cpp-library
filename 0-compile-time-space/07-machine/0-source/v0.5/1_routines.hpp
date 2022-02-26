@@ -415,6 +415,7 @@
 		// assert that if trait == id, then there is an even number of parameters.
 
 		constexpr auto ParamSize	= PE::template length(ParamPoses);
+		constexpr auto AdjPackPos	= (PackLoc == CL::id) ? ParamSize : PackPos;
 
 		constexpr auto HandleCL		= Handle.cache_level();
 		constexpr auto NameCL		= Name.cache_level();
@@ -431,7 +432,7 @@
 			Note, RtnPolicy,
 			HandleCL, HandleLoc, HandlePos,
 			NameCL, NameLoc, NamePos,
-			PackCL, PackLoc, PackPos, PackKey,
+			PackCL, PackLoc, AdjPackPos, PackKey,
 			ParamCL, ParamSize
 
 		>(ParamCLs, ParamLocs, ParamPoses);
@@ -628,6 +629,46 @@ private:
 	template<key_type... filler>
 	struct CallBuild<MT::cache_level_1, filler...>
 	{
+		// generic:
+
+			template<auto cl, auto loc, auto pos, auto cVs, auto cH0, auto cH4, auto cAs>
+			static constexpr auto generic()
+			{
+				if constexpr (cl == _zero) return pos;
+				else
+				{
+					constexpr auto pos0	= (loc == CL::regs) ? _zero :
+								  (loc == CL::h0  ) ? _one  :
+								  (loc == CL::h4  ) ? _two  : _three ;
+					constexpr auto mem	= Fast<pos0>::template at<cVs, cH0, cH4, cAs>();
+
+					return PE::template fast_at<pos>(mem);
+				}
+			}
+
+		// pack:
+
+			template<auto key, typename T>
+			static constexpr auto pack(const T & p) { return p; }
+
+			template<auto key, template<auto...> class B>
+			static constexpr auto pack(nik_avpcr(auto_template_pack<B>*)) { return B<key>::result; }
+
+		// param:
+
+			template<auto cVs, auto cH0, auto cH4, auto cAs, auto... cls, auto... locs, auto... poses>
+			static constexpr auto param
+			(
+				nik_avpcr(auto_pack<cls...>*),
+				nik_avpcr(auto_pack<locs...>*),
+				nik_avpcr(auto_pack<poses...>*)
+			)
+			{
+				return U_opt_pack_Vs
+				<
+					generic<cls, locs, poses, cVs, cH0, cH4, cAs>()...
+				>;
+			}
 	};
 
 	using CB1 = CallBuild1<>;
@@ -690,56 +731,63 @@ private:
 	template<key_type... filler>
 	struct CallGet<MT::cache_level_1, filler...>
 	{
-		template<auto loc, auto cVs, auto cH0, auto cH4, auto cAs>
-		static constexpr auto dispatch()
-		{
-			if constexpr      (loc == CL::regs) return cVs;
-			else if constexpr (loc == CL::h0  ) return cH0;
-			else if constexpr (loc == CL::h4  ) return cH4;
-			else                                return cAs;
-		}
-
-		template
-		<
-			auto ins,
-			auto cl_index, auto loc_index, auto pos_index,
-			auto cVs, auto cH0, auto cH4, auto cAs
-		>
-		static constexpr auto generic()
-		{
-			constexpr auto cl		= ins[cl_index];
-			constexpr auto pos		= ins[pos_index];
-
-			if constexpr (cl == _zero) return pos;
-			else
-			{
-				constexpr auto loc	= ins[loc_index];
-				constexpr auto mem	= dispatch<loc, cVs, cH0, cH4, cAs>();
-
-				return PE::template fast_at<pos>(mem);
-			}
-		}
-
 		// handle:
 
 			template<auto ins, auto cVs, auto cH0, auto cH4, auto cAs>
-			static constexpr auto handle = generic
+			static constexpr auto handle = CB1::template generic
 			<
-				ins, CI::handle_cl, CI::handle_loc, CI::handle_pos, cVs, cH0, cH4, cAs
+				ins[CI::handle_cl], ins[CI::handle_loc], ins[CI::handle_pos], cVs, cH0, cH4, cAs
 			>();
 
 		// name:
 
 			template<auto ins, auto cVs, auto cH0, auto cH4, auto cAs>
-			static constexpr auto name = generic
+			static constexpr auto name = CB1::template generic
 			<
-				ins, CI::name_cl, CI::name_loc, CI::name_pos, cVs, cH0, cH4, cAs
+				ins[CI::name_cl], ins[CI::name_loc], ins[CI::name_pos], cVs, cH0, cH4, cAs
 			>();
 
 		// pack:
 
+			template<auto ins, auto cVs, auto cH0, auto cH4, auto cAs>
+			static constexpr auto pack()
+			{
+				constexpr auto cl	= ins[CI::pack_cl];
+				constexpr auto loc	= ins[CI::pack_loc];
+				constexpr auto pos	= ins[CI::pack_pos];
+				constexpr auto value	= CB1::template generic<cl, loc, pos, cVs, cH0, cH4, cAs>();
+
+				if constexpr (cl == _zero) return Fast<value>::U_index_segment;
+				else
+				{
+					constexpr auto key = ins[CI::pack_key];
+
+					return CB1::template pack<key>(value);
+				}
+			}
+
 		// param:
 
+			template<auto ins, auto cVs, auto cH0, auto cH4, auto cAs, typename Pack>
+			static constexpr auto param(Pack pack)
+			{
+				constexpr auto cl	= ins[CI::param_cl];
+				constexpr auto offset	= CI::offset;
+
+				if constexpr (cl == _zero) return PE::template from_array<ins, offset>(pack);
+				else
+				{
+					constexpr auto size	= ins[CI::param_size];
+					constexpr auto l_offset	= offset + size;
+					constexpr auto p_offset	= l_offset + size;
+
+					constexpr auto Cls	= PE::template from_array<ins,   offset>(pack);
+					constexpr auto Locs	= PE::template from_array<ins, l_offset>(pack);
+					constexpr auto Poses	= PE::template from_array<ins, p_offset>(pack);
+
+					return CB1::template param<cVs, cH0, cH4, cAs>(Cls, Locs, Poses);
+				}
+			}
 	};
 
 	using CallGet1 = CallGet<MT::cache_level_1>;
@@ -802,19 +850,20 @@ private:
 	template<key_type... filler>
 	struct CallMake<MT::cache_level_1, filler...>
 	{
-	//	template<auto ins, auto cVs, auto cAs, NIK_HEAP_AUTO_CARGS>
-	//	static constexpr auto program(nik_vpcr(cHs)(auto_pack<NIK_HEAP_CARGS>*))
-	//	{
-	//		constexpr auto handle	= CallGet1::template handle < ins, cVs, cH0, cH4, cAs >;
-	//		constexpr auto name	= CallGet1::template name   < ins, cVs, cH0, cH4, cAs >;
-	//		constexpr auto pack	= CallGet1::template pack   < ins, cVs, cH0, cH4, cAs >();
-	//		constexpr auto param	= CallGet1::template param  < ins, cVs, cH0, cH4, cAs >();
+		template<auto ins, auto cVs, auto cAs, NIK_HEAP_AUTO_CARGS>
+		static constexpr auto program(nik_vpcr(cHs)(auto_pack<NIK_HEAP_CARGS>*))
+		{
+			constexpr auto handle	= CallGet1::template handle < ins, cVs, cH0, cH4, cAs >;
+			constexpr auto name	= CallGet1::template name   < ins, cVs, cH0, cH4, cAs >;
+			constexpr auto pack	= CallGet1::template pack   < ins, cVs, cH0, cH4, cAs >();
+			constexpr auto param	= CallGet1::template param  < ins, cVs, cH0, cH4, cAs >(pack);
 
-	//		constexpr auto h2	= CallMake1::template h2<ins>(handle, name, pack, params, cVs);
-	//		constexpr auto h3	= CallMake1::template h3<ins>(cHs, cAs);
+		//	constexpr auto h2	= CallMake0::template h2<ins>(handle, name, pack, params, cVs);
+		//	constexpr auto h3	= CallMake0::template h3<ins>(cHs, cAs);
 
-	//		return machination(MT::id, h2, h3);
-	//	}
+		//	return machination(MT::id, h2, h3);
+			return 0;
+		}
 	};
 
 	using CallMake1 = CallMake<MT::cache_level_1>;
