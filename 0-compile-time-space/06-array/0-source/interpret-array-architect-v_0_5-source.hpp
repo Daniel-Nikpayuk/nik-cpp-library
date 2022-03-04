@@ -123,8 +123,28 @@ public:
 
 public:
 
+// variable:
+
 	template<typename Type, Type... Vs>
 	static constexpr Type array[] = { Vs... };
+
+// struct:
+
+	template<typename Type, auto N>
+	struct Array { Type value[N]; };
+
+// apply:
+
+	template<typename F, const auto *arr, auto... Is>
+	static constexpr auto apply(nik_avpcr(auto_pack<Is...>*))
+	{
+		constexpr auto size	= sizeof...(Is);
+		constexpr auto nttp	= F::template result<size>(arr);
+		using ConstType		= T_pointer_modify_TxV<decltype(arr), Pointer::from_pointer>;
+		using Type		= T_const_modify_TxV<ConstType, Constant::from_const>;
+
+		return array<Type, nttp.value[Is]...>;
+	}
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

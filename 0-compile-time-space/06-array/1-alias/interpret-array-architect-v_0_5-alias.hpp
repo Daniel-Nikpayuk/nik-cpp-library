@@ -26,14 +26,29 @@
 // predicates:
 
 	template<typename T>
-	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_array_T) = NIK_MODULE::template V_is_array_T<T>;
+	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_array_T)	= NIK_MODULE::template V_is_array_T<T>;
 
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // array:
 
+/***********************************************************************************************************************/
+
+// variable:
+
 	template<typename Type, Type... Vs>
-	NIK_POLICY auto nik_name(NIK_PREFIX, array) = NIK_MODULE::template array<Type, Vs...>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, array)		= NIK_MODULE::template array<Type, Vs...>;
+
+// struct:
+
+	template<typename Type, auto N>
+	using nik_name(NIK_PREFIX, Array)			= typename NIK_MODULE::template Array<Type, N>;
+
+// apply:
+
+	template<typename F, auto arr, auto seg>
+	NIK_POLICY auto nik_name(NIK_PREFIX, apply)		= NIK_MODULE::template apply<F, arr>(seg);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

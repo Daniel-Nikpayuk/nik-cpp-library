@@ -1,3 +1,150 @@
+/************************************************************************************************************************
+**
+** Copyright 2021-2022 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
+**
+** This file is part of nik_cpp_library.
+**
+** nik_cpp_library is free software: you can redistribute it and/or modify it under the terms
+** of the GNU General Public License as published by the Free Software Foundation, either version 3
+** of the License, or (at your option) any later version.
+**
+** nik_cpp_library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+** without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+** See the GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License along with nik_cpp_library.
+** If not, see <http://www.gnu.org/licenses/>.
+**
+************************************************************************************************************************/
+
+// instructions source:
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// halters:
+
+	// value:
+
+	template<key_type Note>
+	static constexpr instr_type _value = instruction // *value* keyword is reserved for recursive use.
+	<
+		MN::value, Note
+	>;
+
+		template<key_type...> static constexpr instr_type first			= _value < MT::first     >;
+		template<key_type...> static constexpr instr_type heap_zero		= _value < MT::h0        >;
+		template<key_type...> static constexpr instr_type heap_one		= _value < MT::h1        >;
+		template<key_type...> static constexpr instr_type arg_zero		= _value < MT::a0        >;
+		template<key_type...> static constexpr instr_type registers		= _value < MT::registers >;
+		template<key_type...> static constexpr instr_type arguments		= _value < MT::arguments >;
+		template<key_type...> static constexpr instr_type depth			= _value < MT::depth     >;
+		template<key_type...> static constexpr instr_type dump			= _value < MT::dump      >;
+
+// passers:
+
+	// block:
+
+	template<key_type...>
+	static constexpr instr_type drop_r_first = instruction	// optimization: We call the single block machine
+	<							// directly, but still provide computational context.
+		MN::move_r_block, _zero, MT::id, CP::drop
+	>;
+
+	// linear:
+
+	template<key_type...>
+	static constexpr instr_type move_h1_all__insert_at_r_front = instruction
+	<
+		MN::move_h1_all, MT::insert_at_r_front
+	>;
+
+	// near linear:
+
+//	template<index_type Action>
+//	static constexpr instr_type map_a0__replace_at_a0 = instruction
+//	<
+//		MN::select_a0, MT::id, Action, FP::replace_at_a0
+//	>;
+
+//	template<index_type...>
+//	static constexpr instr_type cat_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::catenate_a0_a1, MT::replace_at_a0
+//	>;
+
+//	template<index_type Action>
+//	static constexpr instr_type zip_a0_a1__replace_at_a0 = instruction
+//	<
+//		MN::zip_a0_a1, MT::replace_at_a0, Action
+//	>;
+
+	// recursive:
+
+	template<key_type...>
+	static constexpr instr_type cycle = instruction
+	<
+		MN::go_to, MT::first
+	>;
+
+//	template<key_type...>
+//	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
+//	>;
+
+//	template<key_type...>
+//	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
+//	<
+//		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
+//	>;
+
+	// optimizations:
+
+	template<key_type Note, key_type Pos>
+	static constexpr instr_type copy_r_pos = instruction
+	<
+		MN::copy_r_pos, Note, Pos
+	>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// detour:
+
+/***********************************************************************************************************************/
+
+	template<key_type Policy>
+	static constexpr instr_type detour_call = instruction
+	<
+		MN::detour, MT::internal, MN::id, Policy
+	>;
+
+	// syntactic sugar:
+
+		template<key_type...>
+		static constexpr instr_type apply_recursive__insert_at_r_front = detour_call<CP::insert_at_r_front>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// machinate:
+
+/***********************************************************************************************************************/
+
+	template<key_type Note, key_type... Params>
+	static constexpr instr_type machinate = instruction
+	<
+		MN::machinate, Note, Params...
+	>;
+
+	// syntactic sugar:
+
+		template<key_type...>  static constexpr instr_type pause	= machinate < MT::pause  >;
+		template<key_type...>  static constexpr instr_type unwind	= machinate < MT::unwind >;
+		template<key_type...>  static constexpr instr_type rewind	= machinate < MT::rewind >;
+
 
 // retrieve:
 
@@ -494,54 +641,6 @@
 	};
 
 	using QD = Parameter<CT::dispatch>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// make:
-
-	template<key_type...> struct Make;
-
-/***********************************************************************************************************************/
-
-// closed:
-
-	template<key_type... filler>
-	struct Make<CT::closed, filler...>
-	{
-		template<auto ins, auto... Vs, auto prog, auto... Ws>
-		static constexpr auto h2(nik_avpcr(auto_pack<prog, Ws...>*))
-		{
-			constexpr auto params	= U_opt_pack_Vs<Ws...>;
-			constexpr auto base	= T_type_U<prog>::base;
-
-			return Resolve<base>::template h2<ins, Vs...>(prog, params);
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// open:
-
-	template<key_type... filler>
-	struct Make<CT::open, filler...>
-	{
-		template<auto caller, auto name>
-		static constexpr auto make(key_type) { return U_type_T<program<caller, name>>; }
-
-		template<auto caller, auto name, template<auto...> class B>
-		static constexpr auto make(nik_avpcr(auto_template_pack<B>*)) { return U_type_T<B<name>>; }
-
-		template<auto ins, auto... Vs, auto caller, auto name, auto... ps>
-		static constexpr auto h2(nik_avpcr(auto_pack<caller, name, ps...>*))
-		{
-			constexpr auto prog	= make<caller, name>(caller);
-			constexpr auto params	= U_opt_pack_Vs<ps...>;
-			constexpr auto base	= T_type_U<prog>::base;
-
-			return Resolve<base>::template h2<ins, Vs...>(prog, params);
-		}
-	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -129,14 +129,14 @@
 
 	// it's cache level 0 if:
 
-		// CallerLoc     != id       (error)
-		// CallerLoc     == instr
-		// CallerLoc     == regs  && CallerPos  < eight
-		// CallerLoc     == h0    && CallerPos  < eight
-		// CallerLoc     == h4    && CallerPos  < eight
-		// CallerLoc     == args  && CallerPos  < eight
+		// HandleLoc     != id       (error)
+		// HandleLoc     == instr
+		// HandleLoc     == regs  && HandlePos  < eight
+		// HandleLoc     == h0    && HandlePos  < eight
+		// HandleLoc     == h4    && HandlePos  < eight
+		// HandleLoc     == args  && HandlePos  < eight
 
-		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == id       (embedded in Handle)
 		// NameLoc       == instr
 		// NameLoc       == regs  && NamePos    < eight
 		// NameLoc       == h0    && NamePos    < eight
@@ -164,11 +164,11 @@
 
 	// it's cache level 0 if (refactored):
 
-		// CallerLoc     != id       (error)
-		// CallerLoc     == instr
-		// CallerPos     <  eight
+		// HandleLoc     != id       (error)
+		// HandleLoc     == instr
+		// HandlePos     <  eight
 
-		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == id       (embedded in Handle)
 		// NameLoc       == instr
 		// NamePos       <  eight
 
@@ -193,14 +193,14 @@
 
 	// it's cache level 1 if:
 
-		// CallerLoc     != id       (error)
-		// CallerLoc     == instr
-		// CallerLoc     == regs  && CallerPos  < eight
-		// CallerLoc     == h0    && CallerPos  < eight
-		// CallerLoc     == h4    && CallerPos  < eight
-		// CallerLoc     == args  && CallerPos  < eight
+		// HandleLoc     != id       (error)
+		// HandleLoc     == instr
+		// HandleLoc     == regs  && HandlePos  < eight
+		// HandleLoc     == h0    && HandlePos  < eight
+		// HandleLoc     == h4    && HandlePos  < eight
+		// HandleLoc     == args  && HandlePos  < eight
 
-		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == id       (embedded in Handle)
 		// NameLoc       == instr
 		// NameLoc       == regs  && NamePos    < eight
 		// NameLoc       == h0    && NamePos    < eight
@@ -228,11 +228,11 @@
 
 	// it's cache level 1 if (refactored):
 
-		// CallerLoc     != id       (error)
-		// CallerLoc     == instr
-		// CallerPos     <  eight
+		// HandleLoc     != id       (error)
+		// HandleLoc     == instr
+		// HandlePos     <  eight
 
-		// NameLoc       == id       (embedded in Caller)
+		// NameLoc       == id       (embedded in Handle)
 		// NameLoc       == instr
 		// NamePos       <  eight
 

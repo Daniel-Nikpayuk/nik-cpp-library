@@ -54,9 +54,10 @@ namespace nik
 
 		#include"v0.5/0_programs.hpp"
 		#include"v0.5/1_routines.hpp"
-	//	#include"v0.5/2_machines.hpp"
-	//	#include"v0.5/3_arithmetic.hpp"
-	//	#include"v0.5/4_functional.hpp"
+	//	#include"v0.5/2_controls.hpp"
+	//	#include"v0.5/3_machines.hpp"
+	//	#include"v0.5/4_arithmetic.hpp"
+	//	#include"v0.5/5_functional.hpp"
 
 		//
 

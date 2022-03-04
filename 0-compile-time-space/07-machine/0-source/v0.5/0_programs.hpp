@@ -256,8 +256,6 @@ public:
 		static constexpr key_type block					=  1;
 		static constexpr key_type linear				=  2;
 		static constexpr key_type recursive				=  3;
-
-		static constexpr key_type generic				=  4;
 	};
 
 	using MP = MachineProgram;
@@ -682,9 +680,27 @@ private:
 	using CT = CallTrait;
 
 /***********************************************************************************************************************/
+
+// routines:
+
+	struct CallRoutine
+	{
+		static constexpr key_type id		=  0;
+		static constexpr key_type identity	= id;	// convenience for
+								// default params.
+		static constexpr key_type build		=  1;
+		static constexpr key_type get		=  2;
+		static constexpr key_type make		=  3;
+	};
+
+	using CR = CallRoutine;
+
+/***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
 // fast (optimization):
+
+	// instead, maybe make it variable templates?
 
 	template<index_type, index_type...> struct Fast;
 
@@ -775,135 +791,6 @@ private:
 		{ template<auto U1, auto U2> static constexpr auto result = catenate(U1, U2); };
 
 	using PackCatenate = Pack<PE::generic_catenate>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// machine instructions:
-
-/***********************************************************************************************************************/
-
-// halters:
-
-	// value:
-
-	template<key_type Note>
-	static constexpr instr_type _value = instruction // *value* keyword is reserved for recursive use.
-	<
-		MN::value, Note
-	>;
-
-		template<key_type...> static constexpr instr_type first			= _value < MT::first     >;
-		template<key_type...> static constexpr instr_type heap_zero		= _value < MT::h0        >;
-		template<key_type...> static constexpr instr_type heap_one		= _value < MT::h1        >;
-		template<key_type...> static constexpr instr_type arg_zero		= _value < MT::a0        >;
-		template<key_type...> static constexpr instr_type registers		= _value < MT::registers >;
-		template<key_type...> static constexpr instr_type arguments		= _value < MT::arguments >;
-		template<key_type...> static constexpr instr_type depth			= _value < MT::depth     >;
-		template<key_type...> static constexpr instr_type dump			= _value < MT::dump      >;
-
-// passers:
-
-	// block:
-
-	template<key_type...>
-	static constexpr instr_type drop_r_first = instruction	// optimization: We call the single block machine
-	<							// directly, but still provide computational context.
-		MN::move_r_block, _zero, MT::id, CP::drop
-	>;
-
-	// linear:
-
-	template<key_type...>
-	static constexpr instr_type move_h1_all__insert_at_r_front = instruction
-	<
-		MN::move_h1_all, MT::insert_at_r_front
-	>;
-
-	// near linear:
-
-//	template<index_type Action>
-//	static constexpr instr_type map_a0__replace_at_a0 = instruction
-//	<
-//		MN::select_a0, MT::id, Action, FP::replace_at_a0
-//	>;
-
-//	template<index_type...>
-//	static constexpr instr_type cat_a0_a1__replace_at_a0 = instruction
-//	<
-//		MN::catenate_a0_a1, MT::replace_at_a0
-//	>;
-
-//	template<index_type Action>
-//	static constexpr instr_type zip_a0_a1__replace_at_a0 = instruction
-//	<
-//		MN::zip_a0_a1, MT::replace_at_a0, Action
-//	>;
-
-	// recursive:
-
-	template<key_type...>
-	static constexpr instr_type cycle = instruction
-	<
-		MN::go_to, MT::first
-	>;
-
-//	template<key_type...>
-//	static constexpr instr_type apply_h0_all__insert_at_r_front = instruction
-//	<
-//		MN::call_h0_all, MT::insert_at_r_front, CP::op_at_h0_front
-//	>;
-
-//	template<key_type...>
-//	static constexpr instr_type compel_h0_all__insert_at_r_front = instruction
-//	<
-//		MN::call_h0_all, MT::insert_at_r_front, CP::al_at_h0_front
-//	>;
-
-	// optimizations:
-
-	template<key_type Note, key_type Pos>
-	static constexpr instr_type copy_r_pos = instruction
-	<
-		MN::copy_r_pos, Note, Pos
-	>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// detour:
-
-/***********************************************************************************************************************/
-
-	template<key_type Policy>
-	static constexpr instr_type detour_call = instruction
-	<
-		MN::detour, MT::internal, MN::id, Policy
-	>;
-
-	// syntactic sugar:
-
-		template<key_type...>
-		static constexpr instr_type apply_recursive__insert_at_r_front = detour_call<CP::insert_at_r_front>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// machinate:
-
-/***********************************************************************************************************************/
-
-	template<key_type Note, key_type... Params>
-	static constexpr instr_type machinate = instruction
-	<
-		MN::machinate, Note, Params...
-	>;
-
-	// syntactic sugar:
-
-		template<key_type...>  static constexpr instr_type pause	= machinate < MT::pause  >;
-		template<key_type...>  static constexpr instr_type unwind	= machinate < MT::unwind >;
-		template<key_type...>  static constexpr instr_type rewind	= machinate < MT::rewind >;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -56,6 +56,7 @@
 //	#include nik_import(., compile, typed_stack, architect, v_0_5, gcc, dynamic, name)
 //	#include nik_import(., compile, typed_machine, architect, v_0_5, gcc, dynamic, name)
 
+	using array_module		= nik_module(interpret, array, architect, v_0_5, gcc);
 	using machine_module		= nik_module(interpret, machine, architect, v_0_5, gcc);
 //	using list_module		= nik_module(interpret, list, architect, v_0_5, gcc);
 //	using function_module		= nik_module(interpret, function, architect, v_0_5, gcc);
@@ -228,17 +229,76 @@
 
 /***********************************************************************************************************************/
 
-	constexpr auto test_spec = machine_module::template test_spec<>;
+//	constexpr auto test_spec = machine_module::template test_spec<>;
+
+/***********************************************************************************************************************/
+
+/*
+	template<int... Vs>
+	constexpr int array[] = { Vs... };
+
+	template<int N>
+	class SpecificArray
+	{
+		private:
+			int specific_array[N];
+			constexpr void construct(const int *a)
+				{ for (int k = 0; k < N; ++k) specific_array[k] = (a[k] != 3) ? a[k] : 2; }
+		public:
+			constexpr SpecificArray(const int *a) : specific_array{} { construct(a); }
+			constexpr const int value(const int n) const { return specific_array[n]; }
+	};
+
+	template<auto... Is, typename Callable>
+	constexpr auto test(nik_avpcr(auto_pack<Is...>*), Callable c)
+	{
+		constexpr int N = sizeof...(Is);
+
+		constexpr auto tmp_arr = SpecificArray<N>(c());
+
+		return array<tmp_arr.value(Is)...>;
+	}
+
+	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
+	constexpr int arr[]	= { 0, 1, 3 };
+	constexpr auto callable	= [](){ return arr; };
+	constexpr auto new_arr	= test(pack, callable);
+*/
+
+/***********************************************************************************************************************/
+
+	struct replace_3_with_2
+	{
+		template<typename T, auto N>
+		using Array = typename array_module::template Array<T, N>;
+
+		template<auto N, typename T>
+		static constexpr auto result(const T *a)
+		{
+			Array<T, N> tmp{};
+
+			for (int k = 0; k < N; ++k)
+				tmp.value[k] = (a[k] != 3) ? a[k] : 2;
+
+			return tmp;
+		}
+	};
+
+	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
+	constexpr int arr[]	= { 4, 3, 7 };
+	constexpr auto new_arr	= array_module::template apply<replace_3_with_2, arr>(pack);
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		printf("%u\n", test_spec[8]);
+		printf("{ %d, %d, %d }\n", new_arr[0], new_arr[1], new_arr[2]);
+			// prints: { 0, 1, 2 }
 
 		return 0;
 	}
 
+	//	printf("%u\n", test_spec[8]);
 	//	printf("%d\n", get_value(pack));
 
 	//	printf("%d\n", machine_module::template Fast<3>::U_even_index_sequence);
