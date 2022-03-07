@@ -272,47 +272,29 @@
 
 /***********************************************************************************************************************/
 
-/*
-	struct replace_3_with_2
+	struct MapZip
 	{
-		template<typename T, auto N>
-		static constexpr auto result(Array<T, N> a)
+		template<auto z, auto m, typename OutIter, typename EndIter, typename In1Iter, typename In2Iter>
+		static constexpr void result(OutIter out, EndIter end, In1Iter in1, In2Iter in2)
 		{
-			Array<T, N> tmp{};
-
-			for (int k = 0; k < N; ++k)
-				tmp.value[k] = (a[k] != 3) ? a[k] : 2;
-
-			return tmp;
+			array_module::Map::template result<m>(out, end, in1);
+			array_module::Zip::template result<z>(out, end, out, in2);
 		}
 	};
 
-	constexpr auto type	= U_type_T<int>;
-	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
-	constexpr auto sizes	= U_pack_Vs<3>;
-
-	constexpr int arr[]	= { 4, 3, 7 };
-	constexpr auto new_arr	= array_module::template apply<replace_3_with_2, arr>(type, pack, sizes, U_pack_Vs<>);
-*/
-
-/***********************************************************************************************************************/
-
-/*
-	template<typename T, auto N>
-	static constexpr auto & construct(Array<T, N> & a)
+	template<typename Type, auto z, auto m, auto Arr1, auto Arr2, typename Indices>
+	constexpr auto map_zip(Indices indices)
 	{
-		for (T *k = a.value; k < a.value + N; ++k)
-			if (*k == 3) *k = 2;
-
-		return a;
+		return array_module::template apply<Type, MapZip, Arr1, Arr2>(U_pack_Vs<z, m>, indices);
 	}
-*/
 
+	constexpr int add(int x, int y) { return x+y; }
 	constexpr int sq(int x) { return x*x; }
 
 	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
-	constexpr int arr[]	= { 4, 3, 7 };
-	constexpr auto Arr	= array_module::map<int, sq, arr>(pack);
+	constexpr int arr1[]	= { 4, 2, 1 };
+	constexpr int arr2[]	= { 4, 3, 7 };
+	constexpr auto Arr	= map_zip<int, add, sq, arr1, arr2>(pack);
 
 /***********************************************************************************************************************/
 

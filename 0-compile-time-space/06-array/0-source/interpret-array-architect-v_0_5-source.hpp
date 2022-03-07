@@ -128,52 +128,75 @@ public:
 
 // map:
 
-	template<auto f, typename OutIter, typename InIter, typename EndIter>
-	static constexpr OutIter map(OutIter out, InIter in, EndIter end)
+	struct Map
 	{
-		while (in < end)
+		template<auto f, typename OutIter, typename EndIter, typename InIter>
+		static constexpr void result(OutIter out, EndIter end, InIter in)
 		{
-			*out = f(*in);
+			while (out < end)
+			{
+				*out = f(*in);
 
-			++out;
-			++in;
+				++out;
+				++in;
+			}
 		}
-
-		return out;
-	}
+	};
 
 // (id) map:
 
-	template<typename OutIter, typename InIter, typename EndIter>
-	static constexpr OutIter id_map(OutIter out, InIter in, EndIter end)
+	struct IdMap
 	{
-		while (in < end)
+		template<typename OutIter, typename EndIter, typename InIter>
+		static constexpr void result(OutIter out, EndIter end, InIter in)
 		{
-			*out = *in;
+			while (out < end)
+			{
+				*out = *in;
 
-			++out;
-			++in;
+				++out;
+				++in;
+			}
 		}
-
-		return out;
-	}
+	};
 
 /***********************************************************************************************************************/
 
 // fold:
 
-	template<auto f, typename OutIter, typename InIter, typename EndIter>
-	static constexpr OutIter fold(OutIter out, InIter in, EndIter end)
+	struct Fold
 	{
-		while (in < end)
+		template<auto f, typename OutIter, typename EndIter, typename InIter>
+		static constexpr void result(OutIter out, EndIter end, InIter in)
 		{
-			*out = f(*out, *in);
+			while (out < end)
+			{
+				*out = f(*out, *in);
 
-			++in;
+				++in;
+			}
 		}
+	};
 
-		return out;
-	}
+/***********************************************************************************************************************/
+
+// zip:
+
+	struct Zip
+	{
+		template<auto f, typename OutIter, typename EndIter, typename In1Iter, typename In2Iter>
+		static constexpr void result(OutIter out, EndIter end, In1Iter in1, In2Iter in2)
+		{
+			while (out < end)
+			{
+				*out = f(*in1, *in2);
+
+				++out;
+				++in1;
+				++in2;
+			}
+		}
+	};
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -208,49 +231,57 @@ public:
 	static constexpr auto end(Array<Type, Size> & arr) { return arr.value + Size; }
 
 /***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-// copy:
+// (near linear) apply:
 
-	template<auto Size, typename Type>
-	static constexpr auto copy(const Type *a)
+	template<typename Type, auto Size, typename F, auto... Params, typename... Types>
+	static constexpr auto apply(const Types*... as)
 	{
 		Array<Type, Size> arr{};
 
-		id_map(begin(arr), a, a + Size);
+		F::template result<Params...>(begin(arr), end(arr), as...);
 
 		return arr;
 	}
 
-	template<typename Type, auto Arr, auto... Is>
-	static constexpr auto copy(nik_avpcr(auto_pack<Is...>*))
+	template<typename Type, typename F, auto... As, auto... Ps, auto... Is>
+	static constexpr auto apply(nik_avpcr(auto_pack<Ps...>*), nik_avpcr(auto_pack<Is...>*))
 	{
 		constexpr auto Size	= sizeof...(Is);
-		constexpr auto arr	= copy<Size>(Arr);
+		constexpr auto arr	= apply<Type, Size, F, Ps...>(As...);
 
 		return array<Type, arr.value[Is]...>;
 	}
 
 /***********************************************************************************************************************/
 
-// map:
+// copy:
 
-	template<auto Size, auto f, typename Type>
-	static constexpr auto map(const Type *a)
+	template<typename Type, auto Arr, typename Indices>
+	static constexpr auto copy(Indices indices)
 	{
-		Array<Type, Size> arr{};
-
-		map<f>(begin(arr), a, a + Size);
-
-		return arr;
+		return apply<Type, IdMap, Arr>(U_pack_Vs<>, indices);
 	}
 
-	template<typename Type, auto f, auto Arr, auto... Is>
-	static constexpr auto map(nik_avpcr(auto_pack<Is...>*))
-	{
-		constexpr auto Size	= sizeof...(Is);
-		constexpr auto arr	= map<Size, f>(Arr);
+/***********************************************************************************************************************/
 
-		return array<Type, arr.value[Is]...>;
+// map:
+
+	template<typename Type, auto f, auto Arr, typename Indices>
+	static constexpr auto map(Indices indices)
+	{
+		return apply<Type, Map, Arr>(U_pack_Vs<f>, indices);
+	}
+
+/***********************************************************************************************************************/
+
+// zip:
+
+	template<typename Type, auto f, auto Arr1, auto Arr2, typename Indices>
+	static constexpr auto zip(Indices indices)
+	{
+		return apply<Type, Zip, Arr1, Arr2>(U_pack_Vs<f>, indices);
 	}
 
 /***********************************************************************************************************************/
