@@ -26,8 +26,7 @@
 
 // dependencies:
 
-	#include nik_source(../../.., interpret, constant, architect, v_0_5, gcc)
-	#include nik_source(../../.., interpret, pointer, architect, v_0_5, gcc)
+	#include nik_source(../../.., interpret, cache, architect, v_0_5, gcc)
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -40,8 +39,6 @@ namespace nik
 	nik_begin_module(interpret, array, architect, v_0_5, gcc)
 
 		#include nik_import(../../.., interpret, cache, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., interpret, constant, architect, v_0_5, gcc, static, name)
-		#include nik_import(../../.., interpret, pointer, architect, v_0_5, gcc, static, name)
 
 		#include"interpret-array-architect-v_0_5-source.hpp"
 

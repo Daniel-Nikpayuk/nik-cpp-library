@@ -27,7 +27,7 @@
 
 /***********************************************************************************************************************/
 
-// is array::
+// is array:
 
 private:
 
@@ -117,33 +117,140 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// array:
-
-/***********************************************************************************************************************/
+// (variable) array:
 
 public:
-
-// variable:
 
 	template<typename Type, Type... Vs>
 	static constexpr Type array[] = { Vs... };
 
-// struct:
+/***********************************************************************************************************************/
 
-	template<typename Type, auto N>
-	struct Array { Type value[N]; };
+// map:
 
-// apply:
-
-	template<typename F, const auto *arr, auto... Is>
-	static constexpr auto apply(nik_avpcr(auto_pack<Is...>*))
+	template<auto f, typename OutIter, typename InIter, typename EndIter>
+	static constexpr OutIter map(OutIter out, InIter in, EndIter end)
 	{
-		constexpr auto size	= sizeof...(Is);
-		constexpr auto nttp	= F::template result<size>(arr);
-		using ConstType		= T_pointer_modify_TxV<decltype(arr), Pointer::from_pointer>;
-		using Type		= T_const_modify_TxV<ConstType, Constant::from_const>;
+		while (in < end)
+		{
+			*out = f(*in);
 
-		return array<Type, nttp.value[Is]...>;
+			++out;
+			++in;
+		}
+
+		return out;
+	}
+
+// (id) map:
+
+	template<typename OutIter, typename InIter, typename EndIter>
+	static constexpr OutIter id_map(OutIter out, InIter in, EndIter end)
+	{
+		while (in < end)
+		{
+			*out = *in;
+
+			++out;
+			++in;
+		}
+
+		return out;
+	}
+
+/***********************************************************************************************************************/
+
+// fold:
+
+	template<auto f, typename OutIter, typename InIter, typename EndIter>
+	static constexpr OutIter fold(OutIter out, InIter in, EndIter end)
+	{
+		while (in < end)
+		{
+			*out = f(*out, *in);
+
+			++in;
+		}
+
+		return out;
+	}
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// (struct) array:
+
+public:
+
+	template<typename Type, auto Size>
+	struct Array { Type value[Size]; };
+
+/***********************************************************************************************************************/
+
+// type:
+
+	template<typename Type, auto Size>
+	static constexpr auto type(const Array<Type, Size> &) { return U_type_T<Type>; }
+
+// size:
+
+	template<typename Type, auto Size>
+	static constexpr auto size(const Array<Type, Size> &) { return Size; }
+
+// begin:
+
+	template<typename Type, auto Size>
+	static constexpr auto begin(Array<Type, Size> & arr) { return arr.value; }
+
+// end:
+
+	template<typename Type, auto Size>
+	static constexpr auto end(Array<Type, Size> & arr) { return arr.value + Size; }
+
+/***********************************************************************************************************************/
+
+// copy:
+
+	template<auto Size, typename Type>
+	static constexpr auto copy(const Type *a)
+	{
+		Array<Type, Size> arr{};
+
+		id_map(begin(arr), a, a + Size);
+
+		return arr;
+	}
+
+	template<typename Type, auto Arr, auto... Is>
+	static constexpr auto copy(nik_avpcr(auto_pack<Is...>*))
+	{
+		constexpr auto Size	= sizeof...(Is);
+		constexpr auto arr	= copy<Size>(Arr);
+
+		return array<Type, arr.value[Is]...>;
+	}
+
+/***********************************************************************************************************************/
+
+// map:
+
+	template<auto Size, auto f, typename Type>
+	static constexpr auto map(const Type *a)
+	{
+		Array<Type, Size> arr{};
+
+		map<f>(begin(arr), a, a + Size);
+
+		return arr;
+	}
+
+	template<typename Type, auto f, auto Arr, auto... Is>
+	static constexpr auto map(nik_avpcr(auto_pack<Is...>*))
+	{
+		constexpr auto Size	= sizeof...(Is);
+		constexpr auto arr	= map<Size, f>(Arr);
+
+		return array<Type, arr.value[Is]...>;
 	}
 
 /***********************************************************************************************************************/

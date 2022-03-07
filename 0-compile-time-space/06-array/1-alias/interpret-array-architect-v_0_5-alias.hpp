@@ -42,13 +42,13 @@
 
 // struct:
 
-	template<typename Type, auto N>
-	using nik_name(NIK_PREFIX, Array)			= typename NIK_MODULE::template Array<Type, N>;
+	template<typename Type, auto Size>
+	using nik_name(NIK_PREFIX, Array)			= typename NIK_MODULE::template Array<Type, Size>;
 
 // apply:
 
-	template<typename F, auto arr, auto seg>
-	NIK_POLICY auto nik_name(NIK_PREFIX, apply)		= NIK_MODULE::template apply<F, arr>(seg);
+//	template<typename F, auto arr, auto seg>
+//	NIK_POLICY auto nik_name(NIK_PREFIX, apply)		= NIK_MODULE::template apply<F, arr>(seg);
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

@@ -267,13 +267,16 @@
 
 /***********************************************************************************************************************/
 
+	template<typename T, auto N>
+	using Array = typename array_module::template Array<T, N>;
+
+/***********************************************************************************************************************/
+
+/*
 	struct replace_3_with_2
 	{
 		template<typename T, auto N>
-		using Array = typename array_module::template Array<T, N>;
-
-		template<auto N, typename T>
-		static constexpr auto result(const T *a)
+		static constexpr auto result(Array<T, N> a)
 		{
 			Array<T, N> tmp{};
 
@@ -284,16 +287,38 @@
 		}
 	};
 
+	constexpr auto type	= U_type_T<int>;
+	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
+	constexpr auto sizes	= U_pack_Vs<3>;
+
+	constexpr int arr[]	= { 4, 3, 7 };
+	constexpr auto new_arr	= array_module::template apply<replace_3_with_2, arr>(type, pack, sizes, U_pack_Vs<>);
+*/
+
+/***********************************************************************************************************************/
+
+/*
+	template<typename T, auto N>
+	static constexpr auto & construct(Array<T, N> & a)
+	{
+		for (T *k = a.value; k < a.value + N; ++k)
+			if (*k == 3) *k = 2;
+
+		return a;
+	}
+*/
+
+	constexpr int sq(int x) { return x*x; }
+
 	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
 	constexpr int arr[]	= { 4, 3, 7 };
-	constexpr auto new_arr	= array_module::template apply<replace_3_with_2, arr>(pack);
+	constexpr auto Arr	= array_module::map<int, sq, arr>(pack);
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		printf("{ %d, %d, %d }\n", new_arr[0], new_arr[1], new_arr[2]);
-			// prints: { 0, 1, 2 }
+		printf("{ %d, %d, %d }\n", Arr[0], Arr[1], Arr[2]);
 
 		return 0;
 	}
