@@ -274,33 +274,43 @@
 
 	struct MapZip
 	{
-		template<auto z, auto m, typename OutIter, typename EndIter, typename In1Iter, typename In2Iter>
-		static constexpr void result(OutIter out, EndIter end, In1Iter in1, In2Iter in2)
+		template<auto Size, auto z, auto m, typename OutIter, typename In1Iter, typename End1Iter, typename In2Iter>
+		static constexpr void result(OutIter out, In1Iter in1, End1Iter end1, In2Iter in2)
 		{
-			array_module::Map::template result<m>(out, end, in1);
-			array_module::Zip::template result<z>(out, end, out, in2);
+			array_module::Map::template result<m>(out, in1, end1);
+			array_module::Zip::template result<z>(out, out, out + Size, in2);
 		}
 	};
 
-	template<typename Type, auto z, auto m, auto Arr1, auto Arr2, typename Indices>
+	template<typename Type, auto z, auto m, auto Arr1, auto Size1, auto Arr2, typename Indices>
 	constexpr auto map_zip(Indices indices)
 	{
-		return array_module::template apply<Type, MapZip, Arr1, Arr2>(U_pack_Vs<z, m>, indices);
+		return array_module::template V_apply<Type, MapZip, Arr1, Arr2>(U_pack_Vs<Size1, Size1, z, m>, indices);
 	}
 
-	constexpr int add(int x, int y) { return x+y; }
-	constexpr int sq(int x) { return x*x; }
+	constexpr int add(int m, int n) { return m+n; }
+	constexpr int sq(int n) { return n*n; }
+	template<auto V> constexpr bool is_value(int n) { return (n == V); }
+	template<auto V> constexpr bool is_less_than(int n) { return (n < V); }
 
 	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
 	constexpr int arr1[]	= { 4, 2, 1 };
 	constexpr int arr2[]	= { 4, 3, 7 };
-	constexpr auto Arr	= map_zip<int, add, sq, arr1, arr2>(pack);
+
+//	constexpr auto Arr	= array_module::template V_map<int, sq, arr1, 3>(pack);
+//	constexpr auto Arr	= array_module::template V_fold<int, add, 0, arr1, 3>();
+//	constexpr auto Arr	= array_module::template V_zip<int, add, arr1, 3, arr2>(pack);
+//	constexpr auto Arr	= array_module::template V_find<int, is_value<3>, arr1, 3>();
+//	constexpr auto Arr	= array_module::template V_sift<int, is_less_than<3>, arr1, 3>();
+
+//	constexpr auto Arr	= map_zip<int, add, sq, arr1, 3, arr2>(pack);
 
 /***********************************************************************************************************************/
 
 	int main(int argc, char *argv[])
 	{
-		printf("{ %d, %d, %d }\n", Arr[0], Arr[1], Arr[2]);
+	//	printf("{ %d, %d, %d }\n", Arr[0], Arr[1], Arr[2]);
+	//	printf("{ %d }\n", Arr[0]);
 
 		return 0;
 	}

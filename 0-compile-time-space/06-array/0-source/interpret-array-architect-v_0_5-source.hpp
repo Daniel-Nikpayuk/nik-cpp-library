@@ -124,40 +124,38 @@ public:
 	template<typename Type, Type... Vs>
 	static constexpr Type array[] = { Vs... };
 
+	// U -> V:
+
+		template<typename Type, auto... Vs>
+		static constexpr auto V_array_U(nik_avpcr(auto_pack<Vs...>*))
+			{ return array<Type, Vs...>; }
+
+	// V -> U:
+
+		template<auto Arr, auto... Is>
+		static constexpr auto U_array_V(nik_avpcr(auto_pack<Is...>*))
+			{ return U_pack_Vs<Arr[Is]...>; }
+
+/***********************************************************************************************************************/
+
+// copy:
+
+	struct Copy
+	{
+		template<typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
+			{ while (in != end) *(out++) = *(in++); }
+	};
+
 /***********************************************************************************************************************/
 
 // map:
 
 	struct Map
 	{
-		template<auto f, typename OutIter, typename EndIter, typename InIter>
-		static constexpr void result(OutIter out, EndIter end, InIter in)
-		{
-			while (out < end)
-			{
-				*out = f(*in);
-
-				++out;
-				++in;
-			}
-		}
-	};
-
-// (id) map:
-
-	struct IdMap
-	{
-		template<typename OutIter, typename EndIter, typename InIter>
-		static constexpr void result(OutIter out, EndIter end, InIter in)
-		{
-			while (out < end)
-			{
-				*out = *in;
-
-				++out;
-				++in;
-			}
-		}
+		template<auto f, typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
+			{ while (in != end) *(out++) = f(*(in++)); }
 	};
 
 /***********************************************************************************************************************/
@@ -166,12 +164,30 @@ public:
 
 	struct Fold
 	{
-		template<auto f, typename OutIter, typename EndIter, typename InIter>
-		static constexpr void result(OutIter out, EndIter end, InIter in)
+		template<auto f, auto init, typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
 		{
-			while (out < end)
+			*out = init;
+
+			while (in != end) *out = f(*out, *(in++));
+		}
+	};
+
+/***********************************************************************************************************************/
+
+// find:
+
+	struct Find
+	{
+		template<auto Size, auto p, typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
+		{
+			*out = Size;
+			InIter in0 = in;
+
+			while ((*out == Size) && (in != end))
 			{
-				*out = f(*out, *in);
+				if (p(*in)) *out = in - in0;
 
 				++in;
 			}
@@ -180,22 +196,36 @@ public:
 
 /***********************************************************************************************************************/
 
+// sift:
+
+/*
+	struct Sift
+	{
+		template<auto Size, auto p, typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
+		{
+			*out = Size;
+			InIter in0 = in;
+
+			while ((*out == Size) && (in != end))
+			{
+				if (p(*in)) *out = in - in0;
+
+				++in;
+			}
+		}
+	};
+*/
+
+/***********************************************************************************************************************/
+
 // zip:
 
 	struct Zip
 	{
-		template<auto f, typename OutIter, typename EndIter, typename In1Iter, typename In2Iter>
-		static constexpr void result(OutIter out, EndIter end, In1Iter in1, In2Iter in2)
-		{
-			while (out < end)
-			{
-				*out = f(*in1, *in2);
-
-				++out;
-				++in1;
-				++in2;
-			}
-		}
+		template<auto f, typename OutIter, typename In1Iter, typename End1Iter, typename In2Iter>
+		static constexpr void result(OutIter out, In1Iter in1, End1Iter end1, In2Iter in2)
+			{ while (in1 != end1) *(out++) = f(*(in1++), *(in2++)); }
 	};
 
 /***********************************************************************************************************************/
@@ -235,54 +265,122 @@ public:
 
 // (near linear) apply:
 
-	template<typename Type, auto Size, typename F, auto... Params, typename... Types>
-	static constexpr auto apply(const Types*... as)
+	template
+	<
+		typename Type, auto Size,
+		typename F, auto InSize, auto... Params,
+		typename InType, typename... InTypes
+	>
+	static constexpr auto apply(InType in, InTypes... ins)
 	{
 		Array<Type, Size> arr{};
 
-		F::template result<Params...>(begin(arr), end(arr), as...);
+		F::template result<Params...>(begin(arr), in, in + InSize, ins...);
 
 		return arr;
 	}
 
-	template<typename Type, typename F, auto... As, auto... Ps, auto... Is>
-	static constexpr auto apply(nik_avpcr(auto_pack<Ps...>*), nik_avpcr(auto_pack<Is...>*))
-	{
-		constexpr auto Size	= sizeof...(Is);
-		constexpr auto arr	= apply<Type, Size, F, Ps...>(As...);
+	// -> V:
 
-		return array<Type, arr.value[Is]...>;
-	}
+		template<typename Type, typename F, auto... As, auto... Ps, auto... Is>
+		static constexpr auto V_apply(nik_avpcr(auto_pack<Ps...>*), nik_avpcr(auto_pack<Is...>*))
+		{
+			constexpr auto Size	= sizeof...(Is);
+			constexpr auto arr	= apply<Type, Size, F, Ps...>(As...);
 
-/***********************************************************************************************************************/
+			return array<Type, arr.value[Is]...>;
+		}
 
-// copy:
+	// -> U:
 
-	template<typename Type, auto Arr, typename Indices>
-	static constexpr auto copy(Indices indices)
-	{
-		return apply<Type, IdMap, Arr>(U_pack_Vs<>, indices);
-	}
+		template<typename Type, typename F, auto... As, auto... Ps, auto... Is>
+		static constexpr auto U_apply(nik_avpcr(auto_pack<Ps...>*), nik_avpcr(auto_pack<Is...>*))
+		{
+			constexpr auto Size	= sizeof...(Is);
+			constexpr auto arr	= apply<Type, Size, F, Ps...>(As...);
+
+			return U_pack_Vs<arr.value[Is]...>;
+		}
 
 /***********************************************************************************************************************/
 
 // map:
 
-	template<typename Type, auto f, auto Arr, typename Indices>
-	static constexpr auto map(Indices indices)
-	{
-		return apply<Type, Map, Arr>(U_pack_Vs<f>, indices);
-	}
+	// -> V:
+
+		template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
+		static constexpr auto V_map(Indices indices)
+			{ return V_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
+
+	// -> U:
+
+		template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
+		static constexpr auto U_map(Indices indices)
+			{ return U_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
+
+/***********************************************************************************************************************/
+
+// fold:
+
+	// -> V:
+
+		template<typename Type, auto f, auto init, auto Arr, auto Leng>
+		static constexpr auto V_fold()
+			{ return V_apply<Type, Fold, Arr>(U_pack_Vs<Leng, f, init>, U_pack_Vs<0>); }
+
+	// -> U:
+
+		template<typename Type, auto f, auto init, auto Arr, auto Leng>
+		static constexpr auto U_fold()
+			{ return U_apply<Type, Fold, Arr>(U_pack_Vs<Leng, f, init>, U_pack_Vs<0>); }
+
+/***********************************************************************************************************************/
+
+// find:
+
+	// -> V:
+
+		template<typename Type, auto p, auto Arr, auto Leng>
+		static constexpr auto V_find()
+			{ return V_apply<Type, Find, Arr>(U_pack_Vs<Leng, Leng, p>, U_pack_Vs<0>); }
+
+	// -> U:
+
+		template<typename Type, auto p, auto Arr, auto Leng>
+		static constexpr auto U_find()
+			{ return U_apply<Type, Find, Arr>(U_pack_Vs<Leng, Leng, p>, U_pack_Vs<0>); }
+
+/***********************************************************************************************************************/
+
+// sift:
+
+	// -> V:
+
+	//	template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
+	//	static constexpr auto V_sift(Indices indices)
+	//		{ return V_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
+
+	// -> U:
+
+	//	template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
+	//	static constexpr auto U_sift(Indices indices)
+	//		{ return U_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
 
 /***********************************************************************************************************************/
 
 // zip:
 
-	template<typename Type, auto f, auto Arr1, auto Arr2, typename Indices>
-	static constexpr auto zip(Indices indices)
-	{
-		return apply<Type, Zip, Arr1, Arr2>(U_pack_Vs<f>, indices);
-	}
+	// -> V:
+
+		template<typename Type, auto f, auto Arr1, auto Leng1, auto Arr2, typename Indices>
+		static constexpr auto V_zip(Indices indices)
+			{ return V_apply<Type, Zip, Arr1, Arr2>(U_pack_Vs<Leng1, f>, indices); }
+
+	// -> U:
+
+		template<typename Type, auto f, auto Arr1, auto Leng1, auto Arr2, typename Indices>
+		static constexpr auto U_zip(Indices indices)
+			{ return U_apply<Type, Zip, Arr1, Arr2>(U_pack_Vs<Leng1, f>, indices); }
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
