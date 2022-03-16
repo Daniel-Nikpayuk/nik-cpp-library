@@ -149,6 +149,17 @@ public:
 
 /***********************************************************************************************************************/
 
+// sequence:
+
+	struct Sequence
+	{
+		template<auto f, typename OutIter, typename InIter, typename EndIter>
+		static constexpr void result(OutIter out, InIter in, EndIter end)
+			{ while (in != end) *(out++) = f(in++); }
+	};
+
+/***********************************************************************************************************************/
+
 // map:
 
 	struct Map
@@ -185,12 +196,7 @@ public:
 			*out = Size;
 			InIter in0 = in;
 
-			while ((*out == Size) && (in != end))
-			{
-				if (p(*in)) *out = in - in0;
-
-				++in;
-			}
+			while ((*out == Size) && (in != end)) if (p(*in)) *out = (in++) - in0;
 		}
 	};
 
@@ -198,24 +204,23 @@ public:
 
 // sift:
 
-/*
 	struct Sift
 	{
-		template<auto Size, auto p, typename OutIter, typename InIter, typename EndIter>
+		template<auto p, typename OutIter, typename InIter, typename EndIter>
 		static constexpr void result(OutIter out, InIter in, EndIter end)
 		{
-			*out = Size;
-			InIter in0 = in;
+			OutIter out0 = out++;
+			InIter   in0 = in;
 
-			while ((*out == Size) && (in != end))
-			{
-				if (p(*in)) *out = in - in0;
+			while (in != end) if (p(*in)) *(out++) = (in++) - in0;
 
-				++in;
-			}
+			*out0 = out - out0;
 		}
 	};
-*/
+
+/***********************************************************************************************************************/
+
+// (deducible) sift:
 
 /***********************************************************************************************************************/
 
@@ -304,6 +309,22 @@ public:
 
 /***********************************************************************************************************************/
 
+// sequence:
+
+	// -> V:
+
+		template<typename Type, auto f, auto Leng, typename Indices>
+		static constexpr auto V_sequence(Indices indices)
+			{ return V_apply<Type, Sequence, decltype(Leng){0}>(U_pack_Vs<Leng, f>, indices); }
+
+	// -> U:
+
+		template<typename Type, auto f, auto Leng, typename Indices>
+		static constexpr auto U_sequence(Indices indices)
+			{ return U_apply<Type, Sequence, decltype(Leng){0}>(U_pack_Vs<Leng, f>, indices); }
+
+/***********************************************************************************************************************/
+
 // map:
 
 	// -> V:
@@ -356,15 +377,52 @@ public:
 
 	// -> V:
 
-	//	template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
-	//	static constexpr auto V_sift(Indices indices)
-	//		{ return V_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
+/*
+		template<typename Type, auto p, auto Arr, auto Leng, auto I0, auto... Is>
+		static constexpr auto V_sift(nik_vpcr(indices)(auto_pack<I0, Is...>*))
+		{
+			constexpr auto Size	= sizeof...(Is) + 1;
+			constexpr auto arr	= apply<Type, Size, Sift, Leng, p>(Arr);
+
+			return array<Type, arr.value[Is]...>;
+		}
+*/
 
 	// -> U:
 
-	//	template<typename Type, auto f, auto Arr, auto Leng, typename Indices>
-	//	static constexpr auto U_sift(Indices indices)
-	//		{ return U_apply<Type, Map, Arr>(U_pack_Vs<Leng, f>, indices); }
+/*
+		template<typename Type, auto p, auto Arr, auto Leng, auto I0, auto... Is>
+		static constexpr auto U_sift(nik_vpcr(indices)(auto_pack<I0, Is...>*))
+		{
+			constexpr auto Size	= sizeof...(Is) + 1;
+			constexpr auto arr	= apply<Type, Size, Sift, Leng, p>(Arr);
+
+			return U_pack_Vs<arr.value[Is]...>;
+		}
+*/
+
+/***********************************************************************************************************************/
+
+// (deducible) sift:
+
+		// Two versions of sift:
+
+		// 1) Where we have beforehand knowledge of the returned array size,
+		// 2) Where we don't have beforehand knowledge, and so pass a "promised" pack generator.
+
+/*
+	// -> V:
+
+		template<typename Type, auto p, auto Arr, auto Leng, auto... Is>
+		static constexpr auto V_sift(nik_vpcr(indices)(auto_pack<Is...>*))
+			{ return V_apply<Type, Sift, Arr>(U_pack_Vs<Leng, sizeof...(Is), p>, indices); }
+
+	// -> U:
+
+		template<typename Type, auto p, auto Arr, auto Leng, auto... Is>
+		static constexpr auto U_sift(nik_vpcr(indices)(auto_pack<Is...>*))
+			{ return U_apply<Type, Sift, Arr>(U_pack_Vs<Leng, sizeof...(Is), p>, indices); }
+*/
 
 /***********************************************************************************************************************/
 
@@ -381,6 +439,7 @@ public:
 		template<typename Type, auto f, auto Arr1, auto Leng1, auto Arr2, typename Indices>
 		static constexpr auto U_zip(Indices indices)
 			{ return U_apply<Type, Zip, Arr1, Arr2>(U_pack_Vs<Leng1, f>, indices); }
+
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

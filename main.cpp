@@ -289,14 +289,17 @@
 	}
 
 	constexpr int add(int m, int n) { return m+n; }
+	constexpr int odd(int n) { return 2*n+1; }
 	constexpr int sq(int n) { return n*n; }
 	template<auto V> constexpr bool is_value(int n) { return (n == V); }
 	template<auto V> constexpr bool is_less_than(int n) { return (n < V); }
 
-	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
-	constexpr int arr1[]	= { 4, 2, 1 };
-	constexpr int arr2[]	= { 4, 3, 7 };
+	constexpr auto odd_pack	= U_pack_Vs<0, 1, 2, 3, 4, 5, 6, 7>;
+//	constexpr auto pack	= U_pack_Vs<0, 1, 2>;
+//	constexpr int arr1[]	= { 4, 2, 1 };
+//	constexpr int arr2[]	= { 4, 3, 7 };
 
+	constexpr auto Arr	= array_module::template U_sequence<int, odd, 8>(odd_pack);
 //	constexpr auto Arr	= array_module::template V_map<int, sq, arr1, 3>(pack);
 //	constexpr auto Arr	= array_module::template V_fold<int, add, 0, arr1, 3>();
 //	constexpr auto Arr	= array_module::template V_zip<int, add, arr1, 3, arr2>(pack);
@@ -309,6 +312,8 @@
 
 	int main(int argc, char *argv[])
 	{
+		printf("%d\n", Arr);
+
 	//	printf("{ %d, %d, %d }\n", Arr[0], Arr[1], Arr[2]);
 	//	printf("{ %d }\n", Arr[0]);
 
