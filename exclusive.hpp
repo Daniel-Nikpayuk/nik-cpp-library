@@ -64,7 +64,8 @@ namespace nik
 	{
 	// interpret:
 
-		cache,
+		generic,
+		store,
 		constant,
 
 		pair,
@@ -200,53 +201,57 @@ namespace nik
 /***********************************************************************************************************************/
 
 
-	#define nik_cache()												\
+	#define nik_generic()												\
 															\
-		00-cache
+		00-generic
+
+	#define nik_store()												\
+															\
+		01-store
 
 	#define nik_constant()												\
 															\
-		01-constant
+		02-constant
 
 	#define nik_pair()												\
 															\
-		02-pair
+		03-pair
 
 	#define nik_boolean()												\
 															\
-		03-boolean
+		04-boolean
 
 	#define nik_pointer()												\
 															\
-		04-pointer
+		05-pointer
 
 	#define nik_reference()												\
 															\
-		05-reference
+		06-reference
 
 	#define nik_array()												\
 															\
-		06-array
+		07-array
 
 	#define nik_machine()												\
 															\
-		07-machine
+		08-machine
 
 	#define nik_pack()												\
 															\
-		08-pack
+		09-pack
 
 	#define nik_list()												\
 															\
-		09-list
+		10-list
 
 	#define nik_function()												\
 															\
-		10-function
+		11-function
 
 	#define nik_colist()												\
 															\
-		11-colist
+		12-colist
 
 
 /***********************************************************************************************************************/
@@ -331,14 +336,41 @@ namespace nik
 /***********************************************************************************************************************/
 
 
-#define nik_vpcr(_n_)													\
+#define nik_local(_translation_, _module_, _permission_, _version_)							\
 															\
-	void(*const&_n_)
+	nik_stringify(_translation_-_module_-_permission_-_version_-source.hpp)
 
 
-#define nik_avpcr													\
+/***********************************************************************************************************************/
+
+
+#define nik_alias(_translation_, _module_, _permission_, _version_)							\
 															\
-	nik_vpcr()
+	nik_stringify(_translation_-_module_-_permission_-_version_-alias.hpp)
+
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+
+#define nik_vp(_n_)													\
+															\
+	void(*_n_)
+
+
+#define nik_avp														\
+															\
+	nik_vp()
+
+
+#define nik_ce														\
+															\
+	constexpr
+
+
+#define nik_ces														\
+															\
+	constexpr static
 
 
 /***********************************************************************************************************************/

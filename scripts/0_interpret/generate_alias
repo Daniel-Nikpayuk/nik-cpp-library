@@ -1,0 +1,91 @@
+#!/bin/bash
+
+TRANSLATION="$1"
+MODULE="$2"
+PERMISSION="$3"
+VERSION="v_1_0"
+
+generate_import ()
+{
+	local translation="$1"
+	local module="$2"
+	local permission="$3"
+	local version="$4"
+	local vendor="$5"
+
+	local storage="$6"
+	local scope="$7"
+	local name="$translation-$module-$permission-$version-$vendor-$storage-$scope-import.hpp"
+
+	local mawk_prog='BEGIN { line = 0; }
+	{
+		if (line > 59)
+		{
+			gsub("^###", "");
+
+			gsub("<<<translation>>>", "'"$translation"'");
+			gsub("<<<module>>>", "'"$module"'");
+			gsub("<<<permission>>>", "'"$permission"'");
+			gsub("<<<version>>>", "'"$version"'");
+			gsub("<<<vendor>>>", "'"$vendor"'");
+
+			print $0;
+		}
+
+		++line;
+	}'
+
+	if [ -a "$name" ]
+	then
+		echo "File already exists. Exiting now!"
+	else
+		cat ../../generate_alias | mawk "$mawk_prog" > "$name"
+	fi
+}
+
+VENDORS=( gcc clang )
+STORAGE=( dynamic static )
+SCOPE=( name title )
+
+for vendor in "${VENDORS[@]}"
+do
+	for storage in "${STORAGE[@]}"
+	do
+		for scope in "${SCOPE[@]}"
+		do
+			generate_import "$TRANSLATION" "$MODULE" "$PERMISSION" "$VERSION" "$vendor" "$storage" "$scope"
+		done
+	done
+done
+
+###/************************************************************************************************************************
+###**
+###** Copyright 2021-2022 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
+###**
+###** This file is part of nik_cpp_library.
+###**
+###** nik_cpp_library is free software: you can redistribute it and/or modify it under the terms
+###** of the GNU General Public License as published by the Free Software Foundation, either version 3
+###** of the License, or (at your option) any later version.
+###**
+###** nik_cpp_library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+###** without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+###** See the GNU General Public License for more details.
+###**
+###** You should have received a copy of the GNU General Public License along with nik_cpp_library.
+###** If not, see <http://www.gnu.org/licenses/>.
+###**
+###************************************************************************************************************************/
+###
+####define NIK_VERSION <<<version>>>
+####define NIK_MODULE nik_module(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION, <<<vendor>>>)
+####define NIK_POLICY constexpr static
+####define NIK_PREFIX
+###
+###	#include nik_alias(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION)
+###
+####undef NIK_PREFIX
+####undef NIK_POLICY
+####undef NIK_MODULE
+####undef NIK_VERSION
+###

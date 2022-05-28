@@ -1,0 +1,100 @@
+#!/bin/bash
+
+TRANSLATION="$1"
+MODULE="$2"
+PERMISSION="$3"
+VERSION="v_1_0"
+
+generate_include ()
+{
+	local translation="$1"
+	local module="$2"
+	local permission="$3"
+	local version="$4"
+	local vendor="$5"
+
+	local name="$translation-$module-$permission-$version-$vendor-include.hpp"
+
+	local mawk_prog='BEGIN { line = 0; }
+	{
+		if (line > 55)
+		{
+			gsub("^###", "");
+
+			gsub("<<<translation>>>", "'"$translation"'");
+			gsub("<<<module>>>", "'"$module"'");
+			gsub("<<<permission>>>", "'"$permission"'");
+			gsub("<<<version>>>", "'"$version"'");
+			gsub("<<<vendor>>>", "'"$vendor"'");
+
+			gsub("<<<TRANSLATION>>>", toupper("'"$translation"'"));
+			gsub("<<<MODULE>>>", toupper("'"$module"'"));
+			gsub("<<<PERMISSION>>>", toupper("'"$permission"'"));
+			gsub("<<<VERSION>>>", toupper("'"$version"'"));
+			gsub("<<<VENDOR>>>", toupper("'"$vendor"'"));
+
+			print $0;
+		}
+
+		++line;
+	}'
+
+	if [ -a "$name" ]
+	then
+		echo "File already exists. Exiting now!"
+	else
+		cat ../../generate_source | mawk "$mawk_prog" > "$name"
+	fi
+}
+
+VENDORS=( gcc clang )
+
+for vendor in "${VENDORS[@]}"
+do
+	generate_include "$TRANSLATION" "$MODULE" "$PERMISSION" "$VERSION" "$vendor"
+done
+
+###/************************************************************************************************************************
+###**
+###** Copyright 2021-2022 Daniel Nikpayuk, Inuit Nunangat, The Inuit Nation
+###**
+###** This file is part of nik_cpp_library.
+###**
+###** nik_cpp_library is free software: you can redistribute it and/or modify it under the terms
+###** of the GNU General Public License as published by the Free Software Foundation, either version 3
+###** of the License, or (at your option) any later version.
+###**
+###** nik_cpp_library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+###** without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+###** See the GNU General Public License for more details.
+###**
+###** You should have received a copy of the GNU General Public License along with nik_cpp_library.
+###** If not, see <http://www.gnu.org/licenses/>.
+###**
+###************************************************************************************************************************/
+###
+####ifndef NIK_<<<TRANSLATION>>>_<<<MODULE>>>_<<<PERMISSION>>>_<<<VERSION>>>_<<<VENDOR>>>_HPP
+####define NIK_<<<TRANSLATION>>>_<<<MODULE>>>_<<<PERMISSION>>>_<<<VERSION>>>_<<<VENDOR>>>_HPP
+###
+####define NIK_VERSION <<<version>>>
+####define NIK_VENDOR <<<vendor>>>
+####define NIK_MODULE nik_module(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION, NIK_VENDOR)
+###
+###// dependencies:
+###
+###	// none.
+###
+###// module:
+###
+###	#include nik_local(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION)
+###
+####undef NIK_MODULE
+####undef NIK_VENDOR
+####undef NIK_VERSION
+###
+###/***********************************************************************************************************************/
+###/***********************************************************************************************************************/
+###/***********************************************************************************************************************/
+###
+####endif
+###

@@ -39,28 +39,28 @@
 
 	As for meta function output: Since only types or values can be returned from meta grammatical operators
 	(regardless of template parameter input), if we then require any of the other template parameter categories
-	to be returned we must embed or *cache* them within types or values (such that they may also be recovered
+	to be returned we must embed or *store* them within types or values (such that they may also be recovered
 	or pattern matched afterward). As such they are encoded as subcategories of typenames or autos, but given
 	their relevance throughout the library, they are given names with meanings as follows:
 
 	Type subcategories:
 
-		R - has a type(s) cache
-		S - has a value(s) cache
-		E - has a variable template member (indirect cache)
-		F - has a function template member (indirect cache)
-		C - has a type(s) template template(s) cache
-		D - has a value(s) template template(s) cache
+		R - has a type(s) store
+		S - has a value(s) store
+		E - has a variable template member (indirect store)
+		F - has a function template member (indirect store)
+		C - has a type(s) template template(s) store
+		D - has a value(s) template template(s) store
 
 	Value subcategories:
 
-		U - has a type cache
-		W - has a type cache with its own type(s) cache
-		X - has a type cache with its own value(s) cache
-		I - has a type cache with its own variable template member (indirect cache)
-		J - has a type cache with its own function template member (indirect cache)
-		G - has a type cache with its own type(s) template template(s) cache
-		H - has a type cache with its own value(s) template template(s) cache
+		U - has a type store
+		W - has a type store with its own type(s) store
+		X - has a type store with its own value(s) store
+		I - has a type store with its own variable template member (indirect store)
+		J - has a type store with its own function template member (indirect store)
+		G - has a type store with its own type(s) template template(s) store
+		H - has a type store with its own value(s) template template(s) store
 
 	To summarize, there are seventeen distinct categories. As for "categories",
 	the theoretcal narrative comes from category theory, and is as follows:
@@ -88,7 +88,7 @@
 
 		U_type_T
 
-	This functor in particular maps types to type caches (objects of C++V), and can further be used
+	This functor in particular maps types to type stores (objects of C++V), and can further be used
 	to define the subcategory U.
 
 	Beyond this, we can also describe constants by providing a prefix while omitting a suffix:
