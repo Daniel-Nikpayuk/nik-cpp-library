@@ -20,21 +20,29 @@
 #ifndef NIK_INTERPRET_STORE_ARCHITECT_V_1_0_CLANG_HPP
 #define NIK_INTERPRET_STORE_ARCHITECT_V_1_0_CLANG_HPP
 
+// dependencies:
+
+#define NIK_GENERIC_VERSION v_1_0
+#define NIK_GENERIC_VENDOR clang
+#define NIK_GENERIC_MODULE nik_module(interpret, generic, architect, NIK_GENERIC_VERSION, NIK_GENERIC_VENDOR)
+
+	#include nik_source(../../.., interpret, generic, architect, NIK_GENERIC_VERSION, NIK_GENERIC_VENDOR)
+
+// module:
+
 #define NIK_VERSION v_1_0
 #define NIK_VENDOR clang
 #define NIK_MODULE nik_module(interpret, store, architect, NIK_VERSION, NIK_VENDOR)
-
-// dependencies:
-
-	// none.
-
-// module:
 
 	#include nik_local(interpret, store, architect, NIK_VERSION)
 
 #undef NIK_MODULE
 #undef NIK_VENDOR
 #undef NIK_VERSION
+
+#undef NIK_GENERIC_MODULE
+#undef NIK_GENERIC_VENDOR
+#undef NIK_GENERIC_VERSION
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

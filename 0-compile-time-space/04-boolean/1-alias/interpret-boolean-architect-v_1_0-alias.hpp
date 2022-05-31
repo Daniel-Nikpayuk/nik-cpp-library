@@ -17,31 +17,22 @@
 **
 ************************************************************************************************************************/
 
-// boolean alias:
+// alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// conditionals:
+// generic:
 
-	// TxT -> T:
+/***********************************************************************************************************************/
 
-	template<bool is_br, typename Ante, typename Conse>
-	using nik_name(NIK_PREFIX, T_if_then_else_TxT) =
-		typename NIK_MODULE::template T_if_then_else_TxT<is_br, Ante, Conse>;
+	using nik_name(NIK_PREFIX, BooleanKey)			= typename NIK_MODULE::BooleanKey;
 
-	// VxV -> V:
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_BooleanApply)	= NIK_MODULE::U_BooleanApply;
 
-	template<bool is_br, auto ante, auto conse>
-	NIK_POLICY auto nik_name(NIK_PREFIX, V_if_then_else_VxV) =
-		NIK_MODULE::template V_if_then_else_VxV<is_br, ante, conse>;
-
-	// VxV -> T:
-
-	template<bool is_br, auto ante, auto conse>
-	using nik_name(NIK_PREFIX, T_if_then_else_VxV) =
-		typename NIK_MODULE::template T_if_then_else_VxV<is_br, ante, conse>;
+	template<auto... Vs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, boolean_apply)	= NIK_MODULE::template boolean_apply<Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

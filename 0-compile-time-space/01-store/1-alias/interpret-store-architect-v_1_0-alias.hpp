@@ -90,6 +90,12 @@
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_StoreApply)	= NIK_MODULE::template U_StoreApply<>;	// braces prevent
 													// linking warning.
 
+	template<auto... Vs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, store_apply)	= NIK_MODULE::generic_module::template apply // braces prevent
+								<					     // linking warning.
+									NIK_MODULE::template U_StoreApply<>, Vs...
+								>;
+
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

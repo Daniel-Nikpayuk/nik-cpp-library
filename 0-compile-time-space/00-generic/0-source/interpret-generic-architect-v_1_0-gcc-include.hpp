@@ -20,13 +20,13 @@
 #ifndef NIK_INTERPRET_GENERIC_ARCHITECT_V_1_0_GCC_HPP
 #define NIK_INTERPRET_GENERIC_ARCHITECT_V_1_0_GCC_HPP
 
-#define NIK_VERSION v_1_0
-#define NIK_VENDOR gcc
-#define NIK_MODULE nik_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
-
 // dependencies:
 
 	// none.
+
+#define NIK_VERSION v_1_0
+#define NIK_VENDOR gcc
+#define NIK_MODULE nik_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
 
 // module:
 

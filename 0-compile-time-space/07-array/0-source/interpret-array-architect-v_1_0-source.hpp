@@ -17,236 +17,21 @@
 **
 ************************************************************************************************************************/
 
-// dependencies:
+// source:
 
-//	#include nik_source(../../.., interpret, store, architect, v_0_5, gcc)
-
-// array source:
-
-namespace nik { nik_begin_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
-
-//	#include nik_import(../../.., interpret, store, architect, v_0_5, gcc, static, name)
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// predicates:
-
-/***********************************************************************************************************************/
-
-// is array:
-
-private:
-
-	template<typename T>				// This works because as a variable template it has
-	nik_ces bool is_array = false;		// a partial specialize defined outside of this module.
+namespace nik { nik_begin_module(interpret, array, architect, NIK_VERSION, NIK_VENDOR)
 
 public:
 
-	template<typename T>
-	nik_ces bool V_is_array_T = is_array<T>;
-
-/***********************************************************************************************************************/
-
-// size:
-
-private:
-
-//	template<typename T>				// This works because as a variable template it has
-//	nik_ces bool array_size = 0;		// a partial specialize defined outside of this module.
-
-public:
-
-//	template<typename T>
-//	nik_ces bool V_array_size_T = array_size<T>;
+	using generic_module	= typename NIK_STORE_MODULE::generic_module;
+	using store_module	= NIK_STORE_MODULE;
+	using key_type		= typename NIK_STORE_MODULE::key_type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// specifiers:
-
-public:
-
-//	enum struct Array
-//	{
-//		to_array,
-//		from_array,
-
-//		dimension // filler
-//	};
-
-	//
-
-//	template<Array r> nik_ces bool is_to_array		= (r == Array::to_array);
-//	template<Array r> nik_ces bool is_from_array		= (r == Array::from_array);
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// modify:
-
-private:
-
-//	template<typename, Array, global_size_type...> struct modify;
-
-//	template<typename T, global_size_type N>
-//	struct modify<T, Array::to_array>
-//	{
-//		using type	= T(*)[N];
-//	};
-
-//	template<typename T, global_size_type N>
-//	struct modify<T(*)[N], Array::to_array, N>
-//	{
-//		using type	= T(*)[N];
-//	};
-
-//	template<typename T>
-//	struct modify<T, Array::from_array>
-//	{
-//		using type	= T;
-//	};
-
-//	template<typename T, global_size_type N>
-//	struct modify<T(*)[N], Array::from_array, N>
-//	{
-//		using type	= T;
-//	};
-
-public:
-
-//	template<typename T, Array r, global_size_type... Ns>
-//	using T_array_modify_TxV = typename modify<T, r, Ns...>::type;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// (variable) array:
-
-public:
-
-	template<typename Type, Type... Vs>
-	nik_ces Type array[] = { Vs... };
-
-	// U -> V:
-
-		template<typename Type, auto... Vs>
-		nik_ces auto V_array_U(nik_avpcr(auto_pack<Vs...>*))
-			{ return array<Type, Vs...>; }
-
-	// V -> U:
-
-		template<auto Arr, auto... Is>
-		nik_ces auto U_array_V(nik_avpcr(auto_pack<Is...>*))
-			{ return U_pack_Vs<Arr[Is]...>; }
-
-/***********************************************************************************************************************/
-
-// copy:
-
-	struct Copy
-	{
-		template<typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-			{ while (in != end) *(out++) = *(in++); }
-	};
-
-/***********************************************************************************************************************/
-
-// sequence:
-
-	struct Sequence
-	{
-		template<auto f, typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-			{ while (in != end) *(out++) = f(in++); }
-	};
-
-/***********************************************************************************************************************/
-
-// map:
-
-	struct Map
-	{
-		template<auto f, typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-			{ while (in != end) *(out++) = f(*(in++)); }
-	};
-
-/***********************************************************************************************************************/
-
-// fold:
-
-	struct Fold
-	{
-		template<auto f, auto init, typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-		{
-			*out = init;
-
-			while (in != end) *out = f(*out, *(in++));
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// find:
-
-	struct Find
-	{
-		template<auto Size, auto p, typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-		{
-			*out = Size;
-			InIter in0 = in;
-
-			while ((*out == Size) && (in != end)) if (p(*in)) *out = (in++) - in0;
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// sift:
-
-	struct Sift
-	{
-		template<auto p, typename OutIter, typename InIter, typename EndIter>
-		nik_ces void result(OutIter out, InIter in, EndIter end)
-		{
-			OutIter out0 = out++;
-			InIter   in0 = in;
-
-			while (in != end) if (p(*in)) *(out++) = (in++) - in0;
-
-			*out0 = out - out0;
-		}
-	};
-
-/***********************************************************************************************************************/
-
-// (deducible) sift:
-
-/***********************************************************************************************************************/
-
-// zip:
-
-	struct Zip
-	{
-		template<auto f, typename OutIter, typename In1Iter, typename End1Iter, typename In2Iter>
-		nik_ces void result(OutIter out, In1Iter in1, End1Iter end1, In2Iter in2)
-			{ while (in1 != end1) *(out++) = f(*(in1++), *(in2++)); }
-	};
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// (struct) array:
-
-public:
+// constexpr array:
 
 	template<typename Type, auto Size>
 	struct Array { Type value[Size]; };
@@ -470,16 +255,102 @@ public:
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-nik_end_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// generic:
+
+/***********************************************************************************************************************/
+
+// keys:
+
+	struct ArrayKey
+	{
+			nik_ces key_type id			=  0;
+
+		// typename:
+
+			nik_ces key_type cons			=  1;
+			nik_ces key_type type			=  2;
+			nik_ces key_type size			=  3;
+
+			nik_ces key_type is_array		=  4;
+
+		// constexpr:
+
+			nik_ces key_type ce_cons		=  1;
+
+			nik_ces key_type V_ce_array_U		=  1;
+			nik_ces key_type U_ce_array_V		=  1;
+
+			nik_ces key_type dimension		=  5;
+	};
+
+/***********************************************************************************************************************/
+
+// apply:
+
+private:
+
+	template<key_type Key>
+	nik_ces void apply_assert()
+	{
+		constexpr bool is_key = (Key < ArrayKey::dimension); // assumes key_type is unsigned.
+
+		static_assert(is_key, "This store key has not been implemented.");
+	}
+
+public:
+
+	struct ArrayApply
+	{
+		template<key_type Key, auto... Vs>
+		nik_ces auto result = apply_assert<Key>();
+	};
+
+	nik_ces auto U_ArrayApply = store_module::template U_store_T<ArrayApply>;
+
+	template<auto... Vs>
+	nik_ces auto array_apply = generic_module::template apply<U_ArrayApply, Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+nik_end_module(interpret, array, architect, NIK_VERSION, NIK_VENDOR)
 
 // variable template specializations:
 
+// apply:
+
+	#define NIK_ARRAY_APPLY NIK_MODULE::ArrayApply::result
+	#define NIK_ARRAY_KEY NIK_MODULE::ArrayKey
+
+	// to array:
+
+		template<typename T, nik_vp(p)(T(*)[N]*)>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::to_array, p> = NIK_STORE_MODULE::template U_store_T<T&>;
+
+		template<typename T, nik_vp(p)(T&)>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::to_array, p> = p;
+
+	// from array:
+
+		template<typename T, nik_vp(p)(T*)>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::from_array, p> = p;
+
+		template<typename T, nik_vp(p)(T&)>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::from_array, p> = NIK_STORE_MODULE::template U_store_T<T*>;
+
 	// is array:
 
-		template<typename T, global_size_type N>
-		constexpr bool nik_module(interpret, array, architect, v_0_5, gcc)::is_array<T(*)[N]> = true;
+		template<auto V>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::is_array, V> = false;
 
-	template<typename Op, nik_vp(*pack)(Op*), auto... Vs>
-	constexpr auto NIK_MODULE::apply<pack, Vs...> = Op::template result<Vs...>;
+		template<typename T, nik_vp(p)(T&)>
+		nik_ce auto NIK_ARRAY_APPLY<NIK_ARRAY_KEY::is_array, p> = true;
+
+	#undef NIK_ARRAY_KEY
+	#undef NIK_ARRAY_APPLY
 }
 

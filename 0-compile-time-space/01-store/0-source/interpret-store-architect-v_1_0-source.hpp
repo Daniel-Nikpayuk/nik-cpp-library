@@ -21,8 +21,10 @@
 
 namespace nik { nik_begin_module(interpret, store, architect, NIK_VERSION, NIK_VENDOR)
 
-	using generic_module	= nik_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR);
-	using key_type		= typename generic_module::key_type;
+public:
+
+	using generic_module	= NIK_GENERIC_MODULE;
+	using key_type		= typename NIK_GENERIC_MODULE::key_type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -111,14 +113,15 @@ public:
 
 		nik_ces key_type pack					=  1;
 
-		nik_ces key_type is_auto_pack				=  2;
-		nik_ces key_type is_typename_pack			=  3;
-		nik_ces key_type is_auto_template_pack			=  4;
-		nik_ces key_type is_typename_template_pack		=  5;
+		nik_ces key_type same					=  2;
+		nik_ces key_type is_store				=  3;
 
-		nik_ces key_type same					=  6;
+		nik_ces key_type is_auto_pack				=  4;
+		nik_ces key_type is_typename_pack			=  5;
+		nik_ces key_type is_auto_template_pack			=  6;
+		nik_ces key_type is_typename_template_pack		=  7;
 
-		nik_ces key_type dimension				=  7;
+		nik_ces key_type dimension				=  8;
 	};
 
 /***********************************************************************************************************************/
@@ -139,13 +142,16 @@ public:
 
 	struct StoreApply
 	{
-		template<auto Key, auto... Vs>
+		template<key_type Key, auto... Vs>
 		nik_ces auto result = apply_assert<Key>();
 	};
 
 	template<typename T = StoreApply>		// All modules with generics are expected to provide a U_*Apply.
 	nik_ces auto U_StoreApply = U_store_T<T>;	// This is the only one which takes braces, otherwise clang warns
 							// of the inline function store(T) being undefined.
+
+	// Store apply cannot be defined here,
+	// but is still defined in the alias import.
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
@@ -169,6 +175,25 @@ nik_end_module(interpret, store, architect, NIK_VERSION, NIK_VENDOR)
 
 		template<auto... Vs>
 		nik_ce auto NIK_STORE_APPLY<NIK_STORE_KEY::pack, Vs...> = NIK_MODULE::resolve_store<auto_pack<Vs...>>;
+
+	// same:
+
+		template<auto V0, auto V1>
+		nik_ce auto NIK_STORE_APPLY<NIK_STORE_KEY::same, V0, V1> = false;
+
+		template<auto V>
+		nik_ce auto NIK_STORE_APPLY<NIK_STORE_KEY::same, V, V> = true;
+
+	// is store:
+
+		template<auto V>
+		nik_ce bool NIK_STORE_APPLY<NIK_STORE_KEY::is_store, V> = false;
+
+		template<typename T, nik_vp(p)(T*)>
+		nik_ce bool NIK_STORE_APPLY<NIK_STORE_KEY::is_store, p> = true;
+
+		template<typename T, nik_vp(p)(T&)>
+		nik_ce bool NIK_STORE_APPLY<NIK_STORE_KEY::is_store, p> = true;
 
 	// is auto pack:
 
@@ -201,14 +226,6 @@ nik_end_module(interpret, store, architect, NIK_VERSION, NIK_VENDOR)
 
 		template<template<typename...> class... As, nik_vp(p)(NIK_MODULE::typename_template_pack<As...>*)>
 		nik_ce bool NIK_STORE_APPLY<NIK_STORE_KEY::is_typename_template_pack, p> = true;
-
-	// same:
-
-		template<auto V0, auto V1>
-		nik_ce auto NIK_STORE_APPLY<NIK_STORE_KEY::same, V0, V1> = false;
-
-		template<auto V>
-		nik_ce auto NIK_STORE_APPLY<NIK_STORE_KEY::same, V, V> = true;
 
 	#undef NIK_STORE_KEY
 	#undef NIK_STORE_APPLY

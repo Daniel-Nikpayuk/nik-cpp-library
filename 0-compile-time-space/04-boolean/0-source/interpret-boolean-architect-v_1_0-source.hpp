@@ -17,76 +17,82 @@
 **
 ************************************************************************************************************************/
 
-// dependencies:
-
-	#include nik_source(../../.., interpret, store, architect, v_0_5, gcc)
-
-// boolean source:
+// source:
 
 namespace nik { nik_begin_module(interpret, boolean, architect, NIK_VERSION, NIK_VENDOR)
 
-	using store_module = nik_module(interpret, store, architect, v_0_5, gcc);
+public:
+
+	using generic_module	= typename NIK_STORE_MODULE::generic_module;
+	using store_module	= NIK_STORE_MODULE;
+	using key_type		= typename NIK_STORE_MODULE::key_type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// conditionals:
+// generic:
+
+/***********************************************************************************************************************/
+
+// keys:
+
+	struct BooleanKey
+	{
+		nik_ces key_type id			=  0;
+
+		nik_ces key_type if_then_else		=  1;
+
+		nik_ces key_type dimension		=  2;
+	};
+
+/***********************************************************************************************************************/
+
+// apply:
 
 private:
 
-	template<bool True, bool...>
-	struct T_if_then_else
+	template<key_type Key>
+	nik_ces void apply_assert()
 	{
-		template<typename Ante, typename Conse>
-		using result = Ante;
-	};
+		constexpr bool is_key = (Key < BooleanKey::dimension); // assumes key_type is unsigned.
 
-	template<bool... filler>
-	struct T_if_then_else<false, filler...>
-	{
-		template<typename Ante, typename Conse>
-		using result = Conse;
-	};
-
-	template<bool True, auto ante, auto conse>	// This works because as a variable template it has
-	nik_ces auto V_if_then_else = ante;	// a partial specialize defined outside of this module.
+		static_assert(is_key, "This store key has not been implemented.");
+	}
 
 public:
 
-	// TxT -> T:
+	struct BooleanApply
+	{
+		template<key_type Key, auto... Vs>
+		nik_ces auto result = apply_assert<Key>();
+	};
 
-	template<bool is_br, typename Ante, typename Conse>
-	using T_if_then_else_TxT = typename T_if_then_else<is_br>::template result<Ante, Conse>;
+	nik_ces auto U_BooleanApply = store_module::template U_store_T<BooleanApply>;
 
-	// VxV -> V:
-
-	template<bool is_br, auto ante, auto conse>
-	nik_ces auto V_if_then_else_VxV = V_if_then_else<is_br, ante, conse>;
-
-	// VxV -> T:
-
-	template<bool is_br, auto ante, auto conse>
-	using T_if_then_else_VxV = typename store_module::template T_store_U
-	<
-		V_if_then_else<is_br, ante, conse>
-	>;
+	template<auto... Vs>
+	nik_ces auto boolean_apply = generic_module::template apply<U_BooleanApply, Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-nik_end_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
+nik_end_module(interpret, boolean, architect, NIK_VERSION, NIK_VENDOR)
 
 // variable template specializations:
 
-	// if then else:
+// apply:
+
+	#define NIK_BOOLEAN_APPLY NIK_MODULE::BooleanApply::result
+	#define NIK_BOOLEAN_KEY NIK_MODULE::BooleanKey
 
 		template<auto ante, auto conse>
-		constexpr auto nik_module(interpret, boolean, architect, v_0_5, gcc)::
-			V_if_then_else<false, ante, conse> = conse;
+		nik_ce auto NIK_BOOLEAN_APPLY<NIK_BOOLEAN_KEY::if_then_else, true, ante, conse> = ante;
 
-	template<typename Op, nik_vp(*pack)(Op*), auto... Vs>
-	constexpr auto NIK_MODULE::apply<pack, Vs...> = Op::template result<Vs...>;
+		template<auto ante, auto conse>
+		nik_ce auto NIK_BOOLEAN_APPLY<NIK_BOOLEAN_KEY::if_then_else, false, ante, conse> = conse;
+
+	#undef NIK_BOOLEAN_KEY
+	#undef NIK_BOOLEAN_APPLY
 }
 

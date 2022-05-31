@@ -17,99 +17,25 @@
 **
 ************************************************************************************************************************/
 
-// dependencies:
-
-	#include nik_source(../../.., interpret, store, architect, v_0_5, gcc)
-
-// constant source:
+// source:
 
 namespace nik { nik_begin_module(interpret, constant, architect, NIK_VERSION, NIK_VENDOR)
 
-	using store_module = nik_module(interpret, store, architect, v_0_5, gcc);
-
 public:
 
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// predicates:
-
-private:
-
-	template<typename T>				// This works because as a variable template it has
-	nik_ces bool is_constant = false;	// a partial specialize defined outside of this module.
-
-public:
-
-	template<typename T>
-	nik_ces bool V_is_constant_T = is_constant<T>;
+	using generic_module	= typename NIK_STORE_MODULE::generic_module;
+	using store_module	= NIK_STORE_MODULE;
+	using key_type		= typename NIK_STORE_MODULE::key_type;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// specifiers:
-
-public:
-
-	enum struct Constant
-	{
-		to_const,
-		from_const,
-
-		dimension // filler
-	};
-
-	//
-
-	template<Constant c> nik_ces bool is_to_const		= (c == Constant::to_const);
-	template<Constant c> nik_ces bool is_from_const	= (c == Constant::from_const);
+// constant types:
 
 /***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
 
-// modify:
-
-private:
-
-	template<typename, Constant> struct modify;
-
-	template<typename T>
-	struct modify<T, Constant::to_const>
-	{
-		using type	= T const;
-	};
-
-	template<typename T>
-	struct modify<T const, Constant::to_const>
-	{
-		using type	= T const;
-	};
-
-	template<typename T>
-	struct modify<T, Constant::from_const>
-	{
-		using type	= T;
-	};
-
-	template<typename T>
-	struct modify<T const, Constant::from_const>
-	{
-		using type	= T;
-	};
-
-public:
-
-	template<typename T, Constant c>
-	using T_const_modify_TxV = typename modify<T, c>::type;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-
-// builtin types:
+// builtin:
 
 	nik_ces auto U_void			= store_module::template U_store_T<void>;
 	nik_ces auto U_char			= store_module::template U_store_T<char>;
@@ -132,7 +58,7 @@ public:
 
 /***********************************************************************************************************************/
 
-// pack types:
+// pack:
 
 	nik_ces auto U_null_Ts			= store_module::template U_pack_Ts<>;
 	nik_ces auto U_null_Vs			= store_module::template U_pack_Vs<>;
@@ -141,18 +67,90 @@ public:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
+
+// generic:
+
 /***********************************************************************************************************************/
 
-nik_end_module(interpret, generic, architect, NIK_VERSION, NIK_VENDOR)
+// keys:
+
+	struct ConstantKey
+	{
+		nik_ces key_type id					=  0;
+
+		nik_ces key_type to_const				=  1;
+		nik_ces key_type from_const				=  2;
+
+		nik_ces key_type is_const				=  3;
+
+		nik_ces key_type dimension				=  4;
+	};
+
+/***********************************************************************************************************************/
+
+// apply:
+
+private:
+
+	template<key_type Key>
+	nik_ces void apply_assert()
+	{
+		constexpr bool is_key = (Key < ConstantKey::dimension); // assumes key_type is unsigned.
+
+		static_assert(is_key, "This store key has not been implemented.");
+	}
+
+public:
+
+	struct ConstantApply
+	{
+		template<key_type Key, auto... Vs>
+		nik_ces auto result = apply_assert<Key>();
+	};
+
+	nik_ces auto U_ConstantApply = store_module::template U_store_T<ConstantApply>;
+
+	template<auto... Vs>
+	nik_ces auto constant_apply = generic_module::template apply<U_ConstantApply, Vs...>;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+nik_end_module(interpret, constant, architect, NIK_VERSION, NIK_VENDOR)
 
 // variable template specializations:
 
-	// is constant:
+// apply:
 
-		template<typename T>
-		constexpr bool nik_module(interpret, constant, architect, v_0_5, gcc)::is_constant<T const> = true;
+	#define NIK_CONSTANT_APPLY NIK_MODULE::ConstantApply::result
+	#define NIK_CONSTANT_KEY NIK_MODULE::ConstantKey
 
-	template<typename Op, nik_vp(*pack)(Op*), auto... Vs>
-	constexpr auto NIK_MODULE::apply<pack, Vs...> = Op::template result<Vs...>;
+	// to const:
+
+		template<typename T, nik_vp(p)(T*)>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::to_const, p> = NIK_STORE_MODULE::template U_store_T<T const>;
+
+		template<typename T, nik_vp(p)(T const*)>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::to_const, p> = p;
+
+	// from const:
+
+		template<typename T, nik_vp(p)(T*)>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::from_const, p> = p;
+
+		template<typename T, nik_vp(p)(T const*)>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::from_const, p> = NIK_STORE_MODULE::template U_store_T<T>;
+
+	// is const:
+
+		template<auto V>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::is_const, V> = false;
+
+		template<typename T, nik_vp(p)(T const*)>
+		nik_ce auto NIK_CONSTANT_APPLY<NIK_CONSTANT_KEY::is_const, p> = true;
+
+	#undef NIK_CONSTANT_KEY
+	#undef NIK_CONSTANT_APPLY
 }
 

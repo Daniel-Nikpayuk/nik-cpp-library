@@ -17,37 +17,36 @@
 **
 ************************************************************************************************************************/
 
-// reference alias:
+#ifndef NIK_INTERPRET_BOOLEAN_ARCHITECT_V_1_0_GCC_HPP
+#define NIK_INTERPRET_BOOLEAN_ARCHITECT_V_1_0_GCC_HPP
+
+// dependencies:
+
+#define NIK_STORE_VERSION v_1_0
+#define NIK_STORE_VENDOR gcc
+#define NIK_STORE_MODULE nik_module(interpret, store, architect, NIK_STORE_VERSION, NIK_STORE_VENDOR)
+
+	#include nik_source(../../.., interpret, store, architect, NIK_STORE_VERSION, NIK_STORE_VENDOR)
+
+// module:
+
+#define NIK_VERSION v_1_0
+#define NIK_VENDOR gcc
+#define NIK_MODULE nik_module(interpret, boolean, architect, NIK_VERSION, NIK_VENDOR)
+
+	#include nik_local(interpret, boolean, architect, NIK_VERSION)
+
+#undef NIK_MODULE
+#undef NIK_VENDOR
+#undef NIK_VERSION
+
+#undef NIK_STORE_MODULE
+#undef NIK_STORE_VENDOR
+#undef NIK_STORE_VERSION
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// predicates:
-
-	template<typename T>
-	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_reference_T)		= NIK_MODULE::template V_is_reference_T<T>;
-
-/***********************************************************************************************************************/
-
-// specifiers:
-
-	using nik_name(NIK_PREFIX, Reference)				= typename NIK_MODULE::Reference;
-
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_to_reference)		= NIK_MODULE::template is_to_reference<V>;
-
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_from_reference)		= NIK_MODULE::template is_from_reference<V>;
-
-/***********************************************************************************************************************/
-
-// modify:
-
-	template<typename T, auto V>
-	using nik_name(NIK_PREFIX, T_reference_modify_TxV)	= typename NIK_MODULE::template T_reference_modify_TxV<T, V>;
-
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
-/***********************************************************************************************************************/
+#endif
 

@@ -17,32 +17,37 @@
 **
 ************************************************************************************************************************/
 
-// pair alias:
+// alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-	// pair:
+// pair:
+
+/***********************************************************************************************************************/
 
 	template<typename T1, typename T2>
 	using nik_name(NIK_PREFIX, pair)		= typename NIK_MODULE::template pair<T1, T2>;
 
-	// constructor:
+	// C++17:
 
 	template<auto v1, auto v2>
-	NIK_POLICY auto nik_name(NIK_PREFIX, cons)	= NIK_MODULE::template cons<v1, v2>;
+	NIK_POLICY auto nik_name(NIK_PREFIX, ce_pair)	= NIK_MODULE::template ce_pair<v1, v2>;
 
-	// accessors:
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
 
-	template<typename T1, typename T2>
-	using nik_name(NIK_PREFIX, pair_type)		= typename NIK_MODULE::template pair_type<T1, T2>;
+// generic:
 
-	template<auto p>
-	NIK_POLICY auto nik_name(NIK_PREFIX, car)	= NIK_MODULE::template car<p>;
+/***********************************************************************************************************************/
 
-	template<auto p>
-	NIK_POLICY auto nik_name(NIK_PREFIX, cdr)	= NIK_MODULE::template cdr<p>;
+	using nik_name(NIK_PREFIX, PairKey)			= typename NIK_MODULE::PairKey;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_PairApply)	= NIK_MODULE::U_PairApply;
+
+	template<auto... Vs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, pair_apply)	= NIK_MODULE::template pair_apply<Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

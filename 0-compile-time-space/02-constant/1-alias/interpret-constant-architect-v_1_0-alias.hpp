@@ -17,89 +17,17 @@
 **
 ************************************************************************************************************************/
 
-// constant alias:
+// alias:
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/
 
-// predicates:
-
-	template<typename T>
-	NIK_POLICY bool nik_name(NIK_PREFIX, V_is_constant_T)		= NIK_MODULE::template V_is_constant_T<T>;
+// types:
 
 /***********************************************************************************************************************/
 
-// specifiers:
-
-	using nik_name(NIK_PREFIX, Constant)				= typename NIK_MODULE::Constant;
-
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_to_const)		= NIK_MODULE::template is_to_const<V>;
-
-	template<auto V>
-	NIK_POLICY bool nik_name(NIK_PREFIX, is_from_const)		= NIK_MODULE::template is_from_const<V>;
-
-/***********************************************************************************************************************/
-
-// modify:
-
-	template<typename T, auto V>
-	using nik_name(NIK_PREFIX, T_const_modify_TxV)		= typename NIK_MODULE::template T_const_modify_TxV<T, V>;
-
-/***********************************************************************************************************************/
-
-// keywords:
-
-	using nik_name(NIK_PREFIX, _nt_)				= typename NIK_MODULE::_nt_;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, _na_)			= NIK_MODULE::_na_;
-
-	template<typename... Ts>
-	using nik_name(NIK_PREFIX, _NA_)				= typename NIK_MODULE::template _NA_<Ts...>;
-
-	template<auto... Vs>
-	using nik_name(NIK_PREFIX, _NB_)				= typename NIK_MODULE::template _NB_<Vs...>;
-
-/***********************************************************************************************************************/
-
-// numeric:
-
-	using key_type							= typename NIK_MODULE::key_type;
-	using ckey_type							= typename NIK_MODULE::ckey_type;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX, _zero)			= NIK_MODULE::_zero;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _one)			= NIK_MODULE::_one;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _two)			= NIK_MODULE::_two;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _three)			= NIK_MODULE::_three;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _four)			= NIK_MODULE::_four;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _five)			= NIK_MODULE::_five;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _six)			= NIK_MODULE::_six;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _seven)			= NIK_MODULE::_seven;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _eight)			= NIK_MODULE::_eight;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _nine)			= NIK_MODULE::_nine;
-	NIK_POLICY auto nik_name(NIK_PREFIX, _ten)			= NIK_MODULE::_ten;
-
-	using index_type						= typename NIK_MODULE::index_type;
-	using cindex_type						= typename NIK_MODULE::cindex_type;
-
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_0)			= NIK_MODULE::_2_0;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_1)			= NIK_MODULE::_2_1;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_2)			= NIK_MODULE::_2_2;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_3)			= NIK_MODULE::_2_3;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_4)			= NIK_MODULE::_2_4;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_5)			= NIK_MODULE::_2_5;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_6)			= NIK_MODULE::_2_6;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_7)			= NIK_MODULE::_2_7;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_8)			= NIK_MODULE::_2_8;
-	NIK_POLICY auto nik_name(NIK_PREFIX,_2_9)			= NIK_MODULE::_2_9;
-
-	using depth_type						= typename NIK_MODULE::depth_type;
-	using cdepth_type						= typename NIK_MODULE::cdepth_type;
-
-/***********************************************************************************************************************/
-
-// builtin types:
+// builtin:
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_void)			= NIK_MODULE::U_void;
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_char)			= NIK_MODULE::U_char;
@@ -122,12 +50,26 @@
 
 /***********************************************************************************************************************/
 
-// pack types:
+// pack:
 
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Ts)			= NIK_MODULE::U_null_Ts;
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Vs)			= NIK_MODULE::U_null_Vs;
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_As)			= NIK_MODULE::U_null_As;
 	NIK_POLICY auto nik_name(NIK_PREFIX, U_null_Bs)			= NIK_MODULE::U_null_Bs;
+
+/***********************************************************************************************************************/
+/***********************************************************************************************************************/
+
+// generic:
+
+/***********************************************************************************************************************/
+
+	using nik_name(NIK_PREFIX, ConstantKey)			= typename NIK_MODULE::ConstantKey;
+
+	NIK_POLICY auto nik_name(NIK_PREFIX, U_ConstantApply)	= NIK_MODULE::U_ConstantApply;
+
+	template<auto... Vs>
+	NIK_POLICY auto nik_name(NIK_PREFIX, constant_apply)	= NIK_MODULE::template constant_apply<Vs...>;
 
 /***********************************************************************************************************************/
 /***********************************************************************************************************************/

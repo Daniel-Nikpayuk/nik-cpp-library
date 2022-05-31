@@ -76,21 +76,29 @@ done
 ####ifndef NIK_<<<TRANSLATION>>>_<<<MODULE>>>_<<<PERMISSION>>>_<<<VERSION>>>_<<<VENDOR>>>_HPP
 ####define NIK_<<<TRANSLATION>>>_<<<MODULE>>>_<<<PERMISSION>>>_<<<VERSION>>>_<<<VENDOR>>>_HPP
 ###
+###// dependencies:
+###
+####define NIK__VERSION <<<version>>>
+####define NIK__VENDOR <<<vendor>>>
+####define NIK__MODULE nik_module(<<<translation>>>, , <<<permission>>>, NIK__VERSION, NIK__VENDOR)
+###
+###	#include nik_source(../../.., interpret, , architect, NIK__VERSION, NIK__VENDOR)
+###
+###// module:
+###
 ####define NIK_VERSION <<<version>>>
 ####define NIK_VENDOR <<<vendor>>>
 ####define NIK_MODULE nik_module(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION, NIK_VENDOR)
-###
-###// dependencies:
-###
-###	// none.
-###
-###// module:
 ###
 ###	#include nik_local(<<<translation>>>, <<<module>>>, <<<permission>>>, NIK_VERSION)
 ###
 ####undef NIK_MODULE
 ####undef NIK_VENDOR
 ####undef NIK_VERSION
+###
+####undef NIK__MODULE
+####undef NIK__VENDOR
+####undef NIK__VERSION
 ###
 ###/***********************************************************************************************************************/
 ###/***********************************************************************************************************************/

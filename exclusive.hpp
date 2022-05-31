@@ -71,8 +71,8 @@ namespace nik
 		pair,
 		boolean,
 
-		pointer,
 		reference,
+		pointer,
 		array,
 
 		machine,
@@ -221,13 +221,13 @@ namespace nik
 															\
 		04-boolean
 
-	#define nik_pointer()												\
-															\
-		05-pointer
-
 	#define nik_reference()												\
 															\
-		06-reference
+		05-reference
+
+	#define nik_pointer()												\
+															\
+		06-pointer
 
 	#define nik_array()												\
 															\

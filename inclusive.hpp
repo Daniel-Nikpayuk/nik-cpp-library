@@ -30,19 +30,19 @@
 
 // compile time space:
 
-#include nik_source(., interpret, generic, architect, v_1_0, gcc)			// redundant inclusion
+//#include nik_source(., interpret, generic, architect, v_1_0, gcc)			// redundant inclusion
 #include nik_source(., interpret, store, architect, v_1_0, gcc)			// redundant inclusion
 //#include nik_source(., interpret, constant, architect, v_1_0, gcc)			// redundant inclusion
 //#include nik_source(., interpret, pair, architect, v_1_0, gcc)			// redundant inclusion
 //#include nik_source(., interpret, boolean, architect, v_1_0, gcc)			// redundant inclusion
-////#include nik_source(., interpret, pointer, architect, v_1_0, gcc)
 //#include nik_source(., interpret, reference, architect, v_1_0, gcc)			// redundant inclusion
+//#include nik_source(., interpret, pointer, architect, v_1_0, gcc)
 //#include nik_source(., interpret, array, architect, v_1_0, gcc)			// redundant inclusion
 ////#include nik_source(., interpret, machine, architect, v_1_0, gcc)			// redundant inclusion
-//#include nik_source(., interpret, pack, architect, v_1_0, gcc)			// redundant inclusion
 //#include nik_source(., interpret, list, architect, v_1_0, gcc)
 //#include nik_source(., interpret, function, architect, v_1_0, gcc)			// redundant inclusion
 //#include nik_source(., interpret, colist, architect, v_1_0, gcc)
+//#include nik_source(., interpret, pack, architect, v_1_0, gcc)			// redundant inclusion
 
 /***********************************************************************************************************************/
 
